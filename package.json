@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "sonar": "sonar-scanner",
     "prettier:check": "prettier --check \"src/**/*.{ts,css,scss,html}\"",
     "prettier": "npx prettier --write . --check \"src/**/*.{ts,css,scss,html}\"",
     "prepare": "husky"
@@ -42,6 +43,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5",
+    "sonar-scanner": "^3.1.0",
     "typescript": "~5.1.3"
   }
 }

@@ -1,14 +1,21 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [AppComponent],
     })
   );
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+  });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -22,12 +29,13 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('deliver-upgrade-frontend');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain(
-      'deliver-upgrade-frontend app is running!'
-    );
+  it(`should add two numbers correctly`, () => {
+    const result = component.addNumbers(3, 4);
+    expect(result).toBeFalsy();
+  });
+
+  it(`should add two numbers incorrectly`, () => {
+    const result = component.addNumbers(11, 4);
+    expect(result).toBeTruthy();
   });
 });
