@@ -11,7 +11,7 @@ fi
 token="$2"
 PROXY_PORT="3128"
 SONARQUBE_URL_DOMAIN="http://sonarqube-jenkins-test.bmg.com"
-BACKEND_PROJECT="bmg-supplychain-deliver_upgrade-frontend-test"
+SONAR_PROJECT_NAME="bmg-supplychain-deliver_upgrade-frontend-$STAGE"
 
 if [ $STAGE = "test" ]
   then
@@ -46,16 +46,14 @@ echo """
 sonar.projectName=${SONAR_PROJECT_NAME}
 sonar.projectKey=${SONAR_PROJECT_NAME}
 sonar.host.url=${SONARQUBE_URL_DOMAIN}
-sonar.token=$2
-sonar.language=ts 
-sonar.sourceEncoding=UTF-8 
+sonar.login=$2
+sonar.projectVersion=1.0
+sonar.sourceEncoding=UTF-8
 sonar.sources=src
-sonar.test.inclusions=src/**/*.test.tsx,src/**/*.test.ts,src/**/*.test.js
-sonar.exclusions=.github/**, coverage/**, assets/**, build/**, ios/**, 
-node_modules/**, scripts/**
+sonar.exclusions=**/node_modules/**
 sonar.tests=src
-sonar.typescript.lcov.reportPaths=./coverage/deliver-upgrade-frontend/lcov.info
-sonar.testExecutionReportPaths=./coverage/test-reporter.xml
+sonar.test.inclusions=**/*.spec.ts
+sonar.typescript.lcov.reportPaths=coverage/deliver-upgrade-frontend/lcov.info
 """ > sonar-project.properties
 
 wget https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz
