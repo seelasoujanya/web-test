@@ -1,0 +1,13 @@
+pipeline {
+  agent { label 'bmg-supplychain-deliver-upgrade-staging-wrk'}
+  stages {
+    stage('Frontend analyze') {
+      steps {
+        withCredentials([string(credentialsId: 'sonarqube-token-sk', variable: 'token')]) {
+            sh "chmod +x ./scripts/analyze_gcp.sh"
+            sh "./scripts/analyze_gcp.sh staging $token"
+         }
+      }
+    }
+  }
+}
