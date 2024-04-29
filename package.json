@@ -4,7 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "echo building for local & ng build",
+    "build:test": "echo building for test env & ng build --c=test",
+    "build:staging": "echo building for staging env & ng build --c=staging",
+    "build:preprod": "echo building for preprod env & ng build --c=preprod",
+    "build:prod": "echo building for prod & ng build --c=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:report": "ng test --source-map=false --browsers=ChromeHeadless --watch=false --code-coverage=true",
