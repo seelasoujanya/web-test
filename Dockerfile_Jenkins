@@ -4,20 +4,24 @@ FROM node:18.17.0-alpine as builder
 # Set working directory inside the container
 WORKDIR /app-ui
 
+# Copy all files from the current directory to the working directory
+COPY . .
+
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-RUN npm config set registry 'https://nexus.bmg.com/repository/npm-proxy/'
-#RUN npm config set registry "https://registry.npmjs.org"
-#RUN npm cache clear -f
+RUN npm cache clear -f
+
 # Install npm dependencies
+RUN npm config set registry 'https://nexus.bmg.com/repository/npm-proxy/'
 RUN npm install
 
-# Install Angular CLI globally
-RUN npm install @angular/cli
-
-# Copy all files from the current directory to the working directory
-COPY . .
+# Install Angular CLI
+RUN npm cache clear -f
+RUN npm config set proxy http://10.14.232.48:3128
+RUN npm config set proxy http://10.14.232.48:3128
+RUN npm config set registry "https://registry.npmjs.org"
+RUN npm install -g @angular/cli
 
 # Define a build argument for the environment
 ARG ENV=prod

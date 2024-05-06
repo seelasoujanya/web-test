@@ -3,8 +3,8 @@
 set -x
 set -e
 
-GitAppRepo="bitbucket.org/bmgpipeline/deliver-upgrade-mt-gke.git"
-GitAppRepoName="deliver-upgrade-mt-gke"
+GitAppRepo="bitbucket.org/bmgpipeline/deliver-mt-gke.git"
+GitAppRepoName="deliver-mt-gke"
 GitAppBranch="main"
 guser="$2"
 gpass="$3"
@@ -43,5 +43,5 @@ echo -n ${TAG} >overlays/${STAGE}/versions/ui.version
 
 #Git update
 git add overlays/${STAGE}/versions/ui.version
-git commit -m "${STAGE} Deliver-upgrade-synchrequest deployed with tag ${TAG}, from deploy pipeline"
+git commit -m "${STAGE} Deliver-ui-synchrequest deployed with tag ${TAG}, from deploy pipeline"
 git push origin $GitAppBranch
