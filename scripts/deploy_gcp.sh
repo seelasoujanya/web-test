@@ -39,9 +39,9 @@ git config --global user.email $email
 git config --global user.name  $name
 
 #Update frontent version/tag
-echo -n ${TAG} >overlays/${STAGE}/versions/ui.version
+echo -n ${TAG} >overlays/${STAGE}/versions/frontend.version
 
 #Git update
-git add overlays/${STAGE}/versions/ui.version
-git commit -m "${STAGE} Deliver-ui-synchrequest deployed with tag ${TAG}, from deploy pipeline"
+git add overlays/${STAGE}/versions/frontend.version
+git commit -m "${STAGE} Deliver-frontend-sync request deployed with tag ${TAG}, from deploy pipeline"
 git push origin $GitAppBranch
