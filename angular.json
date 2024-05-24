@@ -25,6 +25,9 @@
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "scripts": []
           },
           "configurations": {
@@ -88,19 +91,19 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "deliver-upgrade-frontend:build:production"
+              "buildTarget": "deliver-upgrade-frontend:build:production"
             },
             "development": {
-              "browserTarget": "deliver-upgrade-frontend:build:development"
+              "buildTarget": "deliver-upgrade-frontend:build:development"
             },
             "test": {
-              "browserTarget": "deliver-upgrade-frontend:build:test"
+              "buildTarget": "deliver-upgrade-frontend:build:test"
             },
             "preprod": {
-              "browserTarget": "deliver-upgrade-frontend:build:preprod"
+              "buildTarget": "deliver-upgrade-frontend:build:preprod"
             },
             "staging": {
-              "browserTarget": "deliver-upgrade-frontend:build:staging"
+              "buildTarget": "deliver-upgrade-frontend:build:staging"
             }
           },
           "defaultConfiguration": "development"
@@ -108,7 +111,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "deliver-upgrade-frontend:build"
+            "buildTarget": "deliver-upgrade-frontend:build"
           }
         },
         "test": {
@@ -119,6 +122,9 @@
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "scripts": [],
             "karmaConfig": "karma.conf.js",
             "codeCoverage": true
