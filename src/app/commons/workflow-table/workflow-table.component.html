@@ -1,0 +1,22 @@
+<div>
+    <h2>hello</h2>
+</div>
+
+<div class="table">
+    <table>
+        <thead>
+            <tr>
+                <th *ngFor="let heading of headings">{{ heading }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let workflow of workflows">
+                <td>{{ workflow.id }}</td>
+                <td>{{ workflow.name }}</td>
+                <td>{{ workflow.status }}</td>
+                <td>{{ workflow.lastRunOn }}</td>
+                <td>{{ workflow.lastRunStatus }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

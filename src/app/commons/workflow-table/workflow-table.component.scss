@@ -1,0 +1,25 @@
+.table {
+  width: 1115px;
+  height: 522px;
+  border-radius: 8px;
+  border: 1px solid #f2f2f2;
+  gap: 30px;
+}
+
+table thead {
+  width: 1115px;
+  height: 36px;
+  gap: 1px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #f2f2f2;
+  border: 0px, 0px, 1px, 0px;
+}
+
+table tbody {
+  width: 1115px;
+  height: 54px;
+  border: 0px, 0px, 1px, 0px;
+  padding: 5px, 0px, 5px, 0px;
+  gap: 1px;
+  border-bottom: 1px solid #f2f2f2;
+}
