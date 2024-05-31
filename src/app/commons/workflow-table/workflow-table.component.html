@@ -4,7 +4,14 @@
             <tr>
                 <th *ngFor="let heading of headings">
                     {{ heading }}
-                    <ng-container *ngIf="['WORKFLOW NAME', 'STATUS', 'LAST RUN ON', 'LAST RUN STATUS'].includes(heading)">
+                    <ng-container *ngIf="
+              [
+                'WORKFLOW NAME',
+                'STATUS',
+                'LAST RUN ON',
+                'LAST RUN STATUS'
+              ].includes(heading)
+            ">
                         <img src="assets/icons/down-arrow-logo.svg" alt="{{ heading }} Icon" class="heading-icon" />
                     </ng-container>
                 </th>

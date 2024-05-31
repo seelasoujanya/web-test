@@ -12,22 +12,21 @@ table thead {
   font-weight: 100;
 }
 
-table thead tr {
-  width: 1392px;
-  height: 36px;
-  gap: 1px;
-  background-color: #f9fafb;
-  border-bottom: 1px solid #f2f2f2;
-  border: 0px, 0px, 1px, 0px;
-  border: 1px solid #f2f2f2;
-  text-align: left;
-}
-
 table tbody td {
   width: 1392px;
   height: 64px;
   border: 0px, 0px, 1px, 0px;
   border-bottom: 1px solid #f2f2f2;
+  padding-left: 15px;
+}
+
+table thead th {
+  width: 1392px;
+  height: 36px;
+  background-color: #f9fafb;
+  border: 0px, 0px, 1px, 0px;
+  border-bottom: 1px solid #f2f2f2;
+  text-align: left;
   padding-left: 15px;
 }
 
