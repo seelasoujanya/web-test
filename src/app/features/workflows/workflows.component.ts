@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
 import { WorkflowService } from 'src/app/services/workflow.service';
+import { Workflow } from 'src/app/interfaces/workflow.model';
 
 @Component({
   selector: 'app-workflows',
@@ -13,11 +14,12 @@ import { WorkflowService } from 'src/app/services/workflow.service';
   providers: [WorkflowService],
 })
 export class WorkflowsComponent {
-  workflowsData: any[] = [];
+  workflowsData: Workflow[] = [];
 
   constructor(private workflowService: WorkflowService) {
     this.workflowService.getWorkflows().subscribe(res => {
       this.workflowsData = res;
+      console.log('response workflows', res);
     });
   }
 }

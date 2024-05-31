@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Workflow } from 'src/app/interfaces/workflow.model';
 
 @Component({
   selector: 'app-workflow-table',
@@ -11,12 +12,12 @@ import { CommonModule } from '@angular/common';
 export class WorkflowTableComponent {
   @Input() workflows: any[] = [];
 
-  headings = [
+  headings: string[] = [
     'ID',
-    'Workflow Name',
-    'Status',
-    'Last Run On',
-    'Last Run Status',
-    'Actions',
+    'WORKFLOW NAME',
+    'STATUS',
+    'LAST RUN ON',
+    'LAST RUN STATUS',
+    'ACTIONS',
   ];
 }

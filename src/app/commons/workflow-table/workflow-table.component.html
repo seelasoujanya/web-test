@@ -1,21 +1,34 @@
-<div>
-    <h2>hello</h2>
-</div>
-
 <div class="table">
     <table>
         <thead>
             <tr>
-                <th *ngFor="let heading of headings">{{ heading }}</th>
+                <th *ngFor="let heading of headings">
+                    {{ heading }}
+                    <ng-container *ngIf="['WORKFLOW NAME', 'STATUS', 'LAST RUN ON', 'LAST RUN STATUS'].includes(heading)">
+                        <img src="assets/icons/down-arrow-logo.svg" alt="{{ heading }} Icon" class="heading-icon" />
+                    </ng-container>
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let workflow of workflows">
                 <td>{{ workflow.id }}</td>
                 <td>{{ workflow.name }}</td>
-                <td>{{ workflow.status }}</td>
-                <td>{{ workflow.lastRunOn }}</td>
-                <td>{{ workflow.lastRunStatus }}</td>
+                <td>
+                    <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+                        <img src="assets/icons/active-logo.svg" alt="Active Icon" class="active-status-icon" />
+                    </ng-container>
+                    <ng-template #inactiveLogo>
+                        <img src="assets/icons/inactive-logo.svg" alt="Inactive Icon" class="inactive-status-icon" />
+                    </ng-template>
+                </td>
+                <td>{{ workflow.created }}</td>
+                <td>{{ workflow.paused }}</td>
+                <td>
+                    <img src="assets/icons/pause-logo.svg" alt="Pause Icon" class="action-icon" />
+                    <img src="assets/icons/copy-logo.svg" alt="Copy Icon" class="action-icon" />
+                    <img src="assets/icons/bookmark-logo.svg" alt="Copy Icon" class="action-icon" />
+                </td>
             </tr>
         </tbody>
     </table>

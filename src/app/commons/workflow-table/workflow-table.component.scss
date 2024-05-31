@@ -1,25 +1,44 @@
 .table {
-  width: 1115px;
-  height: 522px;
+  width: 1392px;
+  height: 612px;
   border-radius: 8px;
-  border: 1px solid #f2f2f2;
+  background-color: #ffffff;
   gap: 30px;
 }
 
 table thead {
-  width: 1115px;
+  color: gray;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+table thead tr {
+  width: 1392px;
   height: 36px;
   gap: 1px;
   background-color: #f9fafb;
   border-bottom: 1px solid #f2f2f2;
   border: 0px, 0px, 1px, 0px;
+  border: 1px solid #f2f2f2;
+  text-align: left;
 }
 
-table tbody {
-  width: 1115px;
-  height: 54px;
+table tbody td {
+  width: 1392px;
+  height: 64px;
   border: 0px, 0px, 1px, 0px;
-  padding: 5px, 0px, 5px, 0px;
-  gap: 1px;
   border-bottom: 1px solid #f2f2f2;
+  padding-left: 15px;
+}
+
+.heading-icon {
+  margin-inline: 1rem;
+}
+
+.action-icon {
+  border: 0px, 1px, 0px, 0px;
+  padding: 0px, 10px, 0px, 10px;
+  background-color: #ffffff;
+  margin-left: 2px;
+  margin-right: 2px;
 }
