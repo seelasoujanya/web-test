@@ -1,12 +1,8 @@
-import { Component } from '@angular/core';
-import {
-  RouterLink,
-  RouterLinkActive,
-  RouterModule,
-  RouterOutlet,
-} from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { CommonModule } from '@angular/common';
+import { ApiService } from './service/api.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +11,22 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'my-app';
+  // user: any;
+
+  // constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {}
+
+  // checkAuthentication(): void {
+  //   this.apiService.getUserDetails().subscribe({
+  //     next: result => {
+  //       this.user = result;
+  //     },
+  //     error: err => {
+  //       console.error('Error occurred while fetching user info: ', err);
+  //     },
+  //   });
+  // }
 }
