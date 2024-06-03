@@ -1,0 +1,84 @@
+@import 'variables';
+
+nav {
+  display: flex;
+  background: $black-1;
+
+  .logo {
+    background: $white-1;
+    display: block;
+  }
+
+  .nav-container__icon-link-container {
+    display: flex;
+    align-items: center;
+    margin-inline: 1rem;
+
+    &:hover {
+      .nav-container__link-icon {
+        // This is a hack to make the icon change color on hover
+        filter: brightness(0) invert(1);
+      }
+    }
+
+    .nav-container__link-icon {
+      margin-inline: 0.5rem;
+    }
+  }
+
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    a {
+      text-decoration: none;
+      margin: 0 1rem;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .nav-container__left,
+    .nav-container__right {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-container__left {
+      a {
+        color: $black-3;
+
+        &:hover {
+          color: $white-1;
+        }
+      }
+
+      a.active {
+        color: $white-1;
+      }
+    }
+
+    .nav-container__right {
+      a {
+        color: $white-1;
+      }
+    }
+
+    .nav-right__container-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-inline: 1rem;
+
+      img {
+        margin-right: 1.5rem;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

@@ -19,7 +19,8 @@
   },
   "private": true,
   "lint-staged": {
-    "src/**/*.{ts,scss}": "prettier --write ."
+    "src/**/*.{ts,scss,html,css,scss,json}": "prettier --write .",
+    "*.json": "prettier --write ."
   },
   "dependencies": {
     "@angular/animations": "^17.3.10",
