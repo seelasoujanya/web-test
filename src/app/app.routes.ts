@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { WorkflowsComponent } from './workflows/workflows.component';
+import { WorkflowsComponent } from './features/workflows/workflows.component';
 import { XmlTemplatesComponent } from './features/xml-templates/xml-templates.component';
 import { MonitorComponent } from './features/monitor/monitor.component';
 import { authGuard } from './guard/auth.guard';
