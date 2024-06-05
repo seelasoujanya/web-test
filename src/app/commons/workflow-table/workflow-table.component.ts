@@ -13,11 +13,11 @@ export class WorkflowTableComponent {
   @Input() workflows: any[] = [];
 
   headings: string[] = [
-    'ID',
-    'WORKFLOW NAME',
-    'STATUS',
-    'LAST RUN ON',
-    'LAST RUN STATUS',
-    'ACTIONS',
+    'Id',
+    'Workflow Name',
+    'Status',
+    'Last Run On',
+    'Last Run Status',
+    'Actions',
   ];
 }

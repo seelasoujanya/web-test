@@ -1,19 +1,18 @@
 .table {
-  width: 1392px;
-  height: 612px;
   border-radius: 8px;
   background-color: #ffffff;
   gap: 30px;
 }
 
-table thead {
-  color: gray;
-  font-size: 15px;
-  font-weight: 100;
+thead {
+  font-size: 12px;
+  line-height: 14.52px;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  color: #656565;
 }
 
 table tbody td {
-  width: 1392px;
   height: 64px;
   border: 0px, 0px, 1px, 0px;
   border-bottom: 1px solid #f2f2f2;
@@ -21,17 +20,19 @@ table tbody td {
 }
 
 table thead th {
-  width: 1392px;
+  width: 98rem;
   height: 36px;
   background-color: #f9fafb;
   border: 0px, 0px, 1px, 0px;
   border-bottom: 1px solid #f2f2f2;
   text-align: left;
   padding-left: 15px;
+  font-weight: 400 !important;
+  letter-spacing: 0.5px;
 }
 
 .heading-icon {
-  margin-inline: 1rem;
+  margin-inline: 0.5rem;
 }
 
 .action-icon {
