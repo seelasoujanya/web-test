@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import {
-  RouterLink,
-  RouterLinkActive,
-  RouterModule,
-  RouterOutlet,
-} from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { CommonModule } from '@angular/common';
+import { ApiService } from './services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +10,17 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  providers: [ApiService],
 })
 export class AppComponent {
-  title = 'my-app';
+  title = 'Deliver Test';
+  userDetails: any;
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.apiService.getUserDetails().subscribe(res => {
+      this.userDetails = res;
+    });
+  }
 }

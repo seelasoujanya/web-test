@@ -1,0 +1,44 @@
+.table {
+  border-radius: 8px;
+  background-color: #ffffff;
+  gap: 30px;
+}
+
+thead {
+  font-size: 12px;
+  line-height: 14.52px;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  color: #656565;
+}
+
+table tbody td {
+  height: 64px;
+  border: 0px, 0px, 1px, 0px;
+  border-bottom: 1px solid #f2f2f2;
+  padding-left: 15px;
+}
+
+table thead th {
+  width: 98rem;
+  height: 36px;
+  background-color: #f9fafb;
+  border: 0px, 0px, 1px, 0px;
+  border-bottom: 1px solid #f2f2f2;
+  text-align: left;
+  padding-left: 15px;
+  font-weight: 400 !important;
+  letter-spacing: 0.5px;
+}
+
+.heading-icon {
+  margin-inline: 0.5rem;
+}
+
+.action-icon {
+  border: 0px, 1px, 0px, 0px;
+  padding: 0px, 10px, 0px, 10px;
+  background-color: #ffffff;
+  margin-left: 2px;
+  margin-right: 2px;
+}
