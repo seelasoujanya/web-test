@@ -1,34 +1,32 @@
 <div class="workflow-container">
-  <div class="workflow-heading-label">
-    <div class="workflows-text">
+  <div class="workflow-header">
+    <div class="workflows-label">
       <p id="track-assets-copy">Workflows</p>
     </div>
-    <div class="right-workflow-heading">
-      <div class="searchField">
+    <div class="workflow-header-right">
+      <div class="searchBar">
         <input
           type="text"
-          id="searchField"
+          class="searchField"
           name="searchInput"
           placeholder="Search in Workflow"
           required />
       </div>
-      <div class="searchButton">
-        <button id="searchButton" type="button">
+      <div class="search-button">
+        <button class="searchButton" type="button">
           <img
             src="/assets/icons/search.svg"
             class="search-icon"
-            alt="Search Icon"
-            style="vertical-align: middle" />
+            alt="Search Icon" />
           Search
         </button>
       </div>
-      <div class="createWorkflowButton">
-        <button id="createWorkflowButton" type="button">
+      <div class="createWorkflow-button">
+        <button class="createWorkflowButton" type="button">
           <img
             src="/assets/icons/create-logo.svg"
             class="create-icon"
-            alt="create Icon"
-            style="vertical-align: middle" />
+            alt="create Icon" />
           Create Workflow
         </button>
       </div>
@@ -46,14 +44,13 @@
     <div class="actions">
       <img
         src="/assets/icons/standard-logo.svg"
-        class="nav-container__link-icon"
-        alt="create Icon"
-        style="vertical-align: middle" />
-      <button id="bookmark-button">All Bookmark</button>
+        class="bookmark-icon"
+        alt="create Icon" />
+      <button class="bookmark-button">All Bookmark</button>
     </div>
   </div>
 
-  <div class="table">
+  <div class="workflows-table">
     <app-workflow-table [workflows]="workflowsData"></app-workflow-table>
   </div>
 </div>

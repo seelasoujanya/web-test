@@ -1,8 +1,8 @@
-<table>
+<table class="table-container">
   <thead>
     <tr>
-      <th *ngFor="let heading of headings">
-        <div class="heading-content">
+      <th *ngFor="let heading of headings" class="table-header-cell">
+        <div class="table-header-content">
           {{ heading }}
           <ng-container
             *ngIf="
@@ -24,9 +24,9 @@
   </thead>
   <tbody>
     <tr *ngFor="let workflow of workflows">
-      <td>{{ workflow.id }}</td>
-      <td>{{ workflow.name }}</td>
-      <td>
+      <td class="table-cell">{{ workflow.id }}</td>
+      <td class="table-cell">{{ workflow.name }}</td>
+      <td class="table-cell">
         <div class="status-content">
           <ng-container *ngIf="workflow.enabled; else inactiveLogo">
             <img
@@ -42,9 +42,9 @@
           </ng-template>
         </div>
       </td>
-      <td>{{ workflow.created }}</td>
-      <td>{{ workflow.paused }}</td>
-      <td>
+      <td class="table-cell">{{ workflow.created }}</td>
+      <td class="table-cell">{{ workflow.paused }}</td>
+      <td class="table-cell">
         <div class="action-content">
           <img
             src="assets/icons/pause-logo.svg"
