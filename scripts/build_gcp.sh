@@ -15,7 +15,7 @@ APP_NAME="deliver"
 PROJECT_COMMON_NAME="bmg-supplychain"
 GCP_REGISTRY="europe-west1-docker.pkg.dev"
 GCP_PROJECT="${PROJECT_COMMON_NAME}-${STAGE}"
-IMAGE="${GCP_REGISTRY}/${GCP_PROJECT}/${APP_NAME}/deliver-frontend"
+IMAGE="${GCP_REGISTRY}/${GCP_PROJECT}/${APP_NAME}/frontend"
   
 if [ $STAGE = "test" ]
   then
