@@ -12,6 +12,9 @@
     padding-left: 15px;
     font-weight: 400 !important;
     letter-spacing: 0.5px;
+    position: sticky;
+    top: 231px;
+    z-index: 10;
     .table-header-content {
       font-size: 12px;
       line-height: 14.52px;

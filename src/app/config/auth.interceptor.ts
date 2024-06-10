@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment.development';
+import { environment } from 'src/environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const newReq = req.clone({ withCredentials: true });

@@ -22,8 +22,14 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    <tr *ngFor="let workflow of workflows">
+  <tbody
+    class="scrollable-table__body"
+    infinite-scroll
+    [infiniteScrollDistance]="3"
+    [infiniteScrollThrottle]="50"
+    [immediateCheck]="true"
+    (scrolled)="increaseLimitWorkflows()">
+    <tr *ngFor="let workflow of workflows$ | async">
       <td class="table-cell">{{ workflow.id }}</td>
       <td class="table-cell">{{ workflow.name }}</td>
       <td class="table-cell">
