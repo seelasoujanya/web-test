@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="row">
+    <div id="loader">
+      <img
+        class="action-icon"
+        class="action--rotate"
+        src="assets/icons/loader.png"
+        alt="" />
+    </div>
+
+    <p class="spinner-message" *ngIf="message && message !== ''">
+      {{ message }}
+    </p>
+  </div>
+</div>

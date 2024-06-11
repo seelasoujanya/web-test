@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Observable, catchError, map, of, pluck } from 'rxjs';
 import { Workflow, WorkflowResponse } from '../interfaces/workflow.model';
-
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,9 +21,11 @@ export class ApiService {
     );
   }
 
-  getWorkflows(): Observable<Workflow[]> {
+  public getWorkflows(queryParams: any): Observable<Workflow[]> {
     return this.http
-      .get<WorkflowResponse>(`${this.apiUrl}/workflow`)
-      .pipe(map(res => res.content));
+      .get<WorkflowResponse>(`${this.apiUrl}/workflow`, {
+        params: queryParams as any,
+      })
+      .pipe(pluck('content'));
   }
 }

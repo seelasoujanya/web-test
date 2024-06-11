@@ -1,59 +1,58 @@
 <div class="workflow-container">
-  <div class="workflow-heading-label">
-    <div class="workflows-text">
-      <p id="track-assets-copy">Workflows</p>
+  <div class="workflows-section">
+    <div class="workflow-header">
+      <div class="workflows-label">
+        <p id="track-assets-copy">Workflows</p>
+      </div>
+      <div class="workflow-header-right">
+        <div class="searchBar">
+          <input
+            type="text"
+            class="searchField"
+            name="searchInput"
+            placeholder="Search in Workflow"
+            required />
+        </div>
+        <div class="search-button">
+          <button class="searchButton" type="button">
+            <img
+              src="/assets/icons/search.svg"
+              class="search-icon"
+              alt="Search Icon" />
+            Search
+          </button>
+        </div>
+        <div class="createWorkflow-button">
+          <button class="createWorkflowButton" type="button">
+            <img
+              src="/assets/icons/create-logo.svg"
+              class="create-icon"
+              alt="create Icon" />
+            Create Workflow
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="right-workflow-heading">
-      <div class="searchField">
-        <input
-          type="text"
-          id="searchField"
-          name="searchInput"
-          placeholder="Search in Workflow"
-          required />
+
+    <div class="workflow-contents">
+      <div class="contents-span">
+        <span>YouTube ContentId</span>
+        <span> Spotify Test </span>
+        <span> ADA Digital </span>
+        <span> Facebook Audio UGC </span>
+        <span> ADA - Video (Co-op) </span>
       </div>
-      <div class="searchButton">
-        <button id="searchButton" type="button">
-          <img
-            src="/assets/icons/search.svg"
-            class="search-icon"
-            alt="Search Icon"
-            style="vertical-align: middle" />
-          Search
-        </button>
-      </div>
-      <div class="createWorkflowButton">
-        <button id="createWorkflowButton" type="button">
-          <img
-            src="/assets/icons/create-logo.svg"
-            class="create-icon"
-            alt="create Icon"
-            style="vertical-align: middle" />
-          Create Workflow
-        </button>
+      <div class="actions">
+        <img
+          src="/assets/icons/standard-logo.svg"
+          class="bookmark-icon"
+          alt="create Icon" />
+        <button class="bookmark-button">All Bookmark</button>
       </div>
     </div>
   </div>
 
-  <div class="workflow-contents">
-    <div class="contents-span">
-      <span>YouTube ContentId</span>
-      <span> Spotify Test </span>
-      <span> ADA Digital </span>
-      <span> Facebook Audio UGC </span>
-      <span> ADA - Video (Co-op) </span>
-    </div>
-    <div class="actions">
-      <img
-        src="/assets/icons/standard-logo.svg"
-        class="nav-container__link-icon"
-        alt="create Icon"
-        style="vertical-align: middle" />
-      <button id="bookmark-button">All Bookmark</button>
-    </div>
-  </div>
-
-  <div class="table">
-    <app-workflow-table [workflows]="workflowsData"></app-workflow-table>
+  <div class="workflows-table">
+    <app-workflow-table></app-workflow-table>
   </div>
 </div>

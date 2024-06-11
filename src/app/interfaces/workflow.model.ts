@@ -3,20 +3,20 @@ export interface Workflow {
   name: string;
   enabled: boolean;
   paused: boolean;
-  created: any;
-  modified: any;
+  created: unknown;
+  modified: unknown;
 }
 
 export interface WorkflowResponse {
   content: Workflow[];
-  pageable: any;
+  pageable: unknown;
   last: boolean;
   totalPages: number;
   totalElements: number;
   first: boolean;
   size: number;
   number: number;
-  sort: any;
+  sort: unknown;
   numberOfElements: number;
   empty: boolean;
 }

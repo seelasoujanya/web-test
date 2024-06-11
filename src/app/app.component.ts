@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header.component';
 import { CommonModule } from '@angular/common';
 import { ApiService } from './services/api.service';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, InfiniteScrollModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [ApiService],

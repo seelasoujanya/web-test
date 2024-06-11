@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, importProvidersFrom } from '@angular/core';
+import { Observable } from 'rxjs';
 import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
 import { Workflow } from 'src/app/interfaces/workflow.model';
 import { ApiService } from 'src/app/services/api.service';
+import { PaginationService } from 'src/app/services/pagination.service';
 
 @Component({
   selector: 'app-workflows',
@@ -13,10 +15,4 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export class WorkflowsComponent {
   workflowsData: Workflow[] = [];
-
-  constructor(private apiService: ApiService) {
-    this.apiService.getWorkflows().subscribe(res => {
-      this.workflowsData = res;
-    });
-  }
 }
