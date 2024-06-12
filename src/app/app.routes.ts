@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { WorkflowsComponent } from './features/workflows/workflows.component';
 import { XmlTemplatesComponent } from './features/xml-templates/xml-templates.component';
 import { MonitorComponent } from './features/monitor/monitor.component';
+import { WorkflowDetailsComponent } from './features/workflow-details/workflow-details.component';
 
 export const routes: Routes = [
   { path: '', component: WorkflowsComponent },
@@ -10,4 +11,5 @@ export const routes: Routes = [
   { path: 'errors', component: MonitorComponent },
   { path: 'monitor', component: MonitorComponent },
   { path: 'partners', component: MonitorComponent },
+  { path: 'workflows/:id', component: WorkflowDetailsComponent },
 ];

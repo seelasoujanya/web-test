@@ -13,14 +13,19 @@
     font-weight: 400 !important;
     letter-spacing: 0.5px;
     position: sticky;
-    top: 231px;
     z-index: 10;
     .table-header-content {
       font-size: 12px;
       line-height: 14.52px;
       text-transform: uppercase;
       color: #656565;
+      .heading-icon {
+        margin-inline: 0.5rem;
+      }
     }
+  }
+  .first-child-padding .table-cell {
+    padding-block: 15px;
   }
   .table-cell {
     height: 64px;
@@ -28,13 +33,28 @@
     border-bottom: 1px solid #f2f2f2;
     padding-block: 10px;
     padding-left: 15px;
-  }
-  .heading-icon {
-    margin-inline: 0.5rem;
-  }
-  .action-icon {
-    padding: 0px 10px;
-    background-color: #ffffff;
-    margin-inline: 0.1rem;
+    align-items: center;
+    .id-heading {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    .status-content {
+      .active-class {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+      }
+      .inactive-class {
+        display: flex;
+        flex-direction: row;
+        gap: 6px;
+      }
+    }
+    .action-icon {
+      padding: 0px 10px;
+      background-color: #ffffff;
+      margin-inline: 0.1rem;
+    }
   }
 }
