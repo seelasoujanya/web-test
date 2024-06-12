@@ -20,20 +20,20 @@
   </div>
   <div class="details-section">
     <div class="details-info">
-      <p>Triggered Times</p>
-      <p>{{ totalInstancesCount$ | async }}</p>
+      <p class="info-heading">Triggered Times</p>
+      <p class="info-data">{{ totalInstancesCount$ | async }}</p>
     </div>
     <div class="details-info">
-      <p>Failed Instances</p>
-      <p>{{ errorInstances$ | async }}</p>
+      <p class="info-heading">Failed Instances</p>
+      <p class="info-data">{{ errorInstances$ | async }}</p>
     </div>
     <div class="details-info">
-      <p>Avg.Executed Time</p>
-      <p>19 m</p>
+      <p class="info-heading">Avg.Executed Time</p>
+      <p class="info-data">19 m</p>
     </div>
     <div class="details-info">
-      <p>Delivered Items</p>
-      <p>{{ deliveredInstances$ | async }}</p>
+      <p class="info-heading">Delivered Items</p>
+      <p class="info-data">{{ deliveredInstances$ | async }}</p>
     </div>
   </div>
   <div class="details-filter">
