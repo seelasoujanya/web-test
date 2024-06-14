@@ -31,6 +31,7 @@ export class WorkflowsComponent {
 
   constructor(
     private paginationService: PaginationService,
+    private apiService: ApiService,
     private router: Router
   ) {
     this.paginationService.getWorkflows();
@@ -45,6 +46,20 @@ export class WorkflowsComponent {
   public viewInstances(data: any): void {
     this.router.navigate(['/workflows', data.id], {
       state: { name: data.name },
+    });
+  }
+
+  public pauseWorkflow(workflow: Workflow) {
+    const newStatus = !workflow.enabled;
+    const newData = {
+      name: null,
+      description: null,
+      enabled: newStatus,
+      throttleLimit: null,
+      isTaskChainIsValid: null,
+    };
+    this.apiService.updateWorkflow(workflow.id, newData).subscribe(result => {
+      this.paginationService.updateWorkflow(workflow, result.enabled);
     });
   }
 }
