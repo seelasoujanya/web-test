@@ -12,6 +12,7 @@ import {
 } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { SpinnerService } from './spinner.service';
+import { Workflow } from '../interfaces/workflow.model';
 
 @Injectable()
 export class PaginationService implements OnDestroy {
@@ -97,6 +98,17 @@ export class PaginationService implements OnDestroy {
       return this.workflows$.next(this.workflows$.getValue().concat(workflows));
     }
     return this.workflows$.next(workflows);
+  }
+
+  public updateWorkflow(updatedWorkflow: Workflow, workflowStatus: boolean) {
+    const workflows = this.workflows$.getValue();
+    workflows.forEach(workflow => {
+      if (workflow.id === updatedWorkflow.id) {
+        workflow.enabled = workflowStatus;
+        return;
+      }
+    });
+    this.workflows$.next(workflows);
   }
 
   // TODO: use angular service

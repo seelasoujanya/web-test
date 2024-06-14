@@ -53,6 +53,12 @@
   </div>
 
   <div class="workflows-table">
-    <app-workflow-table></app-workflow-table>
+    <app-workflow-table
+      [workflows$]="workflows$"
+      [headings]="headings"
+      [isWorkflow]="true"
+      (workflowDetailEvent)="viewInstances($event)"
+      (workflowUpdateEvent)="pauseWorkflow($event)"
+      (increasePageEvent)="increaseLimitWorkflows($event)"></app-workflow-table>
   </div>
 </div>

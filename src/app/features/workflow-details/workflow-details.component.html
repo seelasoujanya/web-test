@@ -1,0 +1,65 @@
+<div class="workflow-details-container">
+  <div class="details-label">
+    <div class="label-left">
+      <button class="navigate-back-btn" type="button">
+        <img
+          src="/assets/icons/navigate-back-logo.svg"
+          class="navigate-back-icon"
+          alt="export Icon"
+          (click)="backToWorkflows()" />
+      </button>
+      <p>{{ workflowName }}</p>
+      <img
+        src="assets/icons/bookmark-fill-logo.svg"
+        alt="Bookmark Icon"
+        class="bookmark-fill-icon" />
+    </div>
+    <div class="label-right">
+      <button class="trigger-history-btn" type="button">Trigger History</button>
+    </div>
+  </div>
+  <div class="details-section">
+    <div class="details-info">
+      <p class="info-heading">Triggered Times</p>
+      <p class="info-data">{{ totalInstancesCount$ | async }}</p>
+    </div>
+    <div class="details-info">
+      <p class="info-heading">Failed Instances</p>
+      <p class="info-data">{{ errorInstances$ | async }}</p>
+    </div>
+    <div class="details-info">
+      <p class="info-heading">Avg.Executed Time</p>
+      <p class="info-data">19 m</p>
+    </div>
+    <div class="details-info">
+      <p class="info-heading">Delivered Items</p>
+      <p class="info-data">{{ deliveredInstances$ | async }}</p>
+    </div>
+  </div>
+  <div class="details-filter">
+    <div class="left-filter">
+      <button class="instances-btn" type="button">Instances</button>
+      <button class="error-instances-btn" type="button">Error Instances</button>
+    </div>
+    <div class="right-filter">
+      <img
+        src="/assets/icons/standard-logo.svg"
+        class="standard-logo"
+        alt="create Icon" />
+      <button class="export-btn" type="button">
+        <img
+          src="/assets/icons/export-logo.svg"
+          class="export-icon"
+          alt="export Icon" />
+        Export
+      </button>
+    </div>
+  </div>
+</div>
+<div class="workflows-instance-table">
+  <app-workflow-table
+    [workflows$]="workflowInstances$"
+    [headings]="instanceHeadings"
+    [isWorkflow]="false"
+    (increasePageEvent)="increaseLimitWorkflows($event)"></app-workflow-table>
+</div>
