@@ -7,7 +7,7 @@ nav {
   top: 0px;
   z-index: 100 !important;
   .logo {
-    background: $white-1;
+    background: #bd2c49;
     display: block;
   }
   .nav-container__icon-link-container {
@@ -68,5 +68,53 @@ nav {
         }
       }
     }
+  }
+}
+
+.navbar__dropdown-menu {
+  position: absolute;
+  z-index: 102;
+  top: 55px;
+  right: 40px;
+  box-sizing: border-box;
+  padding: 0px 0px;
+  cursor: pointer;
+  border: 1px solid #c4c4c4;
+  background: white;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
+}
+
+.header__navbar_item:hover {
+  background: #c4c4c4;
+}
+
+.header_navbar_item_active:after {
+  position: absolute;
+  top: 48px;
+  right: 40px;
+  width: 15px;
+  height: 4px;
+  content: '';
+  background: #bd2c49;
+}
+
+.header_navbar_item_active .header__navbar_item-icon,
+.navbar_item-icon_hovered:hover {
+  filter: drop-shadow(0px 1px 6px rgba(255, 255, 255, 0.35)) !important;
+}
+
+.header__navbar_item {
+  position: relative;
+  list-style: none;
+  white-space: nowrap;
+  opacity: 1;
+  padding: 10px 10px;
+  .header__navbar_item-text {
+    color: #000;
+    font-size: 12px;
+    line-height: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
 }

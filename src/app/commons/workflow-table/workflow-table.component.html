@@ -4,7 +4,7 @@
       <th
         *ngFor="let heading of headings"
         class="table-header-cell"
-        [style.top]="isWorkflow ? '230px' : '283px'">
+        [style.top]="isWorkflow ? '230px' : '303px'">
         <div class="table-header-content">
           {{ heading }}
           <ng-container
@@ -68,11 +68,15 @@
         <td class="table-cell">
           <div class="action-content">
             <img
-              src="assets/icons/pause-logo.svg"
+              [src]="
+                workflow.enabled
+                  ? 'assets/icons/pause-logo.svg'
+                  : 'assets/icons/resume-logo.svg'
+              "
               alt="Pause Icon"
               class="action-icon"
-              (click)="pauseWorkflow($event, workflow)"
-              [class.pause]="!workflow.enabled" />
+              (click)="pauseWorkflow($event, workflow)" />
+
             <img
               src="assets/icons/copy-logo.svg"
               alt="Copy Icon"
@@ -173,9 +177,11 @@
               </div>
               <div class="logs-section">
                 <p class="logs">Logs</p>
-                <p *ngFor="let log of logsResponse">
-                  {{ (log ? '[' : '') + log }}
-                </p>
+                <div class="log-items-container">
+                  <p class="log-items" *ngFor="let log of logsResponse">
+                    {{ (log ? '[' : '') + log }}
+                  </p>
+                </div>
               </div>
               <div class="file-section">
                 <p class="files-heading">Files</p>
@@ -189,7 +195,9 @@
                           class="search-icon"
                           alt="Search Icon" />View File
                       </button>
-                      <button class="download-btn">
+                      <button
+                        class="download-btn"
+                        (click)="downloadArtifact(step.id, step.filename)">
                         <img
                           src="/assets/icons/download-logo.svg"
                           class="search-icon"
