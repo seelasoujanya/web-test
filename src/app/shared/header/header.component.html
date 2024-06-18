@@ -35,8 +35,39 @@
       <a routerLink="monitor" routerLinkActive="active">Bookmarks</a>
       <div class="nav-right__container-actions">
         <img src="/assets/icons/settings.svg" alt="" />
-        <img src="/assets/icons/profile.svg" alt="" />
+        <div [class.header_navbar_item_active]="selectedMenu === 'USER'">
+          <img
+            src="/assets/icons/profile.svg"
+            alt=""
+            (click)="selectMenu($event, 'USER')" />
+        </div>
+        <ul *ngIf="selectedMenu === 'USER'" class="navbar__dropdown-menu">
+          <li class="header__navbar_item" (click)="showAbout(exampleTemplate)">
+            <span class="header__navbar_item-text item-text_black">
+              About
+            </span>
+          </li>
+          <li class="header__navbar_item" (click)="account_info()">
+            <span class="header__navbar_item-text item-text_black">
+              Account
+            </span>
+          </li>
+          <!-- <li class="header__navbar_item" (click)="Reportproblem()">
+            <span class="header__navbar_item-text item-text_black"> Help </span>
+          </li> -->
+          <li class="header__navbar_item" (click)="logout()">
+            <span class="header__navbar_item-text item-text_black">
+              Log out
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 </nav>
+
+<ng-template #exampleTemplate>
+  <div>
+    <h2>Hello World!</h2>
+  </div>
+</ng-template>

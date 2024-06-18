@@ -64,6 +64,8 @@ export class WorkflowTableComponent implements OnDestroy {
 
   logsResponse: string[] = [];
 
+  downloadedFile: string | undefined;
+
   private destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -106,6 +108,29 @@ export class WorkflowTableComponent implements OnDestroy {
       this.apiService.getLogsForInstance(workflow.id).subscribe(result => {
         this.logsResponse = result.split('[');
       });
+    }
+  }
+
+  public downloadArtifact(artifactId: number, fileName: string): void {
+    if (!this.isWorkflow) {
+      this.apiService.downloadArtifact(artifactId).subscribe(
+        response => {
+          const blob = new Blob([response], {
+            type: 'application/octet-stream',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          document.body.appendChild(a);
+          a.style.display = 'none';
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error => {
+          console.error('Error downloading file:', error);
+        }
+      );
     }
   }
 

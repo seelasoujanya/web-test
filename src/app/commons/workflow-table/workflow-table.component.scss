@@ -54,6 +54,9 @@
         .success-icon {
           margin-left: 70px;
         }
+        p {
+          margin-bottom: 0px;
+        }
       }
       .inactive-class {
         display: flex;
@@ -61,6 +64,9 @@
         gap: 6px;
         .failure-icon {
           margin-left: 70px;
+        }
+        p {
+          margin-bottom: 0px;
         }
       }
     }
@@ -127,6 +133,13 @@
         line-height: 19.36px;
         letter-spacing: 0.3px;
         color: #333333;
+      }
+      .log-items-container {
+        background-color: #ffffff;
+        .log-items {
+          padding-inline: 16px;
+          margin-bottom: 3px;
+        }
       }
     }
     .file-section {

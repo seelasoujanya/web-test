@@ -12,10 +12,15 @@ import {
 })
 export class ApiService {
   private apiUrl = `${environment.BE_URL}/api`;
+  private logoutUrl = `${environment.BE_URL}`;
   constructor(private http: HttpClient) {}
 
   getUserDetails(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/me`);
+  }
+
+  logOut(): Observable<any> {
+    return this.http.get<any>(`${this.logoutUrl}/logout`);
   }
 
   isAuthenticated(): Observable<boolean> {
@@ -66,6 +71,12 @@ export class ApiService {
   public getLogsForInstance(id: number | unknown): Observable<string> {
     return this.http.get(`${this.apiUrl}/workflowinstance/${id}/logs`, {
       responseType: 'text',
+    });
+  }
+
+  public downloadArtifact(artifactId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/artifact/${artifactId}`, {
+      responseType: 'blob',
     });
   }
 }

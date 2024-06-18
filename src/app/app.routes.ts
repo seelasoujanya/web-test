@@ -3,9 +3,11 @@ import { WorkflowsComponent } from './features/workflows/workflows.component';
 import { XmlTemplatesComponent } from './features/xml-templates/xml-templates.component';
 import { MonitorComponent } from './features/monitor/monitor.component';
 import { WorkflowDetailsComponent } from './features/workflow-details/workflow-details.component';
+import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
   { path: '', component: WorkflowsComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'workflows', component: WorkflowsComponent },
   { path: 'templates', component: XmlTemplatesComponent },
   { path: 'errors', component: MonitorComponent },
