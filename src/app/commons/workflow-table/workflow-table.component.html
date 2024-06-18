@@ -4,7 +4,7 @@
       <th
         *ngFor="let heading of headings"
         class="table-header-cell"
-        [style.top]="isWorkflow ? '230px' : '303px'">
+        [style.top]="isWorkflow ? '90px' : '303px'">
         <div class="table-header-content">
           {{ heading }}
           <ng-container
@@ -42,7 +42,7 @@
         *ngFor="let workflow of workflows$ | async; let i = index"
         (click)="viewInstances(workflow.id, workflow.name)"
         [ngClass]="{ 'first-child-padding': i === 0 }">
-        <td class="table-cell">{{ workflow.id }}</td>
+        <!-- <td class="table-cell">{{ workflow.id }}</td> -->
         <td class="table-cell">{{ workflow.name }}</td>
         <td class="table-cell">
           <div class="status-content">
@@ -64,7 +64,7 @@
           {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
           <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
         </td>
-        <td class="table-cell">{{ workflow.paused }}</td>
+        <td class="table-cell">{{ workflow.status }}</td>
         <td class="table-cell">
           <div class="action-content">
             <img
@@ -77,14 +77,8 @@
               class="action-icon"
               (click)="pauseWorkflow($event, workflow)" />
 
-            <img
-              src="assets/icons/copy-logo.svg"
-              alt="Copy Icon"
-              class="action-icon" />
-            <img
-              src="assets/icons/bookmark-logo.svg"
-              alt="Bookmark Icon"
-              class="action-icon" />
+            <!-- <img src="assets/icons/copy-logo.svg" alt="Copy Icon" class="action-icon" />
+                        <img src="assets/icons/bookmark-logo.svg" alt="Bookmark Icon" class="action-icon" /> -->
           </div>
         </td>
       </tr>

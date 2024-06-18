@@ -18,7 +18,7 @@ export class WorkflowsComponent {
   workflowsData: Workflow[] = [];
 
   headings: string[] = [
-    'Id',
+    // 'Id',
     'Workflow Name',
     'Status',
     'Last Run On',
