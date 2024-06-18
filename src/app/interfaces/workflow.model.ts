@@ -5,6 +5,7 @@ export interface Workflow {
   paused: boolean;
   created: unknown;
   modified: unknown;
+  status: string;
 }
 
 export interface WorkflowResponse {
