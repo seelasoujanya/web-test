@@ -110,7 +110,7 @@
             <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
           </td>
           <td class="table-cell">{{ workflow.duration }}</td>
-          <td class="table-cell"></td>
+          <td class="table-cell">NA</td>
           <td class="table-cell">
             <div class="status-content">
               <ng-container
@@ -171,9 +171,9 @@
                     <span>{{ workflow.created | date: 'HH:mm' }}</span></span
                   >
                 </p>
-                <button class="view-instance-detail-btn">
+                <!-- <button class="view-instance-detail-btn">
                   VIEW INSTANCE DETAIL
-                </button>
+                </button> -->
               </div>
               <div class="logs-section">
                 <p class="logs">Logs</p>
@@ -189,12 +189,12 @@
                   <div *ngFor="let step of stepList" class="file-item">
                     {{ step.filename }}
                     <div class="file-action-buttons">
-                      <button class="view-file-btn">
+                      <!-- <button class="view-file-btn">
                         <img
                           src="/assets/icons/view-logo.svg"
                           class="search-icon"
                           alt="Search Icon" />View File
-                      </button>
+                      </button> -->
                       <button
                         class="download-btn"
                         (click)="downloadArtifact(step.id, step.filename)">
