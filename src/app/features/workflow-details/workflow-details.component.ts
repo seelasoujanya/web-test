@@ -4,12 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
 import { WorkflowInstance } from 'src/app/interfaces/workflowinstance.model';
+import { DurationPipe } from 'src/app/pipes/duration.pipe';
 import { WorkflowDetailsPaginationService } from 'src/app/services/workflow-details-pagination.service';
 
 @Component({
   selector: 'app-workflow-details',
   standalone: true,
-  imports: [CommonModule, WorkflowTableComponent],
+  imports: [CommonModule, WorkflowTableComponent, DurationPipe],
   templateUrl: './workflow-details.component.html',
   styleUrl: './workflow-details.component.scss',
   providers: [WorkflowDetailsPaginationService],

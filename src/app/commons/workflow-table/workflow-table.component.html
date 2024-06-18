@@ -109,7 +109,7 @@
             {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
             <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
           </td>
-          <td class="table-cell">{{ workflow.duration }}</td>
+          <td class="table-cell">{{ workflow.duration | duration }}</td>
           <td class="table-cell">NA</td>
           <td class="table-cell">
             <div class="status-content">
