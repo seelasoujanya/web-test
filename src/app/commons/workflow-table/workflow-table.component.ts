@@ -12,14 +12,15 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Router, RouterOutlet } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { Workflow } from 'src/app/interfaces/workflow.model';
+import { DurationPipe } from '../../pipes/duration.pipe';
 
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
-  imports: [CommonModule, InfiniteScrollModule, RouterOutlet],
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
   providers: [PaginationService],
+  imports: [CommonModule, InfiniteScrollModule, RouterOutlet, DurationPipe],
 })
 export class WorkflowTableComponent implements OnDestroy {
   @Input()
