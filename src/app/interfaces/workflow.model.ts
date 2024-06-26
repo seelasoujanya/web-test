@@ -3,8 +3,8 @@ export interface Workflow {
   name: string;
   enabled: boolean;
   paused: boolean;
-  created: unknown;
-  modified: unknown;
+  created: string;
+  modified: string;
   status: string;
 }
 

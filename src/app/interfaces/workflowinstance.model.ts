@@ -20,6 +20,7 @@ export enum WorkflowInstanceStatus {
   COMPLETED = 'COMPLETED',
   FAILED = 'FAILED',
   PAUSED = 'PAUSED',
+  CANCELLED = 'CANCELLED',
 }
 
 export enum Priority {

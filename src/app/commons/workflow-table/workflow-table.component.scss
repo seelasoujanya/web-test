@@ -75,9 +75,6 @@
       background-color: #ffffff;
       margin-inline: 0.1rem;
     }
-    .rotate {
-      transform: rotate(180deg);
-    }
     .pause {
       background-color: transparent;
     }
@@ -197,4 +194,8 @@
       }
     }
   }
+}
+
+.rotate {
+  transform: rotate(180deg);
 }

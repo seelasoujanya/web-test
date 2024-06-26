@@ -1,0 +1,36 @@
+<div *ngIf="pages" aria-label="Page_navigation">
+  <div class="pagination">
+    <a
+      class="page_item page_text page_item_first"
+      [ngClass]="currentPage !== 1 ? 'clickable' : 'disabled'"
+      (click)="gotoPage(1, 'f')"
+      >First</a
+    >
+    <a
+      class="page_item page_text"
+      [ngClass]="currentPage !== 1 ? 'clickable' : 'disabled'"
+      (click)="gotoPage(currentPage - 1, 'p')"
+      >Previous</a
+    >
+    <a
+      *ngFor="let page of pages"
+      class="page_item page_number clickable"
+      [class.active_item]="page == currentPage"
+      (click)="gotoPage(page)"
+      >{{ page }}</a
+    >
+
+    <a
+      class="page_item page_text"
+      [ngClass]="currentPage < totalPages ? 'clickable' : 'disabled'"
+      (click)="gotoPage(currentPage + 1, 'n')"
+      >Next</a
+    >
+    <a
+      class="page_item page_text"
+      [ngClass]="currentPage < totalPages ? 'clickable' : 'disabled'"
+      (click)="gotoPage(totalPages, 'l')"
+      >Last</a
+    >
+  </div>
+</div>

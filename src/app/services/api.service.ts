@@ -7,6 +7,7 @@ import {
   WorkflowInstance,
   WorkflowInstanceResponse,
 } from '../interfaces/workflowinstance.model';
+import { IPage } from '../interfaces/page.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -30,26 +31,24 @@ export class ApiService {
     );
   }
 
-  public getWorkflows(queryParams: any): Observable<Workflow[]> {
-    return this.http
-      .get<WorkflowResponse>(`${this.apiUrl}/workflow`, {
-        params: queryParams as any,
-      })
-      .pipe(pluck('content'));
+  public getWorkflows(queryParams: any): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/workflow`, {
+      params: queryParams as any,
+    });
   }
 
   public getWorkflowInstances(
     queryParams: any,
     id: number | unknown
-  ): Observable<WorkflowInstance[]> {
-    return this.http
-      .get<WorkflowInstanceResponse>(
-        `${this.apiUrl}/workflow/${id}/instances`,
-        {
-          params: queryParams as any,
-        }
-      )
-      .pipe(pluck('content'));
+  ): Observable<IPage<any>> {
+    console.log('hello');
+    console.log('id is:', id);
+    return this.http.get<IPage<any>>(
+      `${this.apiUrl}/workflow/${id}/instances`,
+      {
+        params: queryParams as any,
+      }
+    );
   }
 
   public updateWorkflow(workflowId: number, status: any): Observable<any> {
