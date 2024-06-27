@@ -21,11 +21,11 @@
   <div class="details-section">
     <div class="details-info">
       <p class="info-heading">Triggered Times</p>
-      <p class="info-data">{{ totalInstancesCount$ | async }}</p>
+      <p class="info-data">{{ totalInstancesCount }}</p>
     </div>
     <div class="details-info">
       <p class="info-heading">Failed Instances</p>
-      <p class="info-data">{{ errorInstances$ | async }}</p>
+      <p class="info-data">{{ failedInstancesCount }}</p>
     </div>
     <div class="details-info">
       <p class="info-heading">Avg.Executed Time</p>
@@ -33,7 +33,7 @@
     </div>
     <div class="details-info">
       <p class="info-heading">Delivered Items</p>
-      <p class="info-data">{{ deliveredInstances$ | async }}</p>
+      <p class="info-data">{{ deliveredInstancesCount }}</p>
     </div>
   </div>
   <div class="details-filter">
@@ -55,8 +55,14 @@
 </div>
 <div class="workflows-instance-table">
   <app-workflow-table
-    [workflows$]="workflowInstances$"
+    [workflows]="workflowsInstances"
     [headings]="instanceHeadings"
     [isWorkflow]="false"
-    (increasePageEvent)="increaseLimitWorkflows($event)"></app-workflow-table>
+    (getSortParam)="sortColumn($event)"></app-workflow-table>
+</div>
+
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
 </div>

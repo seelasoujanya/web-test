@@ -46,11 +46,17 @@
 
   <div class="workflows-table">
     <app-workflow-table
-      [workflows$]="workflows$"
+      [workflows]="workflowsData"
       [headings]="headings"
       [isWorkflow]="true"
       (workflowDetailEvent)="viewInstances($event)"
       (workflowUpdateEvent)="pauseWorkflow($event)"
-      (increasePageEvent)="increaseLimitWorkflows($event)"></app-workflow-table>
+      (getSortParam)="sortColumn($event)"></app-workflow-table>
   </div>
+</div>
+
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
 </div>
