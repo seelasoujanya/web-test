@@ -6,40 +6,38 @@
         class="table-header-cell"
         [style.top]="isWorkflow ? '90px' : '303px'">
         <div class="table-header-content">
-          {{ heading }}
-          <ng-container
-            *ngIf="
-              [
-                'Workflow Name',
-                'Status',
-                'Last Run On',
-                'Last Run Status',
-                'Priority',
-                'Queued On',
-                'Started On',
-                'Duration',
-                'Delivery Type'
-              ].includes(heading)
-            ">
+          <ng-container *ngIf="isWorkflow">
+            {{ heading }}
             <img
+              *ngIf="heading !== 'Actions' && heading !== 'Last Run Status'"
               src="assets/icons/down-arrow-logo.svg"
               alt="{{ heading }} Icon"
-              class="heading-icon" />
+              class="heading-icon"
+              (click)="sortColumn(heading)"
+              [class.rotate]="
+                currentSort === 'desc' && selectedHeading === heading
+              " />
+          </ng-container>
+          <ng-container *ngIf="!isWorkflow">
+            {{ heading }}
+            <img
+              *ngIf="heading !== 'Actions' && heading !== 'Id'"
+              src="assets/icons/down-arrow-logo.svg"
+              alt="{{ heading }} Icon"
+              class="heading-icon"
+              (click)="sortColumn(heading)"
+              [class.rotate]="
+                currentSort === 'desc' && selectedHeading === heading
+              " />
           </ng-container>
         </div>
       </th>
     </tr>
   </thead>
-  <tbody
-    class="scrollable-table__body"
-    infinite-scroll
-    [infiniteScrollDistance]="3"
-    [infiniteScrollThrottle]="50"
-    [immediateCheck]="true"
-    (scrolled)="increaseLimitWorkflows()">
+  <tbody class="scrollable-table__body">
     <ng-container *ngIf="isWorkflow">
       <tr
-        *ngFor="let workflow of workflows$ | async; let i = index"
+        *ngFor="let workflow of workflows; let i = index"
         (click)="viewInstances(workflow.id, workflow.name)"
         [ngClass]="{ 'first-child-padding': i === 0 }">
         <!-- <td class="table-cell">{{ workflow.id }}</td> -->
@@ -64,7 +62,38 @@
           {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
           <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
         </td>
-        <td class="table-cell">{{ workflow.status }}</td>
+        <td class="table-cell">
+          <!-- {{ workflow.status }} -->
+          <div class="status-content">
+            <ng-container
+              *ngIf="
+                workflow.status === 'COMPLETED' ||
+                  workflow.status === 'CREATED' ||
+                  workflow.status === 'RUNNING';
+                else failureLogo
+              ">
+              <div class="active-class">
+                <img
+                  src="assets/icons/success-logo.svg"
+                  alt="Active Icon"
+                  class="success-icon"
+                  [ngStyle]="{ 'margin-left': '115px' }" />
+                <p>Success</p>
+              </div>
+            </ng-container>
+
+            <ng-template #failureLogo>
+              <div class="inactive-class">
+                <img
+                  src="assets/icons/failure-logo.svg"
+                  alt="Active Icon"
+                  class="failure-icon"
+                  [ngStyle]="{ 'margin-left': '115px' }" />
+                <p>Error</p>
+              </div>
+            </ng-template>
+          </div>
+        </td>
         <td class="table-cell">
           <div class="action-content">
             <img
@@ -84,7 +113,7 @@
       </tr>
     </ng-container>
     <ng-container *ngIf="!isWorkflow">
-      <ng-container *ngFor="let workflow of workflows$ | async">
+      <ng-container *ngFor="let workflow of workflows">
         <tr>
           <td class="table-cell">
             <div class="id-heading">

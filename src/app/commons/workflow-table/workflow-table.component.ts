@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -7,24 +8,21 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { PaginationService } from 'src/app/services/pagination.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { Router, RouterOutlet } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { Workflow } from 'src/app/interfaces/workflow.model';
 import { DurationPipe } from '../../pipes/duration.pipe';
-
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
-  providers: [PaginationService],
   imports: [CommonModule, InfiniteScrollModule, RouterOutlet, DurationPipe],
 })
 export class WorkflowTableComponent implements OnDestroy {
   @Input()
-  public workflows$: Observable<any[]> | undefined;
+  public workflows: any[] = [];
 
   @Input()
   public headings: any[] = [];
@@ -59,6 +57,9 @@ export class WorkflowTableComponent implements OnDestroy {
   @Output()
   public getArtifactsEvent = new EventEmitter<any>();
 
+  @Output()
+  public getSortParam = new EventEmitter<any>();
+
   expandedInstaceId: number | undefined;
 
   stepList: any[] = [];
@@ -67,6 +68,21 @@ export class WorkflowTableComponent implements OnDestroy {
 
   downloadedFile: string | undefined;
 
+  currentSort: 'asc' | 'desc' = 'asc';
+
+  selectedHeading: string | undefined;
+
+  headingEnum = {
+    'Workflow Name': 'name',
+    Status: 'enabled',
+    'Last Run On': 'created',
+    'Last Run Status': 'status',
+    Priority: 'priority',
+    'Queued On': 'created',
+    'Started On': 'created',
+    Duration: 'duration',
+  };
+
   private destroyed$ = new Subject<void>();
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -74,9 +90,9 @@ export class WorkflowTableComponent implements OnDestroy {
   }
 
   constructor(
-    private paginationService: PaginationService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   public increaseLimitWorkflows(): void {
@@ -143,5 +159,15 @@ export class WorkflowTableComponent implements OnDestroy {
     } else {
       this.expandedInstaceId = undefined;
     }
+  }
+
+  sortColumn(heading: string) {
+    this.selectedHeading = heading;
+    if (this.currentSort === 'asc') {
+      this.currentSort = 'desc';
+    } else {
+      this.currentSort = 'asc';
+    }
+    this.getSortParam.emit({ sortBy: heading, order: this.currentSort });
   }
 }

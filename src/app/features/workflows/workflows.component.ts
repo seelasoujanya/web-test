@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subject, Subscriber, takeUntil } from 'rxjs';
+import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
 import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
+import { IPage } from 'src/app/interfaces/page.model';
+import { IPageParams } from 'src/app/interfaces/pageparams.model';
 import { Workflow } from 'src/app/interfaces/workflow.model';
 import { ApiService } from 'src/app/services/api.service';
-import { PaginationService } from 'src/app/services/pagination.service';
-
 @Component({
   selector: 'app-workflows',
   standalone: true,
-  imports: [WorkflowTableComponent],
+  imports: [WorkflowTableComponent, PaginationComponent],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
-  providers: [ApiService, PaginationService],
+  providers: [ApiService],
 })
-export class WorkflowsComponent {
+export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
 
   headings: string[] = [
@@ -26,21 +27,39 @@ export class WorkflowsComponent {
     'Actions',
   ];
 
-  public workflows$: Observable<Workflow[]> =
-    this.paginationService.workflowsList$;
+  headingEnum = {
+    'Workflow Name': 'name',
+    Status: 'enabled',
+    'Last Run On': 'created',
+    'Last Run Status': 'status',
+  };
 
-  constructor(
-    private paginationService: PaginationService,
-    private apiService: ApiService,
-    private router: Router
-  ) {
-    this.paginationService.getWorkflows();
+  public destroyed$ = new Subject<void>();
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
-  public increaseLimitWorkflows(isPage: boolean): void {
-    if (isPage) {
-      this.paginationService.page();
-    }
+  ngOnInit(): void {
+    this.getPageItems(this.pageParams);
+  }
+
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private cdRef: ChangeDetectorRef
+  ) {}
+
+  getPageItems(pageParams: any) {
+    this.apiService
+      .getWorkflows(pageParams)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(data => {
+        this.page = data;
+        this.workflowsData = data.content;
+        this.cdRef.markForCheck();
+      });
   }
 
   public viewInstances(data: any): void {
@@ -59,7 +78,32 @@ export class WorkflowsComponent {
       isTaskChainIsValid: null,
     };
     this.apiService.updateWorkflow(workflow.id, newData).subscribe(result => {
-      this.paginationService.updateWorkflow(workflow, result.enabled);
+      workflow.enabled = result.enabled;
+      this.cdRef.markForCheck();
     });
+  }
+
+  onPage(pageNumber: number) {
+    this.pageParams.page = pageNumber - 1;
+    this.getPageItems(this.pageParams);
+  }
+  public page!: IPage<any>;
+  private pageParams = this.getDefaultPageParams();
+
+  getDefaultPageParams() {
+    return {
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    };
+  }
+
+  sortColumn(event: any) {
+    let heading = event.sortBy;
+    this.pageParams.sortBy =
+      this.headingEnum[heading as keyof typeof this.headingEnum];
+    this.pageParams.order = event.order;
+    this.getPageItems(this.pageParams);
   }
 }
