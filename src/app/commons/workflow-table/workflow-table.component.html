@@ -21,7 +21,7 @@
           <ng-container *ngIf="!isWorkflow">
             {{ heading }}
             <img
-              *ngIf="heading !== 'Actions' && heading !== 'Id'"
+              *ngIf="heading !== 'Actions' && heading !== 'Identifier'"
               src="assets/icons/down-arrow-logo.svg"
               alt="{{ heading }} Icon"
               class="heading-icon"
@@ -117,7 +117,7 @@
         <tr>
           <td class="table-cell">
             <div class="id-heading">
-              <span>{{ workflow.id }}</span>
+              <span>{{ workflow.identifier }}</span>
               <!-- <img
                 src="assets/icons/copy-logo.svg"
                 alt="Copy Icon"
