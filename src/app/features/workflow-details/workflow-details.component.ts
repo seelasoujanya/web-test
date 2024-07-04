@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
 import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
 import { IPage } from 'src/app/interfaces/page.model';
-import { Workflow } from 'src/app/interfaces/workflow.model';
 import { WorkflowInstance } from 'src/app/interfaces/workflowinstance.model';
 import { DurationPipe } from 'src/app/pipes/duration.pipe';
 import { ApiService } from 'src/app/services/api.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-workflow-details',
@@ -18,6 +18,7 @@ import { ApiService } from 'src/app/services/api.service';
     WorkflowTableComponent,
     DurationPipe,
     PaginationComponent,
+    FormsModule,
   ],
   templateUrl: './workflow-details.component.html',
   styleUrl: './workflow-details.component.scss',
@@ -34,9 +35,11 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
   }
   workflowsInstances: WorkflowInstance[] = [];
+  identifier: string = '';
+  noInstancesFound: boolean = false;
 
   instanceHeadings: string[] = [
-    'Id',
+    'Identifier',
     'Queued On',
     'Started On',
     'Duration',
@@ -79,7 +82,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   getPageItems(pageParams: any) {
     this.apiService
-      .getWorkflowInstances(pageParams, this.workflowId)
+      .getWorkflowInstances(pageParams, this.workflowId, this.identifier)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
@@ -87,6 +90,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
         this.workflowsInstances = data.content;
         this.updateWorkflowsData();
         this.cdRef.markForCheck();
+        this.noInstancesFound = false;
       });
   }
   onPage(pageNumber: number) {
@@ -140,5 +144,37 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.failedInstancesCount = 0;
     this.deliveredInstancesCount = 0;
     this.totalInstancesCount = 0;
+  }
+
+  searchWorkflowInstance(): void {
+    if (this.identifier) {
+      const id = this.identifier;
+      this.apiService
+        .getWorkflowInstances(
+          this.pageParams,
+          this.workflowId,
+          this.identifier.toLowerCase()
+        )
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          data => {
+            this.page = data;
+            this.reset();
+            this.workflowsInstances = data.content;
+            this.updateWorkflowsData();
+            this.cdRef.markForCheck();
+            this.noInstancesFound = this.workflowsInstances.length === 0;
+            console.log(this.noInstancesFound);
+          },
+          error => {
+            console.error('Error fetching workflow instances', error);
+            this.workflowsInstances = [];
+            this.noInstancesFound = true;
+            this.cdRef.markForCheck();
+          }
+        );
+    } else {
+      this.getPageItems(this.pageParams);
+    }
   }
 }
