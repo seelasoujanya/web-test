@@ -1,1 +1,45 @@
-<p>monitor works!</p>
+<div class="monitor-component">
+  <div class="monitor-heading-section">
+    <div class="monitor-label">
+      <p>Monitor</p>
+    </div>
+  </div>
+  <div class="monitor-buttons-section">
+    <div class="running">
+      <button class="running-button">Running</button>
+      <p class="running-instances-count">{{ runningInstancesCount }}</p>
+    </div>
+    <div class="pending">
+      <button class="pending-button">Pending</button>
+      <p class="pending-instances-count">0</p>
+    </div>
+  </div>
+  <div class="monitor-instance-table">
+    <table class="table-container">
+      <thead class="table-head">
+        <tr>
+          <th *ngFor="let heading of headings" class="table-header-cell">
+            {{ heading }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="scrollable-table__body">
+        <tr *ngFor="let instance of instances">
+          <td class="table-cell">{{ instance.id }}</td>
+          <td class="table-cell">{{ instance.workflow.name }}</td>
+          <td class="table-cell">{{ instance.identifier }}</td>
+          <td class="table-cell">
+            {{ instance.created | date: 'yyyy-MM-dd' }}<br />
+            <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
+</div>

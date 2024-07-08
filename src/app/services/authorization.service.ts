@@ -1,17 +1,49 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Injectable, OnInit } from '@angular/core';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorizationService {
-  constructor(private http: HttpClient) {}
+export class AuthorizationService implements OnInit {
+  constructor(
+    private http: HttpClient,
+    private userApi: ApiService
+  ) {}
 
-  private apiUrl = `${environment.BE_URL}`;
+  private userData: any = null;
 
-  getCsrfToken(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/csrf`);
+  ngOnInit(): void {
+    this.getAuthenticatedUser();
+  }
+
+  public async isAuthenticated(): Promise<boolean> {
+    await this.getAuthenticatedUser();
+    return this.userData != null;
+  }
+
+  async getAuthenticatedUser(): Promise<any> {
+    if (this.userData === null) {
+      this.userData = 'loading';
+      const user = await this.userApi.getUserDetails().toPromise();
+      this.userData = user;
+      return this.userData;
+    } else if (this.userData === 'loading') {
+      setTimeout(() => {
+        return this.getAuthenticatedUser();
+      }, 50);
+    }
+  }
+
+  async getCsrfToken(): Promise<string> {
+    await this.getAuthenticatedUser();
+
+    return this.userData.principal.idToken.tokenValue;
+  }
+
+  getUserData(): any {
+    this.getAuthenticatedUser();
+
+    return this.userData;
   }
 }
