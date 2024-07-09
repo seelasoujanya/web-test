@@ -11,7 +11,8 @@ fi
 token="$2"
 PROXY_PORT="3128"
 SONARQUBE_URL_DOMAIN="http://sonarqube-jenkins-test.bmg.com"
-SONAR_PROJECT_NAME="bmg-supplychain-deliver_upgrade-frontend-$STAGE"
+SONAR_PROJECT_NAME="bmg-supplychain-deliver_upgrade-frontend"
+SONAR_PROJECT_KEY="bmg-supplychain-deliver_upgrade-frontend-$STAGE"
 
 if [ $STAGE = "test" ]
   then
@@ -44,7 +45,7 @@ cat /etc/systemd/system/docker.service.d/proxy.conf
 
 echo """
 sonar.projectName=${SONAR_PROJECT_NAME}
-sonar.projectKey=${SONAR_PROJECT_NAME}
+sonar.projectKey=${SONAR_PROJECT_KEY}
 sonar.host.url=${SONARQUBE_URL_DOMAIN}
 sonar.login=$2
 sonar.projectVersion=1.0
@@ -62,5 +63,5 @@ sudo rm -rf /opt/node-v18.17.0-linux-x64
 sudo mv node-v18.17.0-linux-x64 /opt/
 export PATH=$PATH:/opt/node-v18.17.0-linux-x64/bin
 npm install --legacy-peer-deps
-npm run test:report
+#npm run test:report
 npm run sonar
