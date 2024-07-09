@@ -19,7 +19,15 @@ export class MonitorComponent implements OnInit, OnDestroy {
   private pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
 
-  headings: string[] = ['INSTANCE ID', 'WORKFLOW', 'IDENTIFIER', 'STARTED ON'];
+  headings: string[] = [
+    'INSTANCE ID',
+    'WORKFLOW',
+    'IDENTIFIER',
+    'STARTED ON',
+    'ACTIONS',
+  ];
+
+  expandedId: number | undefined;
 
   constructor(
     private webSocketAPI: WebSocketAPI,
@@ -71,6 +79,14 @@ export class MonitorComponent implements OnInit, OnDestroy {
   getRunningInstances(status: string) {
     this.pageParams.status = status;
     this.updateInstances(this.pageParams);
+  }
+
+  public expandAction(instance: any) {
+    if (this.expandedId != instance.id) {
+      this.expandedId = instance.id;
+    } else {
+      this.expandedId = undefined;
+    }
   }
 
   public destroyed$ = new Subject<void>();

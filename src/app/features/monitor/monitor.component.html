@@ -24,15 +24,33 @@
         </tr>
       </thead>
       <tbody class="scrollable-table__body">
-        <tr *ngFor="let instance of instances">
-          <td class="table-cell">{{ instance.id }}</td>
-          <td class="table-cell">{{ instance.workflow.name }}</td>
-          <td class="table-cell">{{ instance.identifier }}</td>
-          <td class="table-cell">
-            {{ instance.created | date: 'yyyy-MM-dd' }}<br />
-            <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
-          </td>
-        </tr>
+        <ng-container *ngFor="let instance of instances">
+          <tr>
+            <td class="table-cell">{{ instance.id }}</td>
+            <td class="table-cell">{{ instance.workflow.name }}</td>
+            <td class="table-cell">{{ instance.identifier }}</td>
+            <td class="table-cell">
+              {{ instance.created | date: 'yyyy-MM-dd' }}<br />
+              <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
+            </td>
+            <td class="table-cell">
+              <div class="action-content" (click)="expandAction(instance)">
+                <img
+                  src="assets/icons/down-arrow-logo.svg"
+                  alt="Pause Icon"
+                  class="action-icon"
+                  [class.rotate]="expandedId === instance.id" />
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="expandedId === instance.id">
+            <td colspan="5">
+              <div class="expanded-row">
+                <button class="cancel-button">CANCEL</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
     </table>
   </div>

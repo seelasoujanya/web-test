@@ -1,7 +1,12 @@
 .monitor-component {
-  width: 98%;
-  margin: 80px 15px 25px;
+  width: 100%;
+  margin-top: 80px;
+  padding-inline: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   .monitor-heading-section {
+    // width: 98%;
     .monitor-label {
       height: 40px;
       color: #000000;
@@ -11,15 +16,17 @@
     }
   }
   .monitor-buttons-section {
+    // width: 98% !important;
     display: flex;
     flex-direction: row;
-    gap: 4px;
-    width: 249px;
-    height: 40px;
+    gap: 8px;
+    height: 64px;
+    padding: 12px 16px;
     color: #344054;
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
+    background-color: #f9fafb !important;
     .running {
       display: flex;
       gap: 10px;
@@ -27,12 +34,17 @@
       border-radius: 4px;
       text-align: center;
       .running-button {
-        background-color: #ffffff;
         border: none;
         color: #344054;
+        background-color: #f9fafb;
       }
       .running-instances-count {
         margin-top: 8px;
+        border-radius: 16px;
+        background-color: #f2f4f7;
+        padding: 2px 8px;
+        width: 30px;
+        height: 24px;
       }
     }
     .pending {
@@ -42,16 +54,22 @@
       border-radius: 4px;
       text-align: center;
       .pending-button {
-        background-color: #ffffff;
         border: none;
         color: #344054;
+        background-color: #f9fafb;
       }
       .pending-instances-count {
         margin-top: 8px;
+        border-radius: 16px;
+        background-color: #f2f4f7;
+        padding: 2px 8px;
+        width: 30px;
+        height: 24px;
       }
     }
   }
   .table-container {
+    width: 100%;
     border-radius: 8px;
     background: #ffffff;
     border: 1px solid #f2f2f2;
@@ -60,7 +78,6 @@
       background-color: white;
     }
     .table-header-cell {
-      width: 98rem;
       height: 36px;
       background-color: #f9fafb;
       border-width: 0px 0px 1px 0px;
@@ -71,19 +88,41 @@
       position: sticky;
       z-index: 10;
       padding: 0px 10px;
-      .table-header-content {
-        font-size: 12px;
-        line-height: 14.52px;
-        text-transform: uppercase;
-        color: #656565;
-        .heading-icon {
-          margin-inline: 0.5rem;
-        }
-      }
+      font-size: 12px;
+      line-height: 14.52px;
+      text-transform: uppercase;
+      color: #656565;
     }
     .scrollable-table__body {
       .table-cell {
         padding: 10px;
+        height: 72px;
+        color: #333333;
+        font-weight: 400 !important;
+        line-height: 16.94px;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+      }
+      .expanded-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 80px;
+        background-color: #f9fafb;
+        .cancel-button {
+          border: none;
+          text-decoration: underline;
+          background-color: #f9fafb;
+          color: #262626;
+          font-weight: 400;
+          font-size: 12px;
+          letter-spacing: 0.5px;
+          border-radius: 4px;
+          width: 92px;
+          height: 40px;
+          padding: 10px 20px;
+        }
       }
     }
     .scrollable-table__body tr:hover {
@@ -98,4 +137,8 @@
   height: 70px;
   display: flex;
   justify-content: center;
+}
+
+.rotate {
+  transform: rotate(180deg);
 }
