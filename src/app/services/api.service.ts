@@ -32,6 +32,12 @@ export class ApiService {
     });
   }
 
+  public getInstancesByStatus(queryParams: any): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/workflowinstance`, {
+      params: queryParams as any,
+    });
+  }
+
   public getWorkflowInstances(
     queryParams: any,
     id: number | unknown,

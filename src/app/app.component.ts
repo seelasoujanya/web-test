@@ -4,6 +4,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { CommonModule } from '@angular/common';
 import { ApiService } from './services/api.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { AuthorizationService } from './services/authorization.service';
 
 @Component({
   selector: 'app-root',
@@ -17,11 +18,13 @@ export class AppComponent {
   title = 'Deliver Test';
   userDetails: any;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private authorizationService: AuthorizationService
+  ) {}
 
-  ngOnInit(): void {
-    this.apiService.getUserDetails().subscribe(res => {
-      this.userDetails = res;
-    });
+  async ngOnInit(): Promise<void> {
+    const authenticated = await this.authorizationService.isAuthenticated();
+    this.userDetails = this.authorizationService.getUserData();
   }
 }
