@@ -8,6 +8,10 @@ WORKDIR /app-ui
 COPY package*.json ./
 
 # Install npm dependencies
+RUN npm cache clear -f
+RUN npm config set proxy http://10.14.232.48:3128
+RUN npm config set proxy http://10.14.232.48:3128
+RUN npm config set registry "https://registry.npmjs.org"
 RUN npm install
 
 # Install Angular CLI globally
