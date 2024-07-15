@@ -27,7 +27,6 @@
       text-transform: capitalize;
       .navigate-back-btn {
         border: none;
-        margin-inline-end: 15px;
         border: 1px solid #ffffff;
         background-color: white;
         .navigate-back-icon {
@@ -169,4 +168,62 @@
   height: 70px;
   display: flex;
   justify-content: center;
+}
+.workflow-header {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .workflows-label {
+    width: 134px;
+    height: 32px;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 32px;
+    color: #000000;
+  }
+  .workflow-header-right {
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    .searchField {
+      width: 400px;
+      height: 40px;
+      border-radius: 4px;
+      padding: 9px 16px 9px 16px;
+      background-color: #ffffff;
+      border: 1px solid #c5c5c5;
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      color: #666666;
+    }
+    .searchButton {
+      width: 119px;
+      height: 40px;
+      border-radius: 4px;
+      padding: 10px 20px;
+      gap: 12px;
+      background-color: #ca0a3d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      color: #ffffff;
+      text-transform: uppercase;
+      font-weight: 400;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+.no-instances-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
 }

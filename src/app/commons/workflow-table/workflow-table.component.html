@@ -21,7 +21,7 @@
           <ng-container *ngIf="!isWorkflow">
             {{ heading }}
             <img
-              *ngIf="heading !== 'Actions' && heading !== 'Id'"
+              *ngIf="heading !== 'Actions' && heading !== 'Identifier'"
               src="assets/icons/down-arrow-logo.svg"
               alt="{{ heading }} Icon"
               class="heading-icon"
@@ -76,8 +76,7 @@
                 <img
                   src="assets/icons/success-logo.svg"
                   alt="Active Icon"
-                  class="success-icon"
-                  [ngStyle]="{ 'margin-left': '115px' }" />
+                  class="success-icon" />
                 <p>Success</p>
               </div>
             </ng-container>
@@ -87,8 +86,7 @@
                 <img
                   src="assets/icons/failure-logo.svg"
                   alt="Active Icon"
-                  class="failure-icon"
-                  [ngStyle]="{ 'margin-left': '115px' }" />
+                  class="failure-icon" />
                 <p>Error</p>
               </div>
             </ng-template>
@@ -117,7 +115,7 @@
         <tr>
           <td class="table-cell">
             <div class="id-heading">
-              <span>{{ workflow.id }}</span>
+              <span>{{ workflow.identifier }}</span>
               <!-- <img
                 src="assets/icons/copy-logo.svg"
                 alt="Copy Icon"

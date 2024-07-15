@@ -1,23 +1,52 @@
 <div class="workflow-details-container">
   <div class="details-label">
     <div class="label-left">
-      <button class="navigate-back-btn" type="button">
+      <button
+        class="navigate-back-btn"
+        type="button"
+        (click)="backToWorkflows()">
         <img
           src="/assets/icons/navigate-back-logo.svg"
           class="navigate-back-icon"
-          alt="export Icon"
-          (click)="backToWorkflows()" />
+          alt="export Icon" />
       </button>
       <p>{{ workflowName }}</p>
-      <img
+      <!-- <img
         src="assets/icons/bookmark-fill-logo.svg"
         alt="Bookmark Icon"
-        class="bookmark-fill-icon" />
+        class="bookmark-fill-icon" /> -->
     </div>
+
     <div class="label-right">
-      <!-- <button class="trigger-history-btn" type="button">Trigger History</button> -->
+      <div class="workflow-header">
+        <div class="workflow-header-right">
+          <div class="searchBar">
+            <input
+              type="text"
+              class="searchField"
+              name="searchInput"
+              placeholder="Search for Workflow Instance"
+              [(ngModel)]="identifier"
+              required />
+          </div>
+
+          <div class="search-button">
+            <button
+              class="searchButton"
+              type="button"
+              (click)="searchWorkflowInstance()">
+              <img
+                src="/assets/icons/search.svg"
+                class="search-icon"
+                alt="Search Icon" />
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="details-section">
     <div class="details-info">
       <p class="info-heading">Triggered Times</p>
@@ -36,6 +65,7 @@
       <p class="info-data">{{ deliveredInstancesCount }}</p>
     </div>
   </div>
+
   <div class="details-filter">
     <div class="left-filter">
       <button class="instances-btn" type="button">Instances</button>
@@ -55,13 +85,17 @@
 </div>
 <div class="workflows-instance-table">
   <app-workflow-table
+    *ngIf="!noInstancesFound"
     [workflows]="workflowsInstances"
     [headings]="instanceHeadings"
     [isWorkflow]="false"
     (getSortParam)="sortColumn($event)"></app-workflow-table>
+  <div *ngIf="noInstancesFound" class="no-instances-message">
+    No Instance Found
+  </div>
 </div>
 
-<div class="page-view">
+<div class="page-view" *ngIf="!noInstancesFound">
   <app-pagination
     [page]="page"
     (paginationEvent)="onPage($event)"></app-pagination>

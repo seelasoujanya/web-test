@@ -71,7 +71,8 @@ sleep 5
 
 #Build docker image
 echo "Build docker image for ${STAGE}"
-sudo docker build -t ${IMAGE}:${BUILD_NUMBER} --build-arg ENV=${STAGE} -f Dockerfile_Jenkins .
+# sudo docker build -t ${IMAGE}:${BUILD_NUMBER} --build-arg ENV=${STAGE} -f Dockerfile_Jenkins .
+sudo docker build -t ${IMAGE}:${BUILD_NUMBER} --build-arg ENV=${STAGE} -f Dockerfile .
 
 #Docker configure
 echo "Docker configure"

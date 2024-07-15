@@ -1,1 +1,73 @@
-<p>monitor works!</p>
+<div class="monitor-component">
+  <div class="monitor-heading-section">
+    <div class="monitor-label">
+      <p>Monitor</p>
+    </div>
+  </div>
+  <div class="monitor-buttons-section">
+    <div class="running">
+      <button
+        class="running-button"
+        (click)="updateParams('RUNNING')"
+        [ngClass]="pageParams.status === 'RUNNING' ? 'active' : ''">
+        Running
+        <span class="running-instances-count">{{ runningInstancesCount }}</span>
+      </button>
+    </div>
+    <div class="pending">
+      <button
+        class="pending-button"
+        (click)="updateParams('CREATED')"
+        [ngClass]="pageParams.status === 'CREATED' ? 'active' : ''">
+        Pending
+        <span class="pending-instances-count">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="monitor-instance-table">
+    <table class="table-container">
+      <thead class="table-head">
+        <tr>
+          <th *ngFor="let heading of headings" class="table-header-cell">
+            {{ heading }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="scrollable-table__body">
+        <ng-container *ngFor="let instance of instances">
+          <tr>
+            <td class="table-cell">{{ instance.id }}</td>
+            <td class="table-cell">{{ instance.workflow.name }}</td>
+            <td class="table-cell">{{ instance.identifier }}</td>
+            <td class="table-cell">
+              {{ instance.created | date: 'yyyy-MM-dd' }}<br />
+              <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
+            </td>
+            <td class="table-cell">
+              <div class="action-content" (click)="expandAction(instance)">
+                <img
+                  src="assets/icons/down-arrow-logo.svg"
+                  alt="Pause Icon"
+                  class="action-icon"
+                  [class.rotate]="expandedId === instance.id" />
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="expandedId === instance.id">
+            <td colspan="5">
+              <div class="expanded-row">
+                <button class="cancel-button">CANCEL</button>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
+</div>

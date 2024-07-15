@@ -17,6 +17,7 @@
   height: 30px;
   text-align: center;
   align-items: center;
+  text-decoration: none;
 }
 
 .page_item_first {
@@ -51,6 +52,6 @@ a {
 }
 
 .disabled {
-  pointer-events: none;
   opacity: 0.4;
+  cursor: no-drop;
 }
