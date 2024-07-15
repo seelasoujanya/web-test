@@ -47,13 +47,12 @@
       margin-left: 100px;
     }
     .status-content {
+      display: flex;
+      justify-content: center;
       .active-class {
         display: flex;
         flex-direction: row;
         gap: 6px;
-        .success-icon {
-          margin-left: 70px;
-        }
         p {
           margin-bottom: 0px;
         }
@@ -62,9 +61,7 @@
         display: flex;
         flex-direction: row;
         gap: 6px;
-        .failure-icon {
-          margin-left: 70px;
-        }
+
         p {
           margin-bottom: 0px;
         }
@@ -90,11 +87,14 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    background-color: #f2f2f2;
+
     .message-section {
       height: 60px;
       display: flex;
       justify-content: space-between;
-      padding: 10px 16px;
+      padding: 10px;
+
       .view-instance-detail-btn {
         width: 182px;
         height: 40px;
@@ -122,27 +122,30 @@
       }
     }
     .logs-section {
+      margin: 0px 10px;
+
+      .log-items-container {
+        background-color: #ffffff;
+        padding: 10px 15px;
+        border-radius: 5px;
+
+        .log-items {
+          margin-bottom: 3px;
+          font-size: 12px;
+        }
+      }
+
       .logs {
-        height: 35px;
-        padding: 8px 16px;
         font-weight: 600;
         font-size: 16px;
         line-height: 19.36px;
         letter-spacing: 0.3px;
         color: #333333;
       }
-      .log-items-container {
-        background-color: #ffffff;
-        .log-items {
-          padding-inline: 16px;
-          margin-bottom: 3px;
-        }
-      }
     }
     .file-section {
       .files-heading {
-        height: 35px;
-        padding: 8px 16px;
+        padding: 0px 16px;
         font-weight: 600;
         font-size: 16px;
         line-height: 19.36px;
@@ -155,13 +158,16 @@
         justify-content: space-between;
         align-items: center;
         height: 48px;
-        padding-inline: 16px;
+        margin: 10px;
+        padding: 10px 15px;
         background-color: #ffffff;
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0.3px;
         color: #000000;
+        border-radius: 5px;
+
         .file-action-buttons {
           display: flex;
           gap: 8px;
