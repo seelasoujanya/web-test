@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
+import { lastValueFrom, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,17 +23,15 @@ export class AuthorizationService implements OnInit {
     return this.userData != null;
   }
 
-  async getAuthenticatedUser(): Promise<any> {
+  async getAuthenticatedUser() {
     if (this.userData === null) {
-      this.userData = 'loading';
-      const user = await this.userApi.getUserDetails().toPromise();
-      this.userData = user;
-      return this.userData;
-    } else if (this.userData === 'loading') {
-      setTimeout(() => {
-        return this.getAuthenticatedUser();
-      }, 50);
+      try {
+        this.userData = await lastValueFrom(this.userApi.getUserDetails());
+      } catch (error) {
+        console.error('Error fetching user details', error);
+      }
     }
+    return this.userData;
   }
 
   async getCsrfToken(): Promise<string> {

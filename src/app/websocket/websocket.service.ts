@@ -55,7 +55,6 @@ export class WebSocketAPI {
     if (this.isConnected && this.client) {
       this.client.deactivate();
       this.isConnected = false;
-      console.log('Disconnected');
     }
   }
 

@@ -22,11 +22,24 @@
     gap: 8px;
     height: 64px;
     padding: 12px 16px;
-    color: #344054;
     font-size: 16px;
     font-weight: 600;
     line-height: 24px;
     background-color: #f9fafb !important;
+
+    button {
+      padding: 10px 16px;
+      border-radius: 5px;
+      background: #f9fafb;
+
+      &:hover {
+        background-color: #ffffff;
+      }
+    }
+
+    .active {
+      background: #ffffff;
+    }
     .running {
       display: flex;
       gap: 10px;
@@ -36,7 +49,7 @@
       .running-button {
         border: none;
         color: #344054;
-        background-color: #f9fafb;
+        // background-color: #f9fafb;
       }
       .running-instances-count {
         margin-top: 8px;
@@ -56,7 +69,6 @@
       .pending-button {
         border: none;
         color: #344054;
-        background-color: #f9fafb;
       }
       .pending-instances-count {
         margin-top: 8px;

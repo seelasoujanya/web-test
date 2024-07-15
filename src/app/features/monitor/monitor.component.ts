@@ -16,7 +16,7 @@ import { WebSocketAPI } from 'src/app/websocket/websocket.service';
 export class MonitorComponent implements OnInit, OnDestroy {
   private websocketSubscription!: Subscription;
   public instances: any[] = [];
-  private pageParams = this.getDefaultPageParams();
+  public pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
 
   headings: string[] = [
@@ -71,7 +71,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
       .getProcessProgress()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((result: any) => {
-        console.log('result', result);
         this.updateInstances(this.pageParams);
       });
   }
@@ -98,5 +97,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
     if (this.websocketSubscription) {
       this.websocketSubscription.unsubscribe();
     }
+  }
+
+  updateParams(status: string) {
+    this.pageParams.status = status;
+    this.updateInstances(this.pageParams);
   }
 }
