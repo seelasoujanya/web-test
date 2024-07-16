@@ -67,9 +67,9 @@
           <div class="status-content">
             <ng-container
               *ngIf="
-                workflow.status === 'COMPLETED' ||
-                  workflow.status === 'CREATED' ||
-                  workflow.status === 'RUNNING';
+                ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
+                  workflow.status
+                );
                 else failureLogo
               ">
               <div class="active-class">
@@ -77,7 +77,13 @@
                   src="assets/icons/success-logo.svg"
                   alt="Active Icon"
                   class="success-icon" />
-                <p>Success</p>
+                <p>
+                  {{
+                    workflow.status === 'COMPLETED'
+                      ? 'Success'
+                      : (workflow.status | titlecase)
+                  }}
+                </p>
               </div>
             </ng-container>
 
@@ -87,7 +93,11 @@
                   src="assets/icons/failure-logo.svg"
                   alt="Active Icon"
                   class="failure-icon" />
-                <p>Error</p>
+                <p>
+                  {{
+                    workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
+                  }}
+                </p>
               </div>
             </ng-template>
           </div>
@@ -136,27 +146,37 @@
             <div class="status-content">
               <ng-container
                 *ngIf="
-                  workflow.status === 'COMPLETED' ||
-                    workflow.status === 'CREATED' ||
-                    workflow.status === 'RUNNING';
-                  else inactiveLogo
+                  ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
+                    workflow.status
+                  );
+                  else failureLogo
                 ">
                 <div class="active-class">
                   <img
                     src="assets/icons/success-logo.svg"
                     alt="Active Icon"
                     class="success-icon" />
-                  <p>Success</p>
+                  <p>
+                    {{
+                      workflow.status === 'COMPLETED'
+                        ? 'Success'
+                        : (workflow.status | titlecase)
+                    }}
+                  </p>
                 </div>
               </ng-container>
 
-              <ng-template #inactiveLogo>
+              <ng-template #failureLogo>
                 <div class="inactive-class">
                   <img
                     src="assets/icons/failure-logo.svg"
                     alt="Active Icon"
                     class="failure-icon" />
-                  <p>Error</p>
+                  <p>
+                    {{
+                      workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
+                    }}
+                  </p>
                 </div>
               </ng-template>
             </div>

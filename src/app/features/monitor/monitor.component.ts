@@ -18,6 +18,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
   public instances: any[] = [];
   public pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
+  public pendingInstancesCount: number = 0;
 
   headings: string[] = [
     'INSTANCE ID',
@@ -61,7 +62,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.page = data;
         this.instances = data.content;
-        this.runningInstancesCount = this.instances.length;
+        if (pageParams.status == 'RUNNING') {
+          this.runningInstancesCount = data.totalElements;
+        } else {
+          this.pendingInstancesCount = data.totalElements;
+        }
         this.cdRef.markForCheck();
       });
   }
@@ -102,5 +107,16 @@ export class MonitorComponent implements OnInit, OnDestroy {
   updateParams(status: string) {
     this.pageParams.status = status;
     this.updateInstances(this.pageParams);
+  }
+
+  terminateInstance(id: any) {
+    this.apiService.updateWorkflowInstanceStatus(id, 'TERMINATED').subscribe(
+      updatedInstance => {
+        console.log('Workflow Instance updated:', updatedInstance);
+      },
+      error => {
+        console.error('Error updating workflow instance', error);
+      }
+    );
   }
 }

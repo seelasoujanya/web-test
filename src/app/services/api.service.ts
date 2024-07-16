@@ -94,4 +94,17 @@ export class ApiService {
       responseType: 'blob',
     });
   }
+
+  updateWorkflowInstanceStatus(
+    instanceId: number,
+    status: string
+  ): Observable<any> {
+    let params = new HttpParams().set('status', status);
+    console.log(status);
+    return this.http.put<any>(
+      `${this.apiUrl}/workflowinstance/${instanceId}`,
+      null,
+      { params }
+    );
+  }
 }
