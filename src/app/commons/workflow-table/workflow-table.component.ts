@@ -105,6 +105,10 @@ export class WorkflowTableComponent implements OnDestroy {
     }
   }
 
+  public viewInstanceDetails(workflowId: number): void {
+    this.workflowDetailEvent.emit({ id: workflowId });
+  }
+
   public pauseWorkflow(event: MouseEvent, workflow: Workflow): void {
     event.stopPropagation();
     if (this.isWorkflow) {
@@ -151,7 +155,8 @@ export class WorkflowTableComponent implements OnDestroy {
     }
   }
 
-  public expandInstance(workflow: Workflow) {
+  public expandInstance(event: MouseEvent, workflow: Workflow) {
+    event.stopPropagation();
     if (this.expandedInstaceId != workflow.id) {
       this.expandedInstaceId = workflow.id;
       this.getArtifactFiles(workflow);

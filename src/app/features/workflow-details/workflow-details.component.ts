@@ -177,4 +177,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
       this.getPageItems(this.pageParams);
     }
   }
+
+  public viewInstanceDetails(data: any): void {
+    this.router.navigate(['/workflowinstance', data.id]);
+  }
 }
