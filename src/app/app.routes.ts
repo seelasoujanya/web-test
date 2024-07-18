@@ -4,6 +4,7 @@ import { XmlTemplatesComponent } from './features/xml-templates/xml-templates.co
 import { MonitorComponent } from './features/monitor/monitor.component';
 import { WorkflowDetailsComponent } from './features/workflow-details/workflow-details.component';
 import { LoginComponent } from './login/login.component';
+import { WorkflowDetailViewComponent } from './features/workflow-details/workflow-detail-view/workflow-detail-view.component';
 
 export const routes: Routes = [
   { path: '', component: WorkflowsComponent },
@@ -14,4 +15,5 @@ export const routes: Routes = [
   { path: 'monitor', component: MonitorComponent },
   { path: 'partners', component: MonitorComponent },
   { path: 'workflows/:id', component: WorkflowDetailsComponent },
+  { path: 'workflowinstance/:id', component: WorkflowDetailViewComponent },
 ];

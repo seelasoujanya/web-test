@@ -67,6 +67,10 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/workflowinstance/${id}`);
   }
 
+  public getWorkflowInstanceDetails(id: number | unknown): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflowinstance/${id}`);
+  }
+
   public updateWorkflow(workflowId: number, status: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/workflow/${workflowId}`, status).pipe(
       map(response => response),
@@ -93,5 +97,18 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/artifact/${artifactId}`, {
       responseType: 'blob',
     });
+  }
+
+  updateWorkflowInstanceStatus(
+    instanceId: number,
+    status: string
+  ): Observable<any> {
+    let params = new HttpParams().set('status', status);
+    console.log(status);
+    return this.http.put<any>(
+      `${this.apiUrl}/workflowinstance/${instanceId}`,
+      null,
+      { params }
+    );
   }
 }
