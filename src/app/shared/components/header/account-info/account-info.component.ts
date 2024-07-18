@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
-
-// CORE
-import { SpinnerService } from 'src/app/services/spinner.service';
-import { ApiService } from 'src/app/services/api.service';
+import { takeUntil } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ApiService } from 'src/app/core/services/api.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   standalone: true,

@@ -7,18 +7,17 @@ import {
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { Observable, Subject } from 'rxjs';
 import { Router, RouterOutlet } from '@angular/router';
-import { ApiService } from 'src/app/services/api.service';
-import { Workflow } from 'src/app/interfaces/workflow.model';
-import { DurationPipe } from '../../pipes/duration.pipe';
+import { Workflow } from 'src/app/core/models/workflow.model';
+import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
+import { ApiService } from 'src/app/core/services/api.service';
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
-  imports: [CommonModule, InfiniteScrollModule, RouterOutlet, DurationPipe],
+  imports: [CommonModule, RouterOutlet, DurationPipe],
 })
 export class WorkflowTableComponent implements OnDestroy {
   @Input()

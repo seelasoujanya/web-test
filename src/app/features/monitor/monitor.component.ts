@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription, take, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
-import { IPage } from 'src/app/interfaces/page.model';
-import { ApiService } from 'src/app/services/api.service';
-import { WebSocketAPI } from 'src/app/websocket/websocket.service';
+import { IPage } from 'src/app/core/models/page.model';
+import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { ApiService } from 'src/app/core/services/api.service';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-monitor',

@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { WorkflowsComponent } from './features/workflows/workflows.component';
-import { XmlTemplatesComponent } from './features/xml-templates/xml-templates.component';
-import { MonitorComponent } from './features/monitor/monitor.component';
-import { WorkflowDetailsComponent } from './features/workflow-details/workflow-details.component';
-import { LoginComponent } from './login/login.component';
-import { WorkflowDetailViewComponent } from './features/workflow-details/workflow-detail-view/workflow-detail-view.component';
+import { WorkflowsComponent } from '../features/workflows/workflows.component';
+import { LoginComponent } from '../shared/components/login/login.component';
+import { XmlTemplatesComponent } from '../features/xml-templates/xml-templates.component';
+import { MonitorComponent } from '../features/monitor/monitor.component';
+import { WorkflowDetailsComponent } from '../features/workflow-details/workflow-details.component';
+import { WorkflowDetailViewComponent } from '../features/workflow-details/workflow-detail-view/workflow-detail-view.component';
 
 export const routes: Routes = [
   { path: '', component: WorkflowsComponent },

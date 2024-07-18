@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
-import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
-import { DurationPipe } from 'src/app/pipes/duration.pipe';
-import { ApiService } from 'src/app/services/api.service';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
-import { WorkflowInstance } from 'src/app/interfaces/workflowinstance.model';
+import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
+import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
+import { ApiService } from 'src/app/core/services/api.service';
 
 @Component({
   selector: 'app-workflow-detail-view',

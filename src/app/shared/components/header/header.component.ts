@@ -5,14 +5,13 @@ import {
   RouterLink,
   RouterLinkActive,
   RouterModule,
-  RouterOutlet,
 } from '@angular/router';
 import { AccountInfoComponent } from './account-info/account-info.component';
 import { AboutComponent } from './about/about.component';
-import { ApiService } from 'src/app/services/api.service';
-import { DialogComponent } from 'src/app/dialog/dialog/dialog.component';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/core/services/api.service';
 
 @Component({
   selector: 'app-header',
@@ -20,7 +19,6 @@ import { environment } from 'src/environments/environment';
   imports: [
     CommonModule,
     RouterModule,
-    // RouterOutlet,
     RouterLink,
     RouterLinkActive,
     DialogComponent,

@@ -1,12 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subject, Subscriber, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
-import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
-import { IPage } from 'src/app/interfaces/page.model';
-import { IPageParams } from 'src/app/interfaces/pageparams.model';
-import { Workflow } from 'src/app/interfaces/workflow.model';
-import { ApiService } from 'src/app/services/api.service';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { IPage } from 'src/app/core/models/page.model';
+import { Workflow } from 'src/app/core/models/workflow.model';
+import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
+import { ApiService } from 'src/app/core/services/api.service';
 @Component({
   selector: 'app-workflows',
   standalone: true,
@@ -19,7 +18,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
 
   headings: string[] = [
-    // 'Id',
     'Workflow Name',
     'Status',
     'Last Run On',
