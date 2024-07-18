@@ -67,6 +67,10 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/workflowinstance/${id}`);
   }
 
+  public getWorkflowInstanceDetails(id: number | unknown): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflowinstance/${id}`);
+  }
+
   public updateWorkflow(workflowId: number, status: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/workflow/${workflowId}`, status).pipe(
       map(response => response),

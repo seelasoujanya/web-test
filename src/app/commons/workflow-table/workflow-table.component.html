@@ -122,7 +122,7 @@
     </ng-container>
     <ng-container *ngIf="!isWorkflow">
       <ng-container *ngFor="let workflow of workflows">
-        <tr>
+        <tr (click)="viewInstanceDetails(workflow.id)">
           <td class="table-cell">
             <div class="id-heading">
               <span>{{ workflow.identifier }}</span>
@@ -191,7 +191,9 @@
           </td>
 
           <td class="table-cell">
-            <div class="action-content" (click)="expandInstance(workflow)">
+            <div
+              class="action-content"
+              (click)="expandInstance($event, workflow)">
               <img
                 src="assets/icons/down-arrow-logo.svg"
                 alt="Pause Icon"
