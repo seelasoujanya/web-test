@@ -1,10 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import './fonts/fonts.scss';
-
+@import '~@ng-select/ng-select/themes/default.theme.css';
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Graphik';
+}
+
+input,
+select,
+textarea {
+  font-family: 'Graphik', sans-serif;
 }

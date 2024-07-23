@@ -1,9 +1,9 @@
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector } from '@angular/core';
-import { IDialogConfig } from '../interfaces/dialogconfig.model';
+import { IDialogConfig } from '../models/dialogconfig.model';
 
-import { SpinnerOverlayComponent } from '../commons/spinner-overlay/spinner-overlay.component';
+import { SpinnerOverlayComponent } from 'src/app/shared/components/spinner-overlay/spinner-overlay.component';
 
 @Injectable({
   providedIn: 'root',

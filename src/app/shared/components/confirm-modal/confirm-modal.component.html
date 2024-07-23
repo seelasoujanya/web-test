@@ -1,0 +1,21 @@
+<div class="confirm-dialog">
+  <div class="header">
+    <div class="header_title">{{ title }}</div>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
+  </div>
+
+  <div class="body">
+    <p>{{ description }}</p>
+  </div>
+
+  <div class="buttons">
+    <button class="cancel-btn" (click)="cancelModal()">
+      {{ cancelButton }}
+    </button>
+    <button class="confirm-btn" (click)="confirmModal()">
+      {{ applyButton }}
+    </button>
+  </div>
+</div>

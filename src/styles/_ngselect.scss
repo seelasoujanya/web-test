@@ -1,0 +1,109 @@
+@import 'src/styles/_variables.scss';
+::ng-deep {
+  .ng-select {
+    .ng-select-container {
+      height: 48px !important;
+      min-height: 48px !important;
+    }
+    .ng-dropdown-panel {
+      z-index: 99 !important;
+    }
+    .ng-select-container {
+      z-index: 90 !important;
+    }
+    .ng-placeholder,
+    .ng-option-label,
+    .ng-input > input,
+    .ng-value {
+      font-family: Graphik, serif;
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      line-height: 22px;
+      color: #333;
+    }
+    .ng-placeholder {
+      color: #8c8c8c;
+    }
+  }
+  .ng-select.ng-select-single
+    .ng-select-container
+    .ng-value-container
+    .ng-input {
+    top: inherit !important;
+  }
+  .ng-select.no-border-radius {
+    border-radius: 0 !important;
+  }
+  .ng-select.no-border-radius .ng-select-container {
+    border-radius: 0 !important;
+  }
+  .ng-select.no-border .ng-select-container {
+    border: 0;
+  }
+  .ng-select.ng-select-opened.no-border .ng-select-container {
+    border: 1px solid !important;
+    border-color: #b3b3b3 #ccc #d9d9d9 !important;
+  }
+  .ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+    border-color: #b3b3b3;
+    box-shadow: none !important;
+  }
+}
+
+::ng-deep {
+  .ng-select.ng-select_size_m {
+    .ng-select-container {
+      height: 40px !important;
+      min-height: 40px !important;
+    }
+  }
+  .ng-select_fontsize_m {
+    .ng-placeholder,
+    .ng-option-label,
+    .ng-input > input,
+    .ng-value {
+      font-family: Graphik;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+      line-height: 20px;
+      letter-spacing: 0.3px;
+      color: #333;
+    }
+  }
+}
+
+.ng-select.custom-delete-button {
+  ::ng-deep {
+    .ng-clear-wrapper .ng-clear {
+      font-size: 0;
+    }
+    .ng-clear-wrapper .ng-clear::before {
+      display: inline-block;
+      width: 8px !important;
+      height: 9px !important;
+      content: '';
+      background: url('^assets/images/filters/group.svg') 100% 100% no-repeat;
+      background-size: cover;
+    }
+  }
+}
+
+.ng-select.item-error {
+  ::ng-deep {
+    .ng-select-container {
+      border: 2px solid $red-3 !important;
+    }
+  }
+}
+
+::ng-deep {
+  .ng-dropdown-footer {
+    padding: 0 10px !important;
+    border-top: unset !important;
+  }
+  .ng-dropdown-footer:hover {
+    background-color: #f5faff;
+  }
+}

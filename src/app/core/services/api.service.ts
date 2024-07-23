@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, pluck } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { IPage } from '../interfaces/page.model';
+import { IPage } from '../models/page.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -71,14 +71,19 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/workflowinstance/${id}`);
   }
 
-  public updateWorkflow(workflowId: number, status: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/workflow/${workflowId}`, status).pipe(
-      map(response => response),
-      catchError(error => {
-        console.error('Error updating workflow:', error);
-        return of(null);
-      })
-    );
+  public updateWorkflow(
+    workflowId: number | unknown,
+    workflow: any
+  ): Observable<any> {
+    return this.http
+      .put(`${this.apiUrl}/workflow/${workflowId}`, workflow)
+      .pipe(
+        map(response => response),
+        catchError(error => {
+          console.error('Error updating workflow:', error);
+          return of(null);
+        })
+      );
   }
 
   public getArtifacts(id: number | unknown): Observable<any> {
@@ -110,5 +115,23 @@ export class ApiService {
       null,
       { params }
     );
+  }
+
+  public getWorkflowById(id: number | unknown): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflow/${id}`);
+  }
+
+  public getEmailsByWorkflowId(id: number | unknown): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/email/workflow/${id}`);
+  }
+
+  public deleteEmailById(id: number | unknown): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/email/${id}`, {
+      responseType: 'text',
+    });
+  }
+
+  public addEmail(id: number | any, bodyParams: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }
 }
