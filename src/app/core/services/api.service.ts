@@ -134,4 +134,26 @@ export class ApiService {
   public addEmail(id: number | any, bodyParams: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }
+
+  public updateEmail(id: number | any, bodyParams: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/email/${id}`, bodyParams);
+  }
+
+  public getWorkflowSteps(
+    id: number | any,
+    queryParams: any
+  ): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/workflow/${id}/steps`, {
+      params: queryParams as any,
+    });
+  }
+
+  public getTemplatesByStepId(
+    id: number | any,
+    queryParams: any
+  ): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/history`, {
+      params: queryParams as any,
+    });
+  }
 }

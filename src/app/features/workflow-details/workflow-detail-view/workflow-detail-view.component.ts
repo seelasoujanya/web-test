@@ -5,7 +5,6 @@ import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
-import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 
@@ -44,6 +43,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   identifier: string = '';
   noInstancesFound: boolean = false;
   public workflowInstanceId: string | null;
+  selectedTab: string = 'summary';
 
   constructor(
     private apiService: ApiService,
@@ -76,6 +76,10 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
 
   public backToWorkflows(): void {
     this.router.navigate(['/workflows']);
+  }
+
+  public selectTab(tab: string) {
+    this.selectedTab = tab;
   }
 
   public getArtifactFiles(): void {

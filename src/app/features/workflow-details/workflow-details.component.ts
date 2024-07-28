@@ -11,6 +11,7 @@ import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
 import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
+import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -23,6 +24,7 @@ import { WorkflowGeneralComponent } from './workflow-general/workflow-general.co
     FormsModule,
     WorkflowHistoryComponent,
     WorkflowGeneralComponent,
+    WorkflowSettingsComponent,
   ],
   templateUrl: './workflow-details.component.html',
   styleUrl: './workflow-details.component.scss',
@@ -39,6 +41,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
     this.getWorkflow();
     this.getEmailsByWorkflowId();
+    this.getWorkflowSteps(this.workflowId, this.pageParams);
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
@@ -72,6 +75,12 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   public workflow: any | null;
 
   public emails: any[] = [];
+
+  public workflowSteps: any[] = [];
+
+  public workflowTemplates: any[] = [];
+
+  public workflowStepId: number | undefined;
 
   public workflowCopy: any;
 
@@ -240,6 +249,9 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
       if (emailData.action && emailData.action === 'CREATE') {
         this.addEmail(emailData.data);
       }
+      if (emailData.action && emailData.action === 'UPDATE') {
+        this.updateEmail(emailData.emailId, emailData.data);
+      }
     }
   }
 
@@ -248,6 +260,43 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
       .addEmail(this.workflow.id, emailData)
       .subscribe((result: any) => {
         this.emails.push(result);
+      });
+  }
+
+  public updateEmail(id: any, emailData: any) {
+    this.apiService.updateEmail(id, emailData).subscribe((result: any) => {
+      this.getEmailsByWorkflowId();
+    });
+  }
+
+  public getWorkflowSteps(id: any, pageParams: any) {
+    this.apiService
+      .getWorkflowSteps(id, pageParams)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(data => {
+        this.page = data;
+        this.workflowSteps = data.content;
+        this.cdRef.markForCheck();
+        console.log('steps', this.workflowSteps);
+        this.workflowSteps.forEach(step => {
+          if (step.name === 'DDEX') {
+            this.workflowStepId = step.id;
+            console.log('stepId', this.workflowStepId);
+          }
+        });
+        this.getTemplates(this.workflowStepId, this.pageParams);
+      });
+  }
+
+  public getTemplates(id: any, pageParams: any) {
+    this.apiService
+      .getTemplatesByStepId(id, pageParams)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(data => {
+        this.page = data;
+        this.workflowTemplates = data.content;
+        this.cdRef.markForCheck();
+        console.log('templates', this.workflowTemplates);
       });
   }
 }

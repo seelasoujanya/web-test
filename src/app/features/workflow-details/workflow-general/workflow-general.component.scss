@@ -5,12 +5,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  // position: sticky;
-  // z-index: 10;
-  // top: 195px;
   background-color: white;
   .general-setting {
-    // height: 270px;
     margin-top: 5px;
     border-radius: 8px;
     background-color: #ffffff;
@@ -38,7 +34,6 @@
     .workflow-content {
       display: flex;
       flex-wrap: wrap;
-      // padding: 16px 24px;
       .workflow-field {
         width: 50%;
         box-sizing: border-box;
@@ -48,7 +43,6 @@
         display: block;
         letter-spacing: 0.3px;
         padding: 16px 24px;
-        // padding-inline: 10px;
         color: #344054;
         .input-field {
           width: 100%;
@@ -90,7 +84,6 @@
             height: 34px;
             border-radius: 4px;
             padding: 6px;
-            // background-color: #BD2C49;
             border: 1px solid black;
             font-weight: 500;
             font-size: 12px;
@@ -109,7 +102,6 @@
     line-height: 24px;
     letter-spacing: 0.3px;
     color: #333333;
-    // border-bottom: 1px solid #e8e8e8;
     .general-setting-label {
       display: flex;
       align-items: center;
@@ -153,7 +145,6 @@
         letter-spacing: 0.5px;
         position: sticky;
         z-index: 10;
-        // top: 450px;
         padding: 0px 10px;
         font-size: 12px;
         line-height: 14.52px;
@@ -169,8 +160,13 @@
           line-height: 16.94px;
           font-size: 14px;
           letter-spacing: 0.3px;
-          .delete-icon {
-            margin-left: 18px;
+          .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-inline: 12px;
+            .delete-icon {
+            }
           }
         }
       }
@@ -290,6 +286,104 @@ textarea:focus {
       font-size: 12px;
       line-height: 20px;
       color: #ffffff;
+    }
+  }
+}
+
+::ng-deep .modal-dialog {
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    border-radius: 6px;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 20px;
+      margin-top: 20px;
+      .header_title {
+        font-family: Graphik, serif;
+        font-size: 24px;
+        font-weight: 500;
+        font-style: normal;
+        line-height: 40px;
+        height: 39px;
+        color: black;
+        margin-bottom: 0px !important;
+      }
+      .header_close-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: white;
+        height: 20px;
+      }
+    }
+    .form-details {
+      height: 100%;
+      overflow-y: auto;
+      font-family: 'Graphik';
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: #828282;
+      padding-inline: 20px;
+      .workflow-field {
+        width: 100%;
+        box-sizing: border-box;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        display: block;
+        letter-spacing: 0.3px;
+        padding-block: 15px;
+        color: #344054;
+        .input-field {
+          width: 100%;
+          height: 44px;
+          margin-top: 10px;
+          padding-left: 10px;
+          font-size: 14px;
+          border: 1px solid #d0d5dd;
+          border-radius: 4px;
+        }
+      }
+      .email-type {
+        margin-bottom: 15px;
+      }
+    }
+    .buttons {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      padding-inline: 20px;
+      margin-bottom: 20px;
+      .confirm-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #bd2c49;
+        border: none;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+      }
+      .cancel-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #262626;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+        margin-left: 258px;
+      }
     }
   }
 }

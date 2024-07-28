@@ -43,13 +43,15 @@ export class WorkflowGeneralComponent implements OnInit {
 
   newEmailData = {
     name: '',
-    emailId: '',
-    type: '',
+    email: '',
+    status: null,
   };
 
   isEditing: boolean = false;
 
   emailId: number | undefined;
+
+  isUpdate: boolean = false;
 
   headings: string[] = ['S.NO', 'EMAIL ID', 'NAME', 'EMAIL TYPE', 'ACTIONS'];
 
@@ -126,18 +128,55 @@ export class WorkflowGeneralComponent implements OnInit {
   addEmail() {
     console.log('added email');
     this.bsModalRef.hide();
-    const data = {
-      action: 'CREATE',
-      data: this.newEmailData,
-    };
+    let data;
+    if (this.isUpdate) {
+      data = {
+        action: 'UPDATE',
+        data: this.newEmailData,
+        emailId: this.emailId,
+      };
+    } else {
+      data = {
+        action: 'CREATE',
+        data: this.newEmailData,
+      };
+    }
     this.workflowEmailEvent.emit(data);
+    this.reset();
   }
 
   openAddEmailDialog(emailTemplate: TemplateRef<any>) {
-    this.bsModalRef = this.modalService.show(emailTemplate);
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(emailTemplate, config);
   }
 
   public closeModal(): void {
     this.bsModalRef.hide();
+  }
+
+  public editEmail(email: any, emailTemplate: TemplateRef<any>) {
+    this.isUpdate = true;
+    this.emailId = email.id;
+    this.newEmailData = JSON.parse(JSON.stringify(email));
+    this.openAddEmailDialog(emailTemplate);
+  }
+
+  public cancelChangesForEmail() {
+    this.closeModal();
+    this.reset();
+  }
+
+  public reset() {
+    this.isUpdate = false;
+    this.emailId = undefined;
+    this.newEmailData = {
+      name: '',
+      email: '',
+      status: null,
+    };
   }
 }

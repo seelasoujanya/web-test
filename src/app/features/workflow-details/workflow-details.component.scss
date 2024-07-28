@@ -69,14 +69,13 @@
     gap: 16px;
     margin-bottom: 20px;
     .buttons {
-      width: 245px;
+      // width: 245px;
       height: 40px;
       display: flex;
       flex-direction: row;
       gap: 4px;
       align-items: center;
       .general-button {
-        width: 77px;
         height: 40px;
         border-radius: 6px;
         padding: 8px 12px;
@@ -88,7 +87,6 @@
         color: #344054;
       }
       .settings-button {
-        width: 87px;
         height: 40px;
         border-radius: 6px;
         padding: 8px 12px;
@@ -100,7 +98,6 @@
         color: #344054;
       }
       .history-button {
-        width: 73px;
         height: 40px;
         border-radius: 6px;
         padding: 8px 12px;

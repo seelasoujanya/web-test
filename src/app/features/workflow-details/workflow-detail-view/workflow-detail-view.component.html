@@ -17,7 +17,30 @@
     </div>
   </div>
 
-  <div class="details-section">
+  <div class="navigate-tabs">
+    <div class="buttons">
+      <button
+        class="summary-button"
+        (click)="selectTab('summary')"
+        [class.active-button]="selectedTab === 'summary'">
+        Summary
+      </button>
+      <button
+        class="artifacts-button"
+        (click)="selectTab('artifacts')"
+        [class.active-button]="selectedTab === 'artifacts'">
+        Artifacts
+      </button>
+      <button
+        class="logs-button"
+        (click)="selectTab('logs')"
+        [class.active-button]="selectedTab === 'logs'">
+        Logs
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedTab === 'summary'" class="details-section">
     <div class="details-info">
       <p class="info-heading">Duration</p>
       <p class="info-data">{{ workflowsInstance.duration }} Min</p>
@@ -42,7 +65,7 @@
     </div>
   </div>
 
-  <div class="files">
+  <div class="files" *ngIf="selectedTab === 'artifacts'">
     <div class="files-label">
       <button
         class="xml-button"
@@ -84,7 +107,7 @@
     </div>
   </div>
 
-  <div class="logs-section">
+  <div class="logs-section" *ngIf="selectedTab === 'logs'">
     <p class="logs">Logs</p>
     <div class="log-items-container">
       <p class="log-items" *ngFor="let log of logsResponse">

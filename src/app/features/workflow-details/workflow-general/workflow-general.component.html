@@ -111,11 +111,18 @@
               </ng-select>
             </td>
             <td class="table-cell">
-              <img
-                src="/assets/icons/delete-icon.svg"
-                class="delete-icon"
-                alt="delete"
-                (click)="deleteEmail(email.id, email.email)" />
+              <div class="actions">
+                <img
+                  src="/assets/icons/delete-icon.svg"
+                  class="delete-icon"
+                  alt="delete"
+                  (click)="deleteEmail(email.id, email.email)" />
+                <img
+                  src="/assets/icons/edit-icon.svg"
+                  alt="edit Icon"
+                  class="edit-icon"
+                  (click)="editEmail(email, addEmailForm)" />
+              </div>
             </td>
           </tr>
         </ng-container>
@@ -126,7 +133,10 @@
 
 <ng-template #addEmailForm class="modal-content">
   <div class="header">
-    <p>Add Email</p>
+    <p class="header_title">Add Email</p>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
   </div>
   <div class="form-details">
     <div class="workflow-field">
@@ -135,7 +145,8 @@
         type="text"
         maxlength="255"
         placeholder="Enter Email"
-        class="input-field" />
+        class="input-field"
+        [(ngModel)]="newEmailData.email" />
     </div>
     <div class="workflow-field">
       <span>Name</span>
@@ -143,22 +154,24 @@
         type="text"
         maxlength="255"
         placeholder="Enter Name"
-        class="input-field" />
+        class="input-field"
+        [(ngModel)]="newEmailData.name" />
     </div>
-    <div class="workflow-field">
+    <div class="workflow-field email-type">
       <span>Email Type</span>
       <ng-select
         [items]="emailStatus"
+        placeholder="Select Type"
         bindLabel="label"
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select status">
+        [(ngModel)]="newEmailData.status">
       </ng-select>
     </div>
   </div>
   <div class="buttons">
-    <button class="cancel-btn" (click)="closeModal()">CANCEL</button>
+    <button class="cancel-btn" (click)="cancelChangesForEmail()">CANCEL</button>
     <button class="confirm-btn" (click)="addEmail()">CONFIRM</button>
   </div>
 </ng-template>

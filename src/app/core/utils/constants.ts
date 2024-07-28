@@ -7,3 +7,8 @@ export const EMAIL_STATUS = [
   { label: 'Success', value: 'SUCCESS' },
   { label: 'Failure', value: 'FAILURE' },
 ];
+
+export const FOLDER_STRUCTURE = [
+  { label: 'ReleaseByRelease', value: 'Release By Release' },
+  { label: 'Batched', value: 'Batched' },
+];
