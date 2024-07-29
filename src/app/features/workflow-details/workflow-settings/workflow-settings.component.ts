@@ -47,11 +47,14 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
   @Input()
   xmlTemplates: any[] = [];
 
-  selectedTemplate: any;
+  selectedTemplate: any = '';
+
+  isReadOnly: boolean = true;
 
   ngOnInit(): void {
     if (this.xmlTemplates.length > 0) {
-      this.selectedTemplate = this.xmlTemplates[0];
+      this.selectedTemplate = this.xmlTemplates[0].template;
+      this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
     }
     console.log('editor options', this.editorOptions);
   }
@@ -63,8 +66,8 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
     language: 'xml',
     roundedSelection: true,
     autoIndent: 'full',
+    readOnly: this.isReadOnly,
   };
-  code = this.getCode();
   reactiveForm: FormGroup;
 
   constructor(
@@ -72,8 +75,9 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder
   ) {
     this.reactiveForm = this.fb.group({
-      code: [this.code],
+      code: [''],
     });
+    console.log('Reactive Form Initialized');
   }
 
   ngAfterViewInit(): void {
@@ -85,6 +89,14 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
       )
       .subscribe(() => {
         console.log('loaded');
+        if (this.monacoComponent) {
+          this.monacoComponent.init.subscribe(
+            (editor: MonacoStandaloneCodeEditor) => {
+              console.log('Monaco editor initialized', editor);
+              this.editorInit(editor);
+            }
+          );
+        }
         this.registerMonacoCustomTheme();
       });
   }
@@ -106,13 +118,8 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getCode() {
-    console.log('here');
-    return "<note>\n  <to>Tove</to>\n  <from>Jani</from>\n  <heading>Reminder</heading>\n  <body>Don't forget me this weekend!</body>\n</note>";
-  }
-
   registerMonacoCustomTheme() {
-    console.log('enter', monaco);
+    console.log('monaco', monaco);
     if (typeof monaco !== 'undefined') {
       monaco.editor.defineTheme('myCustomTheme', {
         base: 'vs-dark',
@@ -133,7 +140,8 @@ export class WorkflowSettingsComponent implements OnInit, AfterViewInit {
 
   selectTemplate(index: number) {
     console.log('index', index);
-    this.selectedTemplate = this.xmlTemplates[index];
+    this.selectedTemplate = this.xmlTemplates[index].template;
+    this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
     console.log('selected', this.selectedTemplate);
   }
 

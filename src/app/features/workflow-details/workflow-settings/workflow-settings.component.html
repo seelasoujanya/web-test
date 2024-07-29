@@ -3,15 +3,19 @@
     <p class="settings-label">Workflow Settings</p>
   </div>
   <div class="settings-info">
-    <p class="info-label">Personal info</p>
-    <div class="input-field">
-      <p class="label">Folder Structure</p>
-      <p>Folder Structure</p>
-    </div>
+    <!-- <p class="info-label">Personal info</p> -->
+    <!-- <div class="input-field">
+            <p class="label">Folder Structure</p>
+            <p>Folder Structure</p>
+        </div> -->
   </div>
   <div class="settings-inputs">
     <p class="label">Process Asset</p>
     <div class="inputs">
+      <div class="input-field">
+        <p class="label">Folder Structure</p>
+        <p>Folder Structure</p>
+      </div>
       <div class="input-field">
         <p>
           Transcode Packshot/Screengrab: JPG <br /><span
@@ -38,14 +42,17 @@
         <p class="label">XML Templates</p>
         <img src="/assets/icons/plus-icon.svg" />
       </div>
-      <div *ngFor="let template of xmlTemplates; let i = index">
-        <span class="version-number" (click)="selectTemplate(i)"
-          >Version {{ i + 1 }}</span
+      <div
+        *ngFor="let template of xmlTemplates; let i = index"
+        style="margin-top: 5px">
+        <span class="version-number" (click)="selectTemplate(i)">
+          Version {{ i + 1 }}</span
         >
-        <div class="time">
-          <span> {{ template.created | date: 'yyyy-MM-dd' }}</span>
-          <span>{{ template.created | date: 'HH:mm' }}</span>
-        </div>
+        <br />
+        <span class="time">
+          {{ template.created | date: 'yyyy-MM-dd' }} -
+          {{ template.created | date: 'HH:mm' }}
+        </span>
       </div>
     </div>
     <div class="right-container">
@@ -63,20 +70,14 @@
         </div>
       </div>
       <div class="template">
-        <div [formGroup]="reactiveForm">
+        <form [formGroup]="reactiveForm" class="form">
           <ngx-monaco-editor
             #monacoEditor
-            [options]="mergeOptions({})"
-            [ngModel]="code"
-            (onInit)="editorInit($event)"
-            formControlName="code"></ngx-monaco-editor>
-        </div>
-        <ngx-monaco-editor
-          #monacoEditor
-          [options]="mergeOptions({})"
-          [ngModel]="code"
-          (onInit)="editorInit($event)"
-          formControlName="code"></ngx-monaco-editor>
+            [options]="editorOptions"
+            formControlName="code"
+            (init)="editorInit($event)">
+          </ngx-monaco-editor>
+        </form>
       </div>
     </div>
   </div>
