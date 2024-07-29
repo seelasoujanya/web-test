@@ -9,12 +9,9 @@ import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
-import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
-import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
-import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
 
 @Component({
-  selector: 'app-workflow-details',
+  selector: 'app-workflow-history',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,15 +19,12 @@ import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings
     DurationPipe,
     PaginationComponent,
     FormsModule,
-    WorkflowHistoryComponent,
-    WorkflowGeneralComponent,
-    WorkflowSettingsComponent,
   ],
-  templateUrl: './workflow-details.component.html',
-  styleUrl: './workflow-details.component.scss',
+  templateUrl: './workflow-history.component.html',
+  styleUrl: './workflow-history.component.scss',
   providers: [ApiService],
 })
-export class WorkflowDetailsComponent implements OnDestroy, OnInit {
+export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
   public ngOnDestroy(): void {
     this.destroyed$.next();
@@ -39,14 +33,10 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.getPageItems(this.pageParams);
-    this.getWorkflow();
-    this.getEmailsByWorkflowId();
-    this.getWorkflowSteps(this.workflowId, this.pageParams);
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
   noInstancesFound: boolean = false;
-  selectedTab: string = 'general';
 
   instanceHeadings: string[] = [
     'Identifier',
@@ -71,18 +61,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   public workflowId: string | null;
 
   public workflowName: string | undefined;
-
-  public workflow: any | null;
-
-  public emails: any[] = [];
-
-  public workflowSteps: any[] = [];
-
-  public workflowTemplates: any[] = [];
-
-  public workflowStepId: number | undefined;
-
-  public workflowCopy: any;
 
   deliveredInstancesCount = 0;
   totalInstancesCount = 0;
@@ -202,101 +180,5 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   public viewInstanceDetails(data: any): void {
     this.router.navigate(['/workflowinstance', data.id]);
-  }
-
-  public selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
-
-  public getWorkflow() {
-    this.apiService
-      .getWorkflowById(this.workflowId)
-      .subscribe((result: any) => {
-        this.workflow = result;
-        this.workflowCopy = JSON.parse(JSON.stringify(result));
-      });
-  }
-
-  public getEmailsByWorkflowId() {
-    this.apiService
-      .getEmailsByWorkflowId(this.workflowId)
-      .subscribe((result: any) => {
-        this.emails = result;
-      });
-  }
-
-  public updateWorkflow(workflow: any) {
-    this.apiService
-      .updateWorkflow(this.workflowId, workflow)
-      .subscribe((result: any) => {
-        this.workflow = result;
-        this.workflowCopy = JSON.parse(JSON.stringify(result));
-      });
-  }
-
-  public deleteEmailById(id: any) {
-    this.apiService.deleteEmailById(id).subscribe((result: any) => {
-      console.log('deleted succesfully');
-      this.getEmailsByWorkflowId();
-    });
-  }
-
-  public workflowEmailSettings(emailData: any) {
-    if (emailData) {
-      if (emailData.action && emailData.action === 'DELETE') {
-        this.deleteEmailById(emailData.emailId);
-      }
-      if (emailData.action && emailData.action === 'CREATE') {
-        this.addEmail(emailData.data);
-      }
-      if (emailData.action && emailData.action === 'UPDATE') {
-        this.updateEmail(emailData.emailId, emailData.data);
-      }
-    }
-  }
-
-  public addEmail(emailData: any) {
-    this.apiService
-      .addEmail(this.workflow.id, emailData)
-      .subscribe((result: any) => {
-        this.emails.push(result);
-      });
-  }
-
-  public updateEmail(id: any, emailData: any) {
-    this.apiService.updateEmail(id, emailData).subscribe((result: any) => {
-      this.getEmailsByWorkflowId();
-    });
-  }
-
-  public getWorkflowSteps(id: any, pageParams: any) {
-    this.apiService
-      .getWorkflowSteps(id, pageParams)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.workflowSteps = data.content;
-        this.cdRef.markForCheck();
-        console.log('steps', this.workflowSteps);
-        this.workflowSteps.forEach(step => {
-          if (step.name === 'DDEX') {
-            this.workflowStepId = step.id;
-            console.log('stepId', this.workflowStepId);
-          }
-        });
-        this.getTemplates(this.workflowStepId, this.pageParams);
-      });
-  }
-
-  public getTemplates(id: any, pageParams: any) {
-    this.apiService
-      .getTemplatesByStepId(id, pageParams)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.workflowTemplates = data.content;
-        this.cdRef.markForCheck();
-        console.log('templates', this.workflowTemplates);
-      });
   }
 }

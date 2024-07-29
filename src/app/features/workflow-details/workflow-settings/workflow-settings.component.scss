@@ -1,0 +1,202 @@
+.workflow-settings-container {
+  width: 98%;
+  margin-inline: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  position: sticky;
+  z-index: 9;
+  top: 60px;
+  .settings-label-header {
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    .settings-label {
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 32px;
+      color: #333333;
+    }
+  }
+  .settings-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .info-label {
+      height: 29px;
+      padding: 0px 0px 1px 0px;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 28px;
+      color: #101828;
+    }
+    .input-field {
+      display: flex;
+      justify-content: space-between;
+      height: 76px;
+      background-color: #f5f5f5;
+      border-radius: 12px;
+      padding: 16px 24px;
+      align-items: center;
+      .label {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 20px;
+        color: #344054;
+      }
+    }
+  }
+  .settings-inputs {
+    .label {
+      height: 29px;
+      padding: 0px 0px 1px 0px;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 28px;
+      color: #101828;
+    }
+    .inputs {
+      background-color: #f5f5f5;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #0000001a;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      .input-field {
+        display: flex;
+        justify-content: space-between;
+        height: 72px;
+        p {
+          // width: 486px;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 24px;
+          color: #344054;
+          span {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 24px;
+            color: #475467;
+          }
+        }
+      }
+    }
+  }
+  .templates-container {
+    display: flex;
+    gap: 24px;
+    .left-container {
+      display: flex;
+      flex-direction: column;
+      background-color: #ffffff;
+      border: 1px solid #f2f2f2;
+      border-radius: 8px;
+      .heading {
+        width: 463px;
+        height: 56px;
+        display: flex;
+        justify-content: space-between;
+        border: 0px 0px 1px 0px;
+        padding: 16px;
+        border-bottom: 1px solid #e8e8e8;
+        .label {
+          font-weight: 500;
+          font-size: 20px;
+          line-height: 24.2px;
+          letter-spacing: 0.3px;
+          color: #333333;
+        }
+      }
+      .version-number {
+        padding: 14px;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: #000000;
+        cursor: pointer;
+      }
+      .version-number:hover {
+        font-weight: 500;
+        // background-color: #f5f5f5;
+      }
+      .time {
+        color: #565656;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 22px;
+        letter-spacing: 0.3px;
+        padding: 14px;
+      }
+    }
+    .right-container {
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px;
+      background-color: #f9fafb;
+      gap: 24px;
+      padding: 24px;
+      width: 873px;
+      .heading {
+        display: flex;
+        height: 40px;
+        justify-content: space-between;
+        .label {
+          font-weight: 600;
+          font-size: 22px;
+          line-height: 26px;
+          color: #000000;
+        }
+        .buttons {
+          height: 40px;
+          display: flex;
+          gap: 8px;
+          .edit-btn {
+            border: none;
+            border-radius: 4px;
+            width: 40px;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #d0d5dd;
+            .edit-icon {
+              margin-bottom: 8px;
+            }
+          }
+          .compare-btn {
+            width: 116px;
+            border-radius: 4px;
+            padding: 10px 32px;
+            background-color: #ffffff;
+            border: 1px solid #d0d5dd;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 20px;
+            color: #333333;
+            text-align: center;
+          }
+          .save-as-btn {
+            width: 130px;
+            border-radius: 4px;
+            padding: 10px 32px;
+            background-color: #ca0a3d;
+            border: 1px solid #ca0a3d;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 20px;
+            color: #ffffff;
+            text-align: center;
+          }
+        }
+      }
+      .template {
+        border-radius: 8px;
+        border: 1px solid #eaecf0;
+        .form {
+          height: 500px;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+}

@@ -47,7 +47,12 @@ export class HeaderComponent {
   }
 
   public showAbout(exampleTemplate: TemplateRef<any>): void {
-    this.modalRef = this.modalService.show(AboutComponent);
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.modalRef = this.modalService.show(AboutComponent, config);
   }
 
   public async logout(): Promise<void> {
@@ -65,6 +70,11 @@ export class HeaderComponent {
   }
 
   public account_info(): void {
-    this.modalRef = this.modalService.show(AccountInfoComponent);
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.modalRef = this.modalService.show(AccountInfoComponent, config);
   }
 }
