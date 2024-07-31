@@ -1,0 +1,61 @@
+.main-container {
+  width: 100%;
+  margin-top: 80px;
+  padding-inline: 15px;
+  flex-direction: column;
+  gap: 24px;
+  .templates-table {
+    padding-inline: 15px;
+    overflow-y: scroll;
+    height: 320px;
+    .table-container {
+      width: 100%;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid #f2f2f2;
+      border-collapse: collapse;
+      table-head {
+        background-color: white;
+      }
+      .table-header-cell {
+        height: 36px;
+        background-color: #f9fafb;
+        border-width: 0px 0px 1px 0px;
+        border-bottom: 1px solid #f2f2f2;
+        text-align: left;
+        font-weight: 400 !important;
+        letter-spacing: 0.5px;
+        position: sticky;
+        z-index: 10;
+        padding: 0px 10px;
+        font-size: 12px;
+        line-height: 14.52px;
+        text-transform: uppercase;
+        color: #656565;
+      }
+      .scrollable-table__body {
+        .table-cell {
+          padding: 10px;
+          height: 72px;
+          color: #333333;
+          font-weight: 400 !important;
+          line-height: 16.94px;
+          font-size: 14px;
+          letter-spacing: 0.3px;
+          .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-inline: 12px;
+            .delete-icon {
+            }
+          }
+        }
+      }
+    }
+    .scrollable-table__body tr:hover {
+      cursor: pointer;
+      background-color: #f9fafb;
+    }
+  }
+}
