@@ -156,4 +156,27 @@ export class ApiService {
       params: queryParams as any,
     });
   }
+
+  public getTemplatesByTemplateId(
+    id: number | any,
+    queryParams: any
+  ): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/versions`, {
+      params: queryParams as any,
+    });
+  }
+
+  public getAllTemplates(queryParams: any): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/template`, {
+      params: queryParams as any,
+    });
+  }
+
+  public updateTemplate(templateId: number | unknown, template: any) {
+    console.log('template api-service', template);
+    return this.http.put<any>(
+      `${this.apiUrl}/template/${templateId}`,
+      template
+    );
+  }
 }

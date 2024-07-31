@@ -36,49 +36,4 @@
       </div>
     </div>
   </div>
-  <div class="templates-container">
-    <div class="left-container">
-      <div class="heading">
-        <p class="label">XML Templates</p>
-        <img src="/assets/icons/plus-icon.svg" />
-      </div>
-      <div
-        *ngFor="let template of xmlTemplates; let i = index"
-        style="margin-top: 5px">
-        <span class="version-number" (click)="selectTemplate(i)">
-          Version {{ i + 1 }}</span
-        >
-        <br />
-        <span class="time">
-          {{ template.created | date: 'yyyy-MM-dd' }} -
-          {{ template.created | date: 'HH:mm' }}
-        </span>
-      </div>
-    </div>
-    <div class="right-container">
-      <div class="heading">
-        <p class="label">DDEX ERN</p>
-        <div class="buttons">
-          <button class="edit-btn">
-            <img
-              src="/assets/icons/edit-icon.svg"
-              alt="export Icon"
-              class="edit-icon" />
-          </button>
-          <button class="compare-btn">Compare</button>
-          <button class="save-as-btn">Save As</button>
-        </div>
-      </div>
-      <div class="template">
-        <form [formGroup]="reactiveForm" class="form">
-          <ngx-monaco-editor
-            #monacoEditor
-            [options]="editorOptions"
-            formControlName="code"
-            (init)="editorInit($event)">
-          </ngx-monaco-editor>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>

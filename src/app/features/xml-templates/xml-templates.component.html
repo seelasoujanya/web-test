@@ -1,1 +1,32 @@
-<p>xml-templates works!</p>
+<div class="main-container">
+  <div class="templates-table">
+    <table class="table-container">
+      <thead class="table-head">
+        <tr>
+          <th *ngFor="let heading of headings" class="table-header-cell">
+            {{ heading }}
+          </th>
+        </tr>
+      </thead>
+      <tbody class="scrollable-table__body">
+        <ng-container>
+          <tr
+            *ngFor="let template of xmlTemplates; let i = index"
+            (click)="navigateToTemplateDetails(template.id)">
+            <td class="table-cell">{{ i + 1 }}</td>
+            <td class="table-cell">{{ template.name }}</td>
+            <td class="table-cell">{{ template.description }}</td>
+            <td class="table-cell">
+              {{ template.created | date: 'yyyy-MM-dd' }}<br />
+              <span class="time">{{ template.created | date: 'HH:mm' }}</span>
+            </td>
+            <td class="table-cell">
+              {{ template.modified | date: 'yyyy-MM-dd' }}<br />
+              <span class="time">{{ template.modified | date: 'HH:mm' }}</span>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
