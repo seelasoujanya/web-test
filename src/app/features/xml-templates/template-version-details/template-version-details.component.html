@@ -12,8 +12,8 @@
       </span>
       <br />
       <span class="time">
-        {{ template.template.created | date: 'yyyy-MM-dd' }} -
-        {{ template.template.created | date: 'HH:mm' }}
+        {{ template.created | date: 'yyyy-MM-dd' }} -
+        {{ template.created | date: 'HH:mm' }}
       </span>
     </div>
   </div>
@@ -27,7 +27,11 @@
             alt="export Icon"
             class="edit-icon" />
         </button>
-        <!-- <button class="compare-btn" (click)="openCompareDialog(compareTemplateForm)">Compare</button> -->
+        <button
+          class="compare-btn"
+          (click)="openCompareDialog(compareTemplateForm)">
+          Compare
+        </button>
         <button
           class="save-as-btn"
           [disabled]="!isEditable"
@@ -58,17 +62,45 @@
     </button>
   </div>
   <div class="form-details">
-    <div class="workflow-field">
+    <div class="select-templates">
       <ng-select
-        [items]="templateNames"
-        placeholder="Select Template"
+        [items]="templates"
+        bindLabel="name"
+        bindValue="xmlTemplate"
+        placeholder="Select First Template"
         [searchable]="false"
         [clearable]="false"
-        [(ngModel)]="compareTemplate.template">
+        [(ngModel)]="compareTemplate.firstTemplate"
+        class="input-field"
+        (change)="selectFirstTemplate($event)">
       </ng-select>
-      <!-- <ng-select placeholder="Select Template" [searchable]="false" [clearable]="false">
-            </ng-select> -->
+      <ng-select
+        [items]="templates"
+        bindLabel="name"
+        bindValue="xmlTemplate"
+        placeholder="Select Second Template"
+        [searchable]="false"
+        [clearable]="false"
+        [(ngModel)]="compareTemplate.secondTemplate"
+        class="input-field"
+        (change)="selectSecondTemplate($event)">
+      </ng-select>
     </div>
+    <!-- <div class="workflow-field">
+            <span>Description</span>
+            <textarea placeholder="add description" class="text-field" [(ngModel)]="compareTemplate.description"></textarea>
+        </div> -->
+  </div>
+
+  <div class="compareTemplates" *ngIf="showDifferences">
+    <form class="diff-editor-form">
+      <ngx-monaco-diff-editor
+        [options]="diffEditorOptions"
+        [original]="originalCode"
+        [modified]="modifiedCode"
+        style="height: 100%; width: 100%">
+      </ngx-monaco-diff-editor>
+    </form>
   </div>
   <div class="buttons">
     <button class="cancel-btn" (click)="closeModal()">CANCEL</button>

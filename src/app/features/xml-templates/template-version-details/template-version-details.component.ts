@@ -16,6 +16,7 @@ import {
   MonacoEditorLoaderService,
   MonacoEditorModule,
   MonacoStandaloneCodeEditor,
+  MonacoDiffEditorComponent,
 } from '@materia-ui/ngx-monaco-editor';
 import {
   FormBuilder,
@@ -27,6 +28,7 @@ import { CommonModule } from '@angular/common';
 import { filter, Subject, take, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-template-version-details',
@@ -56,9 +58,16 @@ export class TemplateVersionDetailsComponent
   isEditable: boolean = false;
   updatedTemplate: string = '';
   editedTemplate: any;
+  firstTemplate: any;
+  secondTemplate: any;
+  showDifferences: boolean = false;
+  originalCode: any;
+  modifiedCode: any;
 
   compareTemplate = {
-    template: '',
+    firstTemplate: '',
+    secondTemplate: '',
+    description: '',
   };
 
   templates: any[] = [];
@@ -74,6 +83,11 @@ export class TemplateVersionDetailsComponent
     roundedSelection: true,
     autoIndent: 'full',
     readOnly: this.isReadOnly,
+  };
+
+  diffEditorOptions: MonacoEditorConstructionOptions = {
+    theme: 'myCustomTheme',
+    readOnly: true,
   };
 
   reactiveForm: FormGroup;
@@ -209,15 +223,44 @@ export class TemplateVersionDetailsComponent
   public editTemplate() {
     this.editedTemplate = this.reactiveForm.get('code')?.value;
     console.log('TEMPLATE edit', this.editedTemplate);
-    const editedVersion = {
-      id: this.templateId,
-      xmlTemplate: `"${this.editedTemplate}"`,
+
+    const modalData = {
+      title: 'Confirm Template Edit',
+      description: 'Are you sure you want to save changes to this template?',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+      comments: '',
     };
-    this.apiService
-      .updateTemplate(this.templateId, editedVersion)
-      .subscribe((result: any) => {
-        this.getTemplatesByTemplateId(this.templateId);
-      });
+
+    this.bsModalRef = this.modalService.show(ConfirmModalComponent);
+    this.bsModalRef.content.title = modalData.title;
+    this.bsModalRef.content.description = modalData.description;
+    this.bsModalRef.content.applyButton = modalData.btn1Name;
+    this.bsModalRef.content.cancelButton = modalData.btn2Name;
+    this.bsModalRef.content.comments = modalData.comments;
+    this.bsModalRef.content.updateChanges.subscribe((result: boolean) => {
+      if (result) {
+        const editedVersion = {
+          id: this.templateId,
+          xmlTemplate: `"${this.editedTemplate}"`,
+        };
+        this.apiService
+          .updateTemplate(this.templateId, editedVersion)
+          .subscribe((result: any) => {
+            this.getTemplatesByTemplateId(this.templateId);
+          });
+      } else {
+        this.cancelChangesToUpdateTemplate();
+      }
+    });
+  }
+
+  ///check this and update
+  cancelChangesToUpdateTemplate() {
+    this.editedTemplate = '';
+    this.showDifferences = false;
+    this.compareTemplate.firstTemplate = '';
+    this.compareTemplate.secondTemplate = '';
   }
 
   public getTemplates(pageParams: any) {
@@ -243,7 +286,39 @@ export class TemplateVersionDetailsComponent
 
   public closeModal(): void {
     this.bsModalRef.hide();
+    this.showDifferences = false;
+    this.compareTemplate.firstTemplate = '';
+    this.compareTemplate.secondTemplate = '';
   }
 
-  compareChanges() {}
+  selectFirstTemplate(firstTemplate: any) {
+    this.firstTemplate = firstTemplate;
+    this.originalCode = firstTemplate.xmlTemplate;
+  }
+
+  selectSecondTemplate(secondTemplate: any) {
+    this.secondTemplate = secondTemplate;
+    this.modifiedCode = secondTemplate.xmlTemplate;
+  }
+
+  areAllFieldsFilled(): boolean {
+    if (
+      this.compareTemplate.firstTemplate &&
+      this.compareTemplate.secondTemplate
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  compareChanges() {
+    console.log('enter compare method');
+    console.log('first', this.originalCode);
+    console.log('second', this.modifiedCode);
+    if (this.areAllFieldsFilled()) {
+      this.showDifferences = true;
+    } else {
+      alert('Please fill all the fields before comparing.');
+    }
+  }
 }

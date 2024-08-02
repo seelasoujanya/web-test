@@ -20,7 +20,6 @@ import {
   MonacoEditorConstructionOptions,
   MonacoEditorLoaderService,
   MonacoEditorModule,
-  MonacoStandaloneCodeEditor,
 } from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { filter, Subject, take, takeUntil } from 'rxjs';
@@ -130,6 +129,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   }
 
   navigateToTemplateDetails(templateId: number): void {
+    console.log('template id:', templateId);
     this.router.navigate(['/template', templateId]);
   }
 }

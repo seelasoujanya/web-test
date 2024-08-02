@@ -2,10 +2,18 @@
   width: 100%;
   margin-top: 80px;
   padding-inline: 15px;
+  display: flex;
   flex-direction: column;
   gap: 24px;
+  .label {
+    width: 134px;
+    height: 32px;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 32px;
+    color: #000000;
+  }
   .templates-table {
-    padding-inline: 15px;
     overflow-y: scroll;
     height: 320px;
     .table-container {
