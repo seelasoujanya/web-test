@@ -80,6 +80,9 @@
             margin-bottom: 8px;
           }
         }
+        .edit-btn:hover {
+          opacity: 0.5;
+        }
         .compare-btn {
           width: 116px;
           border-radius: 4px;
@@ -91,6 +94,9 @@
           line-height: 20px;
           color: #333333;
           text-align: center;
+        }
+        .compare-btn:hover {
+          opacity: 0.5;
         }
         .save-as-btn {
           width: 130px;
@@ -225,6 +231,9 @@
         line-height: 20px;
         color: #ffffff;
       }
+      .confirm-btn:hover {
+        opacity: 0.5;
+      }
       .cancel-btn {
         width: 98px;
         height: 34px;
@@ -236,6 +245,9 @@
         line-height: 20px;
         color: #ffffff;
         margin-left: 560px;
+      }
+      .cancel-btn:hover {
+        opacity: 0.5;
       }
     }
   }
