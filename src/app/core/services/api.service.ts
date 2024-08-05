@@ -135,6 +135,10 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }
 
+  public addTemplate(bodyParams: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/template`, bodyParams);
+  }
+
   public updateEmail(id: number | any, bodyParams: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }

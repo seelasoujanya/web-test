@@ -1,14 +1,15 @@
 <div class="templates-container">
   <div class="left-container">
     <div class="heading">
-      <p class="label">XML Templates</p>
-      <img src="/assets/icons/plus-icon.svg" />
+      <p class="label">History</p>
+      <!-- <img src="/assets/icons/plus-icon.svg" /> -->
     </div>
     <div
       *ngFor="let template of xmlTemplatesById; let i = index"
-      style="margin-top: 5px">
+      style="margin-top: 5px"
+      [ngClass]="{ 'selected-version': i === selectedTemplateIndex }">
       <span class="version-number" (click)="selectTemplate(i)">
-        Version {{ i + 1 }}
+        Version {{ xmlTemplatesById.length - i }}
       </span>
       <br />
       <span class="time">
@@ -64,9 +65,9 @@
   <div class="form-details">
     <div class="select-templates">
       <ng-select
-        [items]="templates"
-        bindLabel="name"
-        bindValue="xmlTemplate"
+        [items]="xmlTemplatesById"
+        bindLabel="id"
+        bindValue="templateCode"
         placeholder="Select First Template"
         [searchable]="false"
         [clearable]="false"
@@ -75,9 +76,9 @@
         (change)="selectFirstTemplate($event)">
       </ng-select>
       <ng-select
-        [items]="templates"
-        bindLabel="name"
-        bindValue="xmlTemplate"
+        [items]="xmlTemplatesById"
+        bindLabel="id"
+        bindValue="templateCode"
         placeholder="Select Second Template"
         [searchable]="false"
         [clearable]="false"
@@ -86,10 +87,6 @@
         (change)="selectSecondTemplate($event)">
       </ng-select>
     </div>
-    <!-- <div class="workflow-field">
-            <span>Description</span>
-            <textarea placeholder="add description" class="text-field" [(ngModel)]="compareTemplate.description"></textarea>
-        </div> -->
   </div>
 
   <div class="compareTemplates" *ngIf="showDifferences">

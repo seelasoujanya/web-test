@@ -1,6 +1,16 @@
 <div class="main-container">
   <div class="label">
-    <p id="track-assets-copy">History</p>
+    <p id="track-assets-copy">XML Templates</p>
+    <button
+      class="add-template-btn"
+      type="button"
+      (click)="openCreateTemplateDialog(createTemplateForm)">
+      <img
+        src="/assets/icons/create-logo.svg"
+        class="create-icon"
+        alt="create Icon" />
+      CREATE TEMPLATE
+    </button>
   </div>
   <div class="templates-table">
     <table class="table-container">
@@ -33,3 +43,48 @@
     </table>
   </div>
 </div>
+
+<ng-template #createTemplateForm class="modal-content">
+  <div class="header">
+    <p class="header_title">Create Template</p>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
+  </div>
+  <div class="form-details">
+    <div class="workflow-field">
+      <span>Name</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Enter Name"
+        class="input-field"
+        [(ngModel)]="newTemplateData.name" />
+    </div>
+    <div class="workflow-field">
+      <span>Description</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Enter Description"
+        class="input-field"
+        [(ngModel)]="newTemplateData.description" />
+    </div>
+    <div class="template">
+      <span>Template</span>
+      <form [formGroup]="reactiveForm" class="form">
+        <ngx-monaco-editor
+          #monacoEditor
+          [options]="editorOptions"
+          formControlName="code"
+          (init)="editorInit($event)"
+          [(ngModel)]="newTemplateData.templateCode">
+        </ngx-monaco-editor>
+      </form>
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="cancel-btn" (click)="cancelChanges()">CANCEL</button>
+    <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
+  </div>
+</ng-template>

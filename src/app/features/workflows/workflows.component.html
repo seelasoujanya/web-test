@@ -11,10 +11,11 @@
             class="searchField"
             name="searchInput"
             placeholder="Search in Workflow"
+            [(ngModel)]="workflowName"
             required />
         </div>
         <div class="search-button">
-          <button class="searchButton" type="button">
+          <button class="searchButton" type="button" (click)="searchWorkflow()">
             <img
               src="/assets/icons/search.svg"
               class="search-icon"

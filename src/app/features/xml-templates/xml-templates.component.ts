@@ -6,6 +6,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import {
@@ -22,6 +23,7 @@ import {
   MonacoEditorModule,
 } from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { filter, Subject, take, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
@@ -39,6 +41,7 @@ import { ApiService } from 'src/app/core/services/api.service';
   ],
   templateUrl: './xml-templates.component.html',
   styleUrl: './xml-templates.component.scss',
+  providers: [BsModalService],
 })
 export class XmlTemplatesComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
@@ -53,11 +56,17 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
 
   selectedTemplate: any = '';
 
-  isReadOnly: boolean = true;
+  isReadOnly: boolean = false;
 
   isEditable: boolean = false;
 
   updatedTemplate: any = '';
+
+  newTemplateData = {
+    name: '',
+    description: '',
+    templateCode: '',
+  };
 
   headings: string[] = ['S.NO', 'NAME', 'DESCRIPTION', 'CREATED', 'MODIFIED'];
   public page!: IPage<any>;
@@ -93,12 +102,24 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private apiService: ApiService,
     private cdRef: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef
   ) {
     this.reactiveForm = this.fb.group({
       code: [''],
     });
     console.log('Reactive Form Initialized');
+  }
+
+  editorInit(editor: any) {
+    console.log('initialised', editor);
+    editor.setSelection({
+      startLineNumber: 1,
+      startColumn: 1,
+      endColumn: 50,
+      endLineNumber: 3,
+    });
   }
 
   public getTemplates(pageParams: any) {
@@ -131,5 +152,41 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   navigateToTemplateDetails(templateId: number): void {
     console.log('template id:', templateId);
     this.router.navigate(['/template', templateId]);
+  }
+
+  openCreateTemplateDialog(emailTemplate: TemplateRef<any>) {
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(emailTemplate, config);
+  }
+
+  public closeModal(): void {
+    this.bsModalRef.hide();
+  }
+
+  public cancelChanges() {
+    this.closeModal();
+    this.reset();
+  }
+
+  reset() {
+    this.newTemplateData = {
+      name: '',
+      description: '',
+      templateCode: '',
+    };
+  }
+
+  public createTemplate() {
+    this.bsModalRef.hide();
+    this.apiService
+      .addTemplate(this.newTemplateData)
+      .subscribe((result: any) => {
+        this.xmlTemplates.push(result);
+      });
+    this.reset();
   }
 }

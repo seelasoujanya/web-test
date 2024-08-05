@@ -1,10 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './confirm-modal.component.html',
   styleUrl: './confirm-modal.component.scss',
 })
@@ -21,8 +23,13 @@ export class ConfirmModalComponent {
   @Input()
   public cancelButton: string = '';
 
+  @Input()
+  public enableComments: boolean = false;
+
   @Output()
-  public updateChanges = new EventEmitter<boolean>();
+  public updateChanges = new EventEmitter<any>();
+
+  templateDescription: string = '';
 
   constructor(private bsModalRef: BsModalRef) {}
 
@@ -31,7 +38,12 @@ export class ConfirmModalComponent {
   }
 
   public confirmModal(): void {
-    this.updateChanges.emit(true);
+    if (this.enableComments) {
+      console.log('enabled', this.enableComments);
+      this.updateChanges.emit(this.templateDescription);
+    } else {
+      this.updateChanges.emit(true);
+    }
     this.bsModalRef.hide();
   }
 

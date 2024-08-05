@@ -63,6 +63,8 @@ export class TemplateVersionDetailsComponent
   showDifferences: boolean = false;
   originalCode: any;
   modifiedCode: any;
+  templateName: any;
+  selectedTemplateIndex: any;
 
   compareTemplate = {
     firstTemplate: '',
@@ -111,6 +113,7 @@ export class TemplateVersionDetailsComponent
 
   ngOnInit(): void {
     this.getTemplates(this.pageParams);
+    this.selectedTemplateIndex = 0;
     this.getTemplatesByTemplateId(this.templateId);
     console.log('editor options', this.editorOptions);
   }
@@ -186,10 +189,13 @@ export class TemplateVersionDetailsComponent
     }
   }
 
-  selectTemplate(index: number) {
+  selectTemplate(id: number) {
+    console.log('id', id);
+    const index = this.xmlTemplatesById.length - 1 - id;
+    this.selectedTemplateIndex = id;
     console.log('index', index);
     if (index >= 0 && index < this.xmlTemplatesById.length) {
-      this.selectedTemplate = this.xmlTemplatesById[index].updatedTemplate;
+      this.selectedTemplate = this.xmlTemplatesById[index].templateCode;
       this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
       console.log('selected', this.selectedTemplate);
     } else {
@@ -214,7 +220,10 @@ export class TemplateVersionDetailsComponent
         this.cdRef.markForCheck();
         console.log('templatesByTemplateId', this.xmlTemplatesById);
         if (this.xmlTemplatesById.length > 0) {
-          this.selectedTemplate = this.xmlTemplatesById[0].template.xmlTemplate;
+          this.selectedTemplate =
+            this.xmlTemplatesById[
+              this.xmlTemplatesById.length - 1
+            ].templateCode;
           this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
         }
       });
@@ -229,7 +238,7 @@ export class TemplateVersionDetailsComponent
       description: 'Are you sure you want to save changes to this template?',
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
-      comments: '',
+      enableComments: true,
     };
 
     this.bsModalRef = this.modalService.show(ConfirmModalComponent);
@@ -237,12 +246,13 @@ export class TemplateVersionDetailsComponent
     this.bsModalRef.content.description = modalData.description;
     this.bsModalRef.content.applyButton = modalData.btn1Name;
     this.bsModalRef.content.cancelButton = modalData.btn2Name;
-    this.bsModalRef.content.comments = modalData.comments;
-    this.bsModalRef.content.updateChanges.subscribe((result: boolean) => {
+    this.bsModalRef.content.enableComments = modalData.enableComments;
+    this.bsModalRef.content.updateChanges.subscribe((result: any) => {
       if (result) {
         const editedVersion = {
           id: this.templateId,
-          xmlTemplate: `"${this.editedTemplate}"`,
+          description: result,
+          templateCode: `"${this.editedTemplate}"`,
         };
         this.apiService
           .updateTemplate(this.templateId, editedVersion)
@@ -293,32 +303,20 @@ export class TemplateVersionDetailsComponent
 
   selectFirstTemplate(firstTemplate: any) {
     this.firstTemplate = firstTemplate;
-    this.originalCode = firstTemplate.xmlTemplate;
+    this.originalCode = firstTemplate.templateCode;
   }
 
   selectSecondTemplate(secondTemplate: any) {
     this.secondTemplate = secondTemplate;
-    this.modifiedCode = secondTemplate.xmlTemplate;
-  }
-
-  areAllFieldsFilled(): boolean {
-    if (
-      this.compareTemplate.firstTemplate &&
-      this.compareTemplate.secondTemplate
-    ) {
-      return true;
-    }
-    return false;
+    this.modifiedCode = secondTemplate.templateCode;
   }
 
   compareChanges() {
     console.log('enter compare method');
     console.log('first', this.originalCode);
     console.log('second', this.modifiedCode);
-    if (this.areAllFieldsFilled()) {
-      this.showDifferences = true;
-    } else {
-      alert('Please fill all the fields before comparing.');
-    }
+    this.showDifferences = true;
   }
+
+  getLabel() {}
 }
