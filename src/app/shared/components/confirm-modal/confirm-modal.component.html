@@ -8,6 +8,16 @@
 
   <div class="body">
     <p>{{ description }}</p>
+    <ng-container *ngIf="enableComments">
+      <div class="workflow-field">
+        <span>Description</span>
+        <textarea
+          placeholder="add description"
+          class="text-field"
+          [(ngModel)]="templateDescription"
+          [class.mandatory]="!(templateDescription == '')"></textarea>
+      </div>
+    </ng-container>
   </div>
 
   <div class="buttons">

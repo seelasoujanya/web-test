@@ -2,12 +2,39 @@
   width: 100%;
   margin-top: 80px;
   padding-inline: 15px;
+  display: flex;
   flex-direction: column;
   gap: 24px;
+  .label {
+    display: flex;
+    justify-content: space-between;
+    height: 32px;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 32px;
+    color: #000000;
+    .add-template-btn {
+      // width: 98px;
+      height: 34px;
+      border-radius: 4px;
+      padding: 6px;
+      background-color: #bd2c49;
+      border: none;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 20px;
+      color: #ffffff;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      .create-icon {
+        margin-left: 2px;
+      }
+    }
+  }
   .templates-table {
-    padding-inline: 15px;
     overflow-y: scroll;
-    height: 320px;
+    margin-bottom: 20px;
     .table-container {
       width: 100%;
       border-radius: 8px;
@@ -56,6 +83,113 @@
     .scrollable-table__body tr:hover {
       cursor: pointer;
       background-color: #f9fafb;
+    }
+  }
+}
+
+::ng-deep .modal-dialog {
+  min-width: 600px;
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    border-radius: 6px;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 20px;
+      margin-top: 20px;
+      .header_title {
+        font-family: Graphik, serif;
+        font-size: 24px;
+        font-weight: 500;
+        font-style: normal;
+        line-height: 40px;
+        height: 39px;
+        color: black;
+        margin-bottom: 0px !important;
+      }
+      .header_close-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: white;
+        height: 20px;
+      }
+    }
+    .form-details {
+      height: 100%;
+      overflow-y: auto;
+      font-family: 'Graphik';
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: #828282;
+      padding-inline: 20px;
+      .workflow-field {
+        width: 100%;
+        box-sizing: border-box;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        display: block;
+        letter-spacing: 0.3px;
+        padding-block: 15px;
+        color: #344054;
+        .input-field {
+          width: 100%;
+          height: 44px;
+          margin-top: 10px;
+          padding-left: 10px;
+          font-size: 14px;
+          border: 1px solid #d0d5dd;
+          border-radius: 4px;
+        }
+      }
+      .template {
+        border-radius: 8px;
+        border: 1px solid #eaecf0;
+        .form {
+          height: 500px;
+          overflow: hidden;
+        }
+      }
+      .email-type {
+        margin-bottom: 15px;
+      }
+    }
+    .buttons {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      padding-inline: 20px;
+      margin-bottom: 20px;
+      .confirm-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #bd2c49;
+        border: none;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+      }
+      .cancel-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #262626;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+        margin-left: 258px;
+      }
     }
   }
 }

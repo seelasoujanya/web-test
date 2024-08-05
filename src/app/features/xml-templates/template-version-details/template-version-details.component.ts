@@ -16,6 +16,7 @@ import {
   MonacoEditorLoaderService,
   MonacoEditorModule,
   MonacoStandaloneCodeEditor,
+  MonacoDiffEditorComponent,
 } from '@materia-ui/ngx-monaco-editor';
 import {
   FormBuilder,
@@ -27,6 +28,7 @@ import { CommonModule } from '@angular/common';
 import { filter, Subject, take, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-template-version-details',
@@ -56,9 +58,18 @@ export class TemplateVersionDetailsComponent
   isEditable: boolean = false;
   updatedTemplate: string = '';
   editedTemplate: any;
+  firstTemplate: any;
+  secondTemplate: any;
+  showDifferences: boolean = false;
+  originalCode: any;
+  modifiedCode: any;
+  templateName: any;
+  selectedTemplateIndex: any;
 
   compareTemplate = {
-    template: '',
+    firstTemplate: '',
+    secondTemplate: '',
+    description: '',
   };
 
   templates: any[] = [];
@@ -74,6 +85,11 @@ export class TemplateVersionDetailsComponent
     roundedSelection: true,
     autoIndent: 'full',
     readOnly: this.isReadOnly,
+  };
+
+  diffEditorOptions: MonacoEditorConstructionOptions = {
+    theme: 'myCustomTheme',
+    readOnly: true,
   };
 
   reactiveForm: FormGroup;
@@ -97,6 +113,7 @@ export class TemplateVersionDetailsComponent
 
   ngOnInit(): void {
     this.getTemplates(this.pageParams);
+    this.selectedTemplateIndex = 0;
     this.getTemplatesByTemplateId(this.templateId);
     console.log('editor options', this.editorOptions);
   }
@@ -172,10 +189,13 @@ export class TemplateVersionDetailsComponent
     }
   }
 
-  selectTemplate(index: number) {
+  selectTemplate(id: number) {
+    console.log('id', id);
+    const index = this.xmlTemplatesById.length - 1 - id;
+    this.selectedTemplateIndex = id;
     console.log('index', index);
     if (index >= 0 && index < this.xmlTemplatesById.length) {
-      this.selectedTemplate = this.xmlTemplatesById[index].updatedTemplate;
+      this.selectedTemplate = this.xmlTemplatesById[index].templateCode;
       this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
       console.log('selected', this.selectedTemplate);
     } else {
@@ -200,7 +220,10 @@ export class TemplateVersionDetailsComponent
         this.cdRef.markForCheck();
         console.log('templatesByTemplateId', this.xmlTemplatesById);
         if (this.xmlTemplatesById.length > 0) {
-          this.selectedTemplate = this.xmlTemplatesById[0].template.xmlTemplate;
+          this.selectedTemplate =
+            this.xmlTemplatesById[
+              this.xmlTemplatesById.length - 1
+            ].templateCode;
           this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
         }
       });
@@ -209,15 +232,45 @@ export class TemplateVersionDetailsComponent
   public editTemplate() {
     this.editedTemplate = this.reactiveForm.get('code')?.value;
     console.log('TEMPLATE edit', this.editedTemplate);
-    const editedVersion = {
-      id: this.templateId,
-      xmlTemplate: `"${this.editedTemplate}"`,
+
+    const modalData = {
+      title: 'Confirm Template Edit',
+      description: 'Are you sure you want to save changes to this template?',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+      enableComments: true,
     };
-    this.apiService
-      .updateTemplate(this.templateId, editedVersion)
-      .subscribe((result: any) => {
-        this.getTemplatesByTemplateId(this.templateId);
-      });
+
+    this.bsModalRef = this.modalService.show(ConfirmModalComponent);
+    this.bsModalRef.content.title = modalData.title;
+    this.bsModalRef.content.description = modalData.description;
+    this.bsModalRef.content.applyButton = modalData.btn1Name;
+    this.bsModalRef.content.cancelButton = modalData.btn2Name;
+    this.bsModalRef.content.enableComments = modalData.enableComments;
+    this.bsModalRef.content.updateChanges.subscribe((result: any) => {
+      if (result) {
+        const editedVersion = {
+          id: this.templateId,
+          description: result,
+          templateCode: `"${this.editedTemplate}"`,
+        };
+        this.apiService
+          .updateTemplate(this.templateId, editedVersion)
+          .subscribe((result: any) => {
+            this.getTemplatesByTemplateId(this.templateId);
+          });
+      } else {
+        this.cancelChangesToUpdateTemplate();
+      }
+    });
+  }
+
+  ///check this and update
+  cancelChangesToUpdateTemplate() {
+    this.editedTemplate = '';
+    this.showDifferences = false;
+    this.compareTemplate.firstTemplate = '';
+    this.compareTemplate.secondTemplate = '';
   }
 
   public getTemplates(pageParams: any) {
@@ -243,7 +296,27 @@ export class TemplateVersionDetailsComponent
 
   public closeModal(): void {
     this.bsModalRef.hide();
+    this.showDifferences = false;
+    this.compareTemplate.firstTemplate = '';
+    this.compareTemplate.secondTemplate = '';
   }
 
-  compareChanges() {}
+  selectFirstTemplate(firstTemplate: any) {
+    this.firstTemplate = firstTemplate;
+    this.originalCode = firstTemplate.templateCode;
+  }
+
+  selectSecondTemplate(secondTemplate: any) {
+    this.secondTemplate = secondTemplate;
+    this.modifiedCode = secondTemplate.templateCode;
+  }
+
+  compareChanges() {
+    console.log('enter compare method');
+    console.log('first', this.originalCode);
+    console.log('second', this.modifiedCode);
+    this.showDifferences = true;
+  }
+
+  getLabel() {}
 }

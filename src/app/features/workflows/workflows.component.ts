@@ -6,16 +6,19 @@ import { IPage } from 'src/app/core/models/page.model';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-workflows',
   standalone: true,
-  imports: [WorkflowTableComponent, PaginationComponent],
+  imports: [WorkflowTableComponent, PaginationComponent, FormsModule],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
   providers: [ApiService],
 })
 export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
+
+  workflowName: string = '';
 
   headings: string[] = [
     'Workflow Name',
@@ -94,6 +97,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       pazeSize: 10,
       sortBy: '',
       order: 'asc',
+      search: '',
     };
   }
 
@@ -102,6 +106,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.pageParams.sortBy =
       this.headingEnum[heading as keyof typeof this.headingEnum];
     this.pageParams.order = event.order;
+    this.getPageItems(this.pageParams);
+  }
+
+  searchWorkflow(): void {
+    this.pageParams.search = this.workflowName;
     this.getPageItems(this.pageParams);
   }
 }

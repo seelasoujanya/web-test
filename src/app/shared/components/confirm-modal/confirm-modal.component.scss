@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 28px 20px 30px 20px;
+    padding: 0px 20px 30px 20px;
     .header_title {
       font-family: Graphik, serif;
       font-size: 24px;
@@ -37,6 +37,25 @@
     font-weight: 400;
     letter-spacing: 0.5px;
     color: #828282;
+    .workflow-field {
+      width: 50%;
+      box-sizing: border-box;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+      display: block;
+      letter-spacing: 0.3px;
+      color: #344054;
+      .text-field {
+        width: 100%;
+        height: 90px;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #d0d5dd;
+        border-radius: 4px;
+      }
+    }
   }
   .buttons {
     display: flex;
@@ -68,4 +87,8 @@
       color: #ffffff;
     }
   }
+}
+
+.mandatory {
+  border: #bd2c49;
 }

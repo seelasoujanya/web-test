@@ -110,9 +110,10 @@
   <div class="logs-section" *ngIf="selectedTab === 'logs'">
     <p class="logs">Logs</p>
     <div class="log-items-container">
-      <p class="log-items" *ngFor="let log of logsResponse">
-        {{ (log ? '[' : '') + log }}
-      </p>
+      <pre class="log-items" *ngFor="let log of logsResponse">
+                {{ (log ? '[' : '') + log }}
+            </pre
+      >
     </div>
   </div>
 </div>
