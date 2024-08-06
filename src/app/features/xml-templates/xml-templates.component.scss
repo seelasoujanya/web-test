@@ -4,8 +4,12 @@
   padding-inline: 15px;
   display: flex;
   flex-direction: column;
+  background-color: #ffffff;
   gap: 24px;
   .label {
+    position: sticky;
+    top: 65px;
+    z-index: 10;
     display: flex;
     justify-content: space-between;
     height: 32px;
@@ -14,10 +18,9 @@
     line-height: 32px;
     color: #000000;
     .add-template-btn {
-      // width: 98px;
       height: 34px;
       border-radius: 4px;
-      padding: 6px;
+      padding: 10px;
       background-color: #bd2c49;
       border: none;
       font-weight: 500;
@@ -55,8 +58,6 @@
         text-align: left;
         font-weight: 400 !important;
         letter-spacing: 0.5px;
-        position: sticky;
-        z-index: 10;
         padding: 0px 10px;
         font-size: 12px;
         line-height: 14.52px;
@@ -201,4 +202,12 @@
       }
     }
   }
+}
+
+.page-view {
+  margin-top: 20px;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: center;
 }

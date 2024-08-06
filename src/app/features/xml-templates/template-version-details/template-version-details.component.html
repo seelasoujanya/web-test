@@ -9,7 +9,7 @@
       style="margin-top: 5px"
       [ngClass]="{ 'selected-version': i === selectedTemplateIndex }">
       <span class="version-number" (click)="selectTemplate(i)">
-        Version {{ xmlTemplatesById.length - i }}
+        {{ template?.displayName }}
       </span>
       <br />
       <span class="time">
@@ -66,7 +66,7 @@
     <div class="select-templates">
       <ng-select
         [items]="xmlTemplatesById"
-        bindLabel="id"
+        bindLabel="displayName"
         bindValue="templateCode"
         placeholder="Select First Template"
         [searchable]="false"
@@ -77,7 +77,7 @@
       </ng-select>
       <ng-select
         [items]="xmlTemplatesById"
-        bindLabel="id"
+        bindLabel="displayName"
         bindValue="templateCode"
         placeholder="Select Second Template"
         [searchable]="false"

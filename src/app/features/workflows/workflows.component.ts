@@ -7,6 +7,7 @@ import { Workflow } from 'src/app/core/models/workflow.model';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 import { FormsModule } from '@angular/forms';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 @Component({
   selector: 'app-workflows',
   standalone: true,
@@ -19,6 +20,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
 
   workflowName: string = '';
+
+  noWorkflows: boolean = false;
 
   headings: string[] = [
     'Workflow Name',
@@ -49,16 +52,19 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private spinnerService: SpinnerService
   ) {}
 
   getPageItems(pageParams: any) {
+    this.spinnerService.show();
     this.apiService
       .getWorkflows(pageParams)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
         this.workflowsData = data.content;
+        this.spinnerService.hide();
         this.cdRef.markForCheck();
       });
   }
@@ -94,7 +100,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
+      pageSize: 10,
       sortBy: '',
       order: 'asc',
       search: '',

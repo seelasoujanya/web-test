@@ -88,3 +88,9 @@
     <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
   </div>
 </ng-template>
+
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
+</div>

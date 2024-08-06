@@ -15,7 +15,7 @@
           placeholder="add description"
           class="text-field"
           [(ngModel)]="templateDescription"
-          [class.mandatory]="!(templateDescription == '')"></textarea>
+          [class.show-mandatory]="!templateDescription"></textarea>
       </div>
     </ng-container>
   </div>
@@ -24,7 +24,10 @@
     <button class="cancel-btn" (click)="cancelModal()">
       {{ cancelButton }}
     </button>
-    <button class="confirm-btn" (click)="confirmModal()">
+    <button
+      class="confirm-btn"
+      (click)="confirmModal()"
+      [class.not-allowed]="enableComments && !templateDescription">
       {{ applyButton }}
     </button>
   </div>

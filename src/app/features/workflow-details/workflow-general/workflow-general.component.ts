@@ -58,9 +58,7 @@ export class WorkflowGeneralComponent implements OnInit {
   constructor(
     private modalService: BsModalService,
     private bsModalRef: BsModalRef
-  ) {
-    console.log(this.workflowStatus);
-  }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -126,7 +124,6 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   addEmail() {
-    console.log('added email');
     this.bsModalRef.hide();
     let data;
     if (this.isUpdate) {
