@@ -183,10 +183,22 @@
           </td>
           <td class="table-cell">
             <ng-container [ngSwitch]="workflow.priority">
-              <img *ngSwitchCase="'LOW'" src="assets/icons/low.svg" />
-              <img *ngSwitchCase="'MEDIUM'" src="assets/icons/high.svg" />
-              <img *ngSwitchCase="'HIGH'" src="assets/icons/high.svg" />
-              <img *ngSwitchDefault src="assets/icons/default.svg" />
+              <img
+                *ngSwitchCase="'LOW'"
+                src="assets/icons/low.svg"
+                alt="low icon" />
+              <img
+                *ngSwitchCase="'MEDIUM'"
+                src="assets/icons/high.svg"
+                alt="high icon" />
+              <img
+                *ngSwitchCase="'HIGH'"
+                src="assets/icons/high.svg"
+                alt="high icon" />
+              <img
+                *ngSwitchDefault
+                src="assets/icons/default.svg"
+                alt="default" />
             </ng-container>
           </td>
 

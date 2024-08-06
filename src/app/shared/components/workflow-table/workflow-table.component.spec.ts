@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowTableComponent } from './workflow-table.component';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('WorkflowTableComponent', () => {
   let component: WorkflowTableComponent;
@@ -8,7 +10,7 @@ describe('WorkflowTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorkflowTableComponent],
+      imports: [WorkflowTableComponent, CommonModule, HttpClientModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowTableComponent);

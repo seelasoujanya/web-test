@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject, Subscriber, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { Workflow } from 'src/app/core/models/workflow.model';

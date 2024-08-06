@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Client, Stomp, StompSubscription } from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import { AuthorizationService } from '../services/authorization.service';
 import { environment } from 'src/environments/environment';

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountInfoComponent } from './account-info.component';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AccountInfoComponent', () => {
   let component: AccountInfoComponent;
@@ -8,7 +10,7 @@ describe('AccountInfoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountInfoComponent],
+      imports: [AccountInfoComponent, CommonModule, HttpClientModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountInfoComponent);

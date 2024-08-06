@@ -24,6 +24,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 })
 export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
+
   public ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

@@ -170,7 +170,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   searchWorkflowInstance(): void {
     if (this.identifier) {
-      const id = this.identifier;
       this.apiService
         .getWorkflowInstances(
           this.pageParams,
@@ -178,23 +177,21 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
           this.identifier.toLowerCase()
         )
         .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          data => {
+        .subscribe({
+          next: data => {
             this.page = data;
             this.reset();
             this.workflowsInstances = data.content;
             this.updateWorkflowsData();
             this.cdRef.markForCheck();
             this.noInstancesFound = this.workflowsInstances.length === 0;
-            console.log(this.noInstancesFound);
           },
-          error => {
-            console.error('Error fetching workflow instances', error);
+          error: () => {
             this.workflowsInstances = [];
             this.noInstancesFound = true;
             this.cdRef.markForCheck();
-          }
-        );
+          },
+        });
     } else {
       this.getPageItems(this.pageParams);
     }

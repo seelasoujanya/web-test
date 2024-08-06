@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription, take, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 import { ApiService } from 'src/app/core/services/api.service';

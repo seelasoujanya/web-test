@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-// import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 
 @Component({
@@ -12,12 +11,6 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
   styleUrl: './xml-editor.component.scss',
 })
 export class XmlEditorComponent implements OnInit {
-  // editorOptions = {
-  //   theme: 'vs-dark',
-  //   language: 'xml',
-  //   automaticLayout: true,
-  // };
-
   editorOptions = { theme: 'vs-dark', language: 'javascript' };
   code: string = 'function x() {\nconsole.log("Hello world!");\n}';
   originalCode: string = 'function x() ';

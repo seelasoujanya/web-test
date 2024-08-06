@@ -1,9 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
-  Input,
   OnDestroy,
   OnInit,
   TemplateRef,
@@ -24,7 +22,7 @@ import {
 } from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { filter, Subject, take, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
 

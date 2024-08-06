@@ -16,7 +16,6 @@ import {
   MonacoEditorLoaderService,
   MonacoEditorModule,
   MonacoStandaloneCodeEditor,
-  MonacoDiffEditorComponent,
 } from '@materia-ui/ngx-monaco-editor';
 import {
   FormBuilder,

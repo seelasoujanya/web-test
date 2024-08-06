@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowsComponent } from './workflows.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 describe('WorkflowsComponent', () => {
   let component: WorkflowsComponent;
@@ -8,7 +9,7 @@ describe('WorkflowsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorkflowsComponent],
+      imports: [WorkflowsComponent, HttpClientModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowsComponent);

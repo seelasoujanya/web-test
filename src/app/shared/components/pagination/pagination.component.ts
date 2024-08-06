@@ -22,7 +22,7 @@ export class PaginationComponent {
   public pageStart = 1;
   public eventType: any;
   public totalPages: any;
-  private pageItemsLimit = 5;
+  public pageItemsLimit = 5;
 
   @ViewChild('pageInput') pageInput!: ElementRef;
 

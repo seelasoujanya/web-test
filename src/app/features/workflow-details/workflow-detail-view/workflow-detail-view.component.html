@@ -11,8 +11,8 @@
           alt="export Icon" />
       </button>
       <p>
-        Instance Of {{ workflowsInstance.workflow.name }}
-        <span class="instance-id">ID:{{ workflowsInstance.id }}</span>
+        Instance Of {{ workflowsInstance?.workflow?.name }}
+        <span class="instance-id">ID:{{ workflowsInstance?.id }}</span>
       </p>
     </div>
   </div>
@@ -43,23 +43,23 @@
   <div *ngIf="selectedTab === 'summary'" class="details-section">
     <div class="details-info">
       <p class="info-heading">Duration</p>
-      <p class="info-data">{{ workflowsInstance.duration }} Min</p>
+      <p class="info-data">{{ workflowsInstance?.duration }} Min</p>
     </div>
     <div class="details-info">
       <p class="info-heading">Triggered On</p>
       <p class="info-data">
-        {{ workflowsInstance.created | date: 'yyyy-MM-dd' }}
+        {{ workflowsInstance?.created | date: 'yyyy-MM-dd' }}
         <span class="time">{{
-          workflowsInstance.created | date: 'HH:mm'
+          workflowsInstance?.created | date: 'HH:mm'
         }}</span>
       </p>
     </div>
     <div class="details-info">
       <p class="info-heading">Avg.Executed Time</p>
       <p class="info-data">
-        {{ workflowsInstance.completed | date: 'yyyy-MM-dd' }}
+        {{ workflowsInstance?.completed | date: 'yyyy-MM-dd' }}
         <span class="time">{{
-          workflowsInstance.completed | date: 'HH:mm'
+          workflowsInstance?.completed | date: 'HH:mm'
         }}</span>
       </p>
     </div>

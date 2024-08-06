@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { XmlTemplatesComponent } from './xml-templates.component';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('XmlTemplatesComponent', () => {
   let component: XmlTemplatesComponent;
@@ -8,7 +9,7 @@ describe('XmlTemplatesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [XmlTemplatesComponent],
+      imports: [XmlTemplatesComponent, HttpClientModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(XmlTemplatesComponent);

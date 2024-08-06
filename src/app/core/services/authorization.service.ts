@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { ApiService } from './api.service';
-import { lastValueFrom, takeUntil } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

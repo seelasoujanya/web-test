@@ -55,7 +55,7 @@ export class SpinnerService {
       this.overlayRef.detach();
     });
 
-    const injector = this.createInjector(config, this.injector);
+    this.createInjector(config, this.injector);
   }
 
   private createInjector(config: IDialogConfig, inj: Injector): PortalInjector {
