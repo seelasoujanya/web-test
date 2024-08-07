@@ -120,7 +120,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
   }
   public page!: IPage<any>;
-  private pageParams = this.getDefaultPageParams();
+  public pageParams = this.getDefaultPageParams();
 
   getDefaultPageParams() {
     return {

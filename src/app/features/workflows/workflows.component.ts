@@ -89,12 +89,12 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
   }
   public page!: IPage<any>;
-  private pageParams = this.getDefaultPageParams();
+  public pageParams = this.getDefaultPageParams();
 
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
+      pageSize: 10,
       sortBy: '',
       order: 'asc',
       search: '',
