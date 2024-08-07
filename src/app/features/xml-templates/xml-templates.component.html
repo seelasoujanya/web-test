@@ -26,15 +26,14 @@
           <tr
             *ngFor="let template of xmlTemplates; let i = index"
             (click)="navigateToTemplateDetails(template.id)">
-            <td class="table-cell">{{ i + 1 }}</td>
             <td class="table-cell">{{ template.name }}</td>
             <td class="table-cell">{{ template.description }}</td>
             <td class="table-cell">
-              {{ template.created | date: 'yyyy-MM-dd' }}<br />
+              {{ template.created | date: 'MMM dd, yyyy' }}<br />
               <span class="time">{{ template.created | date: 'HH:mm' }}</span>
             </td>
             <td class="table-cell">
-              {{ template.modified | date: 'yyyy-MM-dd' }}<br />
+              {{ template.modified | date: 'MMM dd, yyyy' }}<br />
               <span class="time">{{ template.modified | date: 'HH:mm' }}</span>
             </td>
           </tr>

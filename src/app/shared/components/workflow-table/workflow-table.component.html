@@ -4,7 +4,7 @@
       <th
         *ngFor="let heading of headings"
         class="table-header-cell"
-        [style.top]="isWorkflow ? '90px' : '374px'">
+        [style.top]="isWorkflow ? '140px' : '374px'">
         <div class="table-header-content">
           <ng-container *ngIf="isWorkflow">
             {{ heading }}
@@ -40,7 +40,6 @@
         *ngFor="let workflow of workflows; let i = index"
         (click)="viewInstances(workflow.id, workflow.name)"
         [ngClass]="{ 'first-child-padding': i === 0 }">
-        <!-- <td class="table-cell">{{ workflow.id }}</td> -->
         <td class="table-cell">{{ workflow.name }}</td>
         <td class="table-cell">
           <div class="status-content">

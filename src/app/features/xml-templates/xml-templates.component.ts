@@ -71,7 +71,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     templateCode: '',
   };
 
-  headings: string[] = ['S.NO', 'NAME', 'DESCRIPTION', 'CREATED', 'MODIFIED'];
+  headings: string[] = ['NAME', 'DESCRIPTION', 'CREATED', 'MODIFIED'];
 
   onPage(pageNumber: number) {
     this.pageParams.page = pageNumber - 1;

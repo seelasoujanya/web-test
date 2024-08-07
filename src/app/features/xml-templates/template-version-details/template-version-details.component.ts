@@ -75,8 +75,6 @@ export class TemplateVersionDetailsComponent
 
   templates: any[] = [];
 
-  templateNames: any[] = [];
-
   @ViewChild(MonacoEditorComponent, { static: false })
   monacoComponent!: MonacoEditorComponent;
 
@@ -114,7 +112,6 @@ export class TemplateVersionDetailsComponent
   }
 
   ngOnInit(): void {
-    // this.getTemplates(this.pageParams);
     this.selectedTemplateIndex = 0;
     this.getTemplatesByTemplateId(this.templateId);
   }
@@ -221,6 +218,7 @@ export class TemplateVersionDetailsComponent
             }
             template['displayName'] = 'Version ' + versionNumber;
           });
+          this.templateName = this.xmlTemplatesById[0].template.name;
           this.xmlTemplatesById.reverse();
           console.log('diplay', this.xmlTemplatesById);
           this.reactiveForm.get('code')?.setValue(this.selectedTemplate);

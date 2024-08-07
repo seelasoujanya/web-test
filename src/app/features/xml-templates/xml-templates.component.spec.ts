@@ -19,4 +19,9 @@ describe('XmlTemplatesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should reset new template data', () => {
+    component.reset();
+    expect(component.newTemplateData.name).toBe('');
+  });
 });
