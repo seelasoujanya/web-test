@@ -141,4 +141,12 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.closeModal).toHaveBeenCalled();
     expect(component.reset).toHaveBeenCalled();
   });
+
+  describe('editWorkflow', () => {
+    it('should set isEditing to true', () => {
+      component.isEditing = false;
+      component.editWorkflow();
+      expect(component.isEditing).toBe(true);
+    });
+  });
 });
