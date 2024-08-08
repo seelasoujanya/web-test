@@ -5,6 +5,7 @@ import { IPage } from 'src/app/core/models/page.model';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 import { ApiService } from 'src/app/core/services/api.service';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-monitor',
@@ -33,7 +34,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
   constructor(
     private webSocketAPI: WebSocketAPI,
     private apiService: ApiService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private spinnerService: SpinnerService
   ) {}
 
   onPage(pageNumber: number) {
@@ -56,6 +58,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   updateInstances(pageParams: any) {
+    this.spinnerService.show();
     this.apiService
       .getInstancesByStatus(pageParams)
       .pipe(takeUntil(this.destroyed$))
@@ -67,6 +70,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
         } else {
           this.pendingInstancesCount = data.totalElements;
         }
+        this.spinnerService.hide();
         this.cdRef.markForCheck();
       });
   }

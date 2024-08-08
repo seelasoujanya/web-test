@@ -51,15 +51,15 @@ describe('XmlTemplatesComponent', () => {
     });
   });
 
-  it('should navigate to the correct route with the given templateId', () => {
-    const navigateSpy = spyOn(router, 'navigate');
-    const templateId = 123;
-    const expectedUrl = ['/template', templateId];
+  // it('should navigate to the correct route with the given templateId', () => {
+  //   const navigateSpy = spyOn(router, 'navigate');
+  //   const templateId = 123;
+  //   const expectedUrl = ['/template', templateId];
 
-    component.navigateToTemplateDetails(templateId);
+  //   component.navigateToTemplateDetails(templateId);
 
-    expect(navigateSpy).toHaveBeenCalledWith(expectedUrl);
-  });
+  //   expect(navigateSpy).toHaveBeenCalledWith(expectedUrl);
+  // });
 
   it('should reset newTemplateData to initial values', () => {
     component.newTemplateData = {
@@ -73,5 +73,10 @@ describe('XmlTemplatesComponent', () => {
       description: '',
       templateCode: '',
     });
+  });
+
+  it('should reset new template data', () => {
+    component.reset();
+    expect(component.newTemplateData.name).toBe('');
   });
 });

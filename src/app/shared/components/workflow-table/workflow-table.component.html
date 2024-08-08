@@ -4,7 +4,7 @@
       <th
         *ngFor="let heading of headings"
         class="table-header-cell"
-        [style.top]="isWorkflow ? '90px' : '374px'">
+        [style.top]="isWorkflow ? '140px' : '374px'">
         <div class="table-header-content">
           <ng-container *ngIf="isWorkflow">
             {{ heading }}
@@ -21,7 +21,7 @@
           <ng-container *ngIf="!isWorkflow">
             {{ heading }}
             <img
-              *ngIf="heading !== 'Actions' && heading !== 'Identifier'"
+              *ngIf="heading !== 'Identifier'"
               src="assets/icons/down-arrow-logo.svg"
               alt="{{ heading }} Icon"
               class="heading-icon"
@@ -40,7 +40,6 @@
         *ngFor="let workflow of workflows; let i = index"
         (click)="viewInstances(workflow.id, workflow.name)"
         [ngClass]="{ 'first-child-padding': i === 0 }">
-        <!-- <td class="table-cell">{{ workflow.id }}</td> -->
         <td class="table-cell">{{ workflow.name }}</td>
         <td class="table-cell">
           <div class="status-content">
@@ -59,7 +58,7 @@
           </div>
         </td>
         <td class="table-cell">
-          {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
+          {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
           <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
         </td>
         <td class="table-cell">
@@ -133,11 +132,11 @@
             </div>
           </td>
           <td class="table-cell">
-            {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
+            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
             <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
           </td>
           <td class="table-cell">
-            {{ workflow.created | date: 'yyyy-MM-dd' }}<br />
+            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
             <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
           </td>
           <td class="table-cell">{{ workflow.duration | duration }}</td>
@@ -200,70 +199,6 @@
                 src="assets/icons/default.svg"
                 alt="default" />
             </ng-container>
-          </td>
-
-          <td class="table-cell">
-            <div
-              class="action-content"
-              (click)="expandInstance($event, workflow)">
-              <img
-                src="assets/icons/down-arrow-logo.svg"
-                alt="Pause Icon"
-                class="action-icon"
-                [class.rotate]="expandedInstaceId === workflow.id" />
-            </div>
-          </td>
-        </tr>
-        <tr *ngIf="expandedInstaceId === workflow.id">
-          <td colspan="8">
-            <div class="expanded-instance">
-              <div class="message-section">
-                <p class="status">
-                  Success <br />
-                  <span class="status-info"
-                    >Succesful delivered at
-                    {{ workflow.modified | date: 'yyyy-MM-dd' }}
-                    <span>{{ workflow.created | date: 'HH:mm' }}</span></span
-                  >
-                </p>
-                <!-- <button class="view-instance-detail-btn">
-                  VIEW INSTANCE DETAIL
-                </button> -->
-              </div>
-              <div class="logs-section">
-                <p class="logs">Logs</p>
-                <div class="log-items-container">
-                  <p class="log-items" *ngFor="let log of logsResponse">
-                    {{ (log ? '[' : '') + log }}
-                  </p>
-                </div>
-              </div>
-              <div class="file-section">
-                <p class="files-heading">Files</p>
-                <div class="file-actions">
-                  <div *ngFor="let step of stepList" class="file-item">
-                    {{ step.filename }}
-                    <div class="file-action-buttons">
-                      <!-- <button class="view-file-btn">
-                        <img
-                          src="/assets/icons/view-logo.svg"
-                          class="search-icon"
-                          alt="Search Icon" />View File
-                      </button> -->
-                      <button
-                        class="download-btn"
-                        (click)="downloadArtifact(step.id, step.filename)">
-                        <img
-                          src="/assets/icons/download-logo.svg"
-                          class="search-icon"
-                          alt="Search Icon" />
-                        Download
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </td>
         </tr>
       </ng-container>

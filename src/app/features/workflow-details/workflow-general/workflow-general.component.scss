@@ -125,6 +125,9 @@
           margin-left: 2px;
         }
       }
+      .add-email-btn:hover {
+        opacity: 0.5;
+      }
     }
   }
   .email-table {
@@ -280,6 +283,9 @@ textarea:focus {
       line-height: 20px;
       color: #ffffff;
     }
+    .confirm-btn:hover {
+      opacity: 0.5;
+    }
     .cancel-btn {
       width: 98px;
       height: 34px;
@@ -290,6 +296,9 @@ textarea:focus {
       font-size: 12px;
       line-height: 20px;
       color: #ffffff;
+    }
+    .cancel-btn:hover {
+      opacity: 0.5;
     }
   }
 }
@@ -376,6 +385,9 @@ textarea:focus {
         line-height: 20px;
         color: #ffffff;
       }
+      .confirm-btn:hover {
+        opacity: 0.5;
+      }
       .cancel-btn {
         width: 98px;
         height: 34px;
@@ -387,6 +399,9 @@ textarea:focus {
         line-height: 20px;
         color: #ffffff;
         margin-left: 258px;
+      }
+      .cancel-btn:hover {
+        opacity: 0.5;
       }
     }
   }

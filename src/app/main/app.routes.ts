@@ -17,5 +17,5 @@ export const routes: Routes = [
   { path: 'partners', component: MonitorComponent },
   { path: 'workflows/:id', component: WorkflowDetailsComponent },
   { path: 'workflowinstance/:id', component: WorkflowDetailViewComponent },
-  { path: 'template/:id', component: TemplateVersionDetailsComponent },
+  { path: 'templates/:id', component: TemplateVersionDetailsComponent },
 ];

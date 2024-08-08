@@ -46,6 +46,9 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   public workflowInstanceId: string | null;
   selectedTab: string = 'summary';
 
+  noXmlFiles: boolean = false;
+  noFiles: boolean = false;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -124,8 +127,14 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.filteredFiles = [];
     if (button === 'xml') {
       this.filterFiles();
+      if (this.filteredFiles.length === 0) {
+        this.noXmlFiles = true;
+      }
     } else {
       this.filteredFiles = this.stepList;
+      if (this.filteredFiles.length === 0) {
+        this.noFiles = true;
+      }
     }
   }
 

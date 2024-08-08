@@ -56,7 +56,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     'Delivery Type',
     'Status',
     'Priority',
-    'Actions',
   ];
 
   headingEnum = {
@@ -79,8 +78,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   public workflowSteps: any[] = [];
 
   public workflowTemplates: any[] = [];
-
-  public workflowStepId: number | undefined;
 
   public workflowCopy: any;
 
@@ -233,7 +230,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   public deleteEmailById(id: any) {
     this.apiService.deleteEmailById(id).subscribe((result: any) => {
-      console.log('deleted succesfully');
       this.getEmailsByWorkflowId();
     });
   }
@@ -274,26 +270,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
         this.page = data;
         this.workflowSteps = data.content;
         this.cdRef.markForCheck();
-        console.log('steps', this.workflowSteps);
-        this.workflowSteps.forEach(step => {
-          if (step.name === 'DDEX') {
-            this.workflowStepId = step.id;
-            console.log('stepId', this.workflowStepId);
-          }
-        });
-        this.getTemplates(this.workflowStepId, this.pageParams);
-      });
-  }
-
-  public getTemplates(id: any, pageParams: any) {
-    this.apiService
-      .getTemplatesByStepId(id, pageParams)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.workflowTemplates = data.content;
-        this.cdRef.markForCheck();
-        console.log('templates', this.workflowTemplates);
       });
   }
 }

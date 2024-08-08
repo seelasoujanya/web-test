@@ -26,10 +26,17 @@ export class ApiService {
     );
   }
 
-  public getWorkflows(queryParams: any): Observable<IPage<any>> {
-    return this.http.get<IPage<any>>(`${this.apiUrl}/workflow`, {
-      params: queryParams as any,
-    });
+  getWorkflows(pageParams: any): Observable<IPage<any>> {
+    let params = new HttpParams()
+      .set('page', pageParams.page)
+      .set('pageSize', pageParams.pageSize)
+      .set('sortBy', pageParams.sortBy)
+      .set('order', pageParams.order);
+
+    if (pageParams.search) {
+      params = params.set('search', pageParams.search);
+    }
+    return this.http.get<IPage<any>>(`${this.apiUrl}/workflow`, { params });
   }
 
   public getInstancesByStatus(queryParams: any): Observable<IPage<any>> {
@@ -148,15 +155,6 @@ export class ApiService {
     queryParams: any
   ): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/workflow/${id}/steps`, {
-      params: queryParams as any,
-    });
-  }
-
-  public getTemplatesByStepId(
-    id: number | any,
-    queryParams: any
-  ): Observable<IPage<any>> {
-    return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/history`, {
       params: queryParams as any,
     });
   }

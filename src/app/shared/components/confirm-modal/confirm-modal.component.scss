@@ -38,7 +38,7 @@
     letter-spacing: 0.5px;
     color: #828282;
     .workflow-field {
-      width: 50%;
+      width: 100%;
       box-sizing: border-box;
       font-weight: 500;
       font-size: 16px;
@@ -89,6 +89,15 @@
   }
 }
 
-.mandatory {
-  border: #bd2c49;
+.show-mandatory {
+  outline: 2px solid #bd2c49;
+}
+
+.not-allowed {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+textarea:focus {
+  outline: none;
 }

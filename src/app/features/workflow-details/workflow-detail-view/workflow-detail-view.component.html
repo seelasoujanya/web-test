@@ -48,7 +48,7 @@
     <div class="details-info">
       <p class="info-heading">Triggered On</p>
       <p class="info-data">
-        {{ workflowsInstance?.created | date: 'yyyy-MM-dd' }}
+        {{ workflowsInstance?.created | date: 'MMM dd, yyyy' }}
         <span class="time">{{
           workflowsInstance?.created | date: 'HH:mm'
         }}</span>
@@ -80,6 +80,7 @@
         Files
       </button>
     </div>
+    <div *ngIf="noXmlFiles" class="no-files-message">No XML files found.</div>
 
     <div class="file-section">
       <div class="file-actions">

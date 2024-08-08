@@ -124,7 +124,6 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   addEmail() {
-    console.log('added email');
     this.bsModalRef.hide();
     let data;
     if (this.isUpdate) {

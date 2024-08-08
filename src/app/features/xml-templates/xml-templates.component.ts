@@ -25,6 +25,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Subject, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 
 @Component({
   selector: 'app-xml-templates',
@@ -36,6 +38,7 @@ import { ApiService } from 'src/app/core/services/api.service';
     MonacoEditorModule,
     FormsModule,
     ReactiveFormsModule,
+    PaginationComponent,
   ],
   templateUrl: './xml-templates.component.html',
   styleUrl: './xml-templates.component.scss',
@@ -66,7 +69,12 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     templateCode: '',
   };
 
-  headings: string[] = ['S.NO', 'NAME', 'DESCRIPTION', 'CREATED', 'MODIFIED'];
+  headings: string[] = ['NAME', 'DESCRIPTION', 'CREATED', 'MODIFIED'];
+
+  onPage(pageNumber: number) {
+    this.pageParams.page = pageNumber - 1;
+    this.getPageItems(this.pageParams);
+  }
   public page!: IPage<any>;
   private pageParams = this.getDefaultPageParams();
 
@@ -79,9 +87,13 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     };
   }
 
+  getPageItems(pageParams: any) {
+    this.getTemplates(pageParams);
+  }
+
   ngOnInit(): void {
-    this.getTemplates(this.pageParams);
-    console.log('editor options', this.editorOptions);
+    this.getPageItems(this.pageParams);
+    //  this.getTemplates(this.pageParams);
   }
 
   @ViewChild(MonacoEditorComponent, { static: false })
@@ -102,7 +114,8 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private router: Router,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private spinnerService: SpinnerService
   ) {
     this.reactiveForm = this.fb.group({
       code: [''],
@@ -111,7 +124,6 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   }
 
   editorInit(editor: any) {
-    console.log('initialised', editor);
     editor.setSelection({
       startLineNumber: 1,
       startColumn: 1,
@@ -121,14 +133,15 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   }
 
   public getTemplates(pageParams: any) {
+    this.spinnerService.show();
     this.apiService
       .getAllTemplates(pageParams)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
         this.xmlTemplates = data.content;
+        this.spinnerService.hide();
         this.cdRef.markForCheck();
-        console.log('templates', this.xmlTemplates);
       });
   }
 
@@ -148,8 +161,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   }
 
   navigateToTemplateDetails(templateId: number): void {
-    console.log('template id:', templateId);
-    this.router.navigate(['/template', templateId]);
+    this.router.navigate(['/templates', templateId]);
   }
 
   openCreateTemplateDialog(emailTemplate: TemplateRef<any>) {

@@ -32,17 +32,16 @@ export class WorkflowTableComponent implements OnDestroy {
   @Input()
   public workflowInstances$: Observable<any[]> | undefined;
 
-  @Input()
-  public instanceHeadings: string[] = [
-    'ID',
-    'Queued On',
-    'Started On',
-    'Duration',
-    'Delivery Type',
-    'Status',
-    'Priority',
-    'Actions',
-  ];
+  // @Input()
+  // public instanceHeadings: string[] = [
+  //   'ID',
+  //   'Queued On',
+  //   'Started On',
+  //   'Duration',
+  //   'Delivery Type',
+  //   'Status',
+  //   'Priority'
+  // ];
 
   @Output()
   public increasePageEvent = new EventEmitter<boolean>();
@@ -151,17 +150,6 @@ export class WorkflowTableComponent implements OnDestroy {
           console.error('Error downloading file:', error);
         }
       );
-    }
-  }
-
-  public expandInstance(event: MouseEvent, workflow: Workflow) {
-    event.stopPropagation();
-    if (this.expandedInstaceId != workflow.id) {
-      this.expandedInstaceId = workflow.id;
-      this.getArtifactFiles(workflow);
-      this.getInstancsLogs(workflow);
-    } else {
-      this.expandedInstaceId = undefined;
     }
   }
 

@@ -28,6 +28,7 @@ import { filter, Subject, take, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-template-version-details',
@@ -73,8 +74,6 @@ export class TemplateVersionDetailsComponent
 
   templates: any[] = [];
 
-  templateNames: any[] = [];
-
   @ViewChild(MonacoEditorComponent, { static: false })
   monacoComponent!: MonacoEditorComponent;
 
@@ -101,7 +100,8 @@ export class TemplateVersionDetailsComponent
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private spinnerService: SpinnerService
   ) {
     this.templateId = +this.route.snapshot.params['id'];
     this.reactiveForm = this.fb.group({
@@ -111,25 +111,20 @@ export class TemplateVersionDetailsComponent
   }
 
   ngOnInit(): void {
-    this.getTemplates(this.pageParams);
     this.selectedTemplateIndex = 0;
     this.getTemplatesByTemplateId(this.templateId);
-    console.log('editor options', this.editorOptions);
   }
 
   ngAfterViewInit(): void {
-    console.log('enter afterview');
     this.monacoLoaderService.isMonacoLoaded$
       .pipe(
         filter(isLoaded => !!isLoaded),
         take(1)
       )
       .subscribe(() => {
-        console.log('loaded');
         if (this.monacoComponent) {
           this.monacoComponent.init.subscribe(
             (editor: MonacoStandaloneCodeEditor) => {
-              console.log('Monaco editor initialized', editor);
               this.editorInit(editor);
             }
           );
@@ -160,7 +155,6 @@ export class TemplateVersionDetailsComponent
   }
 
   editorInit(editor: any) {
-    console.log('initialised', editor);
     editor.setSelection({
       startLineNumber: 1,
       startColumn: 1,
@@ -188,15 +182,11 @@ export class TemplateVersionDetailsComponent
     }
   }
 
-  selectTemplate(id: number) {
-    console.log('id', id);
-    const index = this.xmlTemplatesById.length - 1 - id;
-    this.selectedTemplateIndex = id;
-    console.log('index', index);
+  selectTemplate(index: number) {
+    this.selectedTemplateIndex = index;
     if (index >= 0 && index < this.xmlTemplatesById.length) {
       this.selectedTemplate = this.xmlTemplatesById[index].templateCode;
       this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
-      console.log('selected', this.selectedTemplate);
     } else {
       console.error('Invalid index', index);
     }
@@ -210,19 +200,26 @@ export class TemplateVersionDetailsComponent
   }
 
   getTemplatesByTemplateId(id: number) {
+    this.spinnerService.show();
     this.apiService
       .getTemplatesByTemplateId(id, this.pageParams)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
         this.xmlTemplatesById = data.content;
+        this.spinnerService.hide();
         this.cdRef.markForCheck();
-        console.log('templatesByTemplateId', this.xmlTemplatesById);
         if (this.xmlTemplatesById.length > 0) {
-          this.selectedTemplate =
-            this.xmlTemplatesById[
-              this.xmlTemplatesById.length - 1
-            ].templateCode;
+          this.xmlTemplatesById.forEach((template, index) => {
+            const versionNumber = index + 1;
+            if (!this.selectedTemplate) {
+              this.selectedTemplate = template.templateCode;
+            }
+            template['displayName'] = 'Version ' + versionNumber;
+          });
+          this.templateName = this.xmlTemplatesById[0].template.name;
+          this.xmlTemplatesById.reverse();
+          console.log('diplay', this.xmlTemplatesById);
           this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
         }
       });
@@ -230,7 +227,6 @@ export class TemplateVersionDetailsComponent
 
   public editTemplate() {
     this.editedTemplate = this.reactiveForm.get('code')?.value;
-    console.log('TEMPLATE edit', this.editedTemplate);
 
     const modalData = {
       title: 'Confirm Template Edit',
@@ -264,7 +260,6 @@ export class TemplateVersionDetailsComponent
     });
   }
 
-  ///check this and update
   cancelChangesToUpdateTemplate() {
     this.editedTemplate = '';
     this.showDifferences = false;
@@ -272,17 +267,17 @@ export class TemplateVersionDetailsComponent
     this.compareTemplate.secondTemplate = '';
   }
 
-  public getTemplates(pageParams: any) {
-    this.apiService
-      .getAllTemplates(pageParams)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.templates = data.content;
-        this.templateNames = this.templates.map(template => template.name);
-        this.cdRef.markForCheck();
-      });
-  }
+  // public getTemplates(pageParams: any) {
+  //   this.apiService
+  //     .getAllTemplates(pageParams)
+  //     .pipe(takeUntil(this.destroyed$))
+  //     .subscribe(data => {
+  //       this.page = data;
+  //       this.templates = data.content;
+  //       this.templateNames = this.templates.map(template => template.name);
+  //       this.cdRef.markForCheck();
+  //     });
+  // }
 
   openCompareDialog(compareTemplate: TemplateRef<any>) {
     const config = {
@@ -311,11 +306,10 @@ export class TemplateVersionDetailsComponent
   }
 
   compareChanges() {
-    console.log('enter compare method');
-    console.log('first', this.originalCode);
-    console.log('second', this.modifiedCode);
     this.showDifferences = true;
   }
 
-  getLabel() {}
+  isCompareAllowed(): boolean {
+    return this.compareTemplate.description.trim() !== '';
+  }
 }

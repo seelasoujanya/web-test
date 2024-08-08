@@ -9,6 +9,7 @@ import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-workflow-history',
@@ -46,7 +47,6 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     'Delivery Type',
     'Status',
     'Priority',
-    'Actions',
   ];
 
   headingEnum = {
@@ -70,7 +70,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private spinnerService: SpinnerService
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -81,6 +82,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   getPageItems(pageParams: any) {
+    this.spinnerService.show();
     this.apiService
       .getWorkflowInstances(pageParams, this.workflowId, this.identifier)
       .pipe(takeUntil(this.destroyed$))
@@ -89,6 +91,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
         this.reset();
         this.workflowsInstances = data.content;
         this.updateWorkflowsData();
+        this.spinnerService.hide();
         this.cdRef.markForCheck();
         this.noInstancesFound = false;
       });
