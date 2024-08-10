@@ -11,13 +11,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ApiService } from 'src/app/core/services/api.service';
 import {
-  MonacoEditorComponent,
-  MonacoEditorConstructionOptions,
-  MonacoEditorLoaderService,
-  MonacoEditorModule,
-  MonacoStandaloneCodeEditor,
-} from '@materia-ui/ngx-monaco-editor';
-import {
   FormBuilder,
   FormGroup,
   FormsModule,
@@ -33,20 +26,12 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 @Component({
   selector: 'app-template-version-details',
   standalone: true,
-  imports: [
-    NgSelectModule,
-    CommonModule,
-    MonacoEditorModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
+  imports: [NgSelectModule, CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './template-version-details.component.html',
   styleUrls: ['./template-version-details.component.scss'],
   providers: [BsModalService],
 })
-export class TemplateVersionDetailsComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
   public page!: IPage<any>;
   private pageParams = this.getDefaultPageParams();
@@ -74,26 +59,9 @@ export class TemplateVersionDetailsComponent
 
   templates: any[] = [];
 
-  @ViewChild(MonacoEditorComponent, { static: false })
-  monacoComponent!: MonacoEditorComponent;
-
-  editorOptions: MonacoEditorConstructionOptions = {
-    theme: 'myCustomTheme',
-    language: 'xml',
-    roundedSelection: true,
-    autoIndent: 'full',
-    readOnly: this.isReadOnly,
-  };
-
-  diffEditorOptions: MonacoEditorConstructionOptions = {
-    theme: 'myCustomTheme',
-    readOnly: true,
-  };
-
   reactiveForm: FormGroup;
 
   constructor(
-    private monacoLoaderService: MonacoEditorLoaderService,
     private fb: FormBuilder,
     private apiService: ApiService,
     private router: Router,
@@ -115,24 +83,6 @@ export class TemplateVersionDetailsComponent
     this.getTemplatesByTemplateId(this.templateId);
   }
 
-  ngAfterViewInit(): void {
-    this.monacoLoaderService.isMonacoLoaded$
-      .pipe(
-        filter(isLoaded => !!isLoaded),
-        take(1)
-      )
-      .subscribe(() => {
-        if (this.monacoComponent) {
-          this.monacoComponent.init.subscribe(
-            (editor: MonacoStandaloneCodeEditor) => {
-              this.editorInit(editor);
-            }
-          );
-        }
-        this.registerMonacoCustomTheme();
-      });
-  }
-
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
@@ -149,7 +99,6 @@ export class TemplateVersionDetailsComponent
 
   mergeOptions(partialOptions: any) {
     return {
-      ...this.editorOptions,
       ...partialOptions,
     };
   }
@@ -161,25 +110,6 @@ export class TemplateVersionDetailsComponent
       endColumn: 50,
       endLineNumber: 3,
     });
-  }
-
-  registerMonacoCustomTheme() {
-    if (typeof monaco !== 'undefined') {
-      monaco.editor.defineTheme('myCustomTheme', {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-          {
-            token: 'comment',
-            foreground: 'ffa500',
-            fontStyle: 'italic underline',
-          },
-        ],
-        colors: {},
-      });
-    } else {
-      console.error('Monaco is undefined');
-    }
   }
 
   selectTemplate(index: number) {
@@ -195,7 +125,6 @@ export class TemplateVersionDetailsComponent
   isEditableTemplate() {
     this.isReadOnly = !this.isReadOnly;
     this.isEditable = !this.isEditable;
-    this.editorOptions = this.mergeOptions({ readOnly: this.isReadOnly });
     this.cdRef.detectChanges();
   }
 

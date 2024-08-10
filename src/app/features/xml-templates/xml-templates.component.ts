@@ -14,12 +14,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  MonacoEditorComponent,
-  MonacoEditorConstructionOptions,
-  MonacoEditorLoaderService,
-  MonacoEditorModule,
-} from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Subject, takeUntil } from 'rxjs';
@@ -35,7 +29,6 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
     NgSelectModule,
     DatePipe,
     CommonModule,
-    MonacoEditorModule,
     FormsModule,
     ReactiveFormsModule,
     PaginationComponent,
@@ -96,19 +89,9 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     //  this.getTemplates(this.pageParams);
   }
 
-  @ViewChild(MonacoEditorComponent, { static: false })
-  monacoComponent!: MonacoEditorComponent;
-  editorOptions: MonacoEditorConstructionOptions = {
-    theme: 'myCustomTheme',
-    language: 'xml',
-    roundedSelection: true,
-    autoIndent: 'full',
-    readOnly: this.isReadOnly,
-  };
   reactiveForm: FormGroup;
 
   constructor(
-    private monacoLoaderService: MonacoEditorLoaderService,
     private fb: FormBuilder,
     private apiService: ApiService,
     private cdRef: ChangeDetectorRef,

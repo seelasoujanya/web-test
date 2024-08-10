@@ -43,14 +43,7 @@
       </div>
     </div>
     <div class="template">
-      <form [formGroup]="reactiveForm" class="form">
-        <ngx-monaco-editor
-          #monacoEditor
-          [options]="editorOptions"
-          formControlName="code"
-          (init)="editorInit($event)">
-        </ngx-monaco-editor>
-      </form>
+      <form [formGroup]="reactiveForm" class="form"></form>
     </div>
   </div>
 </div>
@@ -90,14 +83,7 @@
   </div>
 
   <div class="compareTemplates" *ngIf="showDifferences">
-    <form class="diff-editor-form">
-      <ngx-monaco-diff-editor
-        [options]="diffEditorOptions"
-        [original]="originalCode"
-        [modified]="modifiedCode"
-        style="height: 100%; width: 100%">
-      </ngx-monaco-diff-editor>
-    </form>
+    <form class="diff-editor-form"></form>
   </div>
   <div class="buttons">
     <button class="cancel-btn" (click)="closeModal()">CANCEL</button>

@@ -18,8 +18,8 @@ import { ApiService } from 'src/app/core/services/api.service';
     PaginationComponent,
     FormsModule,
   ],
-  templateUrl: './workflow-detail-view.component.html',
-  styleUrl: './workflow-detail-view.component.scss',
+  templateUrl: './workflow-instance-detail-view.component.html',
+  styleUrl: './workflow-instance-detail-view.component.scss',
   providers: [ApiService],
 })
 export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
@@ -38,7 +38,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
 
   workflowsInstance: any;
   selectedButton: string = 'xml';
-  logsResponse: string[] = [];
+  logsResponse: string = '';
   stepList: any[] = [];
   filteredFiles: any[] = [];
   identifier: string = '';
@@ -97,7 +97,8 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.apiService
       .getLogsForInstance(this.workflowInstanceId)
       .subscribe(result => {
-        this.logsResponse = result.split('[');
+        this.logsResponse = result;
+        console.log(result, 'logsResponse');
       });
   }
 

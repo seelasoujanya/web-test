@@ -8,7 +8,6 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from '../core/interceptor/auth.interceptor';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
@@ -17,7 +16,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
-    importProvidersFrom(MonacoEditorModule),
     importProvidersFrom(FormsModule),
   ],
 };

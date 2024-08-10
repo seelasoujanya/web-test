@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 
 @Component({
   selector: 'app-xml-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, MonacoEditorModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './xml-editor.component.html',
   styleUrl: './xml-editor.component.scss',
 })

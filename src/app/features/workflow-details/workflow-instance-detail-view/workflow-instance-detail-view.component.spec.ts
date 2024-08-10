@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorkflowDetailViewComponent } from './workflow-detail-view.component';
+import { WorkflowDetailViewComponent } from './workflow-instance-detail-view.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';

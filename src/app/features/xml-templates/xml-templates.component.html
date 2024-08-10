@@ -71,15 +71,7 @@
     </div>
     <div class="template">
       <span>Template</span>
-      <form [formGroup]="reactiveForm" class="form">
-        <ngx-monaco-editor
-          #monacoEditor
-          [options]="editorOptions"
-          formControlName="code"
-          (init)="editorInit($event)"
-          [(ngModel)]="newTemplateData.templateCode">
-        </ngx-monaco-editor>
-      </form>
+      <form [formGroup]="reactiveForm" class="form"></form>
     </div>
   </div>
   <div class="buttons">

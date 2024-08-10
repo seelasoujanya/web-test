@@ -261,12 +261,6 @@
   height: 100%;
 }
 
-::ng-deep monaco-diff-editor {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
 .selected-version {
   background-color: #f9fafb;
 }
