@@ -1,3 +1,5 @@
+import { Workflow } from './workflow.model';
+
 export interface WorkflowInstance {
   id: number;
   workflowId: number;
@@ -12,6 +14,7 @@ export interface WorkflowInstance {
   priority: Priority;
   created: Date;
   modified: Date;
+  workflow?: Workflow;
 }
 
 export enum WorkflowInstanceStatus {
@@ -21,6 +24,7 @@ export enum WorkflowInstanceStatus {
   FAILED = 'FAILED',
   PAUSED = 'PAUSED',
   CANCELLED = 'CANCELLED',
+  TERMINATED = 'TERMINATED',
 }
 
 export enum Priority {

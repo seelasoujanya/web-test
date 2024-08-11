@@ -5,7 +5,6 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background-color: white;
   .general-setting {
     margin-top: 5px;
     border-radius: 8px;
@@ -172,8 +171,6 @@
             align-items: center;
             gap: 8px;
             margin-inline: 12px;
-            .delete-icon {
-            }
           }
         }
       }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location, LocationChangeEvent } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -7,6 +7,7 @@ import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
+import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 
 @Component({
   selector: 'app-workflow-detail-view',
@@ -36,18 +37,17 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.getInstancsLogs();
   }
 
-  workflowsInstance: any;
+  workflowsInstance = {} as WorkflowInstance;
   selectedButton: string = 'xml';
   logsResponse: string = '';
   stepList: any[] = [];
   filteredFiles: any[] = [];
   identifier: string = '';
-  noInstancesFound: boolean = false;
   public workflowInstanceId: string | null;
   selectedTab: string = 'summary';
 
-  noXmlFiles: boolean = false;
-  noFiles: boolean = false;
+  // noXmlFiles: boolean = false;
+  // noFiles: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -64,8 +64,8 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.workflowsInstance = data;
+        console.log(data);
         this.cdRef.markForCheck();
-        this.noInstancesFound = false;
       });
   }
 
@@ -88,8 +88,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
 
   public getArtifactFiles(): void {
     this.apiService.getArtifacts(this.workflowInstanceId).subscribe(result => {
-      this.stepList = result;
-      this.filterFiles();
+      this.filteredFiles = result;
     });
   }
 
@@ -121,29 +120,6 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
         console.error('Error downloading file:', error);
       }
     );
-  }
-
-  public selectFiles(button: string) {
-    this.selectedButton = button;
-    this.filteredFiles = [];
-    if (button === 'xml') {
-      this.filterFiles();
-      if (this.filteredFiles.length === 0) {
-        this.noXmlFiles = true;
-      }
-    } else {
-      this.filteredFiles = this.stepList;
-      if (this.filteredFiles.length === 0) {
-        this.noFiles = true;
-      }
-    }
-  }
-
-  public filterFiles() {
-    const xmlFiles = this.stepList.filter(file =>
-      file.filename.toLowerCase().endsWith('.xml')
-    );
-    this.filteredFiles = xmlFiles;
   }
 
   public getIcon(filename: string): string {

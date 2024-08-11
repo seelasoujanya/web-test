@@ -23,32 +23,8 @@
             Search
           </button>
         </div>
-        <!-- <div class="createWorkflow-button">
-                    <button class="createWorkflowButton" type="button">
-            <img
-              src="/assets/icons/create-logo.svg"
-              class="create-icon"
-              alt="create Icon" />
-            Create Workflow
-          </button>
-                </div> -->
       </div>
     </div>
-
-    <!-- <div class="workflow-contents">
-            <div class="contents-span">
-                <span>YouTube ContentId</span>
-                <span> Spotify Test </span>
-                <span> ADA Digital </span>
-                <span> Facebook Audio UGC </span>
-                <span> ADA - Video (Co-op) </span>
-            </div>
-            <div class="actions">
-                <img src="/assets/icons/standard-logo.svg" class="bookmark-icon" alt="create Icon" />
-                <button class="bookmark-button">All Bookmark</button>
-            </div>
-        </div>
-    </div> -->
 
     <div class="workflows-table">
       <app-workflow-table
@@ -60,10 +36,10 @@
         (getSortParam)="sortColumn($event)"></app-workflow-table>
     </div>
   </div>
-</div>
 
-<div class="page-view">
-  <app-pagination
-    [page]="page"
-    (paginationEvent)="onPage($event)"></app-pagination>
+  <div class="page-view">
+    <app-pagination
+      [page]="page"
+      (paginationEvent)="onPage($event)"></app-pagination>
+  </div>
 </div>

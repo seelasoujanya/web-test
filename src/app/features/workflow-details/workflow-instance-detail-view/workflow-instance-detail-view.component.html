@@ -1,4 +1,4 @@
-<div class="workflow-detail-view-container">
+<div class="workflow-details-container">
   <div class="details-label">
     <div class="label-left">
       <button
@@ -11,106 +11,117 @@
           alt="export Icon" />
       </button>
       <p>
-        Instance Of {{ workflowsInstance?.workflow?.name }}
-        <span class="instance-id">ID:{{ workflowsInstance?.id }}</span>
+        <span>{{ workflowsInstance.workflow?.name }}</span>
+        <span> | </span>
+        <span>{{ workflowsInstance.identifier }}</span>
       </p>
     </div>
   </div>
 
-  <div class="navigate-tabs">
-    <div class="buttons">
-      <button
-        class="summary-button"
-        (click)="selectTab('summary')"
-        [class.active-button]="selectedTab === 'summary'">
-        Summary
-      </button>
-      <button
-        class="artifacts-button"
-        (click)="selectTab('artifacts')"
-        [class.active-button]="selectedTab === 'artifacts'">
-        Artifacts
-      </button>
-      <button
-        class="logs-button"
-        (click)="selectTab('logs')"
-        [class.active-button]="selectedTab === 'logs'">
-        Logs
-      </button>
-    </div>
+  <div class="navigate-btn-container">
+    <button
+      class="navigate-btn"
+      (click)="selectTab('summary')"
+      [class.active-btn]="selectedTab === 'summary'">
+      Summary
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('logs')"
+      [class.active-btn]="selectedTab === 'logs'">
+      Logs
+    </button>
   </div>
 
-  <div *ngIf="selectedTab === 'summary'" class="details-section">
-    <div class="details-info">
-      <p class="info-heading">Duration</p>
-      <p class="info-data">{{ workflowsInstance?.duration }} Min</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Triggered On</p>
-      <p class="info-data">
-        {{ workflowsInstance?.created | date: 'MMM dd, yyyy' }}
-        <span class="time">{{
-          workflowsInstance?.created | date: 'HH:mm'
-        }}</span>
-      </p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Avg.Executed Time</p>
-      <p class="info-data">
-        {{ workflowsInstance?.completed | date: 'yyyy-MM-dd' }}
-        <span class="time">{{
-          workflowsInstance?.completed | date: 'HH:mm'
-        }}</span>
-      </p>
-    </div>
-  </div>
+  <div class="detail-container" *ngIf="selectedTab === 'summary'">
+    <p>Delivery Details</p>
+    <div class="tables-main-container">
+      <div class="table-container">
+        <table>
+          <tr>
+            <td class="detail-field-key">Identifier</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.identifier }}
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Workflow</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.workflow?.name }}
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Status</td>
+            <td class="detail-field-value">{{ workflowsInstance.status }}</td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Priority</td>
+            <td class="detail-field-value">{{ workflowsInstance.priority }}</td>
+          </tr>
+        </table>
+      </div>
 
-  <div class="files" *ngIf="selectedTab === 'artifacts'">
-    <div class="files-label">
-      <button
-        class="xml-button"
-        (click)="selectFiles('xml')"
-        [class.active-button]="selectedButton === 'xml'">
-        XML
-      </button>
-      <button
-        class="files-button"
-        (click)="selectFiles('files')"
-        [class.active-button]="selectedButton === 'files'">
-        Files
-      </button>
-    </div>
-    <div *ngIf="noXmlFiles" class="no-files-message">No XML files found.</div>
-
-    <div class="file-section">
-      <div class="file-actions">
-        <div *ngFor="let step of filteredFiles" class="file-item">
-          <div>
-            <img
-              [src]="getIcon(step.filename)"
-              class="file-icon"
-              alt="File Icon" />
-            {{ step.filename }}
-          </div>
-          <div class="file-action-buttons">
-            <button
-              class="download-btn"
-              (click)="downloadArtifact(step.id, step.filename)">
-              <img
-                src="/assets/icons/download-logo.svg"
-                class="search-icon"
-                alt="Search Icon" />
-              Download
-            </button>
-          </div>
-        </div>
+      <div class="table-container">
+        <table>
+          <tr>
+            <td class="detail-field-key">Created</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.created | date: 'MMM, dd YYYY HH:mm' }}
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Completed</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.completed | date: 'MMM, dd YYYY HH:mm' }}
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Duration</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.duration }}
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Error Message</td>
+            <td class="detail-field-value">
+              {{ workflowsInstance.errorMessage }}
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
 
-  <div class="logs-section" *ngIf="selectedTab === 'logs'">
-    <p class="logs">Logs</p>
-    <div class="log-items-container">
+  <div class="detail-container" *ngIf="selectedTab === 'summary'">
+    <p>Artifacts</p>
+
+    <div>
+      <div *ngFor="let step of filteredFiles" class="file-item">
+        <div>
+          <img
+            [src]="getIcon(step.filename)"
+            class="file-icon"
+            alt="File Icon" />
+          <div>
+            {{ step.filename }}
+          </div>
+        </div>
+        <button
+          class="download-btn"
+          (click)="downloadArtifact(step.id, step.filename)">
+          <img
+            src="/assets/icons/download-logo.svg"
+            class="search-icon"
+            alt="Search Icon" />
+          <div>Download</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-container" *ngIf="selectedTab === 'logs'">
+    <p>Logs</p>
+    <div class="log-container">
       <pre class="log-items">{{ logsResponse }}</pre>
     </div>
   </div>

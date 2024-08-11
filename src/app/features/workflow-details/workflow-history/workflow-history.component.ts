@@ -96,10 +96,12 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
         this.noInstancesFound = false;
       });
   }
+
   onPage(pageNumber: number) {
     this.pageParams.page = pageNumber - 1;
     this.getPageItems(this.pageParams);
   }
+
   public page!: IPage<any>;
   private pageParams = this.getDefaultPageParams();
 

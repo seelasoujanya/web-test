@@ -1,20 +1,20 @@
 .workflow-details-container {
-  margin-top: 55px;
-  width: 98%;
-  margin-inline: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  position: sticky;
-  z-index: 10;
-  top: 60px;
-  background-color: white;
+
   .details-label {
-    margin-top: 20px;
+    padding-inline: 15px;
+    padding-top: 15px;
+    padding-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: white;
+    background: #f3f3f3;
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+
     .label-left {
       height: 30px;
       display: flex;
@@ -25,14 +25,16 @@
       line-height: 30px;
       color: #000000;
       text-transform: capitalize;
+
       .navigate-back-btn {
         border: none;
-        border: 1px solid #ffffff;
-        background-color: white;
-        .navigate-back-icon {
-          margin-bottom: 5px;
+        background: #f3f3f3;
+
+        &:hover {
+          cursor: pointer;
         }
       }
+
       .workflow-label {
         width: 100%;
         display: flex;
@@ -43,6 +45,10 @@
         height: 25px;
         width: 25px;
         margin-top: 2px;
+      }
+
+      .status-icon {
+        padding: 5px;
       }
     }
     .trigger-history-btn {
@@ -58,59 +64,33 @@
       text-transform: uppercase;
     }
   }
-  .navigate-tabs {
-    background-color: #f9fafb;
-    height: 55px;
-    border-radius: 8px;
+  .navigate-btn-container {
+    background: #222;
+    height: 40px;
+    border-radius: 4px;
     display: flex;
     flex-direction: row;
-    padding: 10px 14px;
-    gap: 16px;
-    margin-bottom: 20px;
-    .buttons {
-      height: 40px;
-      display: flex;
-      flex-direction: row;
-      gap: 4px;
-      align-items: center;
-      .general-button {
-        height: 40px;
-        border-radius: 6px;
-        padding: 8px 12px;
-        border: none;
-        background-color: #f9fafb;
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-        color: #344054;
+    position: sticky;
+    z-index: 10;
+    top: 120px;
+    align-items: center;
+    z-index: 10;
+    margin-inline: 15px;
+
+    .navigate-btn {
+      background: none;
+      border: none;
+      color: #c4c4c4;
+      padding-inline: 20px;
+
+      &:hover {
+        cursor: pointer;
+        color: #fff;
       }
-      .settings-button {
-        height: 40px;
-        border-radius: 6px;
-        padding: 8px 12px;
-        border: none;
-        background-color: #f9fafb;
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-        color: #344054;
-      }
-      .history-button {
-        height: 40px;
-        border-radius: 6px;
-        padding: 8px 12px;
-        border: none;
-        background-color: #f9fafb;
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-        color: #344054;
-      }
-      .active-button {
-        background-color: #ffffff;
-        border-radius: 4px;
-        font-weight: 600;
-      }
+    }
+
+    .active-btn {
+      color: #ffff;
     }
   }
 }
