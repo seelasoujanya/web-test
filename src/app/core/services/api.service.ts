@@ -181,4 +181,10 @@ export class ApiService {
       template
     );
   }
+
+  getWorkflowStepConfigurations(workflowId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/workflow/${workflowId}/steps/configuration`
+    );
+  }
 }

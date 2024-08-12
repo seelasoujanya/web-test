@@ -63,7 +63,6 @@
   </ng-container>
 
   <ng-container *ngIf="selectedTab === 'workflow'">
-    <app-workflow-settings [xmlTemplates]="workflowTemplates">
-    </app-workflow-settings>
+    <app-workflow-settings [workflowId]="workflowId"> </app-workflow-settings>
   </ng-container>
 </div>
