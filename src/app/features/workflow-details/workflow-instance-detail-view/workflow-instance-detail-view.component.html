@@ -18,23 +18,8 @@
     </div>
   </div>
 
-  <div class="navigate-btn-container">
-    <button
-      class="navigate-btn"
-      (click)="selectTab('summary')"
-      [class.active-btn]="selectedTab === 'summary'">
-      Summary
-    </button>
-    <button
-      class="navigate-btn"
-      (click)="selectTab('logs')"
-      [class.active-btn]="selectedTab === 'logs'">
-      Logs
-    </button>
-  </div>
-
-  <div class="detail-container" *ngIf="selectedTab === 'summary'">
-    <p>Delivery Details</p>
+  <div class="detail-container">
+    <p>Summary</p>
     <div class="tables-main-container">
       <div class="table-container">
         <table>
@@ -78,7 +63,7 @@
           <tr>
             <td class="detail-field-key">Duration</td>
             <td class="detail-field-value">
-              {{ workflowsInstance.duration }}
+              {{ secondsToHHMMSS(workflowsInstance.duration) }}
             </td>
           </tr>
           <tr>
@@ -92,37 +77,38 @@
     </div>
   </div>
 
-  <div class="detail-container" *ngIf="selectedTab === 'summary'">
-    <p>Artifacts</p>
-
-    <div>
-      <div *ngFor="let step of filteredFiles" class="file-item">
-        <div>
-          <img
-            [src]="getIcon(step.filename)"
-            class="file-icon"
-            alt="File Icon" />
-          <div>
-            {{ step.filename }}
-          </div>
-        </div>
-        <button
-          class="download-btn"
-          (click)="downloadArtifact(step.id, step.filename)">
-          <img
-            src="/assets/icons/download-logo.svg"
-            class="search-icon"
-            alt="Search Icon" />
-          <div>Download</div>
-        </button>
+  <div class="cards">
+    <div class="detail-container log-main-container">
+      <p>Logs</p>
+      <div class="log-container">
+        <pre class="log-items">{{ logsResponse }}</pre>
       </div>
     </div>
-  </div>
 
-  <div class="detail-container" *ngIf="selectedTab === 'logs'">
-    <p>Logs</p>
-    <div class="log-container">
-      <pre class="log-items">{{ logsResponse }}</pre>
+    <div class="detail-container artifacts-container">
+      <p>Artifacts</p>
+      <div>
+        <div *ngFor="let step of filteredFiles" class="file-item">
+          <div>
+            <img
+              [src]="getIcon(step.filename)"
+              class="file-icon"
+              alt="File Icon" />
+            <div>
+              {{ step.filename }}
+            </div>
+          </div>
+          <button
+            class="download-btn"
+            (click)="downloadArtifact(step.id, step.filename)">
+            <img
+              src="/assets/icons/download-logo.svg"
+              class="search-icon"
+              alt="Search Icon" />
+            <div>Download</div>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

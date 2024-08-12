@@ -1,19 +1,9 @@
 <div *ngFor="let workflowStep of workflowSteps">
   <div class="step-container">
-    <div *ngIf="workflowStep.type === 'GCS_UPLOADER'">
-      <app-gcs-uploader-settings
-        [workflowStep]="workflowStep"
-        (workflowStepChange)="
-          updateWorkflowStep($event)
-        "></app-gcs-uploader-settings>
-    </div>
-
-    <div *ngIf="workflowStep.type === 'SFTP'">
-      <app-ftp-uploader-settings
-        [workflowStep]="workflowStep"
-        (workflowStepChange)="
-          updateWorkflowStep($event)
-        "></app-ftp-uploader-settings>
-    </div>
+    <app-workflow-step-settings
+      [workflowStep]="workflowStep"
+      (workflowStepChange)="
+        updateWorkflowStep($event)
+      "></app-workflow-step-settings>
   </div>
 </div>
