@@ -1,11 +1,9 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -40,7 +38,6 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   xmlTemplatesById: any[] = [];
   selectedTemplate: string = '';
   isReadOnly: boolean = true;
-  isEditable: boolean = false;
   updatedTemplate: string = '';
   editedTemplate: any;
   firstTemplate: any;
@@ -49,6 +46,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   originalCode: any;
   modifiedCode: any;
   templateName: any;
+  templateDescription: any;
   selectedTemplateIndex: any;
 
   compareTemplate = {
@@ -60,6 +58,8 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   templates: any[] = [];
 
   reactiveForm: FormGroup;
+
+  enableEditing = false;
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +75,15 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.reactiveForm = this.fb.group({
       code: [''],
     });
-    console.log('Reactive Form Initialized');
+  }
+
+  toggleEditing() {
+    this.enableEditing = !this.enableEditing;
+  }
+
+  detailEditing = false;
+  toggleDetailEditig() {
+    this.detailEditing = !this.detailEditing;
   }
 
   ngOnInit(): void {
@@ -124,7 +132,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
 
   isEditableTemplate() {
     this.isReadOnly = !this.isReadOnly;
-    this.isEditable = !this.isEditable;
+    this.enableEditing = !this.enableEditing;
     this.cdRef.detectChanges();
   }
 
@@ -147,8 +155,9 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
             template['displayName'] = 'Version ' + versionNumber;
           });
           this.templateName = this.xmlTemplatesById[0].template.name;
+          this.templateDescription =
+            this.xmlTemplatesById[0].template.description;
           this.xmlTemplatesById.reverse();
-          console.log('diplay', this.xmlTemplatesById);
           this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
         }
       });
@@ -175,7 +184,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       if (result) {
         const editedVersion = {
           id: this.templateId,
-          description: result,
+          templateDescription: result,
           templateCode: `"${this.editedTemplate}"`,
         };
         this.apiService
@@ -194,6 +203,19 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.showDifferences = false;
     this.compareTemplate.firstTemplate = '';
     this.compareTemplate.secondTemplate = '';
+  }
+
+  updateTemplateDetails() {
+    const editedVersion = {
+      id: this.templateId,
+      name: this.templateName,
+      description: this.templateDescription,
+    };
+    this.apiService
+      .updateTemplate(this.templateId, editedVersion)
+      .subscribe((result: any) => {
+        this.getTemplatesByTemplateId(this.templateId);
+      });
   }
 
   // public getTemplates(pageParams: any) {
@@ -240,5 +262,9 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
 
   isCompareAllowed(): boolean {
     return this.compareTemplate.description.trim() !== '';
+  }
+
+  backToWorkflows() {
+    this.router.navigate(['/templates']);
   }
 }
