@@ -1,26 +1,85 @@
+<div class="details-label">
+  <div class="label-left">
+    <button class="navigate-back-btn" type="button" (click)="backToWorkflows()">
+      <img
+        src="/assets/icons/navigate-back-logo.svg"
+        class="navigate-back-icon"
+        alt="export Icon" />
+    </button>
+    <div>{{ templateName }}</div>
+  </div>
+</div>
+
+<div class="main-container">
+  <div class="header">
+    <p>Template Details</p>
+    <div class="general-setting-label">
+      <div class="buttons" *ngIf="detailEditing">
+        <button
+          class="save-btn"
+          (click)="updateTemplateDetails()"
+          type="button">
+          save
+        </button>
+        <button class="cancel-btn" (click)="toggleDetailEditig()" type="button">
+          cancel
+        </button>
+      </div>
+      <div class="edit-icon">
+        <img
+          src="/assets/icons/edit-icon.svg"
+          alt="edit Icon"
+          (click)="toggleDetailEditig()" />
+      </div>
+    </div>
+  </div>
+
+  <div class="fields-container">
+    <div class="field-item">
+      <span>Name</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Name"
+        class="input-field"
+        [(ngModel)]="templateName"
+        [disabled]="!detailEditing" />
+    </div>
+
+    <div class="field-item">
+      <span>Description</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Name"
+        class="input-field"
+        [(ngModel)]="templateDescription"
+        [disabled]="!detailEditing" />
+    </div>
+  </div>
+</div>
+
 <div class="templates-container">
   <div class="left-container">
     <div class="heading">
       <p class="label">History</p>
-      <!-- <img src="/assets/icons/plus-icon.svg" /> -->
     </div>
     <div
       *ngFor="let template of xmlTemplatesById; let i = index"
-      style="margin-top: 5px"
-      [ngClass]="{ 'selected-version': i === selectedTemplateIndex }">
-      <span class="version-number" (click)="selectTemplate(i)">
+      [ngClass]="{ 'selected-version': i === selectedTemplateIndex }"
+      class="version"
+      (click)="selectTemplate(i)">
+      <div class="version-number">
         {{ template?.displayName }}
-      </span>
-      <br />
-      <span class="time">
-        {{ template.created | date: 'yyyy-MM-dd' }} -
-        {{ template.created | date: 'HH:mm' }}
-      </span>
+      </div>
+      <div class="time">
+        {{ template.created | date: 'MMM, dd YYYY HH:mm' }}
+      </div>
     </div>
   </div>
   <div class="right-container">
     <div class="heading">
-      <p class="label">{{ templateName }}</p>
+      <!-- <p class="label">{{ templateName }}</p> -->
       <div class="buttons">
         <button class="edit-btn" (click)="isEditableTemplate()">
           <img
@@ -28,22 +87,28 @@
             alt="export Icon"
             class="edit-icon" />
         </button>
-        <button
+        <!-- <button
           class="compare-btn"
           (click)="openCompareDialog(compareTemplateForm)">
           Compare
-        </button>
+        </button> -->
         <button
           class="save-as-btn"
-          [disabled]="!isEditable"
-          [ngClass]="{ 'not-allowed': !isEditable }"
+          [disabled]="!enableEditing"
+          [ngClass]="{ 'not-allowed': !enableEditing }"
           (click)="editTemplate()">
           Save
         </button>
       </div>
     </div>
     <div class="template">
-      <form [formGroup]="reactiveForm" class="form"></form>
+      <form [formGroup]="reactiveForm" class="form">
+        <textarea
+          name="code"
+          id="code"
+          formControlName="code"
+          [disabled]="!enableEditing"></textarea>
+      </form>
     </div>
   </div>
 </div>

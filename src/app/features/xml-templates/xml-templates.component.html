@@ -41,47 +41,51 @@
       </tbody>
     </table>
   </div>
-</div>
 
-<ng-template #createTemplateForm class="modal-content">
-  <div class="header">
-    <p class="header_title">Create Template</p>
-    <button type="button" class="header_close-btn" (click)="closeModal()">
-      <img src="assets/icons/close-circle.svg" alt="" />
-    </button>
+  <div class="page-view">
+    <app-pagination
+      [page]="page"
+      (paginationEvent)="onPage($event)"></app-pagination>
   </div>
-  <div class="form-details">
-    <div class="workflow-field">
-      <span>Name</span>
-      <input
-        type="text"
-        maxlength="255"
-        placeholder="Enter Name"
-        class="input-field"
-        [(ngModel)]="newTemplateData.name" />
-    </div>
-    <div class="workflow-field">
-      <span>Description</span>
-      <input
-        type="text"
-        maxlength="255"
-        placeholder="Enter Description"
-        class="input-field"
-        [(ngModel)]="newTemplateData.description" />
-    </div>
-    <div class="template">
-      <span>Template</span>
-      <form [formGroup]="reactiveForm" class="form"></form>
-    </div>
-  </div>
-  <div class="buttons">
-    <button class="cancel-btn" (click)="cancelChanges()">CANCEL</button>
-    <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
-  </div>
-</ng-template>
 
-<div class="page-view">
-  <app-pagination
-    [page]="page"
-    (paginationEvent)="onPage($event)"></app-pagination>
+  <ng-template #createTemplateForm class="modal-content">
+    <div class="header">
+      <p class="header_title">Create Template</p>
+      <button type="button" class="header_close-btn" (click)="closeModal()">
+        <img src="assets/icons/close-circle.svg" alt="" />
+      </button>
+    </div>
+    <div class="form-details">
+      <div class="workflow-field">
+        <span>Name</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Name"
+          class="input-field"
+          [(ngModel)]="newTemplateData.name" />
+      </div>
+      <div class="workflow-field">
+        <span>Description</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Description"
+          class="input-field"
+          [(ngModel)]="newTemplateData.description" />
+      </div>
+      <div class="workflow-field">
+        <span>Template</span>
+        <textarea
+          name="templateCode"
+          id="templateCode"
+          [(ngModel)]="newTemplateData.templateCode"
+          rows="20"></textarea>
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="cancel-btn" (click)="cancelChanges()">CANCEL</button>
+      <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
+    </div>
+  </ng-template>
 </div>
