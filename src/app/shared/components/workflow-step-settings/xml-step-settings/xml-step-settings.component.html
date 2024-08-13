@@ -1,0 +1,37 @@
+<div class="main-container">
+  <div class="header">
+    <p>XML Settings</p>
+    <div class="general-setting-label">
+      <div class="buttons" *ngIf="enableEditing">
+        <button class="save-btn" type="button" (click)="updateTemplate()">
+          save
+        </button>
+        <button class="cancel-btn" (click)="toggleEditing()" type="button">
+          cancel
+        </button>
+      </div>
+      <div class="edit-icon">
+        <img
+          src="/assets/icons/edit-icon.svg"
+          alt="edit Icon"
+          (click)="toggleEditing()" />
+      </div>
+    </div>
+  </div>
+
+  <div class="fields-container">
+    <div class="field-item">
+      <span>Template</span>
+
+      <ng-select
+        [items]="templates"
+        bindLabel="name"
+        bindValue="id"
+        [searchable]="false"
+        [clearable]="false"
+        placeholder="Templates"
+        [(ngModel)]="selectedTemplateId">
+      </ng-select>
+    </div>
+  </div>
+</div>

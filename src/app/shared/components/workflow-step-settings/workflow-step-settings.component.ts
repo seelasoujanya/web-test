@@ -29,7 +29,7 @@ export class WorkflowStepSettingsComponent {
   workflowStepChange: EventEmitter<IWorkflowStep | null> =
     new EventEmitter<IWorkflowStep | null>();
 
-  enableEditing = true;
+  enableEditing = false;
   availableKeys: string[] = [];
 
   public constructor(private apiService: ApiService) {}
