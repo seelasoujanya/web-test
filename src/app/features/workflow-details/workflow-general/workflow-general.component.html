@@ -1,7 +1,6 @@
 <div class="workflow-general-container">
   <div class="general-setting">
     <div class="general-setting-label">
-      <span class="label"> General settings</span>
       <span class="edit-icon" *ngIf="!isEditing"
         ><img
           src="/assets/icons/edit-icon.svg"
@@ -43,7 +42,7 @@
       </div>
       <div class="workflow-field">
         <div>
-          <span> Parallel Instances</span>
+          <span>Concurrency</span>
           <input
             type="number"
             placeholder="throttle limit"
@@ -66,9 +65,10 @@
       </div>
     </div>
   </div>
+
   <div class="email-setting">
     <div class="general-setting-label">
-      <span class="email-label">Email</span>
+      <span class="label">Email</span>
       <span>
         <button
           class="add-email-btn"
@@ -82,53 +82,54 @@
         </button></span
       >
     </div>
-  </div>
-  <div class="email-table">
-    <table class="table-container">
-      <thead class="table-head">
-        <tr>
-          <th *ngFor="let heading of headings" class="table-header-cell">
-            {{ heading }}
-          </th>
-        </tr>
-      </thead>
-      <tbody class="scrollable-table__body">
-        <ng-container>
-          <tr *ngFor="let email of emails; let i = index">
-            <td class="table-cell">{{ i + 1 }}</td>
-            <td class="table-cell">{{ email.email }}</td>
-            <td class="table-cell">{{ email.name }}</td>
-            <td class="table-cell">
-              <ng-select
-                [items]="emailStatus"
-                bindLabel="label"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="select status"
-                [(ngModel)]="email.status"
-                [class.disabled]="true">
-              </ng-select>
-            </td>
-            <td class="table-cell">
-              <div class="actions">
-                <img
-                  src="/assets/icons/delete-icon.svg"
-                  class="delete-icon"
-                  alt="delete"
-                  (click)="deleteEmail(email.id, email.email)" />
-                <img
-                  src="/assets/icons/edit-icon.svg"
-                  alt="edit Icon"
-                  class="edit-icon"
-                  orm
-                  (click)="editEmail(email, addEmailForm)" />
-              </div>
-            </td>
+
+    <div class="email-table">
+      <table class="table-container">
+        <thead class="table-head">
+          <tr>
+            <th *ngFor="let heading of headings" class="table-header-cell">
+              {{ heading }}
+            </th>
           </tr>
-        </ng-container>
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="scrollable-table__body">
+          <ng-container>
+            <tr *ngFor="let email of emails; let i = index">
+              <td class="table-cell">{{ i + 1 }}</td>
+              <td class="table-cell">{{ email.email }}</td>
+              <td class="table-cell">{{ email.name }}</td>
+              <td class="table-cell">
+                <ng-select
+                  [items]="emailStatus"
+                  bindLabel="label"
+                  bindValue="value"
+                  [searchable]="false"
+                  [clearable]="false"
+                  placeholder="select status"
+                  [(ngModel)]="email.status"
+                  [class.disabled]="true">
+                </ng-select>
+              </td>
+              <td class="table-cell">
+                <div class="actions">
+                  <img
+                    src="/assets/icons/delete-icon.svg"
+                    class="delete-icon"
+                    alt="delete"
+                    (click)="deleteEmail(email.id, email.email)" />
+                  <img
+                    src="/assets/icons/edit-icon.svg"
+                    alt="edit Icon"
+                    class="edit-icon"
+                    orm
+                    (click)="editEmail(email, addEmailForm)" />
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

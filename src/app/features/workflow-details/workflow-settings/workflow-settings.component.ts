@@ -1,15 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { FOLDER_STRUCTURE } from 'src/app/core/utils/constants';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { CommonModule, DatePipe } from '@angular/common';
-import { XmlEditorComponent } from 'src/app/shared/components/xml-editor/xml-editor.component';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ApiService } from 'src/app/core/services/api.service';
+import { IWorkflowStep } from 'src/app/core/models/workflow-step';
+import { WorkflowStepSettingsComponent } from 'src/app/shared/components/workflow-step-settings/workflow-step-settings.component';
 
 @Component({
   selector: 'app-workflow-settings',
@@ -17,25 +13,52 @@ import {
   imports: [
     NgSelectModule,
     MatSlideToggleModule,
-    DatePipe,
     CommonModule,
-    XmlEditorComponent,
     FormsModule,
+    WorkflowStepSettingsComponent,
   ],
   templateUrl: './workflow-settings.component.html',
   styleUrl: './workflow-settings.component.scss',
 })
 export class WorkflowSettingsComponent {
-  folderStructure = FOLDER_STRUCTURE;
-
   @Input()
-  xmlTemplates: any[] = [];
+  workflowId: string | null = '';
 
-  selectedTemplate: any = '';
+  workflowSteps: IWorkflowStep[] = [];
+  public pageParams = this.getDefaultPageParams();
 
-  isReadOnly: boolean = true;
+  getDefaultPageParams() {
+    return {
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    };
+  }
 
-  ngOnInit(): void {}
+  constructor(private apiServie: ApiService) {}
 
-  constructor() {}
+  ngOnInit(): void {
+    if (this.workflowId) {
+      this.apiServie
+        .getWorkflowSteps(this.workflowId, this.pageParams)
+        .subscribe({
+          next: data => {
+            this.workflowSteps = data.content;
+          },
+          error: error => {
+            console.error(error);
+          },
+        });
+    }
+  }
+
+  updateWorkflowStep(workflowStep: IWorkflowStep | null): void {
+    if (workflowStep) {
+      const index = this.workflowSteps.findIndex(
+        step => step.id === workflowStep.id
+      );
+      this.workflowSteps[index] = workflowStep;
+    }
+  }
 }

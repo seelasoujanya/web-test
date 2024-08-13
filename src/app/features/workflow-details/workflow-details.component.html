@@ -10,102 +10,59 @@
           class="navigate-back-icon"
           alt="export Icon" />
       </button>
-      <!-- <p><span>{{workflow.name}}</span> <span></span> </p>  -->
-      <div class="workflow-label">
-        <div>
-          {{ workflow?.name }}
-        </div>
-        <div>
-          <div class="status-content">
-            <ng-container *ngIf="workflow?.enabled; else inactiveLogo">
-              <img
-                src="assets/icons/active-logo.svg"
-                alt="Active Icon"
-                class="active-status-icon" />
-            </ng-container>
-            <ng-template #inactiveLogo>
-              <img
-                src="assets/icons/inactive-logo.svg"
-                alt="Inactive Icon"
-                class="inactive-status-icon" />
-            </ng-template>
-          </div>
-        </div>
+      <div>
+        {{ workflow?.name }}
       </div>
-      <!-- <img
-        src="assets/icons/bookmark-fill-logo.svg"
-        alt="Bookmark Icon"
-        class="bookmark-fill-icon" /> -->
-    </div>
-    <!-- 
-    <div class="label-right">
-      <div class="workflow-header">
-        <div class="workflow-header-right">
-          <div class="searchBar">
-            <input
-              type="text"
-              class="searchField"
-              name="searchInput"
-              placeholder="Search for Workflow Instance"
-              [(ngModel)]="identifier"
-              required />
-          </div>
-
-          <div class="search-button">
-            <button
-              class="searchButton"
-              type="button"
-              (click)="searchWorkflowInstance()">
-              <img
-                src="/assets/icons/search.svg"
-                class="search-icon"
-                alt="Search Icon" />
-              Search
-            </button>
-          </div>
-        </div>
-      </div>
-    </div> -->
-  </div>
-
-  <div class="navigate-tabs">
-    <div class="buttons">
-      <button
-        class="general-button"
-        (click)="selectTab('general')"
-        [class.active-button]="selectedTab === 'general'">
-        General
-      </button>
-      <button
-        class="settings-button"
-        (click)="selectTab('workflow')"
-        [class.active-button]="selectedTab === 'workflow'">
-        Workflow Settings
-      </button>
-      <button
-        class="history-button"
-        (click)="selectTab('history')"
-        [class.active-button]="selectedTab === 'history'">
-        Delivered History
-      </button>
+      <ng-container *ngIf="workflow?.enabled; else inactiveLogo">
+        <img
+          src="assets/icons/active-logo.svg"
+          alt="Active Icon"
+          class="status-icon" />
+      </ng-container>
+      <ng-template #inactiveLogo>
+        <img
+          src="assets/icons/inactive-logo.svg"
+          alt="Inactive Icon"
+          class="status-icon" />
+      </ng-template>
     </div>
   </div>
+
+  <div class="navigate-btn-container">
+    <button
+      class="navigate-btn"
+      (click)="selectTab('general')"
+      [class.active-btn]="selectedTab === 'general'">
+      General
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('workflow')"
+      [class.active-btn]="selectedTab === 'workflow'">
+      Workflow Settings
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('history')"
+      [class.active-btn]="selectedTab === 'history'">
+      Deliveries
+    </button>
+  </div>
+
+  <ng-container *ngIf="selectedTab === 'general'">
+    <app-workflow-general
+      [workflow]="workflow"
+      [workflowCopy]="workflowCopy"
+      [emails]="emails"
+      (workflowEmailEvent)="workflowEmailSettings($event)"
+      (updateWorkflowEvent)="updateWorkflow($event)"></app-workflow-general>
+  </ng-container>
+
+  <ng-container *ngIf="selectedTab === 'history'">
+    <app-workflow-history> </app-workflow-history>
+  </ng-container>
+
+  <ng-container *ngIf="selectedTab === 'workflow'">
+    <app-workflow-settings [workflowId]="workflowId"> </app-workflow-settings>
+  </ng-container>
 </div>
-
-<ng-container *ngIf="selectedTab === 'general'">
-  <app-workflow-general
-    [workflow]="workflow"
-    [workflowCopy]="workflowCopy"
-    [emails]="emails"
-    (workflowEmailEvent)="workflowEmailSettings($event)"
-    (updateWorkflowEvent)="updateWorkflow($event)"></app-workflow-general>
-</ng-container>
-
-<ng-container *ngIf="selectedTab === 'history'">
-  <app-workflow-history> </app-workflow-history>
-</ng-container>
-
-<ng-container *ngIf="selectedTab === 'workflow'">
-  <app-workflow-settings [xmlTemplates]="workflowTemplates">
-  </app-workflow-settings>
-</ng-container>

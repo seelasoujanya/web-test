@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of, pluck } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IPage } from '../models/page.model';
+import { IWorkflowStep } from '../models/workflow-step';
 @Injectable({
   providedIn: 'root',
 })
@@ -150,13 +151,20 @@ export class ApiService {
     return this.http.put<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }
 
-  public getWorkflowSteps(
-    id: number | any,
-    queryParams: any
-  ): Observable<IPage<any>> {
-    return this.http.get<IPage<any>>(`${this.apiUrl}/workflow/${id}/steps`, {
+  public getWorkflowSteps(id: string, queryParams: any): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflow/${id}/steps`, {
       params: queryParams as any,
     });
+  }
+
+  public updateWorkflowSteps(
+    id: string,
+    workflowStep: IWorkflowStep
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/workflow/${id}/steps`,
+      workflowStep
+    );
   }
 
   public getTemplatesByTemplateId(
@@ -179,6 +187,12 @@ export class ApiService {
     return this.http.put<any>(
       `${this.apiUrl}/template/${templateId}`,
       template
+    );
+  }
+
+  getWorkflowStepConfigurations(workflowId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/workflow/${workflowId}/steps/configuration`
     );
   }
 }

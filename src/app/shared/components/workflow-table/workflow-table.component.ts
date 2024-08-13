@@ -32,17 +32,6 @@ export class WorkflowTableComponent implements OnDestroy {
   @Input()
   public workflowInstances$: Observable<any[]> | undefined;
 
-  // @Input()
-  // public instanceHeadings: string[] = [
-  //   'ID',
-  //   'Queued On',
-  //   'Started On',
-  //   'Duration',
-  //   'Delivery Type',
-  //   'Status',
-  //   'Priority'
-  // ];
-
   @Output()
   public increasePageEvent = new EventEmitter<boolean>();
 

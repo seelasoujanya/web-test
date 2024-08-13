@@ -1,0 +1,84 @@
+<div class="main-container" *ngIf="fields.length > 0">
+  <div class="header">
+    <p>{{ title }}</p>
+    <div class="general-setting-label">
+      <div class="buttons" *ngIf="enableEditing">
+        <button
+          class="save-btn"
+          (click)="updateWorkflowStepSettings()"
+          type="button">
+          save
+        </button>
+        <button class="cancel-btn" (click)="toggleEditing()" type="button">
+          cancel
+        </button>
+      </div>
+      <div class="edit-icon">
+        <img
+          src="/assets/icons/edit-icon.svg"
+          alt="edit Icon"
+          (click)="toggleEditing()" />
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="fields-container"
+    *ngIf="workflowStep?.workflowStepConfigurations">
+    <div class="field-item" *ngFor="let field of fields">
+      <div *ngIf="field; in: availableKeys">
+        <div [ngSwitch]="field.type">
+          <div class="form-group" *ngSwitchCase="'checkbox'">
+            <label class="checkbox">
+              <input
+                type="checkbox"
+                (change)="updateCheckboxFieldValue(field.key)"
+                [checked]="getFieldValue(field.key, 'boolean')" />
+              <div class="checkbox__icon">
+                <img src="/assets/icons/checkbox.svg" alt="" />
+              </div>
+
+              <span class="checkbox__label" style="font-size: 15px">{{
+                field.label
+              }}</span>
+            </label>
+          </div>
+
+          <span *ngIf="field.type !== 'checkbox'">{{ field.label }}</span>
+          <input
+            *ngSwitchCase="'input'"
+            type="text"
+            maxlength="255"
+            placeholder="{{ field.placeholder }}"
+            class="input-field"
+            [ngModel]="getFieldValue(field.key)"
+            (ngModelChange)="setFieldValue(field.key, $event)"
+            [disabled]="!enableEditing" />
+
+          <textarea
+            *ngSwitchCase="'textarea'"
+            [name]="field.key"
+            [id]="field.key"
+            placeholder="{{ field.placeholder }}"
+            [ngModel]="getFieldValue(field.key)"
+            class="input-field"
+            rows="5"
+            (ngModelChange)="setFieldValue(field.key, $event)"
+            [disabled]="!enableEditing"></textarea>
+
+          <ng-select
+            *ngSwitchCase="'select'"
+            [items]="field.values"
+            bindLabel="label"
+            bindValue="value"
+            [searchable]="false"
+            [clearable]="false"
+            placeholder="{{ field.placeholder }}"
+            [ngModel]="getFieldValue(field.key)"
+            (ngModelChange)="setFieldValue(field.key, $event)">
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
