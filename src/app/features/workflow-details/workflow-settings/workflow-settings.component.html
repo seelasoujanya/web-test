@@ -1,5 +1,9 @@
 <div *ngFor="let workflowStep of workflowSteps">
-  <div class="step-container">
+  <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
+    <app-xml-step-settings
+      [workflowStep]="workflowStep"></app-xml-step-settings>
+  </div>
+  <div class="step-container" *ngIf="workflowStep.type !== 'XML_RUNNER'">
     <app-workflow-step-settings
       [workflowStep]="workflowStep"
       (workflowStepChange)="

@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from 'src/app/core/services/api.service';
 import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { WorkflowStepSettingsComponent } from 'src/app/shared/components/workflow-step-settings/workflow-step-settings.component';
+import { XmlStepSettingsComponent } from '../../../shared/components/workflow-step-settings/xml-step-settings/xml-step-settings.component';
 
 @Component({
   selector: 'app-workflow-settings',
@@ -16,6 +17,7 @@ import { WorkflowStepSettingsComponent } from 'src/app/shared/components/workflo
     CommonModule,
     FormsModule,
     WorkflowStepSettingsComponent,
+    XmlStepSettingsComponent,
   ],
   templateUrl: './workflow-settings.component.html',
   styleUrl: './workflow-settings.component.scss',

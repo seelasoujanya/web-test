@@ -46,7 +46,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
   noInstancesFound: boolean = false;
-  selectedTab: string = 'workflow';
+  selectedTab: string = 'general';
 
   instanceHeadings: string[] = [
     'Identifier',

@@ -16,7 +16,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
   },
   {
-    key: 'product_assets_transcode',
+    key: 'productAssetOption',
     label: 'Product Asset Transcode Type',
     type: 'select',
     placeholder: 'Transcode Type to be used for Product Assets',
@@ -24,7 +24,7 @@ export const ddexFields: IWorkflowStepField[] = [
     defaultValue: 'NONE',
   },
   {
-    key: 'audio_transcode',
+    key: 'trackAssetOption',
     label: 'Audio Transcode Type',
     type: 'select',
     placeholder: 'Transcode Type to be used for Audio',
@@ -47,7 +47,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
   },
   {
-    key: 'assets_to_replace',
+    key: 'replaceWithDownloadLinks',
     label: 'Assets to Replace with Download Links',
     type: 'select',
     placeholder: 'Assets to Replace with Download Links',
