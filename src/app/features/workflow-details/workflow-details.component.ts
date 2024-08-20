@@ -12,6 +12,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
 import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
 import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-workflow-details',
@@ -89,7 +90,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private spinnerService: SpinnerService
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -220,17 +222,21 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public updateWorkflow(workflow: any) {
+    this.spinnerService.show();
     this.apiService
       .updateWorkflow(this.workflowId, workflow)
       .subscribe((result: any) => {
         this.workflow = result;
         this.workflowCopy = JSON.parse(JSON.stringify(result));
+        this.spinnerService.hide();
       });
   }
 
   public deleteEmailById(id: any) {
+    this.spinnerService.show();
     this.apiService.deleteEmailById(id).subscribe((result: any) => {
       this.getEmailsByWorkflowId();
+      this.spinnerService.hide();
     });
   }
 
@@ -249,16 +255,20 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public addEmail(emailData: any) {
+    this.spinnerService.show();
     this.apiService
       .addEmail(this.workflow.id, emailData)
       .subscribe((result: any) => {
         this.emails.push(result);
+        this.spinnerService.hide();
       });
   }
 
   public updateEmail(id: any, emailData: any) {
+    this.spinnerService.show();
     this.apiService.updateEmail(id, emailData).subscribe((result: any) => {
       this.getEmailsByWorkflowId();
+      this.spinnerService.hide();
     });
   }
 

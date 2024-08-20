@@ -62,8 +62,8 @@ export class WorkflowGeneralComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public editWorkflow() {
-    this.isEditing = true;
+  public toggleEditing() {
+    this.isEditing = !this.isEditing;
   }
 
   public saveWorkflowChanges() {

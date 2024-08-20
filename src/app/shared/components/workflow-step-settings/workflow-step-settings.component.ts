@@ -7,6 +7,7 @@ import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { IWorkflowStepField } from './field.model';
 import { stepFields } from './constants';
 import { ApiService } from 'src/app/core/services/api.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-workflow-step-settings',
@@ -32,7 +33,10 @@ export class WorkflowStepSettingsComponent {
   enableEditing = false;
   availableKeys: string[] = [];
 
-  public constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private spinnerService: SpinnerService
+  ) {}
 
   ngOnInit(): void {
     if (this.workflowStep?.type) {
@@ -112,6 +116,7 @@ export class WorkflowStepSettingsComponent {
 
   updateWorkflowStepSettings() {
     if (this.workflowStep) {
+      this.spinnerService.show();
       this.apiService
         .updateWorkflowSteps(
           this.workflowStep.workflowId.toString(),
@@ -120,9 +125,13 @@ export class WorkflowStepSettingsComponent {
         .subscribe({
           next: data => {
             this.workflowStep = data;
+            this.spinnerService.hide();
+            this.toggleEditing();
           },
           error: error => {
             console.error(error);
+            this.spinnerService.hide();
+            this.toggleEditing();
           },
         });
     }

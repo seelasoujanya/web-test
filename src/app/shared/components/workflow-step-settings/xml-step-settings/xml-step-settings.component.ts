@@ -4,6 +4,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-xml-step-settings',
@@ -36,7 +37,10 @@ export class XmlStepSettingsComponent {
     order: 'asc',
   };
 
-  public constructor(private apiService: ApiService) {}
+  public constructor(
+    private apiService: ApiService,
+    private spinnerService: SpinnerService
+  ) {}
 
   ngOnInit(): void {
     console.log(this.workflowStep);
@@ -76,25 +80,29 @@ export class XmlStepSettingsComponent {
         workflowStepId: this.workflowStep.id,
         templateId: this.selectedTemplateId,
       };
+      this.spinnerService.show();
       if (this.hasSelectedTemplate) {
         this.apiService
           .updateTemplateForStep(this.workflowStep.workflowId, body)
           .subscribe({
             next: data => {
               console.log(data);
+              this.spinnerService.hide();
             },
             error: error => {
               console.error(error);
+              this.spinnerService.hide();
             },
           });
       } else {
         this.apiService.postTemplateForStep(body).subscribe({
           next: data => {
-            console.log(data);
             this.hasSelectedTemplate = true;
+            this.spinnerService.hide();
           },
           error: error => {
             console.error(error);
+            this.spinnerService.hide();
           },
         });
       }

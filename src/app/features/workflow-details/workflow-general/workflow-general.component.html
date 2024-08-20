@@ -1,11 +1,11 @@
 <div class="workflow-general-container">
   <div class="general-setting">
     <div class="general-setting-label">
-      <span class="edit-icon" *ngIf="!isEditing"
+      <span class="edit-icon"
         ><img
           src="/assets/icons/edit-icon.svg"
           alt="edit Icon"
-          (click)="editWorkflow()"
+          (click)="toggleEditing()"
       /></span>
     </div>
     <div class="workflow-content" *ngIf="workflowCopy">
