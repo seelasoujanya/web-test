@@ -5,24 +5,36 @@
     </div>
   </div>
   <div class="monitor-buttons-section">
-    <div class="running">
-      <button
-        class="running-button"
-        (click)="updateParams('RUNNING')"
-        [ngClass]="pageParams.status === 'RUNNING' ? 'active' : ''">
-        Running
-        <span class="running-instances-count">{{ runningInstancesCount }}</span>
-      </button>
+    <div class="status-buttons">
+      <div class="running">
+        <button
+          class="running-button"
+          (click)="updateParams('RUNNING')"
+          [ngClass]="pageParams.status === 'RUNNING' ? 'active' : ''">
+          Running
+          <span class="running-instances-count">{{
+            runningInstancesCount
+          }}</span>
+        </button>
+      </div>
+      <div class="pending">
+        <button
+          class="pending-button"
+          (click)="updateParams('PENDING')"
+          [ngClass]="pageParams.status === 'CREATED' ? 'active' : ''">
+          Pending
+          <span class="running-instances-count">{{
+            pendingInstancesCount
+          }}</span>
+        </button>
+      </div>
     </div>
-    <div class="pending">
-      <button
-        class="pending-button"
-        (click)="updateParams('PENDING')"
-        [ngClass]="pageParams.status === 'CREATED' ? 'active' : ''">
-        Pending
-        <span class="running-instances-count">{{ pendingInstancesCount }}</span>
-      </button>
-    </div>
+    <button class="pause-button" type="button" (click)="pauseInstance()">
+      <img
+        src="assets/icons/pause-logo.svg"
+        class="pause-icon"
+        alt="pause Icon" />PAUSE
+    </button>
   </div>
   <div class="monitor-instance-table">
     <table class="table-container">

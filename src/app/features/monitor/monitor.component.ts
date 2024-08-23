@@ -17,6 +17,7 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 export class MonitorComponent implements OnInit, OnDestroy {
   private websocketSubscription!: Subscription;
   public instances: any[] = [];
+  public queuedInstances: any[] = [];
   public pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
   public pendingInstancesCount: number = 0;
@@ -65,9 +66,12 @@ export class MonitorComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.page = data;
         this.instances = data.content;
+        console.log('all instances:', this.instances);
         if (pageParams.status == 'RUNNING') {
           this.runningInstancesCount = data.totalElements;
         } else {
+          this.queuedInstances = data.content;
+          console.log('queued instances:', this.queuedInstances);
           this.pendingInstancesCount = data.totalElements;
         }
         this.spinnerService.hide();
@@ -122,5 +126,25 @@ export class MonitorComponent implements OnInit, OnDestroy {
         console.error('Error updating workflow instance', error);
       }
     );
+  }
+
+  pauseInstance() {
+    console.log('pause isntnace');
+    if (this.queuedInstances && this.queuedInstances.length > 0) {
+      this.queuedInstances.forEach(instance => {
+        this.apiService
+          .updateWorkflowInstanceStatus(instance.id, 'PAUSED')
+          .subscribe(
+            updatedInstance => {
+              console.log('Workflow Instance updated:', updatedInstance);
+            },
+            error => {
+              console.error('Error updating workflow instance', error);
+            }
+          );
+      });
+    } else {
+      console.log('No queued instances to pause.');
+    }
   }
 }
