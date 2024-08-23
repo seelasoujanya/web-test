@@ -112,16 +112,23 @@ export class ApiService {
     });
   }
 
-  updateWorkflowInstanceStatus(
-    instanceId: number,
-    status: string
-  ): Observable<any> {
-    let params = new HttpParams().set('status', status);
-    console.log(status);
+  // updateWorkflowInstance(
+  //   instanceId: number,
+  //   status: string
+  // ): Observable<any> {
+  //   let params = new HttpParams().set('status', status);
+  //   console.log(status);
+  //   return this.http.put<any>(
+  //     `${this.apiUrl}/workflowinstance/${instanceId}`,
+  //     null,
+  //     { params }
+  //   );
+  // }
+
+  updateWorkflowInstance(id: number, updateData: any): Observable<any> {
     return this.http.put<any>(
-      `${this.apiUrl}/workflowinstance/${instanceId}`,
-      null,
-      { params }
+      `${this.apiUrl}/workflowinstance/${id}`,
+      updateData
     );
   }
 

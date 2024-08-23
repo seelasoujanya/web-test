@@ -8,6 +8,11 @@ export const EMAIL_STATUS = [
   { label: 'Failure', value: 'FAILURE' },
 ];
 
+export const PRIORITY = [
+  { label: 'High', value: 'HIGH' },
+  { label: 'Low', value: 'LOW' },
+  { label: 'Medium', value: 'MEDIUM' },
+];
 export const FOLDER_STRUCTURE = [
   { label: 'ReleaseByRelease', value: 'Release By Release' },
   { label: 'Batched', value: 'Batched' },
