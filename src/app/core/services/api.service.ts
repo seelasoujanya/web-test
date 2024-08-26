@@ -4,10 +4,25 @@ import { Observable, catchError, map, of, pluck } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IPage } from '../models/page.model';
 import { IWorkflowStep } from '../models/workflow-step';
+import { SystemPropertiesDTO, SystemProperty } from '../models/workflow.model';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  getPausedProperty(key: string) {
+    return this.http.get<any>(`${this.apiUrl}/workflow/properties/${key}`);
+  }
+
+  updateSystemProperty(
+    id: number | undefined,
+    dto: SystemPropertiesDTO
+  ): Observable<SystemProperty> {
+    return this.http.put<SystemProperty>(
+      `${this.apiUrl}/workflow/properties/${id}`,
+      dto
+    );
+  }
+
   private apiUrl = `${environment.BE_URL}/api`;
   private logoutUrl = `${environment.BE_URL}`;
   constructor(private http: HttpClient) {}
