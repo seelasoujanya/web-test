@@ -1,3 +1,5 @@
+@import 'src/styles/button';
+
 .main-container {
   width: 100%;
   margin-top: 80px;
@@ -13,32 +15,12 @@
     top: 80px;
     display: flex;
     justify-content: space-between;
-    height: 32px;
+    // height: 32px;
     font-weight: 600;
     font-size: 26px;
     line-height: 32px;
     color: #000000;
-    height: 60px;
-    .add-template-btn {
-      height: 34px;
-      border-radius: 4px;
-      padding: 10px;
-      background-color: #bd2c49;
-      border: none;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 20px;
-      color: #ffffff;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-      .create-icon {
-        margin-left: 2px;
-      }
-    }
-    .add-template-btn:hover {
-      opacity: 0.5;
-    }
+    // height: 60px;
   }
   .templates-table {
     overflow-y: scroll;

@@ -1,4 +1,6 @@
 @import 'src/styles/_ngselect.scss';
+@import 'src/styles/button';
+
 .workflow-general-container {
   width: 98%;
   margin-inline: 15px;
@@ -11,6 +13,7 @@
     border-radius: 8px;
     background-color: #ffffff;
     border: 1px solid #e8e8e8;
+
     .general-setting-label {
       display: flex;
       align-items: center;
@@ -26,14 +29,17 @@
         color: #333;
         padding: 16px 24px;
       }
+
       .edit-icon {
         padding-inline: 24px;
         cursor: pointer;
       }
     }
+
     .workflow-content {
       display: flex;
       flex-wrap: wrap;
+
       .workflow-field {
         width: 50%;
         box-sizing: border-box;
@@ -44,6 +50,7 @@
         letter-spacing: 0.3px;
         padding: 16px 24px;
         color: #344054;
+
         .input-field {
           width: 100%;
           height: 44px;
@@ -53,6 +60,7 @@
           border: 1px solid #d0d5dd;
           border-radius: 4px;
         }
+
         .text-field {
           width: 100%;
           height: 90px;
@@ -62,34 +70,12 @@
           border: 1px solid #d0d5dd;
           border-radius: 4px;
         }
+
         .buttons {
           display: flex;
           gap: 6px;
           justify-content: flex-end;
           margin-top: 15px;
-          .save-btn {
-            width: 98px;
-            height: 34px;
-            border-radius: 4px;
-            padding: 6px;
-            background-color: #bd2c49;
-            border: none;
-            font-weight: 500;
-            font-size: 12px;
-            line-height: 20px;
-            color: #ffffff;
-          }
-          .cancel-btn {
-            width: 98px;
-            height: 34px;
-            border-radius: 4px;
-            padding: 6px;
-            background-color: #262626;
-            font-weight: 500;
-            font-size: 12px;
-            line-height: 20px;
-            color: #ffffff;
-          }
         }
       }
     }
@@ -97,7 +83,6 @@
 
   .email-setting {
     padding: 16px;
-    // height: 50px;
     background: #fff;
     font-weight: 500;
     font-size: 20px;
@@ -117,30 +102,6 @@
         font-style: normal;
         line-height: 32px;
         color: #333;
-      }
-
-      .add-email-btn {
-        width: 98px;
-        height: 34px;
-        border-radius: 4px;
-        padding: 6px;
-        background-color: #bd2c49;
-        border: none;
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 20px;
-        color: #ffffff;
-        display: flex;
-        gap: 6px;
-        align-items: center;
-
-        .create-icon {
-          margin-left: 2px;
-        }
-      }
-
-      .add-email-btn:hover {
-        opacity: 0.5;
       }
     }
   }
@@ -284,35 +245,6 @@ textarea:focus {
     align-items: flex-end;
     padding-inline: 20px;
     margin-bottom: 20px;
-    .confirm-btn {
-      width: 98px;
-      height: 34px;
-      border-radius: 4px;
-      padding: 6px;
-      background-color: #bd2c49;
-      border: none;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 20px;
-      color: #ffffff;
-    }
-    .confirm-btn:hover {
-      opacity: 0.5;
-    }
-    .cancel-btn {
-      width: 98px;
-      height: 34px;
-      border-radius: 4px;
-      padding: 6px;
-      background-color: #262626;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 20px;
-      color: #ffffff;
-    }
-    .cancel-btn:hover {
-      opacity: 0.5;
-    }
   }
 }
 
@@ -388,37 +320,6 @@ textarea:focus {
       align-items: flex-end;
       padding-inline: 20px;
       margin-bottom: 20px;
-
-      .confirm-btn {
-        width: 98px;
-        height: 34px;
-        border-radius: 4px;
-        padding: 6px;
-        background-color: #bd2c49;
-        border: none;
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 20px;
-        color: #ffffff;
-      }
-      .confirm-btn:hover {
-        opacity: 0.5;
-      }
-      .cancel-btn {
-        width: 98px;
-        height: 34px;
-        border-radius: 4px;
-        padding: 6px;
-        background-color: #262626;
-        font-weight: 500;
-        font-size: 12px;
-        line-height: 20px;
-        color: #ffffff;
-        margin-left: 258px;
-      }
-      .cancel-btn:hover {
-        opacity: 0.5;
-      }
     }
   }
 }

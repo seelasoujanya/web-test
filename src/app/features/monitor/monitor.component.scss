@@ -1,3 +1,5 @@
+@import 'src/styles/button';
+
 .monitor-component {
   width: 100%;
   margin-top: 80px;
@@ -6,6 +8,36 @@
   flex-direction: column;
   gap: 24px;
   margin-top: 60px;
+
+  .navigate-btn-container {
+    background: #222;
+    height: 40px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: row;
+    position: sticky;
+    z-index: 10;
+    top: 120px;
+    align-items: center;
+    z-index: 10;
+
+    .navigate-btn {
+      background: none;
+      border: none;
+      color: #c4c4c4;
+      padding-inline: 20px;
+
+      &:hover {
+        cursor: pointer;
+        color: #fff;
+      }
+    }
+
+    .active-btn {
+      color: #ffff;
+    }
+  }
+
   .monitor-heading-section {
     position: sticky;
     z-index: 10;
@@ -16,70 +48,6 @@
       font-size: 26px;
       font-weight: 600;
       line-height: 32px;
-    }
-  }
-  .monitor-buttons-section {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    height: 64px;
-    padding: 12px 16px;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    background-color: #f9fafb !important;
-    position: sticky;
-    z-index: 10;
-    top: 125px;
-    button {
-      padding: 10px 16px;
-      border-radius: 5px;
-      background: #f9fafb;
-      &:hover {
-        background-color: #ffffff;
-      }
-    }
-    .active {
-      background: #ffffff;
-    }
-    .running {
-      display: flex;
-      gap: 10px;
-      padding: 8px, 12px;
-      border-radius: 4px;
-      text-align: center;
-      .running-button {
-        border: none;
-        color: #344054;
-        // background-color: #f9fafb;
-      }
-      .running-instances-count {
-        margin-top: 8px;
-        border-radius: 16px;
-        background-color: #f2f4f7;
-        padding: 2px 8px;
-        width: 30px;
-        height: 24px;
-      }
-    }
-    .pending {
-      display: flex;
-      gap: 10px;
-      padding: 8px, 12px;
-      border-radius: 4px;
-      text-align: center;
-      .pending-button {
-        border: none;
-        color: #344054;
-      }
-      .pending-instances-count {
-        margin-top: 8px;
-        border-radius: 16px;
-        background-color: #f2f4f7;
-        padding: 2px 8px;
-        width: 30px;
-        height: 24px;
-      }
     }
   }
   .table-container {

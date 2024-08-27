@@ -2,17 +2,6 @@
   <div class="header">
     <p>{{ title }}</p>
     <div class="general-setting-label">
-      <div class="buttons" *ngIf="enableEditing">
-        <button
-          class="save-btn"
-          (click)="updateWorkflowStepSettings()"
-          type="button">
-          save
-        </button>
-        <button class="cancel-btn" (click)="toggleEditing()" type="button">
-          cancel
-        </button>
-      </div>
       <div class="edit-icon">
         <img
           src="/assets/icons/edit-icon.svg"
@@ -79,6 +68,20 @@
           </ng-select>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="buttons" *ngIf="enableEditing">
+      <button
+        class="btn btn--red"
+        (click)="updateWorkflowStepSettings()"
+        type="button">
+        save
+      </button>
+      <button class="btn btn--black" (click)="toggleEditing()" type="button">
+        cancel
+      </button>
     </div>
   </div>
 </div>

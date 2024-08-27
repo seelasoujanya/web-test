@@ -1,10 +1,11 @@
+@import 'src/styles/button';
+
 .workflow-container {
   padding: 20px 15px 25px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 24px;
-  // margin-top: 60px;
   background-color: white;
 
   .workflows-section {
@@ -13,7 +14,6 @@
     padding: 20px 0px;
 
     .workflow-header {
-      // height: 60px;
       padding-bottom: 20px;
       display: flex;
       justify-content: space-between;
@@ -48,45 +48,6 @@
           line-height: 22px;
           font-weight: 400;
           color: #666666;
-        }
-
-        .searchButton {
-          width: 119px;
-          height: 40px;
-          border-radius: 4px;
-          padding: 10px 20px;
-          gap: 12px;
-          background-color: #ca0a3d;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: none;
-          color: #ffffff;
-          text-transform: uppercase;
-          font-weight: 400;
-          font-size: 12px;
-          letter-spacing: 0.5px;
-        }
-
-        .searchButton:hover {
-          opacity: 0.5;
-        }
-
-        .createWorkflowButton {
-          width: 191px;
-          height: 40px;
-          border-radius: 4px;
-          padding: 10px 20px;
-          background-color: #262626;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          color: #ffffff;
-          text-transform: uppercase;
-          font-weight: 400;
-          font-size: 12px;
-          letter-spacing: 0.5px;
         }
       }
     }

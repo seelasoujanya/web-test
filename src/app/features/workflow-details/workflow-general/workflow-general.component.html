@@ -53,12 +53,15 @@
         </div>
         <div class="buttons" *ngIf="isEditing">
           <button
-            class="save-btn"
+            class="btn btn--red"
             type="button"
             (click)="saveWorkflowChanges()">
             SAVE
           </button>
-          <button class="cancel-btn" type="button" (click)="cancelChanges()">
+          <button
+            class="btn btn--black"
+            type="button"
+            (click)="cancelChanges()">
             CANCEL
           </button>
         </div>
@@ -71,7 +74,7 @@
       <span class="label">Email</span>
       <span>
         <button
-          class="add-email-btn"
+          class="btn btn--red"
           type="button"
           (click)="openAddEmailDialog(addEmailForm)">
           <img
@@ -173,7 +176,9 @@
     </div>
   </div>
   <div class="buttons">
-    <button class="cancel-btn" (click)="cancelChangesForEmail()">CANCEL</button>
-    <button class="confirm-btn" (click)="addEmail()">CONFIRM</button>
+    <button class="btn btn--black" (click)="cancelChangesForEmail()">
+      CANCEL
+    </button>
+    <button class="btn btn--red" (click)="addEmail()">CONFIRM</button>
   </div>
 </ng-template>

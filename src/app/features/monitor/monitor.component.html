@@ -4,26 +4,22 @@
       <p>Monitor</p>
     </div>
   </div>
-  <div class="monitor-buttons-section">
-    <div class="running">
-      <button
-        class="running-button"
-        (click)="updateParams('RUNNING')"
-        [ngClass]="pageParams.status === 'RUNNING' ? 'active' : ''">
-        Running
-        <span class="running-instances-count">{{ runningInstancesCount }}</span>
-      </button>
-    </div>
-    <div class="pending">
-      <button
-        class="pending-button"
-        (click)="updateParams('PENDING')"
-        [ngClass]="pageParams.status === 'CREATED' ? 'active' : ''">
-        Pending
-        <span class="running-instances-count">{{ pendingInstancesCount }}</span>
-      </button>
-    </div>
+
+  <div class="navigate-btn-container">
+    <button
+      class="navigate-btn"
+      (click)="updateParams('RUNNING')"
+      [class.active-btn]="pageParams.status === 'RUNNING'">
+      Processing - {{ runningInstancesCount }}
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="updateParams('PENDING')"
+      [class.active-btn]="pageParams.status === 'PENDING'">
+      Pending - {{ pendingInstancesCount }}
+    </button>
   </div>
+
   <div class="monitor-instance-table">
     <table class="table-container">
       <thead class="table-head">
@@ -44,13 +40,6 @@
               <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
             </td>
             <td class="table-cell">
-              <!-- <div class="action-content" (click)="expandAction(instance)">
-                <img
-                  src="assets/icons/down-arrow-logo.svg"
-                  alt="Pause Icon"
-                  class="action-icon"
-                  [class.rotate]="expandedId === instance.id" />
-              </div> -->
               <div class="expanded-row">
                 <button
                   class="cancel-button"
@@ -61,13 +50,6 @@
               </div>
             </td>
           </tr>
-          <!-- <tr *ngIf="expandedId === instance.id">
-            <td colspan="5">
-              <div class="expanded-row">
-                <button class="cancel-button" type="button" (click)="terminateInstance(instance.id)">CANCEL</button>              
-              </div>
-            </td>
-          </tr> -->
         </ng-container>
       </tbody>
     </table>
