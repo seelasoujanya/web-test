@@ -522,9 +522,11 @@ describe('ApiService', () => {
       numberOfElements: 0,
     };
 
-    service.getWorkflowSteps(workflowId, queryParams).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
+    service
+      .getWorkflowSteps(workflowId.toString(), queryParams)
+      .subscribe(response => {
+        expect(response).toEqual(mockResponse);
+      });
 
     const params = new HttpParams({ fromObject: queryParams });
     const req = httpTestingController.expectOne(req => {

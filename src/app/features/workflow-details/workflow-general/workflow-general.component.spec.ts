@@ -2,10 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowGeneralComponent } from './workflow-general.component';
 import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { of } from 'rxjs';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 
 describe('WorkflowGeneralComponent', () => {
   let component: WorkflowGeneralComponent;
   let fixture: ComponentFixture<WorkflowGeneralComponent>;
+  let modalServiceSpy: jasmine.SpyObj<BsModalService>;
+  let bsModalRefStub: Partial<BsModalRef>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -14,6 +19,7 @@ describe('WorkflowGeneralComponent', () => {
 
     fixture = TestBed.createComponent(WorkflowGeneralComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
@@ -27,7 +33,7 @@ describe('WorkflowGeneralComponent', () => {
   });
 
   it('should set isEditing to true when editWorkflow is called', () => {
-    component.editWorkflow();
+    component.toggleEditing();
     expect(component.isEditing).toBeTrue();
   });
 
@@ -114,23 +120,33 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.cancelChanges).toHaveBeenCalled();
   });
 
-  // it('should emit workflowEmailEvent with UPDATE action when addEmail is called and isUpdate is true', () => {
-  //   spyOn(component.workflowEmailEvent, 'emit');
-  //   spyOn(component.getBsModalRef, 'hide');
-  //   component.isUpdate = true;
-  //   component.emailId = 1;
-  //   component.newEmailData = { name: 'test', email: 'test@example.com', status: null };
+  it('should emit workflowEmailEvent with UPDATE action and reset newEmailData and emailId when addEmail is called and isUpdate is true', () => {
+    spyOn(component.workflowEmailEvent, 'emit');
+    spyOn(component.getBsModalRef, 'hide');
+    component.isUpdate = true;
+    component.emailId = 1;
+    component.newEmailData = {
+      name: 'test',
+      email: 'test@example.com',
+      status: null,
+    };
 
-  //   component.addEmail();
+    component.addEmail();
 
-  //   expect(component.workflowEmailEvent.emit).toHaveBeenCalledWith({
-  //     action: 'UPDATE',
-  //     data: component.newEmailData,
-  //     emailId: component.emailId,
-  //   });
-  //   expect(component.getBsModalRef.hide).toHaveBeenCalled();
-  //   expect(component.newEmailData).toEqual({ name: '', email: '', status: null });
-  // });
+    expect(component.workflowEmailEvent.emit).toHaveBeenCalledWith({
+      action: 'UPDATE',
+      data: { name: 'test', email: 'test@example.com', status: null }, // Update if needed
+      emailId: 1,
+    });
+
+    expect(component.newEmailData).toEqual({
+      name: '',
+      email: '',
+      status: null,
+    });
+    expect(component.emailId).toBeUndefined();
+    expect(component.getBsModalRef.hide).toHaveBeenCalled();
+  });
 
   it('should reset email data and close modal when cancelChangesForEmail is called', () => {
     spyOn(component, 'closeModal');
@@ -145,7 +161,7 @@ describe('WorkflowGeneralComponent', () => {
   describe('editWorkflow', () => {
     it('should set isEditing to true', () => {
       component.isEditing = false;
-      component.editWorkflow();
+      component.toggleEditing();
       expect(component.isEditing).toBe(true);
     });
   });
