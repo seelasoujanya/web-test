@@ -10,7 +10,7 @@ import {
   Priority,
   WorkflowInstanceStatus,
 } from 'src/app/core/models/workflowinstance.model';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 
 const mockData: IPage<any> = {
@@ -209,6 +209,52 @@ describe('WorkflowHistoryComponent', () => {
   });
 
   it('should reset the workflow instance counts to zero', () => {
+    component.failedInstancesCount = 5;
+    component.deliveredInstancesCount = 10;
+    component.totalInstancesCount = 15;
+
+    component.reset();
+
+    expect(component.failedInstancesCount).toBe(0);
+    expect(component.deliveredInstancesCount).toBe(0);
+    expect(component.totalInstancesCount).toBe(0);
+  });
+
+  it('should call getPageItems when searchWorkflowInstance is called with empty identifier', () => {
+    spyOn(component, 'getPageItems');
+    component.identifier = '';
+    component.searchWorkflowInstance();
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
+  });
+
+  it('should call getWorkflowInstances with lowercase identifier in searchWorkflowInstance', () => {
+    spyOn(component['apiService'], 'getWorkflowInstances').and.returnValue(
+      of(mockData)
+    );
+    spyOn(component['cdRef'], 'markForCheck');
+
+    component.identifier = 'TESTID';
+    component.searchWorkflowInstance();
+
+    expect(component['apiService'].getWorkflowInstances).toHaveBeenCalledWith(
+      component['pageParams'],
+      component.workflowId,
+      'testid'
+    );
+  });
+
+  it('should reset workflow instance counts to zero when there are no instances', () => {
+    component.workflowsInstances = [];
+    component.updateWorkflowsData();
+
+    expect(component.failedInstancesCount).toBe(0);
+    expect(component.deliveredInstancesCount).toBe(0);
+    expect(component.totalInstancesCount).toBe(0);
+  });
+
+  it('should reset all workflow instance count variables to zero', () => {
     component.failedInstancesCount = 5;
     component.deliveredInstancesCount = 10;
     component.totalInstancesCount = 15;
