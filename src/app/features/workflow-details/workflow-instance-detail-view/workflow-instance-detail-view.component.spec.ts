@@ -8,18 +8,23 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { of } from 'rxjs';
 
+const mockArtifacts = [{ name: 'file1.xml' }, { name: 'file2.json' }];
+
 describe('WorkflowDetailViewComponent', () => {
   let component: WorkflowDetailViewComponent;
   let fixture: ComponentFixture<WorkflowDetailViewComponent>;
-  let apiService: jasmine.SpyObj<ApiService>;
+  let apiServiceSpy: jasmine.SpyObj<ApiService>;
   let cdRef: ChangeDetectorRef;
   let router: Router;
 
   beforeEach(async () => {
-    const apiServiceSpy = jasmine.createSpyObj('ApiService', [
+    apiServiceSpy = jasmine.createSpyObj('ApiService', [
       'getWorkflowInstanceDetails',
+      'getArtifacts',
+      'getLogsForInstance',
     ]);
     cdRef = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
+    apiServiceSpy.getArtifacts.and.returnValue(of({ content: mockArtifacts }));
 
     await TestBed.configureTestingModule({
       imports: [
@@ -28,6 +33,7 @@ describe('WorkflowDetailViewComponent', () => {
         HttpClientModule,
         RouterModule.forRoot([]),
       ],
+      providers: [{ provide: ApiService, useValue: apiServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowDetailViewComponent);
@@ -64,67 +70,6 @@ describe('WorkflowDetailViewComponent', () => {
     expect(component.selectedTab).toBe(tab);
   });
 
-  describe('selectFiles', () => {
-    beforeEach(() => {
-      spyOn(component, 'filterFiles');
-    });
-
-    it('should set selectedButton to the passed button', () => {
-      component.selectFiles('xml');
-
-      expect(component.selectedButton).toBe('xml');
-    });
-
-    it('should clear filteredFiles array', () => {
-      component.filteredFiles = ['someFile'];
-      component.selectFiles('xml');
-
-      expect(component.filteredFiles).toEqual([]);
-    });
-
-    it('should call filterFiles when button is xml', () => {
-      component.selectFiles('xml');
-
-      expect(component.filterFiles).toHaveBeenCalled();
-    });
-
-    it('should set filteredFiles to stepList when button is not xml', () => {
-      component.stepList = ['step1', 'step2'];
-      component.selectFiles('json');
-
-      expect(component.filteredFiles).toEqual(['step1', 'step2']);
-    });
-  });
-
-  describe('filterFiles', () => {
-    it('should filter stepList to include only XML files', () => {
-      component.stepList = [
-        { filename: 'file1.xml' },
-        { filename: 'file2.json' },
-        { filename: 'file3.xml' },
-        { filename: 'file4.txt' },
-      ];
-
-      component.filterFiles();
-
-      expect(component.filteredFiles).toEqual([
-        { filename: 'file1.xml' },
-        { filename: 'file3.xml' },
-      ]);
-    });
-
-    it('should set filteredFiles to an empty array if no XML files are found', () => {
-      component.stepList = [
-        { filename: 'file1.json' },
-        { filename: 'file2.txt' },
-      ];
-
-      component.filterFiles();
-
-      expect(component.filteredFiles).toEqual([]);
-    });
-  });
-
   describe('getIcon', () => {
     it('should return the XML icon path for XML files', () => {
       const iconPath = component.getIcon('file.xml');
@@ -154,4 +99,34 @@ describe('WorkflowDetailViewComponent', () => {
       expect(iconPath).toBe('assets/icons/default-file.svg');
     });
   });
+
+  it('should return default page parameters', () => {
+    const defaultParams = component.getDefaultPageParams();
+    expect(defaultParams).toEqual({
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    });
+  });
+
+  // it('should set filteredFiles when getArtifactFiles is called', () => {
+  //   component.workflowInstanceId = '123';
+  //   component.getArtifactFiles();
+  //   fixture.detectChanges();
+  //   expect(component.filteredFiles).toEqual(mockArtifacts);
+  // });
+
+  // it('should set logsResponse when getInstancsLogs is called', () => {
+  //   const mockLogsResponse =  '';
+  //   apiServiceSpy.getLogsForInstance.and.returnValue(of(mockLogsResponse));
+
+  //   component.workflowInstanceId = '123';
+  //   component.getInstancsLogs();
+
+  //   fixture.detectChanges();
+
+  //   expect(component.logsResponse).toEqual(mockLogsResponse);
+  //   expect(apiServiceSpy.getLogsForInstance).toHaveBeenCalledWith(123);
+  // });
 });

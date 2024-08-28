@@ -44,7 +44,6 @@ export class AccountInfoComponent implements OnInit {
         next: data => {
           this.user = data;
           this.userDataLoaded = true;
-          console.log(this.user);
           if (this.user.authorities) {
             this.user.authorities.forEach((role: any) => {
               if (role.hasOwnProperty('authority')) {
@@ -52,7 +51,6 @@ export class AccountInfoComponent implements OnInit {
               }
             });
           }
-          console.log(this.userAuthorities);
           this.spinnerService.hide();
         },
         error: () => {

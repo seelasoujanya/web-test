@@ -46,9 +46,6 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   public workflowInstanceId: string | null;
   selectedTab: string = 'summary';
 
-  // noXmlFiles: boolean = false;
-  // noFiles: boolean = false;
-
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -64,7 +61,6 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.workflowsInstance = data;
-        console.log(data);
         this.cdRef.markForCheck();
       });
   }
@@ -97,7 +93,6 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
       .getLogsForInstance(this.workflowInstanceId)
       .subscribe(result => {
         this.logsResponse = result;
-        console.log(result, 'logsResponse');
       });
   }
 

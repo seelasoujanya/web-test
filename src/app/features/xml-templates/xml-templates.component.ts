@@ -5,7 +5,6 @@ import {
   OnDestroy,
   OnInit,
   TemplateRef,
-  ViewChild,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -103,7 +102,6 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     this.reactiveForm = this.fb.group({
       code: [''],
     });
-    console.log('Reactive Form Initialized');
   }
 
   editorInit(editor: any) {

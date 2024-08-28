@@ -126,7 +126,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
   }
 
-  private updateWorkflowsData(): void {
+  updateWorkflowsData(): void {
     this.workflowsInstances.forEach(workflow => {
       if (
         workflow.status &&

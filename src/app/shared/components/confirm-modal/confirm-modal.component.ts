@@ -39,7 +39,6 @@ export class ConfirmModalComponent {
 
   public confirmModal(): void {
     if (this.enableComments) {
-      console.log('enabled', this.enableComments);
       this.updateChanges.emit(this.templateDescription);
     } else {
       this.updateChanges.emit(true);

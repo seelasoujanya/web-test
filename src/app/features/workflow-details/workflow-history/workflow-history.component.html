@@ -1,38 +1,20 @@
 <div class="workflow-history-container">
-  <div class="details-section">
-    <div class="details-info">
-      <p class="info-heading">Triggered Times</p>
-      <p class="info-data">{{ totalInstancesCount }}</p>
+  <div class="workflows-instance-table">
+    <app-workflow-table
+      *ngIf="!noInstancesFound"
+      [workflows]="workflowsInstances"
+      [headings]="instanceHeadings"
+      [isWorkflow]="false"
+      (getSortParam)="sortColumn($event)"
+      (workflowDetailEvent)="viewInstanceDetails($event)"></app-workflow-table>
+    <div *ngIf="noInstancesFound" class="no-instances-message">
+      No Instance Found
     </div>
-    <div class="details-info">
-      <p class="info-heading">Failed</p>
-      <p class="info-data">{{ failedInstancesCount }}</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Execution Time</p>
-      <p class="info-data">19 m</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Delivered</p>
-      <p class="info-data">{{ deliveredInstancesCount }}</p>
-    </div>
-  </div>
-</div>
-<div class="workflows-instance-table">
-  <app-workflow-table
-    *ngIf="!noInstancesFound"
-    [workflows]="workflowsInstances"
-    [headings]="instanceHeadings"
-    [isWorkflow]="false"
-    (getSortParam)="sortColumn($event)"
-    (workflowDetailEvent)="viewInstanceDetails($event)"></app-workflow-table>
-  <div *ngIf="noInstancesFound" class="no-instances-message">
-    No Instance Found
-  </div>
 
-  <div class="page-view" *ngIf="!noInstancesFound">
-    <app-pagination
-      [page]="page"
-      (paginationEvent)="onPage($event)"></app-pagination>
+    <div class="page-view" *ngIf="!noInstancesFound">
+      <app-pagination
+        [page]="page"
+        (paginationEvent)="onPage($event)"></app-pagination>
+    </div>
   </div>
 </div>

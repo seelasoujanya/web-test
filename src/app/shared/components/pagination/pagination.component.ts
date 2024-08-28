@@ -86,7 +86,6 @@ export class PaginationComponent {
       pageNumber <= this.totalPages &&
       pageNumber > 0
     ) {
-      console.log(pageNumber);
       this.eventType = eventType;
       this.paginationEvent.emit(pageNumber);
       this.spinnerService.show();

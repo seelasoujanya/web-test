@@ -17,6 +17,10 @@ import { PRIORITY } from 'src/app/core/utils/constants';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
+import {
+  SystemPropertiesDTO,
+  SystemProperty,
+} from 'src/app/core/models/workflow.model';
 
 @Component({
   selector: 'app-monitor',
@@ -35,6 +39,7 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 export class MonitorComponent implements OnInit, OnDestroy {
   private websocketSubscription!: Subscription;
   public instances: any[] = [];
+  public queuedInstances: any[] = [];
   public pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
   public pendingInstancesCount: number = 0;
@@ -50,6 +55,16 @@ export class MonitorComponent implements OnInit, OnDestroy {
   ];
 
   expandedId: number | undefined;
+
+  pausedProperty: SystemProperty | undefined;
+
+  pauseAllInstances: boolean = false;
+
+  propertyDTO: SystemPropertiesDTO = {
+    key: '',
+    value: '',
+    description: '',
+  };
 
   constructor(
     private webSocketAPI: WebSocketAPI,
@@ -77,6 +92,18 @@ export class MonitorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.updateInstances(this.pageParams);
     this.updateDataFromWebSocket();
+    this.getPausedProperty('paused');
+  }
+
+  getPausedProperty(key: string): void {
+    this.apiService.getPausedProperty(key).subscribe(
+      (data: SystemProperty) => {
+        this.pausedProperty = data;
+      },
+      (error: any) => {
+        console.error('Error fetching  property:', error);
+      }
+    );
   }
 
   updateInstances(pageParams: any) {
@@ -153,7 +180,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
     const updateData = { status: 'TERMINATED' };
     this.apiService.updateWorkflowInstance(id, updateData).subscribe(
       updatedInstance => {
-        console.log('Workflow Instance updated:', updatedInstance);
         this.updateInstances(this.pageParams);
       },
       error => {
@@ -174,7 +200,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
 
   updatePriority() {
     this.bsModalRef.hide();
-    console.log(this.expandedId);
     const updateData = { priority: this.priority };
 
     if (this.expandedId !== undefined) {
@@ -183,7 +208,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
         .subscribe({
           next: response => {
             this.updateInstances(this.pageParams);
-            console.log('Priority updated successfully');
           },
           error: err => {
             console.error('Error updating priority', err);
@@ -196,13 +220,16 @@ export class MonitorComponent implements OnInit, OnDestroy {
   public closeModal(): void {
     this.bsModalRef.hide();
   }
+
   public cancelChangesForPriority() {
     this.closeModal();
     this.reset();
   }
+
   public reset() {
     this.priority = null;
   }
+
   get getBsModalRef(): BsModalRef {
     return this.bsModalRef;
   }
@@ -215,11 +242,18 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.cancelButton = modalData.btn2Name;
     this.bsModalRef.content.updateChanges.subscribe((result: any) => {
       if (result) {
-        console.log('Confirmed To Terminate');
         this.deleteInstance(id);
-      } else {
-        console.log('Cancelled');
       }
     });
+  }
+
+  pauseInstances() {
+    this.pauseAllInstances = !this.pauseAllInstances;
+    this.propertyDTO.value = this.pauseAllInstances.toString();
+    this.propertyDTO.key = this.pausedProperty?.key;
+    this.propertyDTO.description = this.pausedProperty?.description;
+    this.apiService
+      .updateSystemProperty(this.pausedProperty?.id, this.propertyDTO)
+      .subscribe();
   }
 }

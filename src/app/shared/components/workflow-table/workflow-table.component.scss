@@ -24,6 +24,7 @@
       color: #656565;
       .heading-icon {
         margin-inline: 0.5rem;
+        cursor: pointer;
       }
     }
   }
@@ -124,6 +125,7 @@
         background-color: #ffffff;
         padding: 10px 15px;
         border-radius: 5px;
+
         .log-items {
           margin-bottom: 3px;
           font-size: 12px;

@@ -9,17 +9,13 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './xml-editor.component.html',
   styleUrl: './xml-editor.component.scss',
 })
-export class XmlEditorComponent implements OnInit {
+export class XmlEditorComponent {
   editorOptions = { theme: 'vs-dark', language: 'javascript' };
   code: string = 'function x() {\nconsole.log("Hello world!");\n}';
   originalCode: string = 'function x() ';
 
   public xmlContent: string =
     "<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
-
-  ngOnInit(): void {
-    console.log('xml', this.xmlContent);
-  }
 
   onContentChange(content: string): void {
     this.xmlContent = content;

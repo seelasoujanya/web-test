@@ -21,3 +21,18 @@ export interface WorkflowResponse {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface SystemProperty {
+  id: number;
+  key: string;
+  value: string;
+  description: string | null;
+  created: string;
+  modified: string;
+}
+
+export interface SystemPropertiesDTO {
+  key: string | undefined;
+  value: string;
+  description: string | undefined | null;
+}

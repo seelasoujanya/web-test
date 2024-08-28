@@ -43,12 +43,10 @@ export class XmlStepSettingsComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.workflowStep);
     if (this.workflowStep?.workflowId) {
       this.apiService.getAllTemplates(this.pageParams).subscribe({
         next: data => {
           this.templates = data.content;
-          console.log(this.templates, 'templates');
         },
         error: error => {
           console.error(error);
@@ -86,11 +84,9 @@ export class XmlStepSettingsComponent {
           .updateTemplateForStep(this.workflowStep.workflowId, body)
           .subscribe({
             next: data => {
-              console.log(data);
               this.spinnerService.hide();
             },
             error: error => {
-              console.error(error);
               this.spinnerService.hide();
             },
           });
@@ -101,7 +97,6 @@ export class XmlStepSettingsComponent {
             this.spinnerService.hide();
           },
           error: error => {
-            console.error(error);
             this.spinnerService.hide();
           },
         });

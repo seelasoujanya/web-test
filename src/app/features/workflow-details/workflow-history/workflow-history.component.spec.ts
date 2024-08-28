@@ -6,15 +6,55 @@ import { RouterModule, Router } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
+import {
+  Priority,
+  WorkflowInstanceStatus,
+} from 'src/app/core/models/workflowinstance.model';
+import { of } from 'rxjs';
+import { IPage } from 'src/app/core/models/page.model';
+
+const mockData: IPage<any> = {
+  content: [
+    {
+      status: WorkflowInstanceStatus.FAILED,
+      id: 0,
+      workflowId: 0,
+      completed: null,
+      duration: null,
+      reason: null,
+      triggerData: {},
+      log: null,
+      identifier: '',
+      errorMessage: null,
+      priority: Priority.LOW,
+      created: new Date(),
+      modified: new Date(),
+    },
+  ],
+  totalElements: 1,
+  size: 1,
+  number: 0,
+  totalPages: 1,
+  numberOfElements: 1,
+};
 
 describe('WorkflowHistoryComponent', () => {
   let component: WorkflowHistoryComponent;
   let fixture: ComponentFixture<WorkflowHistoryComponent>;
-  let apiService: ApiService;
+  let apiServiceSpy: jasmine.SpyObj<ApiService>;
   let router: Router;
   let cdRef: ChangeDetectorRef;
 
   beforeEach(async () => {
+    apiServiceSpy = jasmine.createSpyObj('ApiService', [
+      'getInstancesByStatus',
+      'getPausedProperty',
+      'updateWorkflowInstanceStatus',
+      'getWorkflowInstances',
+    ]);
+
+    apiServiceSpy.getWorkflowInstances.and.returnValue(of(mockData));
+
     await TestBed.configureTestingModule({
       imports: [
         WorkflowHistoryComponent,
@@ -23,7 +63,7 @@ describe('WorkflowHistoryComponent', () => {
         RouterModule.forRoot([]),
       ],
       providers: [
-        ApiService,
+        // ApiService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -33,6 +73,7 @@ describe('WorkflowHistoryComponent', () => {
             }),
           },
         },
+        { provide: ApiService, useValue: apiServiceSpy },
         {
           provide: ChangeDetectorRef,
           useValue: { markForCheck: jasmine.createSpy('markForCheck') },
@@ -42,7 +83,7 @@ describe('WorkflowHistoryComponent', () => {
 
     fixture = TestBed.createComponent(WorkflowHistoryComponent);
     component = fixture.componentInstance;
-    apiService = TestBed.inject(ApiService);
+    // apiServiceS = TestBed.inject(ApiService);
     router = TestBed.inject(Router);
     cdRef = TestBed.inject(ChangeDetectorRef);
     fixture.detectChanges();
@@ -50,6 +91,16 @@ describe('WorkflowHistoryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should return default page parameters', () => {
+    const defaultParams = component.getDefaultPageParams();
+    expect(defaultParams).toEqual({
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    });
   });
 
   it('should call getPageItems on ngOnInit', () => {
@@ -95,5 +146,77 @@ describe('WorkflowHistoryComponent', () => {
     spyOn(router, 'navigate');
     component.viewInstanceDetails({ id: '456' });
     expect(router.navigate).toHaveBeenCalledWith(['/workflowinstance', '456']);
+  });
+
+  it('should correctly count workflow instances based on their status', () => {
+    component.workflowsInstances = [
+      {
+        status: WorkflowInstanceStatus.FAILED,
+        id: 0,
+        workflowId: 0,
+        completed: null,
+        duration: null,
+        reason: null,
+        triggerData: {},
+        log: null,
+        identifier: '',
+        errorMessage: null,
+        priority: Priority.LOW,
+        created: new Date(),
+        modified: new Date(),
+      },
+      {
+        status: WorkflowInstanceStatus.RUNNING,
+        id: 0,
+        workflowId: 0,
+        completed: null,
+        duration: null,
+        reason: null,
+        triggerData: {},
+        log: null,
+        identifier: '',
+        errorMessage: null,
+        priority: Priority.LOW,
+        created: new Date(),
+        modified: new Date(),
+      },
+      {
+        status: WorkflowInstanceStatus.COMPLETED,
+        id: 0,
+        workflowId: 0,
+        completed: null,
+        duration: null,
+        reason: null,
+        triggerData: {},
+        log: null,
+        identifier: '',
+        errorMessage: null,
+        priority: Priority.LOW,
+        created: new Date(),
+        modified: new Date(),
+      },
+    ];
+
+    component.failedInstancesCount = 0;
+    component.deliveredInstancesCount = 0;
+    component.totalInstancesCount = 0;
+
+    component.updateWorkflowsData();
+
+    expect(component.failedInstancesCount).toBe(1);
+    expect(component.deliveredInstancesCount).toBe(2);
+    expect(component.totalInstancesCount).toBe(3);
+  });
+
+  it('should reset the workflow instance counts to zero', () => {
+    component.failedInstancesCount = 5;
+    component.deliveredInstancesCount = 10;
+    component.totalInstancesCount = 15;
+
+    component.reset();
+
+    expect(component.failedInstancesCount).toBe(0);
+    expect(component.deliveredInstancesCount).toBe(0);
+    expect(component.totalInstancesCount).toBe(0);
   });
 });
