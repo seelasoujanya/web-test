@@ -40,13 +40,46 @@
               <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
             </td>
             <td class="table-cell">
-              <div class="expanded-row">
+              <div class="action-content" (click)="expandAction(instance)">
+                <img
+                  src="assets/icons/down-arrow-logo.svg"
+                  alt="Pause Icon"
+                  class="action-icon"
+                  [class.rotate]="expandedId === instance.id" />
+              </div>
+
+              <!-- <div class="expanded-row">
                 <button
                   class="cancel-button"
                   type="button"
                   (click)="terminateInstance(instance.id)">
                   CANCEL
                 </button>
+              </div> -->
+            </td>
+          </tr>
+
+          <tr *ngIf="expandedId === instance.id">
+            <td colspan="12" class="expanded-td">
+              <div class="expanded-row">
+                <div>
+                  <h6>Instance Is Pending To Run</h6>
+                </div>
+                <div class="buttons-container">
+                  <button
+                    class="change-priority-button"
+                    type="button"
+                    (click)="editPriority(instance, changePriorityForm)">
+                    CHANGE PRIORITY
+                    <img src="assets/icons/priority-logo.svg" alt="" />
+                  </button>
+                  <button
+                    class="cancel-button"
+                    type="button"
+                    (click)="terminateInstance(instance.id)">
+                    CANCEL
+                  </button>
+                </div>
               </div>
             </td>
           </tr>
@@ -61,3 +94,32 @@
     [page]="page"
     (paginationEvent)="onPage($event)"></app-pagination>
 </div>
+
+<ng-template #changePriorityForm class="modal-content">
+  <div class="header">
+    <p class="header_title">Change Priority</p>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
+  </div>
+  <div class="form-details">
+    <div class="workflowInstance-field">
+      <p>Priority</p>
+      <ng-select
+        [items]="priorityConstants"
+        placeholder="Select Type"
+        bindLabel="label"
+        bindValue="value"
+        [searchable]="false"
+        [clearable]="false"
+        [(ngModel)]="priority">
+      </ng-select>
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="cancel-btn" (click)="cancelChangesForPriority()">
+      CANCEL
+    </button>
+    <button class="confirm-btn" (click)="updatePriority()">CONFIRM</button>
+  </div>
+</ng-template>

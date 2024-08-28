@@ -126,11 +126,12 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets",
               {
-                "glob": "**/*"
-              }
+                "glob": "**/*",
+                "input": "./src/assets",
+                "output": "./assets"
+              },
+              "src/favicon.ico"
             ],
             "styles": [
               "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",

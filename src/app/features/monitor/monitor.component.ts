@@ -1,18 +1,36 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 import { ApiService } from 'src/app/core/services/api.service';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { PRIORITY } from 'src/app/core/utils/constants';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-monitor',
   standalone: true,
-  imports: [CommonModule, PaginationComponent],
+  imports: [
+    CommonModule,
+    NgSelectModule,
+    PaginationComponent,
+    ReactiveFormsModule,
+    FormsModule,
+  ],
   templateUrl: './monitor.component.html',
   styleUrl: './monitor.component.scss',
+  providers: [BsModalService],
 })
 export class MonitorComponent implements OnInit, OnDestroy {
   private websocketSubscription!: Subscription;
@@ -20,6 +38,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
   public pageParams = this.getDefaultPageParams();
   public runningInstancesCount: number = 0;
   public pendingInstancesCount: number = 0;
+  priorityConstants = PRIORITY;
+  priority: any;
 
   headings: string[] = [
     'INSTANCE ID',
@@ -35,7 +55,9 @@ export class MonitorComponent implements OnInit, OnDestroy {
     private webSocketAPI: WebSocketAPI,
     private apiService: ApiService,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef
   ) {}
 
   onPage(pageNumber: number) {
@@ -113,14 +135,91 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.updateInstances(this.pageParams);
   }
 
-  terminateInstance(id: any) {
-    this.apiService.updateWorkflowInstanceStatus(id, 'TERMINATED').subscribe(
+  openChangePriorityDialog(priorityTemplate: TemplateRef<any>) {
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(priorityTemplate, config);
+  }
+
+  public editPriority(instance: any, priorityTemplate: TemplateRef<any>) {
+    this.priority = instance.priority;
+    this.openChangePriorityDialog(priorityTemplate);
+  }
+
+  deleteInstance(id: any) {
+    const updateData = { status: 'TERMINATED' };
+    this.apiService.updateWorkflowInstance(id, updateData).subscribe(
       updatedInstance => {
         console.log('Workflow Instance updated:', updatedInstance);
+        this.updateInstances(this.pageParams);
       },
       error => {
         console.error('Error updating workflow instance', error);
       }
     );
+  }
+
+  terminateInstance(id: any) {
+    const modalData = {
+      title: 'Delete Instance',
+      description: `Are you sure you want to terminate instance with Id :${id} ?`,
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+    this.openConfirmModal(modalData, id);
+  }
+
+  updatePriority() {
+    this.bsModalRef.hide();
+    console.log(this.expandedId);
+    const updateData = { priority: this.priority };
+
+    if (this.expandedId !== undefined) {
+      this.apiService
+        .updateWorkflowInstance(this.expandedId, updateData)
+        .subscribe({
+          next: response => {
+            this.updateInstances(this.pageParams);
+            console.log('Priority updated successfully');
+          },
+          error: err => {
+            console.error('Error updating priority', err);
+          },
+        });
+    }
+    this.reset();
+  }
+
+  public closeModal(): void {
+    this.bsModalRef.hide();
+  }
+  public cancelChangesForPriority() {
+    this.closeModal();
+    this.reset();
+  }
+  public reset() {
+    this.priority = null;
+  }
+  get getBsModalRef(): BsModalRef {
+    return this.bsModalRef;
+  }
+
+  openConfirmModal(modalData: any, id: any) {
+    this.bsModalRef = this.modalService.show(ConfirmModalComponent);
+    this.bsModalRef.content.title = modalData.title;
+    this.bsModalRef.content.description = modalData.description;
+    this.bsModalRef.content.applyButton = modalData.btn1Name;
+    this.bsModalRef.content.cancelButton = modalData.btn2Name;
+    this.bsModalRef.content.updateChanges.subscribe((result: any) => {
+      if (result) {
+        console.log('Confirmed To Terminate');
+        this.deleteInstance(id);
+      } else {
+        console.log('Cancelled');
+      }
+    });
   }
 }
