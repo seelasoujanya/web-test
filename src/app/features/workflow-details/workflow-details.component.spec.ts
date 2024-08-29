@@ -5,26 +5,40 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { of } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
+import {
+  Priority,
+  WorkflowInstanceStatus,
+} from 'src/app/core/models/workflowinstance.model';
+import { ChangeDetectorRef } from '@angular/core';
+import { IPage } from 'src/app/core/models/page.model';
 
 describe('WorkflowDetailsComponent', () => {
   let component: WorkflowDetailsComponent;
   let fixture: ComponentFixture<WorkflowDetailsComponent>;
   let router: Router;
-  let apiService: ApiService;
+  let apiService: jasmine.SpyObj<ApiService>;
 
   beforeEach(async () => {
+    const apiServiceSpy = jasmine.createSpyObj('ApiService', [
+      'getArtifacts',
+      'getLogsForInstance',
+      'downloadArtifact',
+      'getWorkflowInstances',
+      'getWorkflowSteps',
+    ]);
+
     await TestBed.configureTestingModule({
       imports: [
         WorkflowDetailsComponent,
         HttpClientModule,
         RouterModule.forRoot([]),
       ],
-      providers: [ApiService],
+      providers: [{ provide: ApiService, useValue: apiServiceSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowDetailsComponent);
     component = fixture.componentInstance;
-    apiService = TestBed.inject(ApiService);
+    apiService = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     router = TestBed.inject(Router);
     fixture.detectChanges();
   });
@@ -83,17 +97,6 @@ describe('WorkflowDetailsComponent', () => {
     component.selectTab(tab);
     expect(component.selectedTab).toBe(tab);
   });
-
-  // it('should set workflow and workflowCopy when getWorkflow is called', () => {
-  //   const mockWorkflow = { id: '1', name: 'Test Workflow' };
-  //   spyOn(apiService, 'getWorkflowById').and.returnValue(of(mockWorkflow));
-
-  //   component.getWorkflow();
-
-  //   expect(apiService.getWorkflowById).toHaveBeenCalledWith('1');
-  //   expect(component.workflow).toEqual(mockWorkflow);
-  //   expect(component.workflowCopy).toEqual(mockWorkflow);
-  // });
 
   describe('workflowEmailSettings', () => {
     beforeEach(() => {
@@ -158,5 +161,56 @@ describe('WorkflowDetailsComponent', () => {
       expect(component.addEmail).not.toHaveBeenCalled();
       expect(component.updateEmail).not.toHaveBeenCalled();
     });
+  });
+
+  it('should update workflows data correctly', () => {
+    component.workflowsInstances = [
+      {
+        status: WorkflowInstanceStatus.FAILED,
+        id: 0,
+        workflowId: 0,
+        completed: null,
+        duration: null,
+        reason: null,
+        triggerData: {},
+        log: null,
+        identifier: '',
+        errorMessage: null,
+        priority: Priority.LOW,
+        created: new Date(),
+        modified: new Date(),
+      },
+      {
+        status: WorkflowInstanceStatus.RUNNING,
+        id: 0,
+        workflowId: 0,
+        completed: null,
+        duration: null,
+        reason: null,
+        triggerData: {},
+        log: null,
+        identifier: '',
+        errorMessage: null,
+        priority: Priority.LOW,
+        created: new Date(),
+        modified: new Date(),
+      },
+    ];
+
+    component.updateWorkflowsData();
+
+    expect(component.failedInstancesCount).toBe(1);
+    expect(component.deliveredInstancesCount).toBe(1);
+    expect(component.totalInstancesCount).toBe(2);
+  });
+
+  it('should call getPageItems when identifier is empty', () => {
+    component.identifier = '';
+
+    spyOn(component, 'getPageItems').and.callThrough();
+
+    component.searchWorkflowInstance();
+
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 });

@@ -38,19 +38,6 @@ export class WorkflowStepSettingsComponent {
     private spinnerService: SpinnerService
   ) {}
 
-  ngOnInit(): void {
-    if (this.workflowStep?.type) {
-      const stepFieldConfig = stepFields.find(
-        ({ stepType }) => stepType === this.workflowStep?.type
-      );
-      if (stepFieldConfig) {
-        this.title = stepFieldConfig?.title;
-        this.fields = stepFieldConfig?.fields;
-        this.availableKeys = this.fields.map(field => field.key);
-      }
-    }
-  }
-
   toggleEditing(): void {
     this.enableEditing = !this.enableEditing;
   }

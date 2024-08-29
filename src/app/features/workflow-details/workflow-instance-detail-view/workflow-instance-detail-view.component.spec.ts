@@ -7,6 +7,11 @@ import { Router, RouterModule } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { of } from 'rxjs';
+import {
+  Priority,
+  WorkflowInstance,
+  WorkflowInstanceStatus,
+} from 'src/app/core/models/workflowinstance.model';
 
 const mockArtifacts = [{ name: 'file1.xml' }, { name: 'file2.json' }];
 
@@ -22,6 +27,7 @@ describe('WorkflowDetailViewComponent', () => {
       'getWorkflowInstanceDetails',
       'getArtifacts',
       'getLogsForInstance',
+      'downloadArtifact',
     ]);
     cdRef = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
     apiServiceSpy.getArtifacts.and.returnValue(of({ content: mockArtifacts }));
@@ -39,6 +45,7 @@ describe('WorkflowDetailViewComponent', () => {
     fixture = TestBed.createComponent(WorkflowDetailViewComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     fixture.detectChanges();
   });
 
@@ -110,23 +117,45 @@ describe('WorkflowDetailViewComponent', () => {
     });
   });
 
-  // it('should set filteredFiles when getArtifactFiles is called', () => {
-  //   component.workflowInstanceId = '123';
-  //   component.getArtifactFiles();
-  //   fixture.detectChanges();
-  //   expect(component.filteredFiles).toEqual(mockArtifacts);
-  // });
+  describe('secondsToHHMMSS', () => {
+    it('should return an empty string when seconds is null', () => {
+      const result = component.secondsToHHMMSS(null);
+      expect(result).toBe('');
+    });
 
-  // it('should set logsResponse when getInstancsLogs is called', () => {
-  //   const mockLogsResponse =  '';
-  //   apiServiceSpy.getLogsForInstance.and.returnValue(of(mockLogsResponse));
+    it('should correctly convert 0 seconds to "00:00:00"', () => {
+      const result = component.secondsToHHMMSS(0);
+      expect(result).toBe('00:00:00');
+    });
 
-  //   component.workflowInstanceId = '123';
-  //   component.getInstancsLogs();
+    it('should correctly convert seconds to HH:MM:SS format', () => {
+      const result = component.secondsToHHMMSS(3661);
+      expect(result).toBe('01:01:01');
+    });
 
-  //   fixture.detectChanges();
+    it('should correctly convert seconds with no hours to "00:MM:SS"', () => {
+      const result = component.secondsToHHMMSS(61);
+      expect(result).toBe('00:01:01');
+    });
 
-  //   expect(component.logsResponse).toEqual(mockLogsResponse);
-  //   expect(apiServiceSpy.getLogsForInstance).toHaveBeenCalledWith(123);
-  // });
+    it('should correctly convert seconds with minutes and seconds to "00:MM:SS"', () => {
+      const result = component.secondsToHHMMSS(3599);
+      expect(result).toBe('00:59:59');
+    });
+
+    it('should correctly handle large numbers of seconds', () => {
+      const result = component.secondsToHHMMSS(86400);
+      expect(result).toBe('24:00:00');
+    });
+  });
+
+  it('should complete destroyed$ when ngOnDestroy is called', () => {
+    spyOn(component['destroyed$'], 'next');
+    spyOn(component['destroyed$'], 'complete');
+
+    component.ngOnDestroy();
+
+    expect(component['destroyed$'].next).toHaveBeenCalled();
+    expect(component['destroyed$'].complete).toHaveBeenCalled();
+  });
 });

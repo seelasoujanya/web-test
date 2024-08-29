@@ -9,6 +9,7 @@ import { ApiService } from './api.service';
 import { HttpClientModule, HttpParams } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { IPage } from '../models/page.model';
+import { SystemPropertiesDTO, SystemProperty } from '../models/workflow.model';
 
 describe('ApiService', () => {
   let service: ApiService;
@@ -134,38 +135,6 @@ describe('ApiService', () => {
 
     req.flush('Server Error', { status: 500, statusText: 'Server Error' });
   });
-
-  // it('should return workflows', () => {
-  //   const mockResponse: IPage<any> = {
-  //     content: [
-  //       { id: 1, name: 'Workflow 1' },
-  //       { id: 2, name: 'Workflow 2' },
-  //     ],
-  //     totalElements: 2,
-  //     totalPages: 1,
-  //     size: 10,
-  //     number: 0,
-  //     numberOfElements: 0,
-  //   };
-
-  //   const queryParams = { status: 'ACTIVE', page: 0, size: 10 };
-
-  //   service.getWorkflows(queryParams).subscribe(data => {
-  //     expect(data).toEqual(mockResponse);
-  //   });
-
-  //   const req = httpTestingController.expectOne(request => {
-  //     return (
-  //       request.method === 'GET' &&
-  //       request.url === `${service['apiUrl']}/workflow` &&
-  //       request.params.get('status') === 'ACTIVE' &&
-  //       request.params.get('page') === '0' &&
-  //       request.params.get('size') === '10'
-  //     );
-  //   });
-
-  //   req.flush(mockResponse);
-  // });
 
   it('should return workflow instances with identifier', () => {
     const mockResponse: IPage<any> = {
@@ -542,32 +511,6 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
-  // it('should get templates by step id and return success response', () => {
-  //   const stepId = 1;
-  //   const queryParams = { page: 0, size: 10 };
-  //   const mockResponse: IPage<any> = {
-  //     content: [{ template: 'Template 1' }, { template: 'Template 2' }],
-  //     totalElements: 2,
-  //     totalPages: 1,
-  //     size: 10,
-  //     number: 0,
-  //     numberOfElements: 2,
-  //   };
-
-  //   service.getTemplatesByTemplateId(stepId, queryParams).subscribe(response => {
-  //     expect(response).toEqual(mockResponse);
-  //   });
-
-  //   const params = new HttpParams({ fromObject: queryParams });
-  //   const req = httpTestingController.expectOne(
-  //     req =>
-  //       req.url === `${service['apiUrl']}/template/${stepId}/history` &&
-  //       req.params.toString() === params.toString()
-  //   );
-  //   expect(req.request.method).toBe('GET');
-  //   req.flush(mockResponse);
-  // });
-
   it('should get templates by template id and return success response', () => {
     const templateId = 1;
     const queryParams = { page: 0, size: 10 };
@@ -635,6 +578,168 @@ describe('ApiService', () => {
     );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(template);
+    req.flush(mockResponse);
+  });
+
+  it('should fetch paused property', () => {
+    const key = 'someKey';
+    const mockResponse = { id: 1, key: 'someKey', value: 'someValue' };
+
+    service.getPausedProperty(key).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/workflow/properties/${key}`
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should update system property', () => {
+    const id = 1;
+    const dto: SystemPropertiesDTO = {
+      key: 'someKey',
+      value: 'newValue',
+      description: undefined,
+    };
+    const mockResponse: SystemProperty = {
+      id: 1,
+      key: 'test',
+      value: 'value',
+      description: '',
+      created: '',
+      modified: '',
+    };
+
+    service.updateSystemProperty(id, dto).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/workflow/properties/${id}`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(dto);
+    req.flush(mockResponse);
+  });
+
+  it('should add a new email', () => {
+    const id = 1;
+    const bodyParams = { email: 'newemail@example.com' };
+    const mockResponse = { success: true };
+
+    service.addEmail(id, bodyParams).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/email/${id}`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(bodyParams);
+    req.flush(mockResponse);
+  });
+
+  it('should update an existing email', () => {
+    const id = 1;
+    const bodyParams = { email: 'updatedemail@example.com' };
+    const mockResponse = { success: true };
+
+    service.updateEmail(id, bodyParams).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/email/${id}`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(bodyParams);
+    req.flush(mockResponse);
+  });
+
+  it('should retrieve templates by template ID', () => {
+    const id = 1;
+    const queryParams = { version: 'latest' };
+    const mockResponse: IPage<any> = {
+      content: [{ id: 1, name: 'Template 1' }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0,
+      numberOfElements: 1,
+    };
+
+    service.getTemplatesByTemplateId(id, queryParams).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(request => {
+      return (
+        request.method === 'GET' &&
+        request.url === `${service['apiUrl']}/template/${id}/versions` &&
+        request.params.get('version') === queryParams.version
+      );
+    });
+    req.flush(mockResponse);
+  });
+
+  it('should retrieve all templates', () => {
+    const queryParams = { page: 0, size: 10 };
+    const mockResponse: IPage<any> = {
+      content: [{ id: 1, name: 'Template 1' }],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0,
+      numberOfElements: 1,
+    };
+
+    service.getAllTemplates(queryParams).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(request => {
+      return (
+        request.method === 'GET' &&
+        request.url === `${service['apiUrl']}/template` &&
+        request.params.get('page') === '0' &&
+        request.params.get('size') === '10'
+      );
+    });
+    req.flush(mockResponse);
+  });
+
+  it('should update template for step', () => {
+    const workflowId = 1;
+    const body = { templateId: 123 };
+    const mockResponse = { success: true };
+
+    service.updateTemplateForStep(workflowId, body).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/workflow/${workflowId}/template`
+    );
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(body);
+    req.flush(mockResponse);
+  });
+
+  it('should post template for step', () => {
+    const body = { templateId: 123 };
+    const mockResponse = { success: true };
+
+    service.postTemplateForStep(body).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/workflow/template`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(body);
     req.flush(mockResponse);
   });
 });
