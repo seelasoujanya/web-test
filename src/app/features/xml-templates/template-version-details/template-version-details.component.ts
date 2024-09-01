@@ -91,6 +91,10 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.getTemplatesByTemplateId(this.templateId);
   }
 
+  public get getBsModalRef(): BsModalRef {
+    return this.bsModalRef;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

@@ -208,4 +208,52 @@ describe('XmlStepSettingsComponent', () => {
     );
     expect(spinnerService.hide).toHaveBeenCalled();
   });
+
+  it('should not call any API if workflowStep is null', () => {
+    component.workflowStep = null;
+
+    component.ngOnInit();
+
+    expect(apiService.getAllTemplates).not.toHaveBeenCalled();
+    expect(apiService.getSelectedTemplate).not.toHaveBeenCalled();
+  });
+
+  it('should not set selectedTemplateId if getSelectedTemplate returns an empty array', () => {
+    const workflowStep: IWorkflowStep = {
+      id: 1,
+      workflowId: 1,
+      executionOrder: 1,
+      name: 'Test',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    component.workflowStep = workflowStep;
+
+    apiService.getAllTemplates.and.returnValue(
+      of({
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        size: 0,
+        number: 0,
+        numberOfElements: 0,
+      })
+    );
+    apiService.getSelectedTemplate.and.returnValue(of([]));
+
+    component.ngOnInit();
+
+    expect(component.selectedTemplateId).toBeUndefined();
+  });
+
+  it('should not call any API in updateTemplate if workflowStep is null', () => {
+    component.workflowStep = null;
+
+    component.updateTemplate();
+
+    expect(apiService.updateTemplateForStep).not.toHaveBeenCalled();
+    expect(apiService.postTemplateForStep).not.toHaveBeenCalled();
+  });
 });

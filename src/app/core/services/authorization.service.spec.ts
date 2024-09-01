@@ -83,4 +83,46 @@ describe('AuthorizationService', () => {
       );
     }
   });
+
+  it('should return user data without calling getAuthenticatedUser if user data is already fetched', async () => {
+    (service as any).userData = mockUserDetails;
+
+    const userData = service.getUserData();
+
+    expect(userData).toEqual(mockUserDetails);
+  });
+
+  it('should handle errors in getAuthenticatedUser', async () => {
+    spyOn(console, 'error'); // Spy on console.error
+    mockApiService.getUserDetails.and.returnValue(
+      throwError(() => new Error('Fetch error'))
+    );
+
+    const userData = await service.getAuthenticatedUser();
+
+    expect(userData).toBeNull();
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Error fetching user details',
+      jasmine.any(Error)
+    );
+  });
+
+  it('should fetch user data before getting CSRF token if user data is null', async () => {
+    mockApiService.getUserDetails.and.returnValue(of(mockUserDetails));
+
+    const token = await service.getCsrfToken();
+
+    expect(token).toBe('mockCsrfToken');
+
+    expect(mockApiService.getUserDetails).toHaveBeenCalled();
+  });
+
+  it('should call getAuthenticatedUser in ngOnInit', async () => {
+    spyOn(service, 'getAuthenticatedUser');
+
+    service.ngOnInit();
+
+    expect(service.getAuthenticatedUser).toHaveBeenCalled();
+  });
 });

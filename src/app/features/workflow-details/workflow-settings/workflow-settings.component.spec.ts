@@ -136,4 +136,22 @@ describe('WorkflowSettingsComponent', () => {
     );
     expect(consoleSpy).toHaveBeenCalledWith(jasmine.any(Error));
   });
+
+  it('should not call getWorkflowSteps if workflowId is null', () => {
+    component.workflowId = null;
+    fixture.detectChanges();
+
+    expect(apiService.getWorkflowSteps).not.toHaveBeenCalled();
+    expect(component.workflowSteps.length).toBe(0);
+  });
+
+  it('should return correct default page parameters', () => {
+    const expectedParams = {
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    };
+    expect(component.getDefaultPageParams()).toEqual(expectedParams);
+  });
 });

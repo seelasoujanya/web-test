@@ -253,4 +253,10 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.emailId).toBeUndefined();
     expect(component.getBsModalRef.hide).toHaveBeenCalled();
   });
+
+  it('should call reset method', () => {
+    spyOn(component, 'reset');
+    component.reset();
+    expect(component.reset).toHaveBeenCalled();
+  });
 });

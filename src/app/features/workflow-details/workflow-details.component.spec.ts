@@ -1,9 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 
 import { WorkflowDetailsComponent } from './workflow-details.component';
 import { HttpClientModule } from '@angular/common/http';
-import { Router, RouterModule } from '@angular/router';
-import { of } from 'rxjs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 import {
   Priority,
@@ -11,12 +17,15 @@ import {
 } from 'src/app/core/models/workflowinstance.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { IPage } from 'src/app/core/models/page.model';
+import { Workflow } from 'src/app/core/models/workflow.model';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 describe('WorkflowDetailsComponent', () => {
   let component: WorkflowDetailsComponent;
   let fixture: ComponentFixture<WorkflowDetailsComponent>;
   let router: Router;
   let apiService: jasmine.SpyObj<ApiService>;
+  let spinnerService: jasmine.SpyObj<SpinnerService>;
 
   beforeEach(async () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', [
@@ -25,6 +34,15 @@ describe('WorkflowDetailsComponent', () => {
       'downloadArtifact',
       'getWorkflowInstances',
       'getWorkflowSteps',
+      'updateWorkflow',
+      'getWorkflowById',
+      'getEmailsByWorkflowId',
+      'deleteEmailById',
+    ]);
+
+    const spinnerServiceSpy = jasmine.createSpyObj('SpinnerService', [
+      'show',
+      'hide',
     ]);
 
     await TestBed.configureTestingModule({
@@ -33,13 +51,25 @@ describe('WorkflowDetailsComponent', () => {
         HttpClientModule,
         RouterModule.forRoot([]),
       ],
-      providers: [{ provide: ApiService, useValue: apiServiceSpy }],
+      providers: [
+        { provide: ApiService, useValue: apiServiceSpy },
+        { provide: SpinnerService, useValue: spinnerServiceSpy },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: { id: 1 } },
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowDetailsComponent);
     component = fixture.componentInstance;
     apiService = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     router = TestBed.inject(Router);
+    spinnerService = TestBed.inject(
+      SpinnerService
+    ) as jasmine.SpyObj<SpinnerService>;
     fixture.detectChanges();
   });
 
@@ -168,7 +198,7 @@ describe('WorkflowDetailsComponent', () => {
       {
         status: WorkflowInstanceStatus.FAILED,
         id: 0,
-        workflowId: 0,
+        workflowId: 1,
         completed: null,
         duration: null,
         reason: null,
@@ -183,7 +213,7 @@ describe('WorkflowDetailsComponent', () => {
       {
         status: WorkflowInstanceStatus.RUNNING,
         id: 0,
-        workflowId: 0,
+        workflowId: 1,
         completed: null,
         duration: null,
         reason: null,
@@ -212,5 +242,32 @@ describe('WorkflowDetailsComponent', () => {
     component.searchWorkflowInstance();
 
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should call ngOnInit methods', () => {
+    spyOn(component, 'getPageItems').and.stub();
+    spyOn(component, 'getWorkflow').and.stub();
+    spyOn(component, 'getEmailsByWorkflowId').and.stub();
+    spyOn(component, 'getWorkflowSteps').and.stub();
+
+    component.ngOnInit();
+
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+    expect(component.getWorkflow).toHaveBeenCalled();
+    expect(component.getEmailsByWorkflowId).toHaveBeenCalled();
+    expect(component.getWorkflowSteps).toHaveBeenCalledWith(
+      component.workflowId,
+      component.pageParams
+    );
+  });
+
+  it('should handle missing workflow instances in updateWorkflowsData', () => {
+    component.workflowsInstances = [];
+
+    component.updateWorkflowsData();
+
+    expect(component.failedInstancesCount).toBe(0);
+    expect(component.deliveredInstancesCount).toBe(0);
+    expect(component.totalInstancesCount).toBe(0);
   });
 });

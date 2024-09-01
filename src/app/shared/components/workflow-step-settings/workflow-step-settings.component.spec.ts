@@ -157,7 +157,6 @@ describe('WorkflowStepSettingsComponent', () => {
     expect(spinnerService.show).toHaveBeenCalled();
     expect(spinnerService.hide).toHaveBeenCalled();
     expect(component.workflowStep).toEqual(updatedStep);
-    // expect(component.enableEditing).toBeFalse();
   });
 
   it('should handle error in updateWorkflowStepSettings', () => {
@@ -177,5 +176,54 @@ describe('WorkflowStepSettingsComponent', () => {
     component.updateWorkflowStepSettings();
     expect(spinnerService.show).toHaveBeenCalled();
     expect(spinnerService.hide).toHaveBeenCalled();
+  });
+
+  it('should return false if no config is found for a boolean field', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    expect(component.getFieldValue('nonExistentKey', 'boolean')).toBeFalse();
+  });
+
+  it('should return an empty string if no config is found for a string field', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    expect(component.getFieldValue('nonExistentKey')).toBe('');
+  });
+
+  it('should add a new configuration with boolean true if key is not found in updateCheckboxFieldValue', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    component.updateCheckboxFieldValue('newCheckboxKey');
+    expect(component.workflowStep?.workflowStepConfigurations.length).toBe(1);
+    expect(component.workflowStep?.workflowStepConfigurations[0].key).toBe(
+      'newCheckboxKey'
+    );
+    expect(
+      component.workflowStep?.workflowStepConfigurations[0].value
+    ).toBeTrue();
   });
 });
