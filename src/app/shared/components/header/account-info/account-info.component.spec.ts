@@ -1,4 +1,10 @@
-import { ComponentFixture, TestBed, tick } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 
 import { AccountInfoComponent } from './account-info.component';
 import { CommonModule } from '@angular/common';
@@ -48,31 +54,15 @@ describe('AccountInfoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('should populate user and userAuthorities on successful data retrieval', () => {
-  //   const mockData = { authorities: [{ authority: 'ROLE_USER' }] };
-  //   apiService.getUserDetails.and.returnValue(of(mockData));
-
-  //   component.getAccountInfo();
-  //   tick();
-  //   fixture.detectChanges();
-
-  //   expect(component.user).toEqual(mockData);
-  //   expect(component.userAuthorities).toEqual(['ROLE_USER']);
-  //   expect(spinnerService.hide).toHaveBeenCalled();
-  // });
-
-  // it('should handle errors gracefully in getAccountInfo', () => {
-  //   apiService.getUserDetails.and.returnValue(throwError(() => new Error('Error')));
-
-  //   component.getAccountInfo();
-  //   fixture.detectChanges();
-
-  //   expect(component.userDataLoaded).toBeTrue();
-  //   expect(spinnerService.hide).toHaveBeenCalled();
-  // });
-
   it('should call bsModalRef.hide when closeModal is called', () => {
     component.closeModal(true);
     expect(bsModalRef.hide).toHaveBeenCalled();
+  });
+
+  it('should show spinner and call getAccountInfo on ngOnInit', () => {
+    spyOn(component, 'getAccountInfo');
+    component.ngOnInit();
+    expect(spinnerService.show).toHaveBeenCalled();
+    expect(component.getAccountInfo).toHaveBeenCalled();
   });
 });

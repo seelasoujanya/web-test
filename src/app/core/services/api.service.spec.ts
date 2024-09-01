@@ -742,4 +742,20 @@ describe('ApiService', () => {
     expect(req.request.body).toEqual(body);
     req.flush(mockResponse);
   });
+
+  it('should add a template and return success response', () => {
+    const bodyParams = { name: 'Template Name', content: 'Template Content' };
+    const mockResponse = { success: true };
+
+    service.addTemplate(bodyParams).subscribe(response => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpTestingController.expectOne(
+      `${service['apiUrl']}/template`
+    );
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(bodyParams);
+    req.flush(mockResponse);
+  });
 });

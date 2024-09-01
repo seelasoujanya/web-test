@@ -8,6 +8,7 @@ import { IPage } from 'src/app/core/models/page.model';
 import { SystemProperty } from 'src/app/core/models/workflow.model';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { TemplateRef } from '@angular/core';
 
 describe('MonitorComponent', () => {
   let component: MonitorComponent;
@@ -19,7 +20,7 @@ describe('MonitorComponent', () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', [
       'getInstancesByStatus',
       'getPausedProperty',
-      'updateWorkflowInstanceStatus',
+      'updateWorkflowInstance',
     ]);
 
     spinnerServiceSpy = jasmine.createSpyObj('SpinnerService', [
@@ -41,6 +42,8 @@ describe('MonitorComponent', () => {
     apiServiceSpy.getPausedProperty.and.returnValue(
       of({ key: 'paused', value: 'false' })
     );
+
+    apiServiceSpy.updateWorkflowInstance.and.returnValue(of({}));
 
     const cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', [
       'markForCheck',
@@ -129,18 +132,6 @@ describe('MonitorComponent', () => {
     );
   });
 
-  it('should call updateWorkflowInstanceStatus in terminateInstance', () => {
-    const instanceId = 123;
-    apiService.updateWorkflowInstanceStatus.and.returnValue(of({}));
-
-    component.terminateInstance(instanceId);
-
-    expect(apiService.updateWorkflowInstanceStatus).toHaveBeenCalledWith(
-      instanceId,
-      'TERMINATED'
-    );
-  });
-
   it('should log error when getPausedProperty fails', () => {
     const errorResponse = { message: 'Failed to fetch property' };
     apiService.getPausedProperty.and.returnValue(throwError(errorResponse));
@@ -173,5 +164,113 @@ describe('MonitorComponent', () => {
     expect(component.updateInstances).toHaveBeenCalledWith(
       component.pageParams
     );
+  });
+
+  it('should hide modal in closeModal', () => {
+    spyOn(component.getBsModalRef, 'hide');
+
+    component.closeModal();
+
+    expect(component.getBsModalRef.hide).toHaveBeenCalled();
+  });
+
+  it('should reset priority changes and close modal in cancelChangesForPriority', () => {
+    spyOn(component, 'closeModal');
+    spyOn(component, 'reset');
+
+    component.cancelChangesForPriority();
+
+    expect(component.closeModal).toHaveBeenCalled();
+    expect(component.reset).toHaveBeenCalled();
+  });
+
+  it('should reset priority value in reset', () => {
+    component.priority = 'HIGH';
+
+    component.reset();
+
+    expect(component.priority).toBeNull();
+  });
+
+  it('should update priority and reset modal in updatePriority', () => {
+    component.expandedId = 1;
+    component.priority = 'HIGH';
+    spyOn(component, 'reset');
+    spyOn(component.getBsModalRef, 'hide');
+
+    component.updatePriority();
+
+    expect(apiService.updateWorkflowInstance).toHaveBeenCalledWith(1, {
+      priority: 'HIGH',
+    });
+    expect(component.reset).toHaveBeenCalled();
+    expect(component.getBsModalRef.hide).toHaveBeenCalled();
+  });
+
+  it('should open change priority dialog with correct configuration', () => {
+    const priorityTemplate = {} as TemplateRef<any>;
+    spyOn(component['modalService'], 'show').and.callThrough();
+
+    component.openChangePriorityDialog(priorityTemplate);
+
+    expect(component['modalService'].show).toHaveBeenCalledWith(
+      priorityTemplate,
+      {
+        backdrop: true,
+        ignoreBackdropClick: true,
+        keyboard: false,
+      }
+    );
+  });
+
+  it('should set priority and open change priority dialog', () => {
+    const instance = { priority: 'HIGH' };
+    const priorityTemplate = {} as TemplateRef<any>;
+    spyOn(component, 'openChangePriorityDialog').and.callThrough();
+
+    component.editPriority(instance, priorityTemplate);
+
+    expect(component.priority).toBe('HIGH');
+    expect(component.openChangePriorityDialog).toHaveBeenCalledWith(
+      priorityTemplate
+    );
+  });
+
+  it('should call deleteInstance and update instances', () => {
+    const instanceId = 123;
+
+    spyOn(component, 'updateInstances').and.callThrough();
+
+    component.deleteInstance(instanceId);
+
+    expect(apiService.updateWorkflowInstance).toHaveBeenCalledWith(instanceId, {
+      status: 'TERMINATED',
+    });
+    expect(component.updateInstances).toHaveBeenCalledWith(
+      component.pageParams
+    );
+  });
+
+  it('should open confirm modal for terminating instance', () => {
+    const id = 123;
+    const modalData = {
+      title: 'Delete Instance',
+      description: `Are you sure you want to terminate instance with Id :${id} ?`,
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+    spyOn(component, 'openConfirmModal').and.callThrough();
+
+    component.terminateInstance(id);
+
+    expect(component.openConfirmModal).toHaveBeenCalledWith(modalData, id);
+  });
+
+  it('should handle empty response from getPausedProperty', () => {
+    apiService.getPausedProperty.and.returnValue(of(null));
+
+    component.getPausedProperty('paused');
+
+    expect(component.pausedProperty).toBeNull();
   });
 });

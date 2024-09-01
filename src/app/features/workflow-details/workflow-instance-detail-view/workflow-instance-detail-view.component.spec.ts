@@ -1,51 +1,72 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 
 import { WorkflowDetailViewComponent } from './workflow-instance-detail-view.component';
-import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { NO_ERRORS_SCHEMA } from '@angular/compiler';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientModule } from '@angular/common/http';
 import {
   Priority,
   WorkflowInstance,
   WorkflowInstanceStatus,
 } from 'src/app/core/models/workflowinstance.model';
 
-const mockArtifacts = [{ name: 'file1.xml' }, { name: 'file2.json' }];
-
 describe('WorkflowDetailViewComponent', () => {
   let component: WorkflowDetailViewComponent;
   let fixture: ComponentFixture<WorkflowDetailViewComponent>;
-  let apiServiceSpy: jasmine.SpyObj<ApiService>;
+  let apiService: jasmine.SpyObj<ApiService>;
   let cdRef: ChangeDetectorRef;
   let router: Router;
 
   beforeEach(async () => {
-    apiServiceSpy = jasmine.createSpyObj('ApiService', [
+    const apiServiceSpy = jasmine.createSpyObj('ApiService', [
       'getWorkflowInstanceDetails',
       'getArtifacts',
       'getLogsForInstance',
       'downloadArtifact',
     ]);
     cdRef = jasmine.createSpyObj('ChangeDetectorRef', ['markForCheck']);
-    apiServiceSpy.getArtifacts.and.returnValue(of({ content: mockArtifacts }));
-
+    apiServiceSpy.getArtifacts.and.returnValue(
+      of([
+        { name: 'file1.xml', url: 'http://example.com/file1.xml' },
+        { name: 'file2.json', url: 'http://example.com/file2.json' },
+      ])
+    );
+    apiServiceSpy.getLogsForInstance.and.returnValue(of('Sample logs'));
+    apiServiceSpy.downloadArtifact.and.returnValue(
+      of(new Blob(['content'], { type: 'application/octet-stream' }))
+    );
     await TestBed.configureTestingModule({
       imports: [
         WorkflowDetailViewComponent,
         CommonModule,
         HttpClientModule,
         RouterModule.forRoot([]),
+        HttpClientTestingModule,
       ],
-      providers: [{ provide: ApiService, useValue: apiServiceSpy }],
+      providers: [
+        { provide: ApiService, useValue: apiServiceSpy },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { params: { id: '123' } } },
+        },
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowDetailViewComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
+    apiService = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
     fixture.detectChanges();
   });
 
@@ -149,13 +170,136 @@ describe('WorkflowDetailViewComponent', () => {
     });
   });
 
-  it('should complete destroyed$ when ngOnDestroy is called', () => {
-    spyOn(component['destroyed$'], 'next');
-    spyOn(component['destroyed$'], 'complete');
+  describe('getInstancsLogs', () => {
+    it('should call getLogsForInstance and update logsResponse', () => {
+      const mockLogs = '';
+      component.getInstancsLogs();
+      expect(component.logsResponse).toBe(mockLogs);
+    });
+  });
+
+  it('should call downloadArtifact when invoked', fakeAsync(() => {
+    spyOn(component, 'downloadArtifact').and.callThrough();
+
+    component.downloadArtifact(1, 'file1.xml');
+    tick();
+
+    expect(component.downloadArtifact).toHaveBeenCalledWith(1, 'file1.xml');
+  }));
+
+  it('should handle errors in getInstancsLogs', fakeAsync(() => {
+    apiService.getLogsForInstance.and.returnValue(throwError('Error'));
+
+    component.getInstancsLogs();
+    tick();
+
+    expect(component.logsResponse).toBe('');
+  }));
+
+  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
+    spyOn(component, 'getPageItems');
+    spyOn(component, 'getArtifactFiles');
+    spyOn(component, 'getInstancsLogs');
+
+    component.ngOnInit();
+
+    expect(component.getPageItems).toHaveBeenCalled();
+    expect(component.getArtifactFiles).toHaveBeenCalled();
+    expect(component.getInstancsLogs).toHaveBeenCalled();
+  });
+
+  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
+    spyOn(component, 'getPageItems');
+    spyOn(component, 'getArtifactFiles');
+    spyOn(component, 'getInstancsLogs');
+    component.ngOnInit();
+    expect(component.getPageItems).toHaveBeenCalled();
+    expect(component.getArtifactFiles).toHaveBeenCalled();
+    expect(component.getInstancsLogs).toHaveBeenCalled();
+  });
+
+  describe('getInstancsLogs', () => {
+    it('should handle errors in getLogsForInstance', fakeAsync(() => {
+      apiService.getLogsForInstance.and.returnValue(throwError('Error'));
+      component.getInstancsLogs();
+      tick();
+      expect(component.logsResponse).toBe('');
+    }));
+  });
+
+  it('should navigate back to workflows', () => {
+    spyOn(router, 'navigate');
+
+    component.backToWorkflows();
+
+    expect(router.navigate).toHaveBeenCalledWith(['/workflows']);
+  });
+
+  it('should return default page parameters with correct values', () => {
+    const defaultParams = component.getDefaultPageParams();
+    expect(defaultParams).toEqual({
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    });
+  });
+
+  it('should call destroyed$.next and destroyed$.complete on ngOnDestroy', () => {
+    const nextSpy = spyOn(component['destroyed$'], 'next');
+    const completeSpy = spyOn(component['destroyed$'], 'complete');
 
     component.ngOnDestroy();
 
-    expect(component['destroyed$'].next).toHaveBeenCalled();
-    expect(component['destroyed$'].complete).toHaveBeenCalled();
+    expect(nextSpy).toHaveBeenCalled();
+    expect(completeSpy).toHaveBeenCalled();
+  });
+
+  it('should set selectedTab to "history" when selectTab is called with "history"', () => {
+    component.selectTab('history');
+    expect(component.selectedTab).toBe('history');
+  });
+
+  it('should set selectedTab to "details" when selectTab is called with "details"', () => {
+    component.selectTab('details');
+    expect(component.selectedTab).toBe('details');
+  });
+
+  it('should return default icon path for empty filename', () => {
+    const iconPath = component.getIcon('');
+    expect(iconPath).toBe('assets/icons/default-file.svg');
+  });
+
+  it('should return default icon path for filename with multiple dots', () => {
+    const iconPath = component.getIcon('file.with.multiple.dots.json');
+    expect(iconPath).toBe('/assets/icons/json-logo.svg');
+  });
+
+  it('should handle errors in getArtifactFiles', () => {
+    apiService.getArtifacts.and.returnValue(throwError('Error'));
+
+    component.getArtifactFiles();
+
+    expect(component.filteredFiles).toEqual([]);
+  });
+
+  it('should handle empty file list in getArtifactFiles', () => {
+    apiService.getArtifacts.and.returnValue(of([]));
+
+    component.getArtifactFiles();
+
+    expect(component.filteredFiles).toEqual([]);
+  });
+
+  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
+    spyOn(component, 'getPageItems');
+    spyOn(component, 'getArtifactFiles');
+    spyOn(component, 'getInstancsLogs');
+
+    component.ngOnInit();
+
+    expect(component.getPageItems).toHaveBeenCalled();
+    expect(component.getArtifactFiles).toHaveBeenCalled();
+    expect(component.getInstancsLogs).toHaveBeenCalled();
   });
 });

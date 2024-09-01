@@ -88,6 +88,10 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     //  this.getTemplates(this.pageParams);
   }
 
+  public get getBsModalRef(): BsModalRef {
+    return this.bsModalRef;
+  }
+
   reactiveForm: FormGroup;
 
   constructor(

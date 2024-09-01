@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkflowHistoryComponent } from './workflow-history.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, Navigation } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
@@ -264,5 +264,35 @@ describe('WorkflowHistoryComponent', () => {
     expect(component.failedInstancesCount).toBe(0);
     expect(component.deliveredInstancesCount).toBe(0);
     expect(component.totalInstancesCount).toBe(0);
+  });
+
+  it('should handle invalid sort column heading in sortColumn', () => {
+    spyOn(component, 'getPageItems');
+    component.sortColumn({ sortBy: 'Invalid Heading', order: 'asc' });
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
+  });
+
+  it('should reset all counts to zero in reset method', () => {
+    component.failedInstancesCount = 5;
+    component.deliveredInstancesCount = 10;
+    component.totalInstancesCount = 15;
+
+    component.reset();
+
+    expect(component.failedInstancesCount).toBe(0);
+    expect(component.deliveredInstancesCount).toBe(0);
+    expect(component.totalInstancesCount).toBe(0);
+  });
+
+  it('should update pageParams and call getPageItems on onPage', () => {
+    spyOn(component, 'getPageItems');
+    component.onPage(3);
+
+    expect(component['pageParams'].page).toBe(2);
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
   });
 });

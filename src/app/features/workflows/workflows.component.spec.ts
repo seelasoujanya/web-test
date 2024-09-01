@@ -6,6 +6,8 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { of } from 'rxjs';
+import { Workflow } from 'src/app/core/models/workflow.model';
 
 describe('WorkflowsComponent', () => {
   let component: WorkflowsComponent;
@@ -106,5 +108,24 @@ describe('WorkflowsComponent', () => {
 
     expect(component['destroyed$'].next).toHaveBeenCalled();
     expect(component['destroyed$'].complete).toHaveBeenCalled();
+  });
+
+  it('should navigate to the correct route with workflow data on viewInstances', () => {
+    const mockWorkflow = { id: 1, name: 'Test Workflow' };
+    component.viewInstances(mockWorkflow);
+    expect(router.navigate).toHaveBeenCalledWith(
+      ['/workflows', mockWorkflow.id],
+      {
+        state: { name: mockWorkflow.name },
+      }
+    );
+  });
+
+  it('should call getPageItems with default pageParams on ngOnInit', () => {
+    spyOn(component, 'getPageItems');
+
+    component.ngOnInit();
+
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 });

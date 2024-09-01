@@ -95,6 +95,14 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.getPausedProperty('paused');
   }
 
+  public get getBsModalRef(): BsModalRef {
+    return this.bsModalRef;
+  }
+
+  public getWebSocketSubscription(): Subscription | undefined {
+    return this.websocketSubscription;
+  }
+
   getPausedProperty(key: string): void {
     this.apiService.getPausedProperty(key).subscribe(
       (data: SystemProperty) => {
@@ -228,10 +236,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
 
   public reset() {
     this.priority = null;
-  }
-
-  get getBsModalRef(): BsModalRef {
-    return this.bsModalRef;
   }
 
   openConfirmModal(modalData: any, id: any) {

@@ -66,4 +66,15 @@ describe('HeaderComponent', () => {
     );
     expect(spyNavigate).toHaveBeenCalledWith('/login');
   });
+
+  it('should show AboutComponent when showAbout is called', () => {
+    const templateRef = {} as TemplateRef<any>;
+    component.showAbout(templateRef);
+    expect(component.modalRef).toBeDefined();
+  });
+
+  it('should show AccountInfoComponent when account_info is called', () => {
+    component.account_info();
+    expect(component.modalRef).toBeDefined();
+  });
 });
