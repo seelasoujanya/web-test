@@ -63,5 +63,5 @@ sudo rm -rf /opt/node-v18.17.0-linux-x64
 sudo mv node-v18.17.0-linux-x64 /opt/
 export PATH=$PATH:/opt/node-v18.17.0-linux-x64/bin
 npm install --legacy-peer-deps
-#npm run test:report
+npm run test:report
 npm run sonar
