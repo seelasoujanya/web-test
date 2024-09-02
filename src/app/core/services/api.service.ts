@@ -11,17 +11,14 @@ import { SystemPropertiesDTO, SystemProperty } from '../models/workflow.model';
 })
 export class ApiService {
   getPausedProperty(key: string) {
-    return this.http.get<any>(`${this.apiUrl}/workflow/properties/${key}`);
+    return this.http.get<any>(`${this.apiUrl}/property/${key}`);
   }
 
   updateSystemProperty(
     id: number | undefined,
     dto: SystemPropertiesDTO
   ): Observable<SystemProperty> {
-    return this.http.put<SystemProperty>(
-      `${this.apiUrl}/workflow/properties/${id}`,
-      dto
-    );
+    return this.http.put<SystemProperty>(`${this.apiUrl}/property/${id}`, dto);
   }
 
   private apiUrl = `${environment.BE_URL}/api`;
