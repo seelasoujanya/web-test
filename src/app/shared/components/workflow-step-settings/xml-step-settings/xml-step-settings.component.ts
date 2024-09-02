@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { ApiService } from 'src/app/core/services/api.service';
 import { CommonModule } from '@angular/common';

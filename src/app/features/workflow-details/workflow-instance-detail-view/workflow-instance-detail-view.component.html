@@ -23,55 +23,79 @@
     <div class="tables-main-container">
       <div class="table-container">
         <table>
-          <tr>
-            <td class="detail-field-key">Identifier</td>
-            <td class="detail-field-value">
-              {{ workflowsInstance.identifier }}
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Workflow</td>
-            <td class="detail-field-value">
-              {{ workflowsInstance.workflow?.name }}
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Status</td>
-            <td class="detail-field-value">{{ workflowsInstance.status }}</td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Priority</td>
-            <td class="detail-field-value">{{ workflowsInstance.priority }}</td>
-          </tr>
+          <caption class="table-caption visually-hidden">
+            Details of Workflow Instance
+          </caption>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Identifier</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.identifier }}
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Workflow</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.workflow?.name }}
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Status</td>
+              <td class="detail-field-value">{{ workflowsInstance.status }}</td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Priority</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.priority }}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div class="table-container">
         <table>
-          <tr>
-            <td class="detail-field-key">Created</td>
-            <td class="detail-field-value">
-              {{ workflowsInstance.created | date: 'MMM, dd YYYY HH:mm' }}
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Completed</td>
-            <td class="detail-field-value">
-              {{ workflowsInstance.completed | date: 'MMM, dd YYYY HH:mm' }}
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Duration</td>
-            <td class="detail-field-value">
-              {{ secondsToHHMMSS(workflowsInstance.duration) }}
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Error Message</td>
-            <td class="detail-field-value">
-              {{ workflowsInstance.errorMessage }}
-            </td>
-          </tr>
+          <caption class="table-caption visually-hidden">
+            Details of Workflow Instance
+          </caption>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Created</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.created | date: 'MMM, dd YYYY HH:mm' }}
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Completed</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.completed | date: 'MMM, dd YYYY HH:mm' }}
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Duration</td>
+              <td class="detail-field-value">
+                {{ secondsToHHMMSS(workflowsInstance.duration) }}
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Error Message</td>
+              <td class="detail-field-value">
+                {{ workflowsInstance.errorMessage }}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

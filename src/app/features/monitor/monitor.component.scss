@@ -1,5 +1,4 @@
 @import 'src/styles/button';
-
 .monitor-component {
   width: 100%;
   margin-top: 80px;
@@ -7,8 +6,6 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-top: 60px;
-
   .navigate-btn-container {
     background: #222;
     height: 40px;
@@ -19,25 +16,20 @@
     z-index: 10;
     top: 120px;
     align-items: center;
-    z-index: 10;
-
     .navigate-btn {
       background: none;
       border: none;
       color: #c4c4c4;
       padding-inline: 20px;
-
       &:hover {
         cursor: pointer;
         color: #fff;
       }
     }
-
     .active-btn {
       color: #ffff;
     }
   }
-
   .monitor-heading-section {
     position: sticky;
     z-index: 10;
@@ -120,14 +112,11 @@
             font-size: 12px;
             letter-spacing: 0.5px;
             border-radius: 4px;
-
             width: Hug (192px) px;
             height: Fixed (40px) px;
             padding: 10px 20px 10px 20px;
             gap: 12px;
-            border-radius: 4px;
             opacity: 0px;
-
             img {
               width: 24px;
               height: 24px;
@@ -207,7 +196,6 @@
       p {
         font-weight: 500;
       }
-
       .workflowInstance-field {
         width: 100%;
         box-sizing: border-box;
@@ -226,7 +214,6 @@
       align-items: flex-end;
       padding-inline: 20px;
       margin-bottom: 20px;
-
       .confirm-btn {
         width: 98px;
         height: 34px;
@@ -259,4 +246,15 @@
       }
     }
   }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
