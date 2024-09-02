@@ -8,6 +8,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { of } from 'rxjs';
 import { Workflow } from 'src/app/core/models/workflow.model';
+import { IPage } from 'src/app/core/models/page.model';
 
 describe('WorkflowsComponent', () => {
   let component: WorkflowsComponent;
@@ -127,5 +128,40 @@ describe('WorkflowsComponent', () => {
     component.ngOnInit();
 
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should instantiate all dependencies correctly in the constructor', () => {
+    expect(apiService).toBeTruthy();
+    expect(router).toBeTruthy();
+    expect(cdRef).toBeTruthy();
+    expect(spinnerService).toBeTruthy();
+  });
+
+  it('should call getPageItems with default pageParams on ngOnInit', () => {
+    spyOn(component, 'getPageItems').and.callThrough();
+    component.ngOnInit();
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should correctly handle data returned from getWorkflows', () => {
+    const mockPage: IPage<any> = {
+      content: [
+        { id: 1, name: 'Test Workflow 1' },
+        { id: 2, name: 'Test Workflow 2' },
+      ],
+      totalElements: 0,
+      size: 0,
+      number: 0,
+      totalPages: 0,
+      numberOfElements: 0,
+    };
+
+    apiService.getWorkflows.and.returnValue(of(mockPage));
+    component.getPageItems(component.pageParams);
+
+    fixture.whenStable().then(() => {
+      expect(component.page).toEqual(mockPage);
+      expect(component.workflowsData).toEqual(mockPage.content);
+    });
   });
 });

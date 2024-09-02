@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MonitorComponent } from './monitor.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from 'src/app/core/services/api.service';
-import { of, throwError } from 'rxjs';
+import { of, Subscription, throwError } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { SystemProperty } from 'src/app/core/models/workflow.model';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
@@ -21,6 +21,7 @@ describe('MonitorComponent', () => {
       'getInstancesByStatus',
       'getPausedProperty',
       'updateWorkflowInstance',
+      'updateSystemProperty',
     ]);
 
     spinnerServiceSpy = jasmine.createSpyObj('SpinnerService', [
@@ -272,5 +273,117 @@ describe('MonitorComponent', () => {
     component.getPausedProperty('paused');
 
     expect(component.pausedProperty).toBeNull();
+  });
+
+  it('should call deleteInstance and update instances on success', () => {
+    const instanceId = 123;
+    spyOn(component, 'updateInstances').and.callThrough();
+    component.deleteInstance(instanceId);
+    expect(apiService.updateWorkflowInstance).toHaveBeenCalledWith(instanceId, {
+      status: 'TERMINATED',
+    });
+    expect(component.updateInstances).toHaveBeenCalledWith(
+      component.pageParams
+    );
+  });
+
+  it('should handle error when deleteInstance fails', () => {
+    const instanceId = 123;
+    const errorResponse = { message: 'Error updating workflow instance' };
+    apiService.updateWorkflowInstance.and.returnValue(
+      throwError(errorResponse)
+    );
+    component.deleteInstance(instanceId);
+    expect(apiService.updateWorkflowInstance).toHaveBeenCalledWith(instanceId, {
+      status: 'TERMINATED',
+    });
+    expect(console.error).toHaveBeenCalledWith(
+      'Error updating workflow instance',
+      errorResponse
+    );
+  });
+
+  it('should toggle pauseAllInstances and update propertyDTO correctly when pauseInstances is called', () => {
+    component.pauseAllInstances = false;
+    component.pausedProperty = {
+      key: 'pause',
+      description: 'Pause all instances',
+      id: 1,
+      value: 'false',
+      created: '',
+      modified: '',
+    };
+    component.propertyDTO = { value: '', key: '', description: '' };
+
+    const mockSystemProperty: SystemProperty = {
+      key: 'pause',
+      description: 'Pause all instances',
+      id: 1,
+      value: 'true',
+      created: '',
+      modified: '',
+    };
+    apiService.updateSystemProperty.and.returnValue(of(mockSystemProperty));
+    component.pauseInstances();
+    expect(component.pauseAllInstances).toBeTrue();
+    expect(component.propertyDTO.value).toBe('true');
+    expect(component.propertyDTO.key).toBe('pause');
+    expect(component.propertyDTO.description).toBe('Pause all instances');
+    expect(apiService.updateSystemProperty).toHaveBeenCalledWith(
+      1,
+      component.propertyDTO
+    );
+  });
+
+  it('should return correct WebSocket subscription', () => {
+    const subscription = new Subscription();
+    spyOn(component, 'getWebSocketSubscription').and.returnValue(subscription);
+
+    expect(component.getWebSocketSubscription()).toBe(subscription);
+  });
+
+  it('should open confirm modal with correct data', () => {
+    const modalData = {
+      title: 'Confirm',
+      description: 'Are you sure?',
+      btn1Name: 'Yes',
+      btn2Name: 'No',
+    };
+    const id = 123;
+    component.openConfirmModal(modalData, id);
+
+    expect(component.getBsModalRef.content.title).toBe(modalData.title);
+    expect(component.getBsModalRef.content.description).toBe(
+      modalData.description
+    );
+    expect(component.getBsModalRef.content.applyButton).toBe(
+      modalData.btn1Name
+    );
+    expect(component.getBsModalRef.content.cancelButton).toBe(
+      modalData.btn2Name
+    );
+  });
+
+  it('should open priority change dialog with correct configuration', () => {
+    const priorityTemplate = {} as TemplateRef<any>;
+    component.openChangePriorityDialog(priorityTemplate);
+
+    expect(component.getBsModalRef).toBeDefined();
+  });
+
+  it('should handle error in updatePriority', () => {
+    component.expandedId = 1;
+    component.priority = 'HIGH';
+    const errorResponse = { message: 'Failed to update priority' };
+    apiService.updateWorkflowInstance.and.returnValue(
+      throwError(errorResponse)
+    );
+
+    component.updatePriority();
+
+    expect(console.error).toHaveBeenCalledWith(
+      'Error updating priority',
+      errorResponse
+    );
   });
 });

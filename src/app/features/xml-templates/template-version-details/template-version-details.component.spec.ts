@@ -7,7 +7,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TemplateRef } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('TemplateVersionDetailsComponent', () => {
   let component: TemplateVersionDetailsComponent;
@@ -212,6 +212,91 @@ describe('TemplateVersionDetailsComponent', () => {
     );
     expect(component.getTemplatesByTemplateId).toHaveBeenCalledWith(
       component.templateId
+    );
+  });
+
+  it('should return default page parameters', () => {
+    const defaultParams = component.getDefaultPageParams();
+    expect(defaultParams).toEqual({
+      page: 0,
+      pageSize: 10,
+      sortBy: '',
+      order: 'asc',
+    });
+  });
+
+  it('should merge partial options correctly', () => {
+    const partialOptions = { page: 1, pageSize: 20 };
+    const mergedOptions = component.mergeOptions(partialOptions);
+    expect(mergedOptions).toEqual(partialOptions);
+  });
+
+  it('should initialize editor with the correct selection', () => {
+    const mockEditor = {
+      setSelection: jasmine.createSpy('setSelection'),
+    };
+
+    component.editorInit(mockEditor);
+
+    expect(mockEditor.setSelection).toHaveBeenCalledWith({
+      startLineNumber: 1,
+      startColumn: 1,
+      endLineNumber: 3,
+      endColumn: 50,
+    });
+  });
+
+  it('should select a template and update the form value', () => {
+    const mockTemplates = [
+      { templateCode: 'Template 1' },
+      { templateCode: 'Template 2' },
+      { templateCode: 'Template 3' },
+    ];
+
+    component.xmlTemplatesById = mockTemplates;
+    component.reactiveForm = formBuilder.group({
+      code: [''],
+    });
+
+    const index = 1;
+    component.selectTemplate(index);
+
+    expect(component.selectedTemplateIndex).toBe(index);
+    expect(component.selectedTemplate).toBe(mockTemplates[index].templateCode);
+    expect(component.reactiveForm.get('code')?.value).toBe(
+      component.selectedTemplate
+    );
+  });
+
+  it('should log an error for an invalid index', () => {
+    spyOn(console, 'error');
+    component.xmlTemplatesById = [{ templateCode: 'Template 1' }];
+    component.selectTemplate(-1);
+
+    expect(console.error).toHaveBeenCalledWith('Invalid index', -1);
+  });
+
+  it('should toggle isReadOnly and enableEditing', () => {
+    component.isReadOnly = true;
+    component.enableEditing = false;
+    component.isEditableTemplate();
+    expect(component.isReadOnly).toBe(false);
+    expect(component.enableEditing).toBe(true);
+  });
+
+  it('should open compare dialog with correct configuration', () => {
+    const mockTemplateRef = {} as TemplateRef<any>;
+    spyOn(component['modalService'], 'show').and.callThrough();
+
+    component.openCompareDialog(mockTemplateRef);
+
+    expect(component['modalService'].show).toHaveBeenCalledWith(
+      mockTemplateRef,
+      {
+        backdrop: true,
+        ignoreBackdropClick: true,
+        keyboard: false,
+      }
     );
   });
 });
