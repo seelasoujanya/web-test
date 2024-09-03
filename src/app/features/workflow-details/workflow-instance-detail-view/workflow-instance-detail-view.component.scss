@@ -1,10 +1,8 @@
 @import 'src/styles/button';
-
 .workflow-details-container {
   display: flex;
   flex-direction: column;
   gap: 15px;
-
   .details-label {
     padding-inline: 15px;
     padding-top: 15px;
@@ -16,7 +14,6 @@
     position: sticky;
     top: 64px;
     z-index: 10;
-
     .label-left {
       height: 30px;
       display: flex;
@@ -27,33 +24,27 @@
       line-height: 30px;
       color: #000000;
       text-transform: capitalize;
-
       .navigate-back-btn {
         border: none;
         background: #f3f3f3;
-
         &:hover {
           cursor: pointer;
         }
       }
     }
   }
-
   .cards {
     display: flex;
     width: 100%;
     justify-content: space-between;
     margin-bottom: 20px;
-
     .log-main-container {
       width: 50%;
     }
-
     .artifacts-container {
       width: 50%;
     }
   }
-
   .detail-container {
     margin-inline: 15px;
     background: #fff;
@@ -62,7 +53,6 @@
     -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
     box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
-
     p {
       font-size: 20px;
       font-weight: 400;
@@ -70,17 +60,13 @@
       line-height: 32px;
       color: #333;
     }
-
     .tables-main-container {
       display: flex;
       gap: 40px;
-
       .table-container {
         width: 50%;
-
         table {
           width: 100%;
-
           .detail-field-key {
             font-size: 14px;
             font-weight: bolder;
@@ -88,7 +74,6 @@
             line-height: 17px;
             letter-spacing: 0.3px;
           }
-
           .detail-field-value {
             font-size: 14px;
             font-weight: 400;
@@ -96,22 +81,18 @@
             line-height: 17px;
             letter-spacing: 0.3px;
           }
-
           tr {
             border-bottom: 1px solid #e0e0e0;
-
             td {
               padding-block: 10px;
             }
           }
-
           tr:last-child {
             border-bottom: none;
           }
         }
       }
     }
-
     .log-container {
       height: 50vh;
       overflow: scroll;
@@ -119,12 +100,10 @@
       border: 1px solid #e0e0e0;
       background: #f3f3f3;
       border-radius: 5px;
-
       pre {
         height: 100%;
       }
     }
-
     .file-item {
       display: flex;
       justify-content: space-between;
@@ -132,11 +111,9 @@
       margin-block: 10px;
       padding-block: 5px;
       border-bottom: 1px solid #e0e0e0;
-
       &:last-child {
         border-bottom: none;
       }
-
       div:first-child {
         display: flex;
         gap: 10px;
@@ -144,4 +121,15 @@
       }
     }
   }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

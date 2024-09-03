@@ -1,5 +1,4 @@
 @import 'src/styles/button';
-
 .main-container {
   width: 100%;
   margin-top: 80px;
@@ -8,7 +7,6 @@
   flex-direction: column;
   background-color: #ffffff;
   gap: 24px;
-  margin-top: 60px;
   .label {
     position: sticky;
     z-index: 10;
@@ -135,7 +133,6 @@
           border: 1px solid #d0d5dd;
           border-radius: 4px;
         }
-
         textarea {
           height: auto;
           width: 100%;
@@ -165,7 +162,6 @@
       align-items: flex-end;
       padding-inline: 20px;
       margin-bottom: 20px;
-
       .confirm-btn {
         width: 98px;
         height: 34px;
@@ -205,4 +201,15 @@
   height: 70px;
   display: flex;
   justify-content: flex-end;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

@@ -590,7 +590,7 @@ describe('ApiService', () => {
     });
 
     const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/workflow/properties/${key}`
+      `${service['apiUrl']}/property/${key}`
     );
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
@@ -617,7 +617,7 @@ describe('ApiService', () => {
     });
 
     const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/workflow/properties/${id}`
+      `${service['apiUrl']}/property/${id}`
     );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(dto);

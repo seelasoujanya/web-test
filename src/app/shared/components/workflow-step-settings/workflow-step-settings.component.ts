@@ -5,7 +5,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { IStepConfiguration } from 'src/app/core/models/step-configuration.model';
 import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { IWorkflowStepField } from './field.model';
-import { stepFields } from './constants';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 
