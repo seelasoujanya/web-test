@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FormsModule } from '@angular/forms';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-xml-step-settings',
   standalone: true,
-  imports: [CommonModule, NgSelectModule, FormsModule],
+  imports: [CommonModule, NgSelectModule, FormsModule, TooltipModule],
   templateUrl: './xml-step-settings.component.html',
   styleUrl: './xml-step-settings.component.scss',
 })

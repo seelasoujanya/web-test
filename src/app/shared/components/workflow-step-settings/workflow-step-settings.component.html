@@ -1,6 +1,6 @@
 <div class="main-container" *ngIf="fields.length > 0">
   <div class="header">
-    <p>{{ title }}</p>
+    <p>{{ workflowStep?.type }} Settings</p>
     <div class="general-setting-label">
       <div class="edit-icon">
         <img
@@ -27,13 +27,20 @@
                 <img src="/assets/icons/checkbox.svg" alt="" />
               </div>
 
-              <span class="checkbox__label" style="font-size: 15px">{{
-                field.label
-              }}</span>
+              <span
+                class="checkbox__label"
+                style="font-size: 15px"
+                [tooltip]="field.description"
+                >{{ field.label }}</span
+              >
             </label>
           </div>
 
-          <span *ngIf="field.type !== 'checkbox'">{{ field.label }}</span>
+          <span
+            *ngIf="field.type !== 'checkbox'"
+            [tooltip]="field.description"
+            >{{ field.label }}</span
+          >
           <input
             *ngSwitchCase="'input'"
             type="text"

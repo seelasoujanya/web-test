@@ -7,11 +7,13 @@ import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { IWorkflowStepField } from './field.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { stepFields } from './constants';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-workflow-step-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, NgSelectModule, TooltipModule],
   templateUrl: './workflow-step-settings.component.html',
   styleUrl: './workflow-step-settings.component.scss',
 })
@@ -36,6 +38,17 @@ export class WorkflowStepSettingsComponent {
     private apiService: ApiService,
     private spinnerService: SpinnerService
   ) {}
+
+  ngOnInit(): void {
+    if (this.workflowStep) {
+      const stepField = stepFields.find(
+        ({ stepType }) => stepType === this.workflowStep?.type
+      );
+      if (stepField) {
+        this.fields = stepField?.fields;
+      }
+    }
+  }
 
   toggleEditing(): void {
     this.enableEditing = !this.enableEditing;

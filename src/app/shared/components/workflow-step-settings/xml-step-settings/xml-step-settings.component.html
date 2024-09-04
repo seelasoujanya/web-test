@@ -13,7 +13,12 @@
 
   <div class="fields-container">
     <div class="field-item">
-      <span>Template</span>
+      <span
+        [tooltip]="
+          'Select the Template From the Templates Added To This Workflow'
+        "
+        >Template</span
+      >
 
       <ng-select
         [items]="templates"
