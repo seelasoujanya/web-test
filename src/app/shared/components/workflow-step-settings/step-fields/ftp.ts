@@ -7,6 +7,7 @@ export const ftpFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Host',
     values: [],
+    description: 'Add Host to Connect To Sftp',
   },
   {
     key: 'sftp_username',
@@ -14,6 +15,7 @@ export const ftpFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Username',
     values: [],
+    description: 'Add Username to Connect To Sftp',
   },
   {
     key: 'sftp_password',
@@ -21,6 +23,7 @@ export const ftpFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Password',
     values: [],
+    description: 'Password to Connect To Sftp',
   },
   {
     key: 'sftp_port',
@@ -28,6 +31,7 @@ export const ftpFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Port',
     values: [],
+    description: 'Add Port On Which Sftp Is Running',
   },
   {
     key: 'sftp_remote_path',
@@ -35,5 +39,6 @@ export const ftpFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Remote Path',
     values: [],
+    description: 'Add Remote Path To Which We Need To Copy Files/Folders',
   },
 ];

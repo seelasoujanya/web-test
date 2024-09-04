@@ -7,6 +7,7 @@ export const gcsBucketFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Enter GCS bucket name',
     values: [],
+    description: 'Enter GCS bucket name',
   },
   {
     key: 'gcs_service_account',
@@ -14,5 +15,6 @@ export const gcsBucketFields: IWorkflowStepField[] = [
     type: 'textarea',
     placeholder: 'Add JSON service account',
     values: [],
+    description: 'Add JSON service account',
   },
 ];

@@ -7,6 +7,7 @@ export const ddexFields: IWorkflowStepField[] = [
     type: 'checkbox',
     placeholder: 'Create Album Streaming Deals',
     values: [],
+    description: 'Include Album Streaming Deals',
   },
   {
     key: 'take_down_deals',
@@ -14,6 +15,7 @@ export const ddexFields: IWorkflowStepField[] = [
     type: 'checkbox',
     placeholder: 'Create Take Down Deals',
     values: [],
+    description: 'Include Take Down Deals',
   },
   {
     key: 'productAssetOption',
@@ -22,6 +24,7 @@ export const ddexFields: IWorkflowStepField[] = [
     placeholder: 'Transcode Type to be used for Product Assets',
     values: ['NONE', 'JPG', 'TIFF'],
     defaultValue: 'NONE',
+    description: 'Transcode Type to be used for Product Assets',
   },
   {
     key: 'trackAssetOption',
@@ -30,6 +33,7 @@ export const ddexFields: IWorkflowStepField[] = [
     placeholder: 'Transcode Type to be used for Audio',
     values: ['NONE', 'MP3', 'FLAC', 'STANDARD_DEFINITION'],
     defaultValue: 'NONE',
+    description: 'Transcode Type to be used for Audio',
   },
   {
     key: 'releaseType',
@@ -38,6 +42,7 @@ export const ddexFields: IWorkflowStepField[] = [
     placeholder: 'Folder structure will be created based on Release Type',
     values: ['STANDARD', 'BATCHED', 'RELEASE_BY_RELEASE'],
     defaultValue: 'STANDARD',
+    description: 'Folder structure will be created based on Release Type',
   },
   {
     key: 'attempts',
@@ -45,6 +50,7 @@ export const ddexFields: IWorkflowStepField[] = [
     type: 'input',
     placeholder: 'Number of attempts to request Download Links',
     values: [],
+    description: 'Number of attempts to request Download Links',
   },
   {
     key: 'replaceWithDownloadLinks',
@@ -59,5 +65,7 @@ export const ddexFields: IWorkflowStepField[] = [
       'ALL_ASSETS',
     ],
     defaultValue: 'NONE',
+    description:
+      'The Selected Type of Asssets Will Be Replaced with Download Links,If Not Present The DownLoad Links Are Generated',
   },
 ];
