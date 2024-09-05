@@ -6,6 +6,7 @@ export const WORKFLOW_STATUS = [
 export const EMAIL_STATUS = [
   { label: 'Success', value: 'SUCCESS' },
   { label: 'Failure', value: 'FAILURE' },
+  { label: 'Both', value: 'BOTH' },
 ];
 
 export const PRIORITY = [

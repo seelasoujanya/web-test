@@ -317,3 +317,18 @@ textarea:focus {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+::ng-deep .tooltip-inner {
+  background-color: transparent !important;
+  color: red !important;
+  border: none !important;
+  font-size: 12px !important;
+}
+
+::ng-deep .tooltip-arrow {
+  display: none !important;
+}

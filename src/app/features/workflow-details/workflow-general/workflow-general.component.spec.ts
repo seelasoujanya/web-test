@@ -72,7 +72,7 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.openConfirmModal).toHaveBeenCalledWith(
       {
         title: 'Delete Email',
-        description: `Are you sure you want to delete Email:${email} ?`,
+        description: `Are you sure you want to delete Email:${email}?`,
         btn1Name: 'CONFIRM',
         btn2Name: 'CANCEL',
       },
