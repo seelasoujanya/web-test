@@ -14,13 +14,30 @@
     flex-direction: row;
     position: sticky;
     z-index: 10;
-    top: 120px;
+    top: 132px;
     align-items: center;
+    justify-content: space-between;
+    .left-buttons {
+      .navigate-btn {
+        background: none;
+        border: none;
+        color: #c4c4c4;
+        padding-inline: 20px;
+        &:hover {
+          cursor: pointer;
+          color: #fff;
+        }
+      }
+    }
     .navigate-btn {
       background: none;
       border: none;
       color: #c4c4c4;
       padding-inline: 20px;
+      .pause-icon {
+        margin-bottom: 4px;
+        margin-right: 5px;
+      }
       &:hover {
         cursor: pointer;
         color: #fff;
@@ -53,6 +70,9 @@
       background-color: white;
     }
     .table-header-cell {
+      position: sticky;
+      z-index: 10;
+      top: 180px;
       height: 36px;
       background-color: #f9fafb;
       border-width: 0px 0px 1px 0px;

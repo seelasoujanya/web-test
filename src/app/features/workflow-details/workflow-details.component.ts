@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { IPage } from 'src/app/core/models/page.model';
@@ -26,6 +26,7 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
     WorkflowHistoryComponent,
     WorkflowGeneralComponent,
     WorkflowSettingsComponent,
+    RouterModule,
   ],
   templateUrl: './workflow-details.component.html',
   styleUrl: './workflow-details.component.scss',

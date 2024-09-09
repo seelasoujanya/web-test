@@ -68,7 +68,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
+      paeSize: 20,
       sortBy: '',
       order: 'asc',
     };

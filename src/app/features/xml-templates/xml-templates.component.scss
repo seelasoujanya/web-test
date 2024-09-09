@@ -33,6 +33,9 @@
         background-color: white;
       }
       .table-header-cell {
+        position: sticky;
+        z-index: 10;
+        top: 132px;
         height: 36px;
         background-color: #f9fafb;
         border-width: 0px 0px 1px 0px;

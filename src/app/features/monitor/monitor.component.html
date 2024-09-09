@@ -6,17 +6,25 @@
   </div>
 
   <div class="navigate-btn-container">
-    <button
-      class="navigate-btn"
-      (click)="updateParams('RUNNING')"
-      [class.active-btn]="pageParams.status === 'RUNNING'">
-      Processing - {{ runningInstancesCount }}
-    </button>
-    <button
-      class="navigate-btn"
-      (click)="updateParams('PENDING')"
-      [class.active-btn]="pageParams.status === 'PENDING'">
-      Pending - {{ pendingInstancesCount }}
+    <div class="left-buttons">
+      <button
+        class="navigate-btn"
+        (click)="updateParams('RUNNING')"
+        [class.active-btn]="pageParams.status === 'RUNNING'">
+        Processing - {{ runningInstancesCount }}
+      </button>
+      <button
+        class="navigate-btn"
+        (click)="updateParams('PENDING')"
+        [class.active-btn]="pageParams.status === 'PENDING'">
+        Pending - {{ pendingInstancesCount }}
+      </button>
+    </div>
+    <button class="navigate-btn" type="button" (click)="pauseInstances()">
+      <img
+        src="assets/icons/pause-logo.svg"
+        class="pause-icon"
+        alt="pause Icon" />PAUSE
     </button>
   </div>
 

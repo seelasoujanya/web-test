@@ -63,7 +63,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
-        console.log('data:', data);
+
         this.workflowsData = data.content;
         this.spinnerService.hide();
         this.cdRef.markForCheck();

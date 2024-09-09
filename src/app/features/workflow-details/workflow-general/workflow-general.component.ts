@@ -144,6 +144,11 @@ export class WorkflowGeneralComponent implements OnInit {
     });
   }
 
+  addNewEmail(emailTemplate: TemplateRef<any>) {
+    this.reset();
+    this.openAddEmailDialog(emailTemplate);
+  }
+
   addEmail() {
     this.bsModalRef.hide();
     let data;
@@ -160,7 +165,7 @@ export class WorkflowGeneralComponent implements OnInit {
       };
     }
     this.workflowEmailEvent.emit(data);
-    this.reset();
+    // this.reset();
   }
 
   openAddEmailDialog(emailTemplate: TemplateRef<any>) {
@@ -207,8 +212,8 @@ export class WorkflowGeneralComponent implements OnInit {
       return true;
     }
     if (
-      !this.newEmailData.email ||
-      !this.newEmailData.name ||
+      !this.newEmailData.email?.trim() ||
+      !this.newEmailData.name?.trim() ||
       !this.newEmailData.status
     ) {
       return true;

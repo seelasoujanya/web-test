@@ -36,8 +36,7 @@ export class AuthorizationService implements OnInit {
 
   async getCsrfToken(): Promise<string> {
     await this.getAuthenticatedUser();
-
-    return this.userData.principal.idToken.tokenValue;
+    return this.userData.principal.tokenValue;
   }
 
   getUserData(): any {
