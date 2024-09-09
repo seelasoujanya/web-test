@@ -7,7 +7,7 @@
       <th
         *ngFor="let heading of headings"
         class="table-header-cell"
-        [style.top]="isWorkflow ? '140px' : '160px'">
+        [style.top]="isWorkflow ? '132px' : '160px'">
         <div class="table-header-content">
           <ng-container *ngIf="isWorkflow">
             {{ heading }}
@@ -61,8 +61,11 @@
           </div>
         </td>
         <td class="table-cell">
-          {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-          <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
+          <ng-container *ngIf="workflow.created; else noDate">
+            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
+            <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
+          </ng-container>
+          <ng-template #noDate> NA </ng-template>
         </td>
         <td class="table-cell">
           <div class="status-content">
@@ -90,15 +93,22 @@
 
             <ng-template #failureLogo>
               <div class="inactive-class">
-                <img
-                  src="assets/icons/failure-logo.svg"
-                  alt="Active Icon"
-                  class="failure-icon" />
-                <p>
-                  {{
-                    workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
-                  }}
-                </p>
+                <ng-container
+                  *ngIf="workflow.status === null || workflow.status === ''">
+                  <p>NA</p>
+                </ng-container>
+                <ng-container
+                  *ngIf="workflow.status !== null && workflow.status !== ''">
+                  <img
+                    src="assets/icons/failure-logo.svg"
+                    alt="Inactive Icon"
+                    class="failure-icon" />
+                  <p>
+                    {{
+                      workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
+                    }}
+                  </p>
+                </ng-container>
               </div>
             </ng-template>
           </div>

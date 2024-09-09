@@ -75,7 +75,12 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   }
 
   public backToWorkflows(): void {
-    this.router.navigate(['/workflows']);
+    let workflowId = this.workflowsInstance?.workflow?.id;
+    if (workflowId) {
+      this.router.navigate(['workflows', workflowId]);
+    } else {
+      this.router.navigate(['/workflows']);
+    }
   }
 
   public selectTab(tab: string) {

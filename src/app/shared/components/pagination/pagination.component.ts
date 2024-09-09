@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
@@ -24,8 +17,6 @@ export class PaginationComponent {
   public totalPages: any;
   public pageItemsLimit = 5;
 
-  @ViewChild('pageInput') pageInput!: ElementRef;
-
   @Input()
   public set page(page: any) {
     this.spinnerService.hide();
@@ -38,19 +29,15 @@ export class PaginationComponent {
           switch (this.eventType) {
             case 'f':
               this.pageStart = 1;
-              this.pageInput.nativeElement.value = '';
               break;
             case 'l':
               this.pageStart = this.totalPages - limit;
-              this.pageInput.nativeElement.value = '';
               break;
             case 'n':
-              this.pageInput.nativeElement.value = '';
               if (this.pageStart + limit < this.currentPage)
                 this.pageStart = this.pageStart + 1;
               break;
             case 'p':
-              this.pageInput.nativeElement.value = '';
               if (this.pageStart > this.currentPage)
                 this.pageStart = this.pageStart - 1;
               break;
@@ -90,14 +77,5 @@ export class PaginationComponent {
       this.paginationEvent.emit(pageNumber);
       this.spinnerService.show();
     }
-  }
-
-  gotoInputPage(): void {
-    try {
-      const pageIn = parseInt(this.pageInput.nativeElement.value);
-      if (pageIn && pageIn <= this.totalPages && pageIn > 0) {
-        this.gotoPage(pageIn, 'i');
-      } else this.pageInput.nativeElement.value = '';
-    } catch (e) {}
   }
 }

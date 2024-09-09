@@ -1,27 +1,32 @@
 <div class="workflow-container">
   <div class="workflows-section">
-    <div class="workflow-header">
-      <div class="workflows-label">
-        <p id="track-assets-copy">Workflows</p>
-      </div>
-      <div class="workflow-header-right">
-        <div>
-          <input
-            type="text"
-            class="search-field"
-            name="searchInput"
-            placeholder="Search in Workflow"
-            [(ngModel)]="workflowName"
-            required />
+    <div class="heading-section">
+      <div class="workflow-header">
+        <div class="workflows-label">
+          <p id="track-assets-copy">Workflows</p>
         </div>
-        <div class="search-button">
-          <button class="btn btn--red" type="button" (click)="searchWorkflow()">
-            <img
-              src="/assets/icons/search.svg"
-              class="search-icon"
-              alt="Search Icon" />
-            Search
-          </button>
+        <div class="workflow-header-right">
+          <div>
+            <input
+              type="text"
+              class="search-field"
+              name="searchInput"
+              placeholder="Search in Workflow"
+              [(ngModel)]="workflowName"
+              required />
+          </div>
+          <div class="search-button">
+            <button
+              class="btn btn--red"
+              type="button"
+              (click)="searchWorkflow()">
+              <img
+                src="/assets/icons/search.svg"
+                class="search-icon"
+                alt="Search Icon" />
+              Search
+            </button>
+          </div>
         </div>
       </div>
     </div>

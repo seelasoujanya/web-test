@@ -1,55 +1,47 @@
 @import 'src/styles/button';
-
 .workflow-container {
-  padding: 20px 15px 25px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 24px;
-  background-color: white;
-
+  background: #fff;
   .workflows-section {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 0px;
-
-    .workflow-header {
-      padding-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .heading-section {
       position: sticky;
-      top: 80px;
+      top: 64px;
       z-index: 10;
-      background: #fff;
-
-      .workflows-label {
-        width: 134px;
-        height: 32px;
-        font-weight: 600;
-        font-size: 26px;
-        line-height: 32px;
-        color: #000000;
-      }
-
-      .workflow-header-right {
-        height: 40px;
+      .workflow-header {
         display: flex;
-        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        gap: 8px;
-
-        .search-field {
+        height: 69px;
+        padding-inline: 20px;
+        background: #fff;
+        .workflows-label {
+          width: 134px;
+          height: 32px;
+          font-weight: 600;
+          font-size: 26px;
+          line-height: 32px;
+          color: #000000;
+        }
+        .workflow-header-right {
           height: 40px;
-          padding: 9px 256px 9px 16px;
-          background-color: #ffffff;
-          border: 1px solid #c5c5c5;
-          font-size: 14px;
-          line-height: 22px;
-          font-weight: 400;
-          color: #666666;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 8px;
+          .search-field {
+            height: 40px;
+            padding: 9px 256px 9px 16px;
+            background-color: #ffffff;
+            border: 1px solid #c5c5c5;
+            font-size: 14px;
+            line-height: 22px;
+            font-weight: 400;
+            color: #666666;
+          }
         }
       }
+    }
+    .workflows-table {
+      padding-inline: 20px;
     }
     .workflow-contents {
       height: 64px;
@@ -97,6 +89,7 @@
 }
 
 .page-view {
+  padding-right: 5px;
   margin-top: 20px;
   width: 100%;
   height: 70px;
