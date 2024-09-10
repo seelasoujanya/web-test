@@ -183,7 +183,8 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        [(ngModel)]="newEmailData.status">
+        [(ngModel)]="newEmailData.status"
+        [appendTo]="'scrollable-table__body'">
       </ng-select>
     </div>
   </div>

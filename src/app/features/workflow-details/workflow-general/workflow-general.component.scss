@@ -183,6 +183,7 @@ textarea:focus {
   }
   .ng-select {
     .ng-dropdown-panel {
+      opacity: 1 !important;
       z-index: 9 !important;
     }
   }
@@ -270,7 +271,6 @@ textarea:focus {
     }
     .form-details {
       height: 100%;
-      overflow-y: auto;
       font-family: 'Graphik', sans-serif;
       font-style: normal;
       font-weight: 400;
