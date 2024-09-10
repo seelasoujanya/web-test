@@ -63,6 +63,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
+
         this.workflowsData = data.content;
         this.spinnerService.hide();
         this.cdRef.markForCheck();
@@ -100,9 +101,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   getDefaultPageParams() {
     return {
       page: 0,
-      pageSize: 10,
+      pageSize: 20,
       sortBy: '',
-      order: 'asc',
+      order: 'desc',
       search: '',
     };
   }

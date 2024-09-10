@@ -1,5 +1,4 @@
 @import 'src/styles/variables';
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -18,7 +17,6 @@
   border-radius: 4px;
   outline: none;
   cursor: pointer;
-
   img {
     margin-right: 10px;
   }
@@ -26,7 +24,6 @@
 
 .btn--red {
   background-color: #ca0a3d;
-
   &:hover {
     background-color: #f87598;
   }
@@ -34,8 +31,12 @@
 
 .btn--black {
   background-color: #262626;
-
   &:hover {
     background-color: #8c8c8c;
   }
+}
+
+.btn--disabled {
+  pointer-events: none;
+  opacity: 0.5;
 }

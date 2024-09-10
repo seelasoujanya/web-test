@@ -76,7 +76,7 @@
         <button
           class="btn btn--red"
           type="button"
-          (click)="openAddEmailDialog(addEmailForm)">
+          (click)="addNewEmail(addEmailForm)">
           <img
             src="/assets/icons/create-logo.svg"
             class="create-icon"
@@ -95,6 +95,15 @@
           <tr>
             <th *ngFor="let heading of headings" class="table-header-cell">
               {{ heading }}
+              <img
+                *ngIf="heading !== 'S.NO' && heading !== 'ACTIONS'"
+                src="assets/icons/down-arrow-logo.svg"
+                alt="{{ heading }} Icon"
+                class="heading-icon"
+                (click)="sortColumn(heading)"
+                [class.rotate]="
+                  currentSort === 'desc' && selectedHeading === heading
+                " />
             </th>
           </tr>
         </thead>
@@ -178,10 +187,21 @@
       </ng-select>
     </div>
   </div>
-  <div class="buttons">
+  <div class="buttons" style="position: relative">
     <button class="btn btn--black" (click)="cancelChangesForEmail()">
       CANCEL
     </button>
-    <button class="btn btn--red" (click)="addEmail()">CONFIRM</button>
+    <div
+      class="tooltip-wrapper"
+      [tooltip]="isFieldsEmpty() ? 'All Fields Are Required' : ''"
+      [tooltipPlacement]="'top'"
+      [tooltipTrigger]="'hover'">
+      <button
+        class="btn btn--red"
+        (click)="addEmail()"
+        [disabled]="isFieldsEmpty()">
+        CONFIRM
+      </button>
+    </div>
   </div>
 </ng-template>

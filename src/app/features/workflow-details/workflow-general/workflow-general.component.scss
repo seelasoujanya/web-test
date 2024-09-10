@@ -93,7 +93,8 @@
     }
   }
   .email-table {
-    overflow-y: scroll;
+    height: 300px;
+    overflow-y: auto;
     .table-container {
       width: 100%;
       border-radius: 8px;
@@ -104,6 +105,9 @@
         background-color: white;
       }
       .table-header-cell {
+        z-index: 10;
+        position: sticky;
+        top: -1px;
         height: 36px;
         background-color: #f9fafb;
         border-width: 0px 0px 1px 0px;
@@ -316,4 +320,19 @@ textarea:focus {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+::ng-deep .tooltip-inner {
+  background-color: transparent !important;
+  color: red !important;
+  border: none !important;
+  font-size: 12px !important;
+}
+
+::ng-deep .tooltip-arrow {
+  display: none !important;
 }

@@ -12,11 +12,18 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-workflow-general',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgSelectModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgSelectModule,
+    ReactiveFormsModule,
+    TooltipModule,
+  ],
   templateUrl: './workflow-general.component.html',
   styleUrl: './workflow-general.component.scss',
   providers: [BsModalService],
@@ -41,6 +48,16 @@ export class WorkflowGeneralComponent implements OnInit {
   @Output()
   workflowEmailEvent = new EventEmitter<any>();
 
+  @Output()
+  public getSortParam = new EventEmitter<any>();
+
+  headingEnum = {
+    'EMAIL ID': 'email',
+    NAME: 'name',
+    'EMAIL TYPE': 'status',
+    ACTIONS: '',
+  };
+
   newEmailData = {
     name: '',
     email: '',
@@ -54,6 +71,10 @@ export class WorkflowGeneralComponent implements OnInit {
   isUpdate: boolean = false;
 
   headings: string[] = ['S.NO', 'EMAIL ID', 'NAME', 'EMAIL TYPE', 'ACTIONS'];
+
+  currentSort: 'asc' | 'desc' = 'asc';
+
+  selectedHeading: string | undefined;
 
   constructor(
     private modalService: BsModalService,
@@ -93,7 +114,7 @@ export class WorkflowGeneralComponent implements OnInit {
     this.emailId = id;
     const modalData = {
       title: 'Delete Email',
-      description: `Are you sure you want to delete Email:${email} ?`,
+      description: `Are you sure you want to delete Email:${email}?`,
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
     };
@@ -123,6 +144,11 @@ export class WorkflowGeneralComponent implements OnInit {
     });
   }
 
+  addNewEmail(emailTemplate: TemplateRef<any>) {
+    this.reset();
+    this.openAddEmailDialog(emailTemplate);
+  }
+
   addEmail() {
     this.bsModalRef.hide();
     let data;
@@ -139,7 +165,7 @@ export class WorkflowGeneralComponent implements OnInit {
       };
     }
     this.workflowEmailEvent.emit(data);
-    this.reset();
+    // this.reset();
   }
 
   openAddEmailDialog(emailTemplate: TemplateRef<any>) {
@@ -179,5 +205,56 @@ export class WorkflowGeneralComponent implements OnInit {
 
   get getBsModalRef(): BsModalRef {
     return this.bsModalRef;
+  }
+
+  isFieldsEmpty(): boolean {
+    if (!this.newEmailData) {
+      return true;
+    }
+    if (
+      !this.newEmailData.email?.trim() ||
+      !this.newEmailData.name?.trim() ||
+      !this.newEmailData.status
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  sortColumn(heading: string) {
+    this.selectedHeading = heading;
+    this.currentSort = this.currentSort === 'asc' ? 'desc' : 'asc';
+    this.getSortParam.emit({
+      sortBy: this.headingEnum[heading as keyof typeof this.headingEnum],
+      order: this.currentSort,
+    });
+    this.sortData();
+  }
+
+  sortData() {
+    if (!this.selectedHeading) return;
+
+    this.emails.sort((a, b) => {
+      const valueA = (
+        a[
+          this.headingEnum[
+            this.selectedHeading as keyof typeof this.headingEnum
+          ]
+        ] ?? ''
+      ).toLowerCase();
+      const valueB = (
+        b[
+          this.headingEnum[
+            this.selectedHeading as keyof typeof this.headingEnum
+          ]
+        ] ?? ''
+      ).toLowerCase();
+
+      if (this.currentSort === 'asc') {
+        return valueA.localeCompare(valueB);
+      } else {
+        return valueB.localeCompare(valueA);
+      }
+    });
   }
 }

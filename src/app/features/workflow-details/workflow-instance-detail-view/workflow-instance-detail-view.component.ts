@@ -68,14 +68,19 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
+      paeSize: 20,
       sortBy: '',
       order: 'asc',
     };
   }
 
   public backToWorkflows(): void {
-    this.router.navigate(['/workflows']);
+    let workflowId = this.workflowsInstance?.workflow?.id;
+    if (workflowId) {
+      this.router.navigate(['workflows', workflowId]);
+    } else {
+      this.router.navigate(['/workflows']);
+    }
   }
 
   public selectTab(tab: string) {
