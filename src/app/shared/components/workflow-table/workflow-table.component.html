@@ -1,151 +1,70 @@
-<table class="table-container">
-  <caption class="table-caption visually-hidden">
-    This Table shows The List of Workflows and viewInstances
-  </caption>
-  <thead class="table-head">
-    <tr>
-      <th
-        *ngFor="let heading of headings"
-        class="table-header-cell"
-        [style.top]="isWorkflow ? '132px' : '160px'">
-        <div class="table-header-content">
-          <ng-container *ngIf="isWorkflow">
-            {{ heading }}
-            <img
-              *ngIf="heading !== 'Actions' && heading !== 'Last Run Status'"
-              src="assets/icons/down-arrow-logo.svg"
-              alt="{{ heading }} Icon"
-              class="heading-icon"
-              (click)="sortColumn(heading)"
-              [class.rotate]="
-                currentSort === 'desc' && selectedHeading === heading
-              " />
-          </ng-container>
-          <ng-container *ngIf="!isWorkflow">
-            {{ heading }}
-            <img
-              *ngIf="heading !== 'Identifier'"
-              src="assets/icons/down-arrow-logo.svg"
-              alt="{{ heading }} Icon"
-              class="heading-icon"
-              (click)="sortColumn(heading)"
-              [class.rotate]="
-                currentSort === 'desc' && selectedHeading === heading
-              " />
-          </ng-container>
-        </div>
-      </th>
-    </tr>
-  </thead>
-  <tbody class="scrollable-table__body">
-    <ng-container *ngIf="isWorkflow">
-      <tr
-        *ngFor="let workflow of workflows; let i = index"
-        (click)="viewInstances(workflow.id, workflow.name)"
-        [ngClass]="{ 'first-child-padding': i === 0 }">
-        <td class="table-cell">{{ workflow.name }}</td>
-        <td class="table-cell">
-          <div class="status-content">
-            <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+<div class="table">
+  <table class="table-container">
+    <caption class="table-caption visually-hidden">
+      This Table shows The List of Workflows and viewInstances
+    </caption>
+    <thead class="table-head">
+      <tr>
+        <th *ngFor="let heading of headings" class="table-header-cell">
+          <div class="table-header-content">
+            <ng-container *ngIf="isWorkflow">
+              {{ heading }}
               <img
-                src="assets/icons/active-logo.svg"
-                alt="Active Icon"
-                class="active-status-icon" />
+                *ngIf="heading !== 'Actions' && heading !== 'Last Run Status'"
+                src="assets/icons/down-arrow-logo.svg"
+                alt="{{ heading }} Icon"
+                class="heading-icon"
+                (click)="sortColumn(heading)"
+                [class.rotate]="
+                  currentSort === 'desc' && selectedHeading === heading
+                " />
             </ng-container>
-            <ng-template #inactiveLogo>
+            <ng-container *ngIf="!isWorkflow">
+              {{ heading }}
               <img
-                src="assets/icons/inactive-logo.svg"
-                alt="Inactive Icon"
-                class="inactive-status-icon" />
-            </ng-template>
-          </div>
-        </td>
-        <td class="table-cell">
-          <ng-container *ngIf="workflow.created; else noDate">
-            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-            <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
-          </ng-container>
-          <ng-template #noDate> NA </ng-template>
-        </td>
-        <td class="table-cell">
-          <div class="status-content">
-            <ng-container
-              *ngIf="
-                ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
-                  workflow.status
-                );
-                else failureLogo
-              ">
-              <div class="active-class">
-                <img
-                  src="assets/icons/success-logo.svg"
-                  alt="Active Icon"
-                  class="success-icon" />
-                <p>
-                  {{
-                    workflow.status === 'COMPLETED'
-                      ? 'Success'
-                      : (workflow.status | titlecase)
-                  }}
-                </p>
-              </div>
+                *ngIf="heading !== 'Identifier'"
+                src="assets/icons/down-arrow-logo.svg"
+                alt="{{ heading }} Icon"
+                class="heading-icon"
+                (click)="sortColumn(heading)"
+                [class.rotate]="
+                  currentSort === 'desc' && selectedHeading === heading
+                " />
             </ng-container>
-
-            <ng-template #failureLogo>
-              <div class="inactive-class">
-                <ng-container
-                  *ngIf="workflow.status === null || workflow.status === ''">
-                  <p>NA</p>
-                </ng-container>
-                <ng-container
-                  *ngIf="workflow.status !== null && workflow.status !== ''">
-                  <img
-                    src="assets/icons/failure-logo.svg"
-                    alt="Inactive Icon"
-                    class="failure-icon" />
-                  <p>
-                    {{
-                      workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
-                    }}
-                  </p>
-                </ng-container>
-              </div>
-            </ng-template>
           </div>
-        </td>
-        <td class="table-cell">
-          <div class="action-content">
-            <img
-              [src]="
-                workflow.enabled
-                  ? 'assets/icons/pause-logo.svg'
-                  : 'assets/icons/resume-logo.svg'
-              "
-              alt="Pause Icon"
-              class="action-icon"
-              (click)="pauseWorkflow($event, workflow)" />
-          </div>
-        </td>
+        </th>
       </tr>
-    </ng-container>
-    <ng-container *ngIf="!isWorkflow">
-      <ng-container *ngFor="let workflow of workflows">
-        <tr (click)="viewInstanceDetails(workflow.id)">
+    </thead>
+    <tbody class="scrollable-table__body">
+      <ng-container *ngIf="isWorkflow">
+        <tr
+          *ngFor="let workflow of workflows; let i = index"
+          (click)="viewInstances(workflow.id, workflow.name)"
+          [ngClass]="{ 'first-child-padding': i === 0 }">
+          <td class="table-cell">{{ workflow.name }}</td>
           <td class="table-cell">
-            <div class="id-heading">
-              <span>{{ workflow.identifier }}</span>
+            <div class="status-content">
+              <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+                <img
+                  src="assets/icons/active-logo.svg"
+                  alt="Active Icon"
+                  class="active-status-icon" />
+              </ng-container>
+              <ng-template #inactiveLogo>
+                <img
+                  src="assets/icons/inactive-logo.svg"
+                  alt="Inactive Icon"
+                  class="inactive-status-icon" />
+              </ng-template>
             </div>
           </td>
           <td class="table-cell">
-            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-            <span class="time">{{ workflow.created | date: 'HH:mm:ss' }}</span>
+            <ng-container *ngIf="workflow.created; else noDate">
+              {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
+              <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
+            </ng-container>
+            <ng-template #noDate> NA </ng-template>
           </td>
-          <td class="table-cell">
-            {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-            <span class="time">{{ workflow.created | date: 'HH:mm:ss' }}</span>
-          </td>
-          <td class="table-cell">{{ workflow.duration | duration }}</td>
-          <td class="table-cell">NA</td>
           <td class="table-cell">
             <div class="status-content">
               <ng-container
@@ -172,41 +91,131 @@
 
               <ng-template #failureLogo>
                 <div class="inactive-class">
-                  <img
-                    src="assets/icons/failure-logo.svg"
-                    alt="Active Icon"
-                    class="failure-icon" />
-                  <p>
-                    {{
-                      workflow.status === 'TERMINATED' ? 'Terminated' : 'Error'
-                    }}
-                  </p>
+                  <ng-container
+                    *ngIf="workflow.status === null || workflow.status === ''">
+                    <p>NA</p>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="workflow.status !== null && workflow.status !== ''">
+                    <img
+                      src="assets/icons/failure-logo.svg"
+                      alt="Inactive Icon"
+                      class="failure-icon" />
+                    <p>
+                      {{
+                        workflow.status === 'TERMINATED'
+                          ? 'Terminated'
+                          : 'Error'
+                      }}
+                    </p>
+                  </ng-container>
                 </div>
               </ng-template>
             </div>
           </td>
           <td class="table-cell">
-            <ng-container [ngSwitch]="workflow.priority">
+            <div class="action-content">
               <img
-                *ngSwitchCase="'LOW'"
-                src="assets/icons/low.svg"
-                alt="low icon" />
-              <img
-                *ngSwitchCase="'MEDIUM'"
-                src="assets/icons/high.svg"
-                alt="high icon" />
-              <img
-                *ngSwitchCase="'HIGH'"
-                src="assets/icons/high.svg"
-                alt="high icon" />
-              <img
-                *ngSwitchDefault
-                src="assets/icons/default.svg"
-                alt="default" />
-            </ng-container>
+                [src]="
+                  workflow.enabled
+                    ? 'assets/icons/pause-logo.svg'
+                    : 'assets/icons/resume-logo.svg'
+                "
+                alt="Pause Icon"
+                class="action-icon"
+                (click)="pauseWorkflow($event, workflow)" />
+            </div>
           </td>
         </tr>
       </ng-container>
-    </ng-container>
-  </tbody>
-</table>
+      <ng-container *ngIf="!isWorkflow">
+        <ng-container *ngFor="let workflow of workflows">
+          <tr (click)="viewInstanceDetails(workflow.id)">
+            <td class="table-cell">
+              <div class="id-heading">
+                <span>{{ workflow.identifier }}</span>
+              </div>
+            </td>
+            <td class="table-cell">
+              {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
+              <span class="time">{{
+                workflow.created | date: 'HH:mm:ss'
+              }}</span>
+            </td>
+            <td class="table-cell">
+              {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
+              <span class="time">{{
+                workflow.created | date: 'HH:mm:ss'
+              }}</span>
+            </td>
+            <td class="table-cell">{{ workflow.duration | duration }}</td>
+            <td class="table-cell">
+              {{ getDisplayName(workflow.deliveryType) }}
+            </td>
+            <td class="table-cell">
+              <div class="status-content">
+                <ng-container
+                  *ngIf="
+                    ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
+                      workflow.status
+                    );
+                    else failureLogo
+                  ">
+                  <div class="active-class">
+                    <img
+                      src="assets/icons/success-logo.svg"
+                      alt="Active Icon"
+                      class="success-icon" />
+                    <p>
+                      {{
+                        workflow.status === 'COMPLETED'
+                          ? 'Success'
+                          : (workflow.status | titlecase)
+                      }}
+                    </p>
+                  </div>
+                </ng-container>
+
+                <ng-template #failureLogo>
+                  <div class="inactive-class">
+                    <img
+                      src="assets/icons/failure-logo.svg"
+                      alt="Active Icon"
+                      class="failure-icon" />
+                    <p>
+                      {{
+                        workflow.status === 'TERMINATED'
+                          ? 'Terminated'
+                          : 'Error'
+                      }}
+                    </p>
+                  </div>
+                </ng-template>
+              </div>
+            </td>
+            <td class="table-cell">
+              <ng-container [ngSwitch]="workflow.priority">
+                <img
+                  *ngSwitchCase="'LOW'"
+                  src="assets/icons/low.svg"
+                  alt="low icon" />
+                <img
+                  *ngSwitchCase="'MEDIUM'"
+                  src="assets/icons/high.svg"
+                  alt="high icon" />
+                <img
+                  *ngSwitchCase="'HIGH'"
+                  src="assets/icons/high.svg"
+                  alt="high icon" />
+                <img
+                  *ngSwitchDefault
+                  src="assets/icons/default.svg"
+                  alt="default" />
+              </ng-container>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+</div>

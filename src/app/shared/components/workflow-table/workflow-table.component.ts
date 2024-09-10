@@ -6,6 +6,15 @@ import {
   OnDestroy,
   Output,
 } from '@angular/core';
+import {
+  COVER_ART,
+  DATA_ONLY,
+  FULL_DELIVERY,
+  INSERT,
+  PACKSHOT,
+  SCREENGRAB,
+  TAKE_DOWN,
+} from 'src/app/core/utils/constants';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { Router, RouterOutlet } from '@angular/router';
@@ -150,5 +159,27 @@ export class WorkflowTableComponent implements OnDestroy {
       this.currentSort = 'asc';
     }
     this.getSortParam.emit({ sortBy: heading, order: this.currentSort });
+  }
+
+  getDisplayName(deliveryType: string): string {
+    console.log('deliveryType' + deliveryType);
+    switch (deliveryType) {
+      case DATA_ONLY:
+        return 'Data Only';
+      case PACKSHOT:
+        return 'Packshot';
+      case FULL_DELIVERY:
+        return 'Full Delivery';
+      case SCREENGRAB:
+        return 'Screengrab';
+      case COVER_ART:
+        return 'Cover Art';
+      case INSERT:
+        return 'Insert';
+      case TAKE_DOWN:
+        return 'Takedown';
+      default:
+        return 'None';
+    }
   }
 }

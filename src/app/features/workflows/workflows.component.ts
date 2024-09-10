@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -11,13 +12,20 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 @Component({
   selector: 'app-workflows',
   standalone: true,
-  imports: [WorkflowTableComponent, PaginationComponent, FormsModule],
+  imports: [
+    WorkflowTableComponent,
+    PaginationComponent,
+    FormsModule,
+    CommonModule,
+  ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
   providers: [ApiService],
 })
 export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
+
+  filteredWorkflows: Workflow[] = [];
 
   workflowName: string = '';
 
@@ -65,6 +73,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
         this.page = data;
 
         this.workflowsData = data.content;
+        this.filteredWorkflows = [...this.workflowsData];
+        this.noWorkflows = this.filteredWorkflows.length === 0;
         this.spinnerService.hide();
         this.cdRef.markForCheck();
       });
@@ -117,7 +127,17 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   searchWorkflow(): void {
-    this.pageParams.search = this.workflowName;
-    this.getPageItems(this.pageParams);
+    if (this.workflowName) {
+      this.filteredWorkflows = this.workflowsData.filter(workflow =>
+        workflow.name.toLowerCase().includes(this.workflowName.toLowerCase())
+      );
+    } else {
+      this.filteredWorkflows = [...this.workflowsData];
+    }
+    this.noWorkflows = this.filteredWorkflows.length === 0;
+    this.cdRef.detectChanges();
+  }
+  clearInput(): void {
+    this.workflowName = '';
   }
 }
