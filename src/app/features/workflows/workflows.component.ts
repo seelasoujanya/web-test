@@ -139,5 +139,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
   clearInput(): void {
     this.workflowName = '';
+    this.filteredWorkflows = [...this.workflowsData];
+    this.noWorkflows = this.filteredWorkflows.length === 0;
   }
 }

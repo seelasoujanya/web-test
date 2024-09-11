@@ -1,41 +1,44 @@
 @import 'src/styles/button';
 .main-container {
   width: 100%;
-  margin-top: 80px;
-  padding-inline: 15px;
+  // margin-top: 80px;
+  padding-inline: 20px;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  gap: 24px;
+  // gap: 24px;
   .label {
-    position: sticky;
-    z-index: 10;
-    top: 80px;
     display: flex;
     justify-content: space-between;
-    // height: 32px;
-    font-weight: 600;
-    font-size: 26px;
-    line-height: 32px;
-    color: #000000;
-    // height: 60px;
+    align-items: center;
+    height: 69px;
+    // padding-inline: 20px;
+    background: #fff;
+    .para {
+      // width: 134px;
+      height: 32px;
+      font-weight: 600;
+      font-size: 26px;
+      line-height: 32px;
+      color: #000000;
+    }
   }
   .templates-table {
-    overflow-y: scroll;
-    margin-bottom: 20px;
+    height: 75vh;
+    overflow-y: auto;
     .table-container {
       width: 100%;
       border-radius: 8px;
       background: #ffffff;
       border: 1px solid #f2f2f2;
       border-collapse: collapse;
-      table-head {
+      .table-head {
         background-color: white;
+        position: sticky;
+        top: -0.3px;
+        z-index: 10;
       }
       .table-header-cell {
-        position: sticky;
-        z-index: 10;
-        top: 132px;
         height: 36px;
         background-color: #f9fafb;
         border-width: 0px 0px 1px 0px;
