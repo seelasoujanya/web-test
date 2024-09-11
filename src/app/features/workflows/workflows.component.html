@@ -14,6 +14,13 @@
               placeholder="Search in Workflow"
               [(ngModel)]="workflowName"
               required />
+            <button
+              type="button"
+              *ngIf="workflowName"
+              class="clear-icon"
+              (click)="clearInput()">
+              <img src="assets/icons/close-circle.svg" alt="" />
+            </button>
           </div>
           <div class="search-button">
             <button
@@ -33,18 +40,19 @@
 
     <div class="workflows-table">
       <app-workflow-table
-        [workflows]="workflowsData"
+        [workflows]="filteredWorkflows"
         [headings]="headings"
         [isWorkflow]="true"
         (workflowDetailEvent)="viewInstances($event)"
         (workflowUpdateEvent)="pauseWorkflow($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
+      <div *ngIf="noWorkflows" class="no-workflows-message">
+        No Workflows Found
+      </div>
     </div>
-  </div>
-
-  <div class="page-view">
-    <app-pagination
-      [page]="page"
-      (paginationEvent)="onPage($event)"></app-pagination>
+    <div class="page-view" *ngIf="!noWorkflows">
+      <app-pagination [page]="page" (paginationEvent)="onPage($event)">
+      </app-pagination>
+    </div>
   </div>
 </div>

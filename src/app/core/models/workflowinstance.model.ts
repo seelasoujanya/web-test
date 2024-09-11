@@ -12,6 +12,7 @@ export interface WorkflowInstance {
   identifier: string;
   errorMessage: string | null;
   priority: Priority;
+  deliveryType: string;
   created: Date;
   modified: Date;
   workflow?: Workflow;

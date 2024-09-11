@@ -23,6 +23,7 @@
         }
         .workflow-header-right {
           height: 40px;
+          position: relative;
           display: flex;
           flex-direction: row;
           align-items: center;
@@ -37,11 +38,22 @@
             font-weight: 400;
             color: #666666;
           }
+          .clear-icon {
+            position: absolute;
+            top: 8px;
+            right: 135px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: white;
+            height: 20px;
+          }
         }
       }
     }
     .workflows-table {
-      padding-inline: 20px;
+      height: 77vh;
+      padding: 20px;
     }
     .workflow-contents {
       height: 64px;
@@ -90,9 +102,18 @@
 
 .page-view {
   padding-right: 5px;
-  margin-top: 20px;
   width: 100%;
-  height: 70px;
   display: flex;
   justify-content: flex-end;
+}
+.no-workflows-message {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  position: absolute;
+  top: 18vh;
+  font-size: 15px;
 }

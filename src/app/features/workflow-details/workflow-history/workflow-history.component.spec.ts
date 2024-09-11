@@ -164,6 +164,7 @@ describe('WorkflowHistoryComponent', () => {
         priority: Priority.LOW,
         created: new Date(),
         modified: new Date(),
+        deliveryType: '',
       },
       {
         status: WorkflowInstanceStatus.RUNNING,
@@ -179,6 +180,7 @@ describe('WorkflowHistoryComponent', () => {
         priority: Priority.LOW,
         created: new Date(),
         modified: new Date(),
+        deliveryType: '',
       },
       {
         status: WorkflowInstanceStatus.COMPLETED,
@@ -194,6 +196,7 @@ describe('WorkflowHistoryComponent', () => {
         priority: Priority.LOW,
         created: new Date(),
         modified: new Date(),
+        deliveryType: '',
       },
     ];
 

@@ -24,3 +24,12 @@ export const SLEEPING = 'SLEEPING';
 export const SFTP = 'SFTP';
 export const GCS_UPLOADER = 'GCS_UPLOADER';
 export const XML_RUNNER = 'XML_RUNNER';
+
+export const DATA_ONLY = 'DATA_ONLY';
+export const PACKSHOT = 'PACKSHOT';
+export const FULL_DELIVERY = 'FULL_DELIVERY';
+export const SCREENGRAB = 'SCREENGRAB';
+export const COVER_ART = 'COVER_ART';
+export const INSERT = 'INSERT';
+export const NONE = 'NONE';
+export const TAKE_DOWN = 'TAKE_DOWN';
