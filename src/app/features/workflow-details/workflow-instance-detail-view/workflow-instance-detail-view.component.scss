@@ -11,9 +11,9 @@
     align-items: center;
     justify-content: space-between;
     background: #f3f3f3;
-    position: sticky;
-    top: 64px;
-    z-index: 10;
+    // position: sticky;
+    // top: 64px;
+    // z-index: 10;
     .label-left {
       height: 30px;
       display: flex;
@@ -47,6 +47,7 @@
   }
   .detail-container {
     margin-inline: 15px;
+    margin-bottom: 10px;
     background: #fff;
     border-radius: 5px;
     padding: 20px 30px 20px;
@@ -132,4 +133,9 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+.detail-view {
+  height: 75vh;
+  overflow-y: auto;
+  gap: 25px;
 }

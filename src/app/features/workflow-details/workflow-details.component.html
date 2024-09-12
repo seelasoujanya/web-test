@@ -49,20 +49,22 @@
     </button>
   </div>
 
-  <ng-container *ngIf="selectedTab === 'general'">
-    <app-workflow-general
-      [workflow]="workflow"
-      [workflowCopy]="workflowCopy"
-      [emails]="emails"
-      (workflowEmailEvent)="workflowEmailSettings($event)"
-      (updateWorkflowEvent)="updateWorkflow($event)"></app-workflow-general>
-  </ng-container>
+  <div class="detail-views">
+    <ng-container *ngIf="selectedTab === 'general'">
+      <app-workflow-general
+        [workflow]="workflow"
+        [workflowCopy]="workflowCopy"
+        [emails]="emails"
+        (workflowEmailEvent)="workflowEmailSettings($event)"
+        (updateWorkflowEvent)="updateWorkflow($event)"></app-workflow-general>
+    </ng-container>
 
-  <ng-container *ngIf="selectedTab === 'history'">
-    <app-workflow-history> </app-workflow-history>
-  </ng-container>
+    <ng-container *ngIf="selectedTab === 'history'">
+      <app-workflow-history> </app-workflow-history>
+    </ng-container>
 
-  <ng-container *ngIf="selectedTab === 'workflow'">
-    <app-workflow-settings [workflowId]="workflowId"> </app-workflow-settings>
-  </ng-container>
+    <ng-container *ngIf="selectedTab === 'workflow'">
+      <app-workflow-settings [workflowId]="workflowId"> </app-workflow-settings>
+    </ng-container>
+  </div>
 </div>

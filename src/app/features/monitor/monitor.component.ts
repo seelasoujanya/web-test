@@ -45,6 +45,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
   public pendingInstancesCount: number = 0;
   priorityConstants = PRIORITY;
   priority: any;
+  noPendingInstances: boolean = false;
+  noRunningInstances: boolean = false;
 
   headings: string[] = [
     'INSTANCE ID',
@@ -124,8 +126,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
         this.instances = data.content;
         if (pageParams.status == 'RUNNING') {
           this.runningInstancesCount = data.totalElements;
+          this.noRunningInstances = this.runningInstancesCount === 0;
         } else {
           this.pendingInstancesCount = data.totalElements;
+          this.noPendingInstances = this.pendingInstancesCount === 0;
         }
         this.spinnerService.hide();
         this.cdRef.markForCheck();
