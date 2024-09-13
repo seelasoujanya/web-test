@@ -63,6 +63,7 @@ export const ddexFields: IWorkflowStepField[] = [
       'VIDEO_ASSETS',
       'AUDIO_ASSETS',
       'ALL_ASSETS',
+      'PRODUCT_ASSETS',
     ],
     defaultValue: 'NONE',
     description:
