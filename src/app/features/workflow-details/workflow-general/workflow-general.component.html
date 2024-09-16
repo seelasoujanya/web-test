@@ -33,6 +33,34 @@
         </ng-select>
       </div>
       <div class="workflow-field">
+        <span>AssetIngestionWaitTime</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Wait time"
+          class="input-field"
+          [(ngModel)]="AssetIngestionWaitTime"
+          (ngModelChange)="validateFields()"
+          [readOnly]="!isEditing" />
+        <p *ngIf="AssetIngestionWaitTimeError" class="timeError">
+          *{{ AssetIngestionWaitTimeError }}
+        </p>
+      </div>
+      <div class="workflow-field">
+        <span>DataIngestionWaitTime</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Wait Name"
+          class="input-field"
+          [(ngModel)]="DataIngestionWaitTime"
+          (ngModelChange)="validateFields()"
+          [readOnly]="!isEditing" />
+        <p *ngIf="DataIngestionWaitTimeError" class="timeError">
+          *{{ DataIngestionWaitTimeError }}
+        </p>
+      </div>
+      <div class="workflow-field">
         <span>Description</span>
         <textarea
           placeholder="add description"

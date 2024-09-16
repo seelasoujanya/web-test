@@ -36,3 +36,8 @@ export interface SystemPropertiesDTO {
   value: string;
   description: string | undefined | null;
 }
+
+export interface WorkflowConfiguration {
+  key: string;
+  value: any;
+}

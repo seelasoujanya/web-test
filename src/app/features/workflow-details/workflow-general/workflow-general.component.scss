@@ -153,6 +153,11 @@
   border-radius: 5px;
   height: 52px;
 }
+.timeError {
+  color: #f44336;
+  font-size: 12px;
+  font-weight: 300;
+}
 
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {

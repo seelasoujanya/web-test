@@ -4,12 +4,33 @@ import { Observable, catchError, map, of, pluck } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IPage } from '../models/page.model';
 import { IWorkflowStep } from '../models/workflow-step';
-import { SystemPropertiesDTO, SystemProperty } from '../models/workflow.model';
+import {
+  SystemPropertiesDTO,
+  SystemProperty,
+  WorkflowConfiguration,
+} from '../models/workflow.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
+  updateOrCreateWorkflowConfiguration(
+    workflowId: number,
+    configuration: any
+  ): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/workflow/${workflowId}/configs`,
+      configuration
+    );
+  }
+
+  getWorkflowConfigurations(
+    workflowId: number
+  ): Observable<WorkflowConfiguration[]> {
+    return this.http.get<WorkflowConfiguration[]>(
+      `${this.apiUrl}/workflow/${workflowId}/configs`
+    );
+  }
   getPausedProperty(key: string) {
     return this.http.get<any>(`${this.apiUrl}/property/${key}`);
   }
