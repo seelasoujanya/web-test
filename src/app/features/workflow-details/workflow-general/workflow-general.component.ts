@@ -13,6 +13,9 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ApiService } from 'src/app/core/services/api.service';
+import { WorkflowConfiguration } from 'src/app/core/models/workflow.model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-workflow-general',
@@ -32,6 +35,12 @@ export class WorkflowGeneralComponent implements OnInit {
   workflowStatus = WORKFLOW_STATUS;
 
   emailStatus = EMAIL_STATUS;
+
+  AssetIngestionWaitTime: string | undefined = '';
+  DataIngestionWaitTime: string | undefined = '';
+
+  AssetIngestionWaitTimeError: string | undefined = '';
+  DataIngestionWaitTimeError: string | undefined = '';
 
   @Input()
   workflow: any;
@@ -58,6 +67,17 @@ export class WorkflowGeneralComponent implements OnInit {
     ACTIONS: '',
   };
 
+  workflowConfigurations: WorkflowConfiguration[] = [
+    {
+      key: 'AssetIngestionWaitTime',
+      value: this.AssetIngestionWaitTime,
+    },
+    {
+      key: 'DataIngestionWaitTime',
+      value: this.DataIngestionWaitTime,
+    },
+  ];
+
   newEmailData = {
     name: '',
     email: '',
@@ -78,16 +98,68 @@ export class WorkflowGeneralComponent implements OnInit {
 
   constructor(
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private apiService: ApiService,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log('hihi');
+    const woflowId = this.route.snapshot.params['id'];
+    this.apiService.getWorkflowConfigurations(woflowId).subscribe(
+      (configs: WorkflowConfiguration[]) => {
+        this.workflowConfigurations = configs;
+        this.updateConfigurationValues();
+      },
+      (error: any) => {
+        console.error('Error fetching workflow configurations:', error);
+      }
+    );
+  }
+
+  validateWaitTime(value: string): boolean {
+    // Regular expression to check if the value ends with s, m, h, or d
+    const regex = /[smhd]$/;
+    return regex.test(value);
+  }
+
+  validateFields() {
+    this.AssetIngestionWaitTimeError = '';
+    this.DataIngestionWaitTimeError = '';
+
+    if (
+      this.AssetIngestionWaitTime &&
+      !this.validateWaitTime(this.AssetIngestionWaitTime)
+    ) {
+      this.AssetIngestionWaitTimeError =
+        'Please enter a valid time (ends with s, m, h, or d).';
+    }
+    if (
+      this.DataIngestionWaitTime &&
+      !this.validateWaitTime(this.DataIngestionWaitTime)
+    ) {
+      this.DataIngestionWaitTimeError =
+        'Please enter a valid time (ends with s, m, h, or d).';
+    }
+  }
+
+  private updateConfigurationValues() {
+    this.workflowConfigurations.forEach(config => {
+      if (config.key === 'AssetIngestionWaitTime') {
+        this.AssetIngestionWaitTime = config.value;
+      }
+      if (config.key === 'DataIngestionWaitTime') {
+        this.DataIngestionWaitTime = config.value;
+      }
+    });
+  }
 
   public toggleEditing() {
     this.isEditing = !this.isEditing;
   }
 
   public saveWorkflowChanges() {
+    this.updatingWorkflowConfigurationsArray();
     const modalData = {
       title: 'Confirm Changes',
       description: `Are you sure you want to Save changes  for Workflow?`,
@@ -131,6 +203,10 @@ export class WorkflowGeneralComponent implements OnInit {
       if (result) {
         if (modalType === 'general') {
           this.updateWorkflowEvent.emit(this.workflowCopy);
+          this.updateWorkflowConfiguration(
+            this.workflowCopy.id,
+            this.workflowConfigurations
+          );
         } else {
           const emailData = {
             emailId: this.emailId,
@@ -141,6 +217,36 @@ export class WorkflowGeneralComponent implements OnInit {
       } else {
         this.cancelChanges();
       }
+    });
+  }
+
+  private updatingWorkflowConfigurationsArray() {
+    this.AssetIngestionWaitTime = this.AssetIngestionWaitTime || '';
+    this.DataIngestionWaitTime = this.DataIngestionWaitTime || '';
+    this.workflowConfigurations = [
+      { key: 'AssetIngestionWaitTime', value: this.AssetIngestionWaitTime },
+      { key: 'DataIngestionWaitTime', value: this.DataIngestionWaitTime },
+    ];
+  }
+
+  updateWorkflowConfiguration(
+    workflowId: any,
+    workflowConfigurations: WorkflowConfiguration[]
+  ) {
+    workflowConfigurations.forEach(config => {
+      this.apiService
+        .updateOrCreateWorkflowConfiguration(workflowId, config)
+        .subscribe(
+          response => {
+            console.log(
+              'Workflow configuration updated successfully:',
+              response
+            );
+          },
+          error => {
+            console.error('Error updating workflow configuration:', error);
+          }
+        );
     });
   }
 
