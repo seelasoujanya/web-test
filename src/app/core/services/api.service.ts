@@ -236,4 +236,31 @@ export class ApiService {
   postTemplateForStep(body: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/workflow/template`, body);
   }
+
+  bookmarkWorkflow(body: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/bookmark`, body);
+  }
+
+  getBookmarksByUsername(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/bookmark/user/${username}`);
+  }
+
+  getBookmarkedWorkflowsByUsername(username: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/bookmark/user/${username}/workflows`
+    );
+  }
+
+  public removeBookmark(
+    workflowId: number,
+    userName: string
+  ): Observable<string> {
+    const params = new HttpParams()
+      .set('workflowId', workflowId)
+      .set('username', userName);
+    return this.http.delete(`${this.apiUrl}/bookmark`, {
+      params: params,
+      responseType: 'text',
+    });
+  }
 }

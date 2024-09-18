@@ -14,12 +14,21 @@
         padding-inline: 20px;
         background: #fff;
         .workflows-label {
+          display: flex;
+          gap: 5px;
           width: 134px;
           height: 32px;
           font-weight: 600;
           font-size: 26px;
           line-height: 32px;
           color: #000000;
+          .filter-bookmarks-btn {
+            border: none;
+            margin-bottom: 2px;
+          }
+          .filter-bookmarks-btn:hover {
+            opacity: 0.5;
+          }
         }
         .workflow-header-right {
           height: 40px;
@@ -64,6 +73,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
 .no-workflows-message {
   width: 100%;
   display: flex;

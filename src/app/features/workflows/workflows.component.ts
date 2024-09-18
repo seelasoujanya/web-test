@@ -9,6 +9,9 @@ import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table
 import { ApiService } from 'src/app/core/services/api.service';
 import { FormsModule } from '@angular/forms';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { AuthorizationService } from 'src/app/core/services/authorization.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+
 @Component({
   selector: 'app-workflows',
   standalone: true,
@@ -17,6 +20,7 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
     PaginationComponent,
     FormsModule,
     CommonModule,
+    TooltipModule,
   ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
@@ -27,9 +31,13 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   filteredWorkflows: Workflow[] = [];
 
+  bookmarkedIds: number[] = [];
+
   workflowName: string = '';
 
   noWorkflows: boolean = false;
+
+  BGroupId: string = '';
 
   headings: string[] = [
     'Workflow Name',
@@ -61,8 +69,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService
-  ) {}
+    private spinnerService: SpinnerService,
+    private authorizationService: AuthorizationService
+  ) {
+    this.getUserId();
+  }
 
   getPageItems(pageParams: any) {
     this.spinnerService.show();
@@ -71,7 +82,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
-
         this.workflowsData = data.content;
         this.filteredWorkflows = [...this.workflowsData];
         this.noWorkflows = this.filteredWorkflows.length === 0;
@@ -141,5 +151,57 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.workflowName = '';
     this.filteredWorkflows = [...this.workflowsData];
     this.noWorkflows = this.filteredWorkflows.length === 0;
+  }
+
+  bookmarkWorkflow(workflow: Workflow, userName: String) {
+    const newData = {
+      workflowId: workflow.id,
+      userName: userName,
+    };
+    this.apiService.bookmarkWorkflow(newData).subscribe(result => {
+      this.bookmarkedIds.push(workflow.id);
+      this.cdRef.markForCheck();
+    });
+  }
+
+  removeBookmark(workflow: Workflow, userName: string) {
+    this.apiService.removeBookmark(workflow.id, userName).subscribe(result => {
+      const index = this.bookmarkedIds.indexOf(workflow.id);
+      if (index != -1) {
+        this.bookmarkedIds.splice(index, 1);
+      }
+      this.cdRef.markForCheck();
+    });
+  }
+
+  async getUserId(): Promise<void> {
+    this.BGroupId = await this.authorizationService.getBGroupId();
+    this.apiService.getBookmarksByUsername(this.BGroupId).subscribe(result => {
+      this.bookmarkedIds = result.map((bookmark: any) => bookmark.workflowId);
+    });
+  }
+
+  toggleBookmark(workflow: Workflow) {
+    if (this.bookmarkedIds.includes(workflow.id)) {
+      this.removeBookmark(workflow, this.BGroupId);
+    } else {
+      this.bookmarkWorkflow(workflow, this.BGroupId);
+    }
+  }
+
+  fetchBookmarkedWorkflows() {
+    this.spinnerService.show();
+    this.apiService.getBookmarkedWorkflowsByUsername(this.BGroupId).subscribe(
+      bookmarkedWorkflows => {
+        this.filteredWorkflows = bookmarkedWorkflows;
+        this.noWorkflows = this.filteredWorkflows.length === 0;
+        this.cdRef.markForCheck();
+        this.spinnerService.hide();
+      },
+      (error: any) => {
+        console.error('Error fetching bookmarked workflows', error);
+        this.spinnerService.hide();
+      }
+    );
   }
 }

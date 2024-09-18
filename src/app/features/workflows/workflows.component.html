@@ -4,6 +4,13 @@
       <div class="workflow-header">
         <div class="workflows-label">
           <p id="track-assets-copy">Workflows</p>
+          <button
+            type="button"
+            class="filter-bookmarks-btn"
+            (click)="fetchBookmarkedWorkflows()"
+            [tooltip]="'Show Bookmarks'">
+            <img src="assets/icons/bookmark-logo.svg" alt="" />
+          </button>
         </div>
         <div class="workflow-header-right">
           <div>
@@ -37,14 +44,15 @@
         </div>
       </div>
     </div>
-
     <div class="workflows-table">
       <app-workflow-table
+        [isWorkflow]="true"
         [workflows]="filteredWorkflows"
         [headings]="headings"
-        [isWorkflow]="true"
+        [bookmarkedIds]="bookmarkedIds"
         (workflowDetailEvent)="viewInstances($event)"
         (workflowUpdateEvent)="pauseWorkflow($event)"
+        (bookMarkEvent)="toggleBookmark($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
       <div *ngIf="noWorkflows" class="no-workflows-message">
         No Workflows Found
