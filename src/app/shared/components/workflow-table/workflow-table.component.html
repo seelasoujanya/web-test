@@ -124,6 +124,14 @@
                 alt="Pause Icon"
                 class="action-icon"
                 (click)="pauseWorkflow($event, workflow)" />
+              <img
+                [src]="
+                  bookmarkedIds.includes(workflow.id)
+                    ? 'assets/icons/bookmark-fill-logo.svg'
+                    : 'assets/icons/bookmark-logo.svg'
+                "
+                class="action-icon"
+                (click)="bookMarkWorkflow($event, workflow)" />
             </div>
           </td>
         </tr>

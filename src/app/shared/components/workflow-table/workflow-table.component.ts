@@ -39,6 +39,9 @@ export class WorkflowTableComponent implements OnDestroy {
   public isWorkflow: boolean = false;
 
   @Input()
+  public bookmarkedIds: number[] = [];
+
+  @Input()
   public workflowInstances$: Observable<any[]> | undefined;
 
   @Output()
@@ -55,6 +58,9 @@ export class WorkflowTableComponent implements OnDestroy {
 
   @Output()
   public getSortParam = new EventEmitter<any>();
+
+  @Output()
+  public bookMarkEvent = new EventEmitter<any>();
 
   expandedInstaceId: number | undefined;
 
@@ -109,6 +115,13 @@ export class WorkflowTableComponent implements OnDestroy {
     event.stopPropagation();
     if (this.isWorkflow) {
       this.workflowUpdateEvent.emit(workflow);
+    }
+  }
+
+  public bookMarkWorkflow(event: MouseEvent, workflow: Workflow): void {
+    event.stopPropagation();
+    if (this.isWorkflow) {
+      this.bookMarkEvent.emit(workflow);
     }
   }
 
