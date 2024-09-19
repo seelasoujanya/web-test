@@ -22,7 +22,7 @@ export const ddexFields: IWorkflowStepField[] = [
     label: 'Product Asset Transcode Type',
     type: 'select',
     placeholder: 'Transcode Type to be used for Product Assets',
-    values: ['NONE', 'JPG', 'TIFF'],
+    values: ['NONE', 'JPG'],
     defaultValue: 'NONE',
     description: 'Transcode Type to be used for Product Assets',
   },
