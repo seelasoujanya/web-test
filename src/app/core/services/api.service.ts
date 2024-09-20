@@ -245,9 +245,21 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/bookmark/user/${username}`);
   }
 
-  getBookmarkedWorkflowsByUsername(username: string): Observable<any> {
+  getBookmarkedWorkflowsByUsername(
+    username: string,
+    pageParams: any
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', pageParams.page)
+      .set('pageSize', pageParams.pageSize)
+      .set('sortBy', pageParams.sortBy)
+      .set('order', pageParams.order);
+    if (pageParams.search) {
+      params = params.set('search', pageParams.search);
+    }
     return this.http.get<any>(
-      `${this.apiUrl}/bookmark/user/${username}/workflows`
+      `${this.apiUrl}/bookmark/user/${username}/workflows`,
+      { params }
     );
   }
 

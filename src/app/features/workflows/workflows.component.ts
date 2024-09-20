@@ -37,7 +37,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   noWorkflows: boolean = false;
 
+  noBookmarkedWorkflows: boolean = false;
+
   BGroupId: string = '';
+
+  showBookMarks: boolean = false;
 
   headings: string[] = [
     'Workflow Name',
@@ -133,7 +137,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.pageParams.sortBy =
       this.headingEnum[heading as keyof typeof this.headingEnum];
     this.pageParams.order = event.order;
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks) {
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.getPageItems(this.pageParams);
+    }
   }
 
   searchWorkflow(): void {
@@ -189,19 +197,34 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     }
   }
 
+  toggleShowBookmarks() {
+    this.showBookMarks = !this.showBookMarks;
+    this.pageParams = this.getDefaultPageParams();
+    if (this.showBookMarks) {
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.filteredWorkflows = [...this.workflowsData];
+      this.noBookmarkedWorkflows = false;
+    }
+  }
+
   fetchBookmarkedWorkflows() {
     this.spinnerService.show();
-    this.apiService.getBookmarkedWorkflowsByUsername(this.BGroupId).subscribe(
-      bookmarkedWorkflows => {
-        this.filteredWorkflows = bookmarkedWorkflows;
-        this.noWorkflows = this.filteredWorkflows.length === 0;
-        this.cdRef.markForCheck();
-        this.spinnerService.hide();
-      },
-      (error: any) => {
-        console.error('Error fetching bookmarked workflows', error);
-        this.spinnerService.hide();
-      }
-    );
+    this.apiService
+      .getBookmarkedWorkflowsByUsername(this.BGroupId, this.pageParams)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        data => {
+          this.page = data;
+          this.filteredWorkflows = data.content;
+          this.noBookmarkedWorkflows = this.filteredWorkflows.length === 0;
+          this.spinnerService.hide();
+          this.cdRef.markForCheck();
+        },
+        (error: any) => {
+          console.error('Error fetching bookmarked workflows', error);
+          this.spinnerService.hide();
+        }
+      );
   }
 }
