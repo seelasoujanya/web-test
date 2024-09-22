@@ -104,7 +104,17 @@ export class WorkflowGeneralComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('hihi');
+    this.initialConfigurations();
+  }
+
+  filterSpecialChars(event: KeyboardEvent) {
+    const nonAlphanumeric = /[^a-zA-Z0-9]/;
+    if (nonAlphanumeric.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  initialConfigurations() {
     const woflowId = this.route.snapshot.params['id'];
     this.apiService.getWorkflowConfigurations(woflowId).subscribe(
       (configs: WorkflowConfiguration[]) => {
@@ -119,7 +129,7 @@ export class WorkflowGeneralComponent implements OnInit {
 
   validateWaitTime(value: string): boolean {
     // Regular expression to check if the value ends with s, m, h, or d
-    const regex = /[smhd]$/;
+    const regex = /^\d+[smhd]$/;
     return regex.test(value);
   }
 
@@ -132,14 +142,14 @@ export class WorkflowGeneralComponent implements OnInit {
       !this.validateWaitTime(this.AssetIngestionWaitTime)
     ) {
       this.AssetIngestionWaitTimeError =
-        'Please enter a valid time (ends with s, m, h, or d).';
+        'Please enter a valid time (e.g., 5m, 10s, 1h, 2d).';
     }
     if (
       this.DataIngestionWaitTime &&
       !this.validateWaitTime(this.DataIngestionWaitTime)
     ) {
       this.DataIngestionWaitTimeError =
-        'Please enter a valid time (ends with s, m, h, or d).';
+        'Please enter a valid time (e.g., 5m, 10s, 1h, 2d).';
     }
   }
 
@@ -171,6 +181,9 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   public cancelChanges() {
+    this.initialConfigurations();
+    this.AssetIngestionWaitTimeError = '';
+    this.DataIngestionWaitTimeError = '';
     this.isEditing = false;
     this.workflowCopy = JSON.parse(JSON.stringify(this.workflow));
   }
