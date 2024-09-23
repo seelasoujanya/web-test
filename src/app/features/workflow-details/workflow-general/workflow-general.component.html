@@ -40,6 +40,7 @@
           placeholder="Enter Wait time"
           class="input-field"
           [(ngModel)]="AssetIngestionWaitTime"
+          (keydown)="filterSpecialChars($event)"
           (ngModelChange)="validateFields()"
           [readOnly]="!isEditing" />
         <p *ngIf="AssetIngestionWaitTimeError" class="timeError">
@@ -55,6 +56,7 @@
           class="input-field"
           [(ngModel)]="DataIngestionWaitTime"
           (ngModelChange)="validateFields()"
+          (keydown)="filterSpecialChars($event)"
           [readOnly]="!isEditing" />
         <p *ngIf="DataIngestionWaitTimeError" class="timeError">
           *{{ DataIngestionWaitTimeError }}
