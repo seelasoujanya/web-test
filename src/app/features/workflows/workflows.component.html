@@ -7,9 +7,16 @@
           <button
             type="button"
             class="filter-bookmarks-btn"
-            (click)="fetchBookmarkedWorkflows()"
-            [tooltip]="'Show Bookmarks'">
-            <img src="assets/icons/bookmark-logo.svg" alt="" />
+            (click)="toggleShowBookmarks()"
+            [tooltip]="'Show All Bookmarks'">
+            <img
+              [src]="
+                showBookMarks
+                  ? 'assets/icons/bookmark-fill-logo.svg'
+                  : 'assets/icons/bookmark-logo.svg'
+              "
+              class="filter-bookmarks-img"
+              alt="" />
           </button>
         </div>
         <div class="workflow-header-right">
@@ -57,8 +64,11 @@
       <div *ngIf="noWorkflows" class="no-workflows-message">
         No Workflows Found
       </div>
+      <div *ngIf="noBookmarkedWorkflows" class="no-workflows-message">
+        No Bookmarks Found
+      </div>
     </div>
-    <div class="page-view" *ngIf="!noWorkflows">
+    <div class="page-view" *ngIf="!noWorkflows && !noBookmarkedWorkflows">
       <app-pagination [page]="page" (paginationEvent)="onPage($event)">
       </app-pagination>
     </div>

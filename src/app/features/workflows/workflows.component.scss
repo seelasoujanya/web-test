@@ -3,9 +3,6 @@
   background: #fff;
   .workflows-section {
     .heading-section {
-      // position: sticky;
-      // top: 64px;
-      // z-index: 10;
       .workflow-header {
         display: flex;
         justify-content: space-between;
@@ -24,7 +21,11 @@
           color: #000000;
           .filter-bookmarks-btn {
             border: none;
-            margin-bottom: 2px;
+            background-color: #fff;
+            .filter-bookmarks-img {
+              height: 30px;
+              width: 30px;
+            }
           }
           .filter-bookmarks-btn:hover {
             opacity: 0.5;

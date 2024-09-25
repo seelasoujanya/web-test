@@ -37,7 +37,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   noWorkflows: boolean = false;
 
+  noBookmarkedWorkflows: boolean = false;
+
   BGroupId: string = '';
+
+  showBookMarks: boolean = false;
 
   headings: string[] = [
     'Workflow Name',
@@ -81,7 +85,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       .getWorkflows(pageParams)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
-        this.page = data;
+        this.workflowsPage = data;
+        this.page = this.workflowsPage;
         this.workflowsData = data.content;
         this.filteredWorkflows = [...this.workflowsData];
         this.noWorkflows = this.filteredWorkflows.length === 0;
@@ -112,11 +117,19 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   onPage(pageNumber: number) {
-    this.pageParams.page = pageNumber - 1;
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks) {
+      this.bookmarkedPageParams.page = pageNumber - 1;
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.pageParams.page = pageNumber - 1;
+      this.getPageItems(this.pageParams);
+    }
   }
   public page!: IPage<any>;
+  public workflowsPage!: IPage<any>;
+  public bookmarksPage!: IPage<any>;
   public pageParams = this.getDefaultPageParams();
+  public bookmarkedPageParams = this.getDefaultPageParams();
 
   getDefaultPageParams() {
     return {
@@ -130,10 +143,16 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   sortColumn(event: any) {
     let heading = event.sortBy;
-    this.pageParams.sortBy =
-      this.headingEnum[heading as keyof typeof this.headingEnum];
-    this.pageParams.order = event.order;
-    this.getPageItems(this.pageParams);
+    const sortKey = this.headingEnum[heading as keyof typeof this.headingEnum];
+    if (this.showBookMarks) {
+      this.bookmarkedPageParams.sortBy = sortKey;
+      this.bookmarkedPageParams.order = event.order;
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.pageParams.sortBy = sortKey;
+      this.pageParams.order = event.order;
+      this.getPageItems(this.pageParams);
+    }
   }
 
   searchWorkflow(): void {
@@ -189,19 +208,40 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     }
   }
 
+  toggleShowBookmarks() {
+    this.showBookMarks = !this.showBookMarks;
+    if (this.showBookMarks) {
+      this.bookmarkedPageParams = this.getDefaultPageParams();
+      this.page = this.bookmarksPage;
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.page = this.workflowsPage;
+      this.filteredWorkflows = [...this.workflowsData];
+      this.noBookmarkedWorkflows = false;
+    }
+  }
+
   fetchBookmarkedWorkflows() {
     this.spinnerService.show();
-    this.apiService.getBookmarkedWorkflowsByUsername(this.BGroupId).subscribe(
-      bookmarkedWorkflows => {
-        this.filteredWorkflows = bookmarkedWorkflows;
-        this.noWorkflows = this.filteredWorkflows.length === 0;
-        this.cdRef.markForCheck();
-        this.spinnerService.hide();
-      },
-      (error: any) => {
-        console.error('Error fetching bookmarked workflows', error);
-        this.spinnerService.hide();
-      }
-    );
+    this.apiService
+      .getBookmarkedWorkflowsByUsername(
+        this.BGroupId,
+        this.bookmarkedPageParams
+      )
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        data => {
+          this.bookmarksPage = data;
+          this.page = this.bookmarksPage;
+          this.filteredWorkflows = data.content;
+          this.noBookmarkedWorkflows = this.filteredWorkflows.length === 0;
+          this.spinnerService.hide();
+          this.cdRef.markForCheck();
+        },
+        (error: any) => {
+          console.error('Error fetching bookmarked workflows', error);
+          this.spinnerService.hide();
+        }
+      );
   }
 }
