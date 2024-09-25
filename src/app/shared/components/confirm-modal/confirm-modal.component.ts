@@ -34,6 +34,7 @@ export class ConfirmModalComponent {
   constructor(private bsModalRef: BsModalRef) {}
 
   public closeModal(): void {
+    this.updateChanges.emit(false);
     this.bsModalRef.hide();
   }
 

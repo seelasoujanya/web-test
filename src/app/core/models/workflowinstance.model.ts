@@ -47,3 +47,14 @@ export interface WorkflowInstanceResponse {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface DeliveryTypeStats {
+  successful: number;
+  failures: number;
+}
+
+export interface StatsDTO {
+  totalSuccessfulInstances: number;
+  totalFailedInstances: number;
+  deliveryTypeStats: { [key: string]: DeliveryTypeStats[] };
+}

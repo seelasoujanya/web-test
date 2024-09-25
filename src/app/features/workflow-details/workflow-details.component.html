@@ -47,6 +47,12 @@
       [class.active-btn]="selectedTab === 'history'">
       Deliveries
     </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('statistics')"
+      [class.active-btn]="selectedTab === 'statistics'">
+      Statistics
+    </button>
   </div>
 
   <div class="detail-views">
@@ -61,6 +67,10 @@
 
     <ng-container *ngIf="selectedTab === 'history'">
       <app-workflow-history> </app-workflow-history>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTab === 'statistics'">
+      <app-workflow-statistics-view> </app-workflow-statistics-view>
     </ng-container>
 
     <ng-container *ngIf="selectedTab === 'workflow'">

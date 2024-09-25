@@ -33,7 +33,7 @@
         </ng-select>
       </div>
       <div class="workflow-field">
-        <span>AssetIngestionWaitTime</span>
+        <span>Asset Ingestion Wait Time</span>
         <input
           type="text"
           maxlength="255"
@@ -48,7 +48,7 @@
         </p>
       </div>
       <div class="workflow-field">
-        <span>DataIngestionWaitTime</span>
+        <span>Data Ingestion Wait Time</span>
         <input
           type="text"
           maxlength="255"
@@ -85,6 +85,7 @@
           <button
             class="btn btn--red"
             type="button"
+            [disabled]="isErrorMsg()"
             (click)="saveWorkflowChanges()">
             SAVE
           </button>

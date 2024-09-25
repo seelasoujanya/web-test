@@ -13,6 +13,7 @@ import { WorkflowHistoryComponent } from './workflow-history/workflow-history.co
 import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
 import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { WorkflowStatisticsViewComponent } from './workflow-statistics-view/workflow-statistics-view.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -26,6 +27,7 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
     WorkflowHistoryComponent,
     WorkflowGeneralComponent,
     WorkflowSettingsComponent,
+    WorkflowStatisticsViewComponent,
     RouterModule,
   ],
   templateUrl: './workflow-details.component.html',
