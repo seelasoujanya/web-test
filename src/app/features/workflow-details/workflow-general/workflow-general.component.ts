@@ -108,8 +108,12 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   filterSpecialChars(event: KeyboardEvent) {
-    const nonAlphanumeric = /[^a-zA-Z0-9]/;
-    if (nonAlphanumeric.test(event.key)) {
+    const allowedChars = /[0-9h m]/;
+    if (
+      !allowedChars.test(event.key) &&
+      event.key !== 'Backspace' &&
+      event.key !== 'Tab'
+    ) {
       event.preventDefault();
     }
   }
@@ -127,10 +131,19 @@ export class WorkflowGeneralComponent implements OnInit {
     );
   }
 
+  isErrorMsg(): boolean {
+    if (
+      this.AssetIngestionWaitTimeError != '' ||
+      this.DataIngestionWaitTimeError != ''
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   validateWaitTime(value: string): boolean {
-    // Regular expression to check if the value ends with s, m, h, or d
-    const regex = /^\d+[smhd]$/;
-    return regex.test(value);
+    const regex = /^(?:(\d+h)? ?(\d+m)?)$/;
+    return regex.test(value.trim());
   }
 
   validateFields() {
@@ -142,30 +155,36 @@ export class WorkflowGeneralComponent implements OnInit {
       !this.validateWaitTime(this.AssetIngestionWaitTime)
     ) {
       this.AssetIngestionWaitTimeError =
-        'Please enter a valid time (e.g., 5m, 10s, 1h, 2d).';
+        'Please enter a valid time (eg: 1h 30m, 3m, 5h).';
     }
     if (
       this.DataIngestionWaitTime &&
       !this.validateWaitTime(this.DataIngestionWaitTime)
     ) {
       this.DataIngestionWaitTimeError =
-        'Please enter a valid time (e.g., 5m, 10s, 1h, 2d).';
+        'Please enter a valid time (eg: 1h 30m, 3m, 5h).';
     }
   }
 
   private updateConfigurationValues() {
     this.workflowConfigurations.forEach(config => {
       if (config.key === 'AssetIngestionWaitTime') {
-        this.AssetIngestionWaitTime = config.value;
+        this.AssetIngestionWaitTime = this.formatMinutes(config.value);
       }
       if (config.key === 'DataIngestionWaitTime') {
-        this.DataIngestionWaitTime = config.value;
+        this.DataIngestionWaitTime = this.formatMinutes(config.value);
       }
     });
   }
 
   public toggleEditing() {
     this.isEditing = !this.isEditing;
+    if (this.isEditing == false) {
+      this.AssetIngestionWaitTimeError = '';
+      this.DataIngestionWaitTimeError = '';
+      this.initialConfigurations();
+      this.workflowCopy = JSON.parse(JSON.stringify(this.workflow));
+    }
   }
 
   public saveWorkflowChanges() {
@@ -176,8 +195,15 @@ export class WorkflowGeneralComponent implements OnInit {
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
     };
-    this.openConfirmModal(modalData, 'general');
-    this.isEditing = false;
+    if (
+      this.AssetIngestionWaitTimeError == '' &&
+      this.DataIngestionWaitTimeError == ''
+    ) {
+      this.openConfirmModal(modalData, 'general');
+      this.isEditing = false;
+    } else {
+      this.isEditing = true;
+    }
   }
 
   public cancelChanges() {
@@ -216,10 +242,15 @@ export class WorkflowGeneralComponent implements OnInit {
       if (result) {
         if (modalType === 'general') {
           this.updateWorkflowEvent.emit(this.workflowCopy);
-          this.updateWorkflowConfiguration(
-            this.workflowCopy.id,
-            this.workflowConfigurations
-          );
+          if (
+            this.AssetIngestionWaitTimeError == '' &&
+            this.DataIngestionWaitTimeError == ''
+          ) {
+            this.updateWorkflowConfiguration(
+              this.workflowCopy.id,
+              this.workflowConfigurations
+            );
+          }
         } else {
           const emailData = {
             emailId: this.emailId,
@@ -236,10 +267,45 @@ export class WorkflowGeneralComponent implements OnInit {
   private updatingWorkflowConfigurationsArray() {
     this.AssetIngestionWaitTime = this.AssetIngestionWaitTime || '';
     this.DataIngestionWaitTime = this.DataIngestionWaitTime || '';
+    console.log('kk' + this.convertToMinutes(this.AssetIngestionWaitTime));
     this.workflowConfigurations = [
-      { key: 'AssetIngestionWaitTime', value: this.AssetIngestionWaitTime },
-      { key: 'DataIngestionWaitTime', value: this.DataIngestionWaitTime },
+      {
+        key: 'AssetIngestionWaitTime',
+        value: this.convertToMinutes(this.AssetIngestionWaitTime),
+      },
+      {
+        key: 'DataIngestionWaitTime',
+        value: this.convertToMinutes(this.DataIngestionWaitTime),
+      },
     ];
+  }
+
+  convertToMinutes(value: string): string {
+    let totalMinutes = 0;
+    const hoursMatch = value.match(/(\d+)h/);
+    const minutesMatch = value.match(/(\d+)m/);
+    if (hoursMatch) {
+      totalMinutes += parseInt(hoursMatch[1], 10) * 60;
+    }
+    if (minutesMatch) {
+      totalMinutes += parseInt(minutesMatch[1], 10);
+    }
+    return `${totalMinutes}m`;
+  }
+
+  formatMinutes(totalMinutes: string) {
+    const minutesValue = parseInt(totalMinutes, 10);
+
+    const hours = Math.floor(minutesValue / 60);
+    const minutes = minutesValue % 60;
+
+    if (hours == 0 && minutes != 0) {
+      return `${minutes}m`;
+    } else if (hours != 0 && minutes == 0) {
+      return `${hours}h`;
+    } else {
+      return `${hours}h ${minutes}m`;
+    }
   }
 
   updateWorkflowConfiguration(
@@ -255,6 +321,7 @@ export class WorkflowGeneralComponent implements OnInit {
               'Workflow configuration updated successfully:',
               response
             );
+            this.initialConfigurations();
           },
           error => {
             console.error('Error updating workflow configuration:', error);

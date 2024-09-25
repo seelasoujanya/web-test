@@ -9,6 +9,7 @@ import {
   SystemProperty,
   WorkflowConfiguration,
 } from '../models/workflow.model';
+import { StatsDTO } from '../models/workflowinstance.model';
 
 @Injectable({
   providedIn: 'root',
@@ -59,6 +60,10 @@ export class ApiService {
       map(user => !!user),
       catchError(() => of(false))
     );
+  }
+
+  getWorkflowsStatistics(id: number): Observable<StatsDTO> {
+    return this.http.get<StatsDTO>(`${this.apiUrl}/workflow/${id}/stats`);
   }
 
   getWorkflows(pageParams: any): Observable<IPage<any>> {
