@@ -79,7 +79,7 @@ export class WorkflowStatisticsViewComponent {
   }
 
   private updateBarChartData(deliveryTypeStats: {
-    [key: string]: DeliveryTypeStats[];
+    [key: string]: DeliveryTypeStats;
   }) {
     const labelMap: { [key: string]: { successful: number; failed: number } } =
       {
@@ -106,14 +106,11 @@ export class WorkflowStatisticsViewComponent {
 
     for (const key in deliveryTypeStats) {
       if (deliveryTypeStats.hasOwnProperty(key)) {
-        const statsArray: DeliveryTypeStats[] = deliveryTypeStats[key];
-        if (statsArray.length > 0) {
-          const stats = statsArray[0];
-          const label = keyMapping[key];
-          if (label) {
-            labelMap[label].successful += stats.successful;
-            labelMap[label].failed += stats.failures;
-          }
+        const stats = deliveryTypeStats[key];
+        const label = keyMapping[key];
+        if (label) {
+          labelMap[label].successful += stats.successful;
+          labelMap[label].failed += stats.failures;
         }
       }
     }

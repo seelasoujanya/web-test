@@ -56,5 +56,5 @@ export interface DeliveryTypeStats {
 export interface StatsDTO {
   totalSuccessfulInstances: number;
   totalFailedInstances: number;
-  deliveryTypeStats: { [key: string]: DeliveryTypeStats[] };
+  deliveryTypeStats: { [key: string]: DeliveryTypeStats };
 }
