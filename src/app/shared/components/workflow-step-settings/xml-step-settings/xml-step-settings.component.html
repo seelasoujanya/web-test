@@ -27,6 +27,7 @@
         [searchable]="false"
         [clearable]="false"
         placeholder="Templates"
+        [disabled]="!enableEditing"
         [(ngModel)]="selectedTemplateId">
       </ng-select>
     </div>

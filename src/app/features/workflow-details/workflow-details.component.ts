@@ -46,6 +46,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.getWorkflow();
     this.getEmailsByWorkflowId();
     this.getWorkflowSteps(this.workflowId, this.pageParams);
+    this.selectedTab = localStorage.getItem('selectedTab') || 'general';
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
@@ -205,6 +206,7 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   public selectTab(tab: string) {
     this.selectedTab = tab;
+    localStorage.setItem('selectedTab', tab);
   }
 
   public getWorkflow() {
