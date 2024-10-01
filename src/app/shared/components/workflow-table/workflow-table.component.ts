@@ -103,6 +103,7 @@ export class WorkflowTableComponent implements OnDestroy {
 
   public viewInstances(workflowId: number, workflowName: String): void {
     if (this.isWorkflow) {
+      localStorage.setItem('selectedTab', '');
       this.workflowDetailEvent.emit({ id: workflowId, name: workflowName });
     }
   }

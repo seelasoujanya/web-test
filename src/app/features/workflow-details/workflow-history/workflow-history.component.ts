@@ -41,8 +41,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   instanceHeadings: string[] = [
     'Identifier',
-    'Queued On',
-    'Started On',
+    'Created',
+    'Completed',
     'Duration',
     'Delivery Type',
     'Status',

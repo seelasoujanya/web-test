@@ -82,19 +82,35 @@
               <tr>
                 <td class="detail-field-key">Completed</td>
                 <td class="detail-field-value">
-                  {{ workflowsInstance.completed | date: 'MMM, dd YYYY HH:mm' }}
+                  <ng-container
+                    *ngIf="workflowsInstance.completed; else noDate">
+                    {{ workflowsInstance.completed | date: 'MMM dd, yyyy'
+                    }}<br />
+                    <span class="time">{{
+                      workflowsInstance.completed | date: 'HH:mm:ss'
+                    }}</span>
+                  </ng-container>
+                  <ng-template #noDate> NA </ng-template>
                 </td>
               </tr>
               <tr>
                 <td class="detail-field-key">Duration</td>
                 <td class="detail-field-value">
-                  {{ secondsToHHMMSS(workflowsInstance.duration) }}
+                  <ng-container
+                    *ngIf="workflowsInstance.completed; else noDate">
+                    {{ secondsToHHMMSS(workflowsInstance.duration) }}
+                  </ng-container>
+                  <ng-template #noDate> NA </ng-template>
                 </td>
               </tr>
               <tr>
                 <td class="detail-field-key">Error Message</td>
                 <td class="detail-field-value">
-                  {{ workflowsInstance.errorMessage }}
+                  <ng-container
+                    *ngIf="workflowsInstance.errorMessage; else noMsg">
+                    {{ workflowsInstance.errorMessage }}
+                  </ng-container>
+                  <ng-template #noMsg> NA </ng-template>
                 </td>
               </tr>
             </tbody>

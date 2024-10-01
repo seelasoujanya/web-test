@@ -228,14 +228,7 @@ export class ApiService {
   }
 
   getSelectedTemplate(workflowId: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/workflow/${workflowId}/template`);
-  }
-
-  updateTemplateForStep(workflowId: number, body: any): Observable<any> {
-    return this.http.put<any>(
-      `${this.apiUrl}/workflow/${workflowId}/template`,
-      body
-    );
+    return this.http.get<any>(`${this.apiUrl}/template/workflow/${workflowId}`);
   }
 
   postTemplateForStep(body: any): Observable<any> {

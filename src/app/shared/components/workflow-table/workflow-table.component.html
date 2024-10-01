@@ -151,12 +151,20 @@
               }}</span>
             </td>
             <td class="table-cell">
-              {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-              <span class="time">{{
-                workflow.created | date: 'HH:mm:ss'
-              }}</span>
+              <ng-container *ngIf="workflow.completed; else noDate">
+                {{ workflow.completed | date: 'MMM dd, yyyy' }}<br />
+                <span class="time">{{
+                  workflow.completed | date: 'HH:mm:ss'
+                }}</span>
+              </ng-container>
+              <ng-template #noDate> NA </ng-template>
             </td>
-            <td class="table-cell">{{ workflow.duration | duration }}</td>
+            <td class="table-cell">
+              <ng-container *ngIf="workflow.completed; else noDate">
+                {{ workflow.duration | duration }}
+              </ng-container>
+              <ng-template #noDate> NA </ng-template>
+            </td>
             <td class="table-cell">
               {{ getDisplayName(workflow.deliveryType) }}
             </td>

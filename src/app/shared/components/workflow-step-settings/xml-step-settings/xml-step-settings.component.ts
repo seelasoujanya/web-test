@@ -23,8 +23,6 @@ export class XmlStepSettingsComponent {
 
   selectedTemplateId: number | undefined;
 
-  hasSelectedTemplate = false;
-
   templates: {
     id: number;
     name: string;
@@ -80,28 +78,14 @@ export class XmlStepSettingsComponent {
         templateId: this.selectedTemplateId,
       };
       this.spinnerService.show();
-      if (this.hasSelectedTemplate) {
-        this.apiService
-          .updateTemplateForStep(this.workflowStep.workflowId, body)
-          .subscribe({
-            next: data => {
-              this.spinnerService.hide();
-            },
-            error: error => {
-              this.spinnerService.hide();
-            },
-          });
-      } else {
-        this.apiService.postTemplateForStep(body).subscribe({
-          next: data => {
-            this.hasSelectedTemplate = true;
-            this.spinnerService.hide();
-          },
-          error: error => {
-            this.spinnerService.hide();
-          },
-        });
-      }
+      this.apiService.postTemplateForStep(body).subscribe({
+        next: data => {
+          this.spinnerService.hide();
+        },
+        error: error => {
+          this.spinnerService.hide();
+        },
+      });
     }
   }
 }
