@@ -27,17 +27,17 @@
         [searchable]="false"
         [clearable]="false"
         placeholder="Templates"
-        [disabled]="!enableEditing"
-        [(ngModel)]="selectedTemplateId">
+        [(ngModel)]="selectedTemplateId"
+        [class.disabled]="!enableEditing">
       </ng-select>
     </div>
   </div>
 
   <div class="buttons" *ngIf="enableEditing">
-    <button class="btn btn--red" type="button" (click)="updateTemplate()">
+    <button class="btn btn--red" type="button" (click)="saveTemplateChanges()">
       save
     </button>
-    <button class="btn btn--black" (click)="toggleEditing()" type="button">
+    <button class="btn btn--black" type="button" (click)="cancelChanges()">
       cancel
     </button>
   </div>

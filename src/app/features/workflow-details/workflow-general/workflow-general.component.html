@@ -1,6 +1,7 @@
 <div class="workflow-general-container">
   <div class="general-setting">
     <div class="general-setting-label">
+      <span class="title">General setting</span>
       <span class="edit-icon"
         ><img
           src="/assets/icons/edit-icon.svg"
@@ -17,7 +18,7 @@
           placeholder="Enter Workflow Name"
           class="input-field"
           [(ngModel)]="workflowCopy.name"
-          [readOnly]="!isEditing" />
+          [class.disabled]="!isEditing" />
       </div>
       <div class="workflow-field">
         <span>Enabled</span>
@@ -30,6 +31,23 @@
           placeholder="select status"
           [class.disabled]="!isEditing"
           [(ngModel)]="workflowCopy.enabled">
+          <ng-template ng-label-tmp let-item="item">
+            <span>{{ item.label }}</span>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M1.375 1.125L7 6.75L12.625 1.125"
+                stroke="#262626"
+                stroke-width="1.25"
+                stroke-miterlimit="10"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </ng-template>
         </ng-select>
       </div>
       <div class="workflow-field">
@@ -42,7 +60,7 @@
           [(ngModel)]="AssetIngestionWaitTime"
           (keydown)="filterSpecialChars($event)"
           (ngModelChange)="validateFields()"
-          [readOnly]="!isEditing" />
+          [class.disabled]="!isEditing" />
         <p *ngIf="AssetIngestionWaitTimeError" class="timeError">
           *{{ AssetIngestionWaitTimeError }}
         </p>
@@ -57,7 +75,7 @@
           [(ngModel)]="DataIngestionWaitTime"
           (ngModelChange)="validateFields()"
           (keydown)="filterSpecialChars($event)"
-          [readOnly]="!isEditing" />
+          [class.disabled]="!isEditing" />
         <p *ngIf="DataIngestionWaitTimeError" class="timeError">
           *{{ DataIngestionWaitTimeError }}
         </p>
@@ -68,7 +86,7 @@
           placeholder="add description"
           class="text-field"
           [(ngModel)]="workflowCopy.description"
-          [readOnly]="!isEditing"></textarea>
+          [class.disabled]="!isEditing"></textarea>
       </div>
       <div class="workflow-field">
         <div>
@@ -78,7 +96,7 @@
             placeholder="throttle limit"
             class="input-field"
             [(ngModel)]="workflowCopy.throttleLimit"
-            [readOnly]="!isEditing"
+            [class.disabled]="!isEditing"
             (blur)="checkThrottleLimit($event)" />
         </div>
         <div class="buttons" *ngIf="isEditing">

@@ -200,7 +200,6 @@ export class WorkflowGeneralComponent implements OnInit {
       this.DataIngestionWaitTimeError == ''
     ) {
       this.openConfirmModal(modalData, 'general');
-      this.isEditing = false;
     } else {
       this.isEditing = true;
     }
@@ -258,8 +257,6 @@ export class WorkflowGeneralComponent implements OnInit {
           };
           this.workflowEmailEvent.emit(emailData);
         }
-      } else {
-        this.cancelChanges();
       }
     });
   }

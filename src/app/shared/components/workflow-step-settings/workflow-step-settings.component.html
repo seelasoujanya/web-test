@@ -22,7 +22,8 @@
               <input
                 type="checkbox"
                 (change)="updateCheckboxFieldValue(field.key)"
-                [checked]="getFieldValue(field.key, 'boolean')" />
+                [checked]="getFieldValue(field.key, 'boolean')"
+                [disabled]="!enableEditing" />
               <div class="checkbox__icon">
                 <img src="/assets/icons/checkbox.svg" alt="" />
               </div>
@@ -49,7 +50,7 @@
             class="input-field"
             [ngModel]="getFieldValue(field.key)"
             (ngModelChange)="setFieldValue(field.key, $event)"
-            [disabled]="!enableEditing" />
+            [class.disabled]="!enableEditing" />
 
           <textarea
             *ngSwitchCase="'textarea'"
@@ -60,7 +61,7 @@
             class="input-field"
             rows="5"
             (ngModelChange)="setFieldValue(field.key, $event)"
-            [disabled]="!enableEditing"></textarea>
+            [class.disabled]="!enableEditing"></textarea>
 
           <ng-select
             *ngSwitchCase="'select'"
@@ -71,7 +72,8 @@
             [clearable]="false"
             placeholder="{{ field.placeholder }}"
             [ngModel]="getFieldValue(field.key)"
-            (ngModelChange)="setFieldValue(field.key, $event)">
+            (ngModelChange)="setFieldValue(field.key, $event)"
+            [class.disabled]="!enableEditing">
           </ng-select>
         </div>
       </div>
@@ -82,11 +84,11 @@
     <div class="buttons" *ngIf="enableEditing">
       <button
         class="btn btn--red"
-        (click)="updateWorkflowStepSettings()"
-        type="button">
+        type="button"
+        (click)="saveWorkflowSettingsChanges()">
         save
       </button>
-      <button class="btn btn--black" (click)="toggleEditing()" type="button">
+      <button class="btn btn--black" type="button" (click)="cancelChanges()">
         cancel
       </button>
     </div>
