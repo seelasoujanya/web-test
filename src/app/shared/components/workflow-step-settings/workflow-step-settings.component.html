@@ -50,7 +50,7 @@
             class="input-field"
             [ngModel]="getFieldValue(field.key)"
             (ngModelChange)="setFieldValue(field.key, $event)"
-            [disabled]="!enableEditing" />
+            [class.disabled]="!enableEditing" />
 
           <textarea
             *ngSwitchCase="'textarea'"
@@ -61,7 +61,7 @@
             class="input-field"
             rows="5"
             (ngModelChange)="setFieldValue(field.key, $event)"
-            [disabled]="!enableEditing"></textarea>
+            [class.disabled]="!enableEditing"></textarea>
 
           <ng-select
             *ngSwitchCase="'select'"

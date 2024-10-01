@@ -129,8 +129,6 @@ export class WorkflowStepSettingsComponent {
     this.bsModalRef.content.updateChanges.subscribe((result: boolean) => {
       if (result) {
         this.updateWorkflowStepSettings();
-      } else {
-        this.cancelChanges();
       }
     });
   }

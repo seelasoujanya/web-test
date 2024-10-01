@@ -14,9 +14,17 @@
     .general-setting-label {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: space-between;
       padding-block: 10px;
       border: 1px solid #e8e8e8;
+      .title {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 24.2px;
+        letter-spacing: 0.3px;
+        color: #333333;
+        padding-left: 24px;
+      }
       .label {
         font-size: 20px;
         font-weight: 400;
@@ -153,6 +161,7 @@
   border-radius: 5px;
   height: 52px;
 }
+
 .timeError {
   color: #f44336;
   font-size: 12px;
@@ -340,4 +349,25 @@ textarea:focus {
 
 ::ng-deep .tooltip-arrow {
   display: none !important;
+}
+
+::ng-deep .ng-select .ng-arrow-wrapper {
+  display: none !important;
+}
+
+::ng-deep .workflow-field .ng-select .ng-select-container .ng-value-container {
+  position: relative;
+}
+
+::ng-deep
+  .workflow-field
+  .ng-select
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  svg {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }

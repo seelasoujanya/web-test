@@ -177,7 +177,6 @@ export class WorkflowGeneralComponent implements OnInit {
       btn2Name: 'CANCEL',
     };
     this.openConfirmModal(modalData, 'general');
-    this.isEditing = false;
   }
 
   public cancelChanges() {
@@ -227,8 +226,6 @@ export class WorkflowGeneralComponent implements OnInit {
           };
           this.workflowEmailEvent.emit(emailData);
         }
-      } else {
-        this.cancelChanges();
       }
     });
   }
