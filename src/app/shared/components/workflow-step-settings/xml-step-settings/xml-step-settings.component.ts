@@ -28,6 +28,8 @@ export class XmlStepSettingsComponent {
 
   originalTemplateId: number | undefined;
 
+  fileName: String | undefined;
+
   hasSelectedTemplate = false;
 
   templates: {
@@ -100,6 +102,7 @@ export class XmlStepSettingsComponent {
     this.bsModalRef.content.updateChanges.subscribe((result: boolean) => {
       if (result) {
         this.updateTemplate();
+        this.createworkflowStepConfig();
       } else {
         this.cancelChanges();
       }
@@ -128,4 +131,6 @@ export class XmlStepSettingsComponent {
       });
     }
   }
+
+  createworkflowStepConfig() {}
 }

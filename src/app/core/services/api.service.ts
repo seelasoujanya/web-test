@@ -183,10 +183,8 @@ export class ApiService {
     return this.http.put<any>(`${this.apiUrl}/email/${id}`, bodyParams);
   }
 
-  public getWorkflowSteps(id: string, queryParams: any): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/workflow/${id}/steps`, {
-      params: queryParams as any,
-    });
+  public getWorkflowSteps(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflow/${id}/steps`);
   }
 
   public updateWorkflowSteps(

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, ɵnormalizeQueryParams } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -45,8 +45,12 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.getPageItems(this.pageParams);
     this.getWorkflow();
     this.getEmailsByWorkflowId();
-    this.getWorkflowSteps(this.workflowId, this.pageParams);
-    this.selectedTab = localStorage.getItem('selectedTab') || 'general';
+    this.getWorkflowSteps(this.workflowId);
+
+    this.route.queryParams.subscribe(params => {
+      this.selectedTab = params['tab'] || 'general';
+      this.selectTab(this.selectedTab);
+    });
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
@@ -206,7 +210,9 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   public selectTab(tab: string) {
     this.selectedTab = tab;
-    localStorage.setItem('selectedTab', tab);
+    this.router.navigate(['/workflows', this.workflowId], {
+      queryParams: { tab: tab },
+    });
   }
 
   public getWorkflow() {
@@ -277,13 +283,12 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     });
   }
 
-  public getWorkflowSteps(id: any, pageParams: any) {
+  public getWorkflowSteps(id: any) {
     this.apiService
-      .getWorkflowSteps(id, pageParams)
+      .getWorkflowSteps(id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
-        this.page = data;
-        this.workflowSteps = data.content;
+        this.workflowSteps = data;
         this.cdRef.markForCheck();
       });
   }
