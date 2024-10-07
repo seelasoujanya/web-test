@@ -250,6 +250,7 @@ export class WorkflowGeneralComponent implements OnInit {
               this.workflowConfigurations
             );
           }
+          this.isEditing = false;
         } else {
           const emailData = {
             emailId: this.emailId,
