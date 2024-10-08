@@ -78,7 +78,7 @@ describe('WorkflowDetailViewComponent', () => {
     const defaultParams = component.getDefaultPageParams();
     expect(defaultParams).toEqual({
       page: 0,
-      pazeSize: 10,
+      pageSize: 20,
       sortBy: '',
       order: 'asc',
     });
@@ -132,7 +132,7 @@ describe('WorkflowDetailViewComponent', () => {
     const defaultParams = component.getDefaultPageParams();
     expect(defaultParams).toEqual({
       page: 0,
-      pazeSize: 10,
+      pageSize: 20,
       sortBy: '',
       order: 'asc',
     });
@@ -239,7 +239,7 @@ describe('WorkflowDetailViewComponent', () => {
     const defaultParams = component.getDefaultPageParams();
     expect(defaultParams).toEqual({
       page: 0,
-      pazeSize: 10,
+      pageSize: 20,
       sortBy: '',
       order: 'asc',
     });

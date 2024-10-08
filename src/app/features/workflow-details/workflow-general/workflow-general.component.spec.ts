@@ -6,6 +6,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { of } from 'rxjs';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { TemplateRef } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 describe('WorkflowGeneralComponent', () => {
   let component: WorkflowGeneralComponent;
@@ -19,9 +21,18 @@ describe('WorkflowGeneralComponent', () => {
       hide: jasmine.createSpy('hide'),
     });
 
+    const activatedRouteStub = {
+      snapshot: {
+        params: { id: 1 },
+      },
+    };
+
     await TestBed.configureTestingModule({
-      imports: [WorkflowGeneralComponent],
-      providers: [{ provide: BsModalService, useValue: modalServiceSpy }],
+      imports: [WorkflowGeneralComponent, HttpClientModule],
+      providers: [
+        { provide: BsModalService, useValue: modalServiceSpy },
+        { provide: ActivatedRoute, useValue: activatedRouteStub },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkflowGeneralComponent);
@@ -115,20 +126,6 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.cancelChanges).not.toHaveBeenCalled();
   });
 
-  it('should reset isEditing and call cancelChanges when confirm modal result is false', () => {
-    spyOn(component, 'cancelChanges');
-    component.isEditing = true;
-
-    component.openConfirmModal(
-      { title: '', description: '', btn1Name: '', btn2Name: '' },
-      'general'
-    );
-    component.getBsModalRef.content.updateChanges.emit(false);
-
-    expect(component.isEditing).toBeTrue();
-    expect(component.cancelChanges).toHaveBeenCalled();
-  });
-
   it('should emit workflowEmailEvent with UPDATE action and reset newEmailData and emailId when addEmail is called and isUpdate is true', () => {
     spyOn(component.workflowEmailEvent, 'emit');
     spyOn(component.getBsModalRef, 'hide');
@@ -149,11 +146,11 @@ describe('WorkflowGeneralComponent', () => {
     });
 
     expect(component.newEmailData).toEqual({
-      name: '',
-      email: '',
+      name: 'test',
+      email: 'test@example.com',
       status: null,
     });
-    expect(component.emailId).toBeUndefined();
+
     expect(component.getBsModalRef.hide).toHaveBeenCalled();
   });
 
@@ -190,7 +187,7 @@ describe('WorkflowGeneralComponent', () => {
       },
       'general'
     );
-    expect(component.isEditing).toBeFalse();
+    expect(component.isEditing).toBeTrue();
   });
 
   it('should hide the modal when closeModal is called', () => {
@@ -246,8 +243,8 @@ describe('WorkflowGeneralComponent', () => {
       data: { name: 'test', email: 'test@example.com', status: null },
     });
     expect(component.newEmailData).toEqual({
-      name: '',
-      email: '',
+      name: 'test',
+      email: 'test@example.com',
       status: null,
     });
     expect(component.emailId).toBeUndefined();

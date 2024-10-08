@@ -711,16 +711,16 @@ describe('ApiService', () => {
   });
 
   it('should update template for step', () => {
-    const workflowId = 1;
+    const templateId = 1;
     const body = { templateId: 123 };
     const mockResponse = { success: true };
 
-    service.updateTemplateForStep(workflowId, body).subscribe(response => {
+    service.updateTemplate(templateId, body).subscribe(response => {
       expect(response).toEqual(mockResponse);
     });
 
     const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/workflow/${workflowId}/template`
+      `${service['apiUrl']}/template/${templateId}`
     );
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual(body);
