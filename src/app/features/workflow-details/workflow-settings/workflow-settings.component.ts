@@ -42,16 +42,14 @@ export class WorkflowSettingsComponent {
 
   ngOnInit(): void {
     if (this.workflowId) {
-      this.apiServie
-        .getWorkflowSteps(this.workflowId, this.pageParams)
-        .subscribe({
-          next: data => {
-            this.workflowSteps = data.content;
-          },
-          error: error => {
-            console.error(error);
-          },
-        });
+      this.apiServie.getWorkflowSteps(this.workflowId).subscribe({
+        next: data => {
+          this.workflowSteps = data;
+        },
+        error: error => {
+          console.error(error);
+        },
+      });
     }
   }
 

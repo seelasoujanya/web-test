@@ -1,7 +1,7 @@
 export interface IWorkflowStepField {
   key: string;
   label: string;
-  type: 'textarea' | 'select' | 'input' | 'checkbox';
+  type: 'textarea' | 'select' | 'input' | 'checkbox' | 'password';
   placeholder?: string;
   values: string[];
   defaultValue?: string;

@@ -31,6 +31,20 @@
         [class.disabled]="!enableEditing">
       </ng-select>
     </div>
+    <div class="field-item">
+      <span [tooltip]="'Please enter the file name to save XML output'"
+        >File Name</span
+      >
+      <div>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Please enter the file name to save XML output"
+          class="input-field"
+          [ngModel]="fileName"
+          [class.disabled]="!enableEditing" />
+      </div>
+    </div>
   </div>
 
   <div class="buttons" *ngIf="enableEditing">

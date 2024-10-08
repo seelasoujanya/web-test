@@ -44,7 +44,7 @@
           >
           <input
             *ngSwitchCase="'input'"
-            type="text"
+            [type]="field.label === 'Password' ? 'password' : 'text'"
             maxlength="255"
             placeholder="{{ field.placeholder }}"
             class="input-field"

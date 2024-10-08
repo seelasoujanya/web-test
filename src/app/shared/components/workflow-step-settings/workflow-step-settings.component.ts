@@ -96,6 +96,7 @@ export class WorkflowStepSettingsComponent {
       this.workflowStep?.workflowStepConfigurations.push({
         key,
         value,
+        workflowStepId: this.workflowStep?.id,
       } as IStepConfiguration);
     }
   }
