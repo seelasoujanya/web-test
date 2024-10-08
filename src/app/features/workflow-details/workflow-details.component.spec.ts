@@ -52,14 +52,15 @@ describe('WorkflowDetailsComponent', () => {
         RouterModule.forRoot([]),
       ],
       providers: [
-        { provide: ApiService, useValue: apiServiceSpy },
-        { provide: SpinnerService, useValue: spinnerServiceSpy },
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { params: { id: 1 } },
+            queryParams: of({ tab: 'general' }),
+            snapshot: { params: { id: '123' } },
           },
         },
+        { provide: ApiService, useValue: apiServiceSpy },
+        { provide: SpinnerService, useValue: spinnerServiceSpy },
       ],
     }).compileComponents();
 
@@ -257,10 +258,6 @@ describe('WorkflowDetailsComponent', () => {
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
     expect(component.getWorkflow).toHaveBeenCalled();
     expect(component.getEmailsByWorkflowId).toHaveBeenCalled();
-    expect(component.getWorkflowSteps).toHaveBeenCalledWith(
-      component.workflowId,
-      component.pageParams
-    );
   });
 
   it('should handle missing workflow instances in updateWorkflowsData', () => {

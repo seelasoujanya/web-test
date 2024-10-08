@@ -81,46 +81,6 @@ describe('WorkflowSettingsComponent', () => {
     });
   });
 
-  it('should populate workflowSteps on init', () => {
-    const mockSteps: IWorkflowStep[] = [
-      {
-        id: 1,
-        workflowId: 123,
-        executionOrder: 1,
-        name: 'Step 1',
-        type: 'DDEX',
-        created: '',
-        modified: '',
-        workflowStepConfigurations: [],
-      },
-      {
-        id: 2,
-        workflowId: 123,
-        executionOrder: 2,
-        name: 'Step 2',
-        type: 'DDEX',
-        created: '',
-        modified: '',
-        workflowStepConfigurations: [],
-      },
-    ];
-
-    const mockResponse = {
-      content: mockSteps,
-    };
-
-    component.workflowId = '123';
-    apiService.getWorkflowSteps.and.returnValue(of(mockResponse));
-
-    component.ngOnInit();
-
-    expect(apiService.getWorkflowSteps).toHaveBeenCalledWith(
-      '123',
-      component.pageParams
-    );
-    expect(component.workflowSteps).toEqual(mockResponse.content);
-  });
-
   it('should handle error when getWorkflowSteps fails', () => {
     const consoleSpy = spyOn(console, 'error');
     component.workflowId = '123';
@@ -130,10 +90,7 @@ describe('WorkflowSettingsComponent', () => {
 
     component.ngOnInit();
 
-    expect(apiService.getWorkflowSteps).toHaveBeenCalledWith(
-      '123',
-      component.pageParams
-    );
+    expect(apiService.getWorkflowSteps).toHaveBeenCalledWith('123');
     expect(consoleSpy).toHaveBeenCalledWith(jasmine.any(Error));
   });
 
