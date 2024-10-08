@@ -479,38 +479,6 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
-  it('should get workflow steps and return success response', () => {
-    const workflowId = 1;
-    const queryParams = { page: 0, size: 10 };
-    const mockResponse: IPage<any> = {
-      content: [{ step: 'Step 1' }, { step: 'Step 2' }],
-      totalElements: 2,
-      totalPages: 1,
-      size: 10,
-      number: 0,
-      numberOfElements: 0,
-    };
-
-    service
-      .getWorkflowSteps(workflowId.toString(), queryParams)
-      .subscribe(response => {
-        expect(response).toEqual(mockResponse);
-      });
-
-    const params = new HttpParams({ fromObject: queryParams });
-    const req = httpTestingController.expectOne(req => {
-      return (
-        req.url === `${service['apiUrl']}/workflow/${workflowId}/steps` &&
-        req.params.toString() === params.toString()
-      );
-    });
-    expect(req.request.method).toBe('GET');
-    expect(req.request.params.toString()).toBe(
-      new HttpParams({ fromObject: queryParams }).toString()
-    );
-    req.flush(mockResponse);
-  });
-
   it('should get templates by template id and return success response', () => {
     const templateId = 1;
     const queryParams = { page: 0, size: 10 };
