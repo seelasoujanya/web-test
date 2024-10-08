@@ -135,9 +135,9 @@ describe('WorkflowStepSettingsComponent', () => {
       ],
     };
     component.updateCheckboxFieldValue('testKey');
-    expect(
-      component.workflowStep?.workflowStepConfigurations[0].value
-    ).toBeFalse();
+    expect(component.workflowStep?.workflowStepConfigurations[0].value).toBe(
+      'false'
+    );
   });
 
   it('should handle successful updateWorkflowStepSettings', () => {

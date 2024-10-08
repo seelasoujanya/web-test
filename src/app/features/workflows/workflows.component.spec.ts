@@ -73,15 +73,89 @@ describe('WorkflowsComponent', () => {
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
-  it('should call getPageItems with updated search parameter', () => {
+  it('should filter workflows based on the search term and update filteredWorkflows', () => {
     const searchTerm = 'test workflow';
     component.workflowName = searchTerm;
-    spyOn(component, 'getPageItems');
-
+    component.workflowsData = [
+      {
+        name: 'Test Workflow 1',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+    ];
+    const expectedFilteredWorkflows = [
+      {
+        name: 'Test Workflow 1',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+    ];
     component.searchWorkflow();
+    expect(component.filteredWorkflows).toEqual(expectedFilteredWorkflows);
+    expect(component.noWorkflows).toBe(false);
+  });
 
-    expect(component.pageParams.search).toBe(searchTerm);
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  it('should reset filteredWorkflows if search term is empty and noWorkflows should be false', () => {
+    component.workflowName = '';
+    component.workflowsData = [
+      {
+        name: 'Test Workflow 1',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+      {
+        name: 'Another Workflow',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+    ];
+    component.searchWorkflow();
+    expect(component.filteredWorkflows).toEqual(component.workflowsData);
+    expect(component.noWorkflows).toBe(false);
+  });
+
+  it('should set noWorkflows to true if there are no matching workflows', () => {
+    const searchTerm = 'nonexistent workflow';
+    component.workflowName = searchTerm;
+    component.workflowsData = [
+      {
+        name: 'Test Workflow 1',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+      {
+        name: 'Another Workflow',
+        id: 0,
+        enabled: false,
+        paused: false,
+        created: '',
+        modified: '',
+        status: '',
+      },
+    ];
+    component.searchWorkflow();
+    expect(component.filteredWorkflows.length).toBe(0);
+    expect(component.noWorkflows).toBe(true);
   });
 
   it('should call getPageItems with updated pageParams on onPage', () => {

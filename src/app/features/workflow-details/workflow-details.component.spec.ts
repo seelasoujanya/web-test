@@ -209,6 +209,7 @@ describe('WorkflowDetailsComponent', () => {
         priority: Priority.LOW,
         created: new Date(),
         modified: new Date(),
+        deliveryType: '',
       },
       {
         status: WorkflowInstanceStatus.RUNNING,
@@ -224,6 +225,7 @@ describe('WorkflowDetailsComponent', () => {
         priority: Priority.LOW,
         created: new Date(),
         modified: new Date(),
+        deliveryType: '',
       },
     ];
 

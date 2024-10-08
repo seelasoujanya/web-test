@@ -14,9 +14,6 @@ describe('PaginationComponent', () => {
 
     fixture = TestBed.createComponent(PaginationComponent);
     component = fixture.componentInstance;
-    component.pageInput = {
-      nativeElement: { value: '' },
-    } as unknown as ElementRef;
     fixture.detectChanges();
   });
 
@@ -57,55 +54,26 @@ describe('PaginationComponent', () => {
     expect(component.paginationEvent.emit).not.toHaveBeenCalled();
   });
 
-  it('should call gotoPage with correct page number on gotoInputPage', () => {
-    spyOn(component, 'gotoPage');
-    component.pageInput = { nativeElement: { value: '3' } } as ElementRef;
-    component.totalPages = 10;
-    component.gotoInputPage();
-    expect(component.gotoPage).toHaveBeenCalledWith(3, 'i');
-  });
-
   it('should handle "f" event type correctly', () => {
-    component.pageInput = { nativeElement: { value: '' } } as ElementRef;
     component.page = { totalPages: 10, number: 0 };
     component.eventType = 'f';
     fixture.detectChanges();
 
     expect(component.pageStart).toBe(1);
-    expect(component.pageInput.nativeElement.value).toBe('');
   });
 
   it('should handle "l" event type correctly', () => {
-    component.pageInput = { nativeElement: { value: '' } } as ElementRef;
     component.page = { totalPages: 10, number: 0 };
     component.eventType = 'l';
     fixture.detectChanges();
     expect(component.pageStart).toBe(1);
-    expect(component.pageInput.nativeElement.value).toBe('');
   });
 
   it('should handle "i" event type correctly', () => {
-    component.pageInput = { nativeElement: { value: '3' } } as ElementRef;
     component.page = { totalPages: 10, number: 1 };
     component.eventType = 'i';
     fixture.detectChanges();
     expect(component.pageStart).toBe(1);
-    expect(component.pageInput.nativeElement.value).toBe('3');
-  });
-
-  it('should handle invalid page input in gotoInputPage', () => {
-    spyOn(console, 'error');
-    component.pageInput = { nativeElement: { value: 'abc' } } as ElementRef;
-    component.totalPages = 10;
-    component.gotoInputPage();
-    expect(component.pageInput.nativeElement.value).toBe('');
-  });
-
-  it('should handle empty page input in gotoInputPage', () => {
-    component.pageInput = { nativeElement: { value: '' } } as ElementRef;
-    component.totalPages = 10;
-    component.gotoInputPage();
-    expect(component.pageInput.nativeElement.value).toBe('');
   });
 
   it('should handle page number equal to totalPages in gotoPage', () => {

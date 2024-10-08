@@ -16,8 +16,11 @@ describe('AuthorizationService', () => {
 
   const mockUserDetails = {
     principal: {
-      idToken: {
-        tokenValue: 'mockCsrfToken',
+      tokenValue: 'mockCsrfToken',
+      claims: {
+        profile: {
+          BGroupId: 'mockBGroupId',
+        },
       },
     },
   };
@@ -56,9 +59,8 @@ describe('AuthorizationService', () => {
   });
 
   it('should return false for isAuthenticated if user data is null', async () => {
-    mockApiService.getUserDetails.and.returnValue(
-      throwError(() => new Error('Error'))
-    );
+    mockApiService.getUserDetails.and.returnValue(of(null));
+
     const isAuthenticated = await service.isAuthenticated();
     expect(isAuthenticated).toBeFalse();
   });
@@ -70,13 +72,15 @@ describe('AuthorizationService', () => {
   });
 
   it('should handle errors when fetching user details', async () => {
+    spyOn(console, 'error'); // Spy on console.error
+
     mockApiService.getUserDetails.and.returnValue(
       throwError(() => new Error('Error'))
     );
+
     try {
       await service.getAuthenticatedUser();
     } catch (error) {
-      // Expect console.error to be called with the error
       expect(console.error).toHaveBeenCalledWith(
         'Error fetching user details',
         error
@@ -93,15 +97,13 @@ describe('AuthorizationService', () => {
   });
 
   it('should handle errors in getAuthenticatedUser', async () => {
-    spyOn(console, 'error'); // Spy on console.error
+    spyOn(console, 'error');
     mockApiService.getUserDetails.and.returnValue(
       throwError(() => new Error('Fetch error'))
     );
-
-    const userData = await service.getAuthenticatedUser();
-
-    expect(userData).toBeNull();
-
+    await expectAsync(service.getAuthenticatedUser()).toBeRejectedWithError(
+      'Fetch error'
+    );
     expect(console.error).toHaveBeenCalledWith(
       'Error fetching user details',
       jasmine.any(Error)
@@ -110,11 +112,8 @@ describe('AuthorizationService', () => {
 
   it('should fetch user data before getting CSRF token if user data is null', async () => {
     mockApiService.getUserDetails.and.returnValue(of(mockUserDetails));
-
     const token = await service.getCsrfToken();
-
     expect(token).toBe('mockCsrfToken');
-
     expect(mockApiService.getUserDetails).toHaveBeenCalled();
   });
 
