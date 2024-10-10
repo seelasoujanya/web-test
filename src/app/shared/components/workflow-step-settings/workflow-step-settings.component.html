@@ -85,7 +85,7 @@
       <button
         class="btn btn--red"
         type="button"
-        (click)="saveWorkflowSettingsChanges()">
+        (click)="saveWorkflowSettingsChanges(workflowStep?.type)">
         save
       </button>
       <button class="btn btn--black" type="button" (click)="cancelChanges()">
