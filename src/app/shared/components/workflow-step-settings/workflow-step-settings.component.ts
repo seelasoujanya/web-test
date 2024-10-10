@@ -134,10 +134,10 @@ export class WorkflowStepSettingsComponent {
     });
   }
 
-  saveWorkflowSettingsChanges() {
+  saveWorkflowSettingsChanges(step: any) {
     const modalData = {
       title: 'Confirm Changes',
-      description: `Are you sure you want to Save changes  for Workflow Settings?`,
+      description: `Are you sure you want to Save changes  for ${step} Settings?`,
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
     };

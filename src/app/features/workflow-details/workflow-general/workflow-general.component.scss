@@ -317,6 +317,7 @@ textarea:focus {
     }
     .buttons {
       display: flex;
+      justify-content: flex-end;
       gap: 5px;
       align-items: flex-end;
       padding-inline: 20px;
