@@ -191,7 +191,7 @@ export class WorkflowGeneralComponent implements OnInit {
     this.updatingWorkflowConfigurationsArray();
     const modalData = {
       title: 'Confirm Changes',
-      description: `Are you sure you want to Save changes  for Workflow?`,
+      description: `Are you sure you want to Save changes for General Settings?`,
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
     };
