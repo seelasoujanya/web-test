@@ -371,3 +371,16 @@ textarea:focus {
   top: 50%;
   transform: translateY(-50%);
 }
+
+::ng-deep
+  .table-cell
+  .ng-select
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  svg {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
