@@ -16,6 +16,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowConfiguration } from 'src/app/core/models/workflow.model';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-workflow-general',
@@ -41,6 +42,8 @@ export class WorkflowGeneralComponent implements OnInit {
 
   AssetIngestionWaitTimeError: string | undefined = '';
   DataIngestionWaitTimeError: string | undefined = '';
+  copyUrl: string | undefined = '';
+  copyUrlError: string | undefined = '';
 
   @Input()
   workflow: any;
@@ -100,11 +103,14 @@ export class WorkflowGeneralComponent implements OnInit {
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
     private apiService: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    const workflowId = this.route.snapshot.params['id'];
     this.initialConfigurations();
+    this.getWorkflowSettings(workflowId);
   }
 
   filterSpecialChars(event: KeyboardEvent) {
@@ -119,8 +125,15 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   initialConfigurations() {
-    const woflowId = this.route.snapshot.params['id'];
-    this.apiService.getWorkflowConfigurations(woflowId).subscribe(
+    console.log('workflowCopy' + this.workflowCopy);
+
+    const workflowId = this.route.snapshot.params['id'];
+    this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
+      this.workflow = result;
+      this.workflowCopy = JSON.parse(JSON.stringify(result));
+    });
+
+    this.apiService.getWorkflowConfigurations(workflowId).subscribe(
       (configs: WorkflowConfiguration[]) => {
         this.workflowConfigurations = configs;
         this.updateConfigurationValues();
@@ -131,10 +144,20 @@ export class WorkflowGeneralComponent implements OnInit {
     );
   }
 
+  getWorkflowSettings(workflowId: any) {
+    this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
+      this.workflow = result;
+      console.log(this.workflow.alias);
+      this.copyUrl = `http://localhost:8080/api/workflow/${this.workflow.alias}`;
+      this.copyUrlError = '';
+    });
+  }
+
   isErrorMsg(): boolean {
     if (
       this.AssetIngestionWaitTimeError != '' ||
-      this.DataIngestionWaitTimeError != ''
+      this.DataIngestionWaitTimeError != '' ||
+      this.copyUrlError != ''
     ) {
       return true;
     }
@@ -164,6 +187,40 @@ export class WorkflowGeneralComponent implements OnInit {
       this.DataIngestionWaitTimeError =
         'Please enter a valid time (eg: 1h 30m, 3m, 5h).';
     }
+  }
+
+  addText() {
+    if (this.workflowCopy.alias) {
+      if (this.workflowCopy.alias == this.workflow.alias) {
+        this.copyUrlError =
+          'The alias already exists. Please enter a different one';
+        this.copyUrl = '';
+      } else {
+        this.copyUrlError = '';
+        this.copyUrl = `http://localhost:8080/api/workflow/${this.workflowCopy.alias}`;
+      }
+    } else {
+      this.copyUrl = '';
+    }
+  }
+
+  showCustom() {
+    this.toastr.show('Copied!', '', {
+      toastClass: 'custom-toast',
+      positionClass: 'toast-bottom-center',
+    });
+  }
+
+  copyText(url: any) {
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        console.log('Text copied to clipboard');
+        this.showCustom();
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+      });
   }
 
   private updateConfigurationValues() {
@@ -249,6 +306,7 @@ export class WorkflowGeneralComponent implements OnInit {
               this.workflowCopy.id,
               this.workflowConfigurations
             );
+            this.initialConfigurations();
           }
           this.isEditing = false;
         } else {
@@ -265,7 +323,6 @@ export class WorkflowGeneralComponent implements OnInit {
   private updatingWorkflowConfigurationsArray() {
     this.AssetIngestionWaitTime = this.AssetIngestionWaitTime || '';
     this.DataIngestionWaitTime = this.DataIngestionWaitTime || '';
-    console.log('kk' + this.convertToMinutes(this.AssetIngestionWaitTime));
     this.workflowConfigurations = [
       {
         key: 'AssetIngestionWaitTime',
@@ -319,7 +376,6 @@ export class WorkflowGeneralComponent implements OnInit {
               'Workflow configuration updated successfully:',
               response
             );
-            this.initialConfigurations();
           },
           error => {
             console.error('Error updating workflow configuration:', error);

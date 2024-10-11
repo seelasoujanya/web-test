@@ -88,6 +88,33 @@
           [(ngModel)]="workflowCopy.description"
           [class.disabled]="!isEditing"></textarea>
       </div>
+
+      <div class="workflow-field">
+        <span>Alias</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Alias to trigger"
+          class="input-field"
+          [(ngModel)]="workflowCopy.alias"
+          (blur)="addText()"
+          [class.disabled]="!isEditing" />
+        <div *ngIf="copyUrl" class="url">
+          <a [href]="copyUrl" class="url-link">
+            {{ copyUrl }}
+          </a>
+          <button (click)="copyText(copyUrl)" class="copy-button">
+            <img
+              src="assets/icons/copy-logo.svg"
+              alt="Copy Icon"
+              class="copy-icon" />
+          </button>
+        </div>
+        <p *ngIf="copyUrlError" class="timeError">
+          {{ copyUrlError }}
+        </p>
+      </div>
+
       <div class="workflow-field">
         <div>
           <span>Concurrency</span>
@@ -99,22 +126,20 @@
             [class.disabled]="!isEditing"
             (blur)="checkThrottleLimit($event)" />
         </div>
-        <div class="buttons" *ngIf="isEditing">
-          <button
-            class="btn btn--red"
-            type="button"
-            [disabled]="isErrorMsg()"
-            (click)="saveWorkflowChanges()">
-            SAVE
-          </button>
-          <button
-            class="btn btn--black"
-            type="button"
-            (click)="cancelChanges()">
-            CANCEL
-          </button>
-        </div>
       </div>
+    </div>
+
+    <div class="buttons" *ngIf="isEditing">
+      <button
+        class="btn btn--red"
+        type="button"
+        [disabled]="isErrorMsg()"
+        (click)="saveWorkflowChanges()">
+        SAVE
+      </button>
+      <button class="btn btn--black" type="button" (click)="cancelChanges()">
+        CANCEL
+      </button>
     </div>
   </div>
 

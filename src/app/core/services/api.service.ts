@@ -10,6 +10,7 @@ import {
   WorkflowConfiguration,
 } from '../models/workflow.model';
 import { StatsDTO } from '../models/workflowinstance.model';
+import { IStepConfiguration } from '../models/step-configuration.model';
 
 @Injectable({
   providedIn: 'root',
@@ -187,13 +188,13 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/workflow/${id}/steps`);
   }
 
-  public updateWorkflowSteps(
-    id: string,
+  public updateWorkflowStepConfigs(
+    id: number,
     workflowStep: IWorkflowStep
   ): Observable<any> {
-    return this.http.put<any>(
-      `${this.apiUrl}/workflow/${id}/steps`,
-      workflowStep
+    return this.http.post<any>(
+      `${this.apiUrl}/step/${id}/configs`,
+      workflowStep.workflowStepConfigurations
     );
   }
 
@@ -230,7 +231,7 @@ export class ApiService {
   }
 
   postTemplateForStep(body: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/workflow/template`, body);
+    return this.http.post<any>(`${this.apiUrl}/step/template`, body);
   }
 
   bookmarkWorkflow(body: any): Observable<any> {
