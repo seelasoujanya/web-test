@@ -23,40 +23,26 @@ export class PaginationComponent {
     if (page) {
       this.totalPages = page.totalPages;
       this.currentPage = page.number + 1;
+
       const limit = this.pageItemsLimit - 1;
+
       if (this.totalPages > this.pageItemsLimit) {
-        if (this.eventType) {
-          switch (this.eventType) {
-            case 'f':
-              this.pageStart = 1;
-              break;
-            case 'l':
-              this.pageStart = this.totalPages - limit;
-              break;
-            case 'n':
-              if (this.pageStart + limit < this.currentPage)
-                this.pageStart = this.pageStart + 1;
-              break;
-            case 'p':
-              if (this.pageStart > this.currentPage)
-                this.pageStart = this.pageStart - 1;
-              break;
-            case 'i':
-              this.pageStart = this.currentPage;
-              if (this.currentPage + limit > this.totalPages)
-                this.pageStart = this.totalPages - limit;
-              break;
-            default:
-            // code block
-          }
+        const halfLimit = Math.floor(this.pageItemsLimit / 2);
+
+        if (this.currentPage <= halfLimit + 1) {
+          this.pageStart = 1;
+        } else if (this.currentPage >= this.totalPages - halfLimit) {
+          this.pageStart = this.totalPages - limit;
+        } else {
+          this.pageStart = this.currentPage - halfLimit;
         }
-        this.pages = Array(this.pageItemsLimit)
-          .fill(0)
-          .map((x, i) => i + this.pageStart);
+
+        this.pages = Array.from(
+          { length: this.pageItemsLimit },
+          (_, i) => i + this.pageStart
+        );
       } else {
-        this.pages = Array(Math.min(this.pageItemsLimit, this.totalPages))
-          .fill(0)
-          .map((x, i) => i + 1);
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
       }
     }
   }

@@ -59,9 +59,11 @@
             </div>
           </td>
           <td class="table-cell">
-            <ng-container *ngIf="workflow.created; else noDate">
-              {{ workflow.created | date: 'MMM dd, yyyy' }}<br />
-              <span class="time">{{ workflow.created | date: 'HH:mm' }}</span>
+            <ng-container *ngIf="workflow.completed; else noDate">
+              {{ workflow.completed | date: 'MMM dd, yyyy' }}<br />
+              <span class="time">{{
+                workflow.completed | date: 'HH:mm:ss'
+              }}</span>
             </ng-container>
             <ng-template #noDate> NA </ng-template>
           </td>

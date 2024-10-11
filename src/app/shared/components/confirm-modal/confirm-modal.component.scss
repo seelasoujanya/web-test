@@ -1,3 +1,4 @@
+@import 'src/styles/button';
 .modal-wrapper {
   height: 100%;
 }
@@ -65,29 +66,6 @@
     align-items: flex-end;
     padding-inline: 20px;
     margin-bottom: 20px;
-    .confirm-btn {
-      width: 98px;
-      height: 34px;
-      border-radius: 4px;
-      padding: 6px;
-      background-color: #bd2c49;
-      border: none;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 20px;
-      color: #ffffff;
-    }
-    .cancel-btn {
-      width: 98px;
-      height: 34px;
-      border-radius: 4px;
-      padding: 6px;
-      background-color: #262626;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 20px;
-      color: #ffffff;
-    }
   }
 }
 

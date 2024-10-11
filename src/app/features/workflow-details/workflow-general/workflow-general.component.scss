@@ -385,3 +385,16 @@ textarea:focus {
   top: 50%;
   transform: translateY(-50%);
 }
+
+.workflow-field {
+  position: relative;
+}
+
+.ng-select-dropdown-icon {
+  position: absolute;
+  right: 10px;
+  top: 65%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 10;
+}
