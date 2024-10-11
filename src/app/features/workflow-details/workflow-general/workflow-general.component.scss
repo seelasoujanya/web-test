@@ -1,5 +1,6 @@
-@import 'src/styles/_ngselect.scss';
+@import 'src/styles/ngselect.scss';
 @import 'src/styles/button';
+
 .workflow-general-container {
   width: 98%;
   margin-inline: 15px;
@@ -16,14 +17,14 @@
       align-items: center;
       justify-content: space-between;
       padding-block: 10px;
-      border: 1px solid #e8e8e8;
+      border-bottom: 1px solid #e8e8e8;
+      margin: 5px 24px;
       .title {
         font-weight: 500;
         font-size: 20px;
         line-height: 24.2px;
         letter-spacing: 0.3px;
         color: #333333;
-        padding-left: 24px;
       }
       .label {
         font-size: 20px;
@@ -69,12 +70,17 @@
           border: 1px solid #d0d5dd;
           border-radius: 4px;
         }
-        .buttons {
-          display: flex;
-          gap: 6px;
-          justify-content: flex-end;
-          margin-top: 15px;
-        }
+      }
+    }
+    .buttons {
+      margin: 0px 15px;
+      padding-block: 16px;
+      border-top: 1px solid #d0d5dd;
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      .btn {
+        margin-left: 5px;
       }
     }
   }
@@ -373,17 +379,18 @@ textarea:focus {
   transform: translateY(-50%);
 }
 
-::ng-deep
-  .table-cell
-  .ng-select
-  .ng-select-container
-  .ng-value-container
-  .ng-value
-  svg {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+.url-link {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.copy-button {
+  background-color: white;
+  border: 0px;
+}
+
+.copy-icon {
+  height: 20px;
 }
 
 .workflow-field {

@@ -117,6 +117,7 @@ export class WorkflowStepSettingsComponent {
       this.workflowStep?.workflowStepConfigurations.push({
         key,
         value: true,
+        workflowStepId: this.workflowStep?.id,
       } as IStepConfiguration);
     }
   }
@@ -155,10 +156,7 @@ export class WorkflowStepSettingsComponent {
     if (this.workflowStep) {
       this.spinnerService.show();
       this.apiService
-        .updateWorkflowSteps(
-          this.workflowStep.workflowId.toString(),
-          this.workflowStep
-        )
+        .updateWorkflowStepConfigs(this.workflowStep.id, this.workflowStep)
         .subscribe({
           next: data => {
             this.workflowStep = data;

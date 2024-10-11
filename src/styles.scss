@@ -68,3 +68,29 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
+
+/* Custom toast styles */
+.custom-toast {
+  background-color: black !important; /* White background */
+  color: white !important; /* Black text for visibility */
+  padding: 15px; /* Padding for the toast */
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* Optional shadow */
+
+  width: auto !important;
+  height: auto !important;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast-bottom-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+  bottom: 40px !important;
+}
