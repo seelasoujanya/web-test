@@ -77,7 +77,9 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   public backToWorkflows(): void {
     let workflowId = this.workflowsInstance?.workflow?.id;
     if (workflowId) {
-      this.router.navigate(['workflows', workflowId]);
+      this.router.navigate(['workflows', workflowId], {
+        queryParams: { tab: 'history' },
+      });
     } else {
       this.router.navigate(['/workflows']);
     }
