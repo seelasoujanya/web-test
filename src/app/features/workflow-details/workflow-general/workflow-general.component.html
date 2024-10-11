@@ -217,7 +217,7 @@
 
 <ng-template #addEmailForm class="modal-content">
   <div class="header">
-    <p class="header_title">Add Email</p>
+    <p class="header_title">{{ isUpdate ? 'Edit' : 'Add' }} Email</p>
     <button type="button" class="header_close-btn" (click)="closeModal()">
       <img src="assets/icons/close-circle.svg" alt="" />
     </button>
@@ -252,24 +252,25 @@
         [clearable]="false"
         [(ngModel)]="newEmailData.status"
         [appendTo]="'scrollable-table__body'">
-        <ng-template ng-label-tmp let-item="item">
-          <span>{{ item.label }}</span>
-          <svg
-            width="14"
-            height="8"
-            viewBox="0 0 14 8"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1.375 1.125L7 6.75L12.625 1.125"
-              stroke="#262626"
-              stroke-width="1.25"
-              stroke-miterlimit="10"
-              stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </ng-template>
       </ng-select>
+      <div
+        class="ng-select-dropdown-icon"
+        [ngStyle]="{ color: isUpdate ? '#262626' : '#999' }">
+        <svg
+          width="14"
+          height="8"
+          viewBox="0 0 14 8"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M1.375 1.125L7 6.75L12.625 1.125"
+            [attr.stroke]="isUpdate ? '#262626' : '#999'"
+            stroke-width="1.25"
+            stroke-miterlimit="10"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </div>
     </div>
   </div>
   <div class="buttons" style="position: relative">
