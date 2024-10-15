@@ -17,6 +17,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowConfiguration } from 'src/app/core/models/workflow.model';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-workflow-general',
@@ -148,7 +149,7 @@ export class WorkflowGeneralComponent implements OnInit {
     this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
       this.workflow = result;
       console.log(this.workflow.alias);
-      this.copyUrl = `http://localhost:8080/api/workflow/${this.workflow.alias}`;
+      this.copyUrl = `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias == null ? 'triggerAlias' : this.workflowCopy.alias}/instance`;
       this.copyUrlError = '';
     });
   }
@@ -197,7 +198,7 @@ export class WorkflowGeneralComponent implements OnInit {
         this.copyUrl = '';
       } else {
         this.copyUrlError = '';
-        this.copyUrl = `http://localhost:8080/api/workflow/${this.workflowCopy.alias}`;
+        this.copyUrl = `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
       }
     } else {
       this.copyUrl = '';
