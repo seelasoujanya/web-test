@@ -81,14 +81,17 @@
         </p>
       </div>
       <div class="workflow-field">
-        <span>Description</span>
-        <textarea
-          placeholder="add description"
-          class="text-field"
-          [(ngModel)]="workflowCopy.description"
-          [class.disabled]="!isEditing"></textarea>
+        <div>
+          <span>Concurrency</span>
+          <input
+            type="number"
+            placeholder="throttle limit"
+            class="input-field"
+            [(ngModel)]="workflowCopy.throttleLimit"
+            [class.disabled]="!isEditing"
+            (blur)="checkThrottleLimit($event)" />
+        </div>
       </div>
-
       <div class="workflow-field">
         <span>Alias</span>
         <input
@@ -100,9 +103,9 @@
           (blur)="addText()"
           [class.disabled]="!isEditing" />
         <div *ngIf="copyUrl" class="url">
-          <a [href]="copyUrl" class="url-link">
+          <span class="url-link">
             {{ copyUrl }}
-          </a>
+          </span>
           <button (click)="copyText(copyUrl)" class="copy-button">
             <img
               src="assets/icons/copy-logo.svg"
@@ -114,18 +117,13 @@
           {{ copyUrlError }}
         </p>
       </div>
-
       <div class="workflow-field">
-        <div>
-          <span>Concurrency</span>
-          <input
-            type="number"
-            placeholder="throttle limit"
-            class="input-field"
-            [(ngModel)]="workflowCopy.throttleLimit"
-            [class.disabled]="!isEditing"
-            (blur)="checkThrottleLimit($event)" />
-        </div>
+        <span>Description</span>
+        <textarea
+          placeholder="add description"
+          class="text-field"
+          [(ngModel)]="workflowCopy.description"
+          [class.disabled]="!isEditing"></textarea>
       </div>
     </div>
 
