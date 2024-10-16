@@ -33,12 +33,24 @@
             <td class="table-cell">{{ template.name }}</td>
             <td class="table-cell">{{ template.description }}</td>
             <td class="table-cell">
-              {{ template.created | date: 'MMM dd, yyyy' }}<br />
-              <span class="time">{{ template.created | date: 'HH:mm' }}</span>
+              {{
+                template.created
+                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}<br />
+              <span class="time">{{
+                template.created
+                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}</span>
             </td>
             <td class="table-cell">
-              {{ template.modified | date: 'MMM dd, yyyy' }}<br />
-              <span class="time">{{ template.modified | date: 'HH:mm' }}</span>
+              {{
+                template.modified
+                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}<br />
+              <span class="time">{{
+                template.modified
+                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}</span>
             </td>
           </tr>
         </ng-container>

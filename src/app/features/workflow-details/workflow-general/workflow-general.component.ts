@@ -99,6 +99,7 @@ export class WorkflowGeneralComponent implements OnInit {
   currentSort: 'asc' | 'desc' = 'asc';
 
   selectedHeading: string | undefined;
+  alias: any;
 
   constructor(
     private modalService: BsModalService,
@@ -149,7 +150,10 @@ export class WorkflowGeneralComponent implements OnInit {
     this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
       this.workflow = result;
       console.log(this.workflow.alias);
-      this.copyUrl = `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias == null ? 'triggerAlias' : this.workflowCopy.alias}/instance`;
+      this.copyUrl =
+        this.workflowCopy.alias == null || this.workflowCopy.alias == ''
+          ? ''
+          : `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
       this.copyUrlError = '';
     });
   }
@@ -192,14 +196,22 @@ export class WorkflowGeneralComponent implements OnInit {
 
   addText() {
     if (this.workflowCopy.alias) {
-      if (this.workflowCopy.alias == this.workflow.alias) {
-        this.copyUrlError =
-          'The alias already exists. Please enter a different one';
-        this.copyUrl = '';
-      } else {
-        this.copyUrlError = '';
-        this.copyUrl = `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
-      }
+      this.apiService
+        .getWorkflowByAlias(this.workflowCopy.alias)
+        .subscribe(data => {
+          this.alias = data;
+          if (
+            this.alias != null &&
+            !(this.alias.alias == this.workflow.alias)
+          ) {
+            this.copyUrlError =
+              'The alias already exists. Please enter a different one';
+            this.copyUrl = '';
+          } else {
+            this.copyUrlError = '';
+            this.copyUrl = `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
+          }
+        });
     } else {
       this.copyUrl = '';
     }

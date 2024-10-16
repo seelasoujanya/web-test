@@ -7,7 +7,7 @@ nav {
   position: sticky;
   // position: fixed;
   // top: 0px;
-  // z-index: 100 !important;
+  z-index: 100 !important;
   .logo {
     background: #bd2c49;
     display: block;
@@ -59,9 +59,11 @@ nav {
       }
     }
     .nav-right__container-actions {
+      width: 120px;
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: space-between;
       margin-inline: 1rem;
       img {
         margin-right: 1.5rem;
@@ -119,4 +121,10 @@ nav {
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
+}
+
+.timeButton {
+  padding: 0px 2px;
+  font-size: 14px;
+  width: 50px;
 }

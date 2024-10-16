@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 @Component({
   selector: 'app-workflow-detail-view',
@@ -25,6 +26,7 @@ import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 })
 export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
+  isUTC = false;
 
   public ngOnDestroy(): void {
     this.destroyed$.next();
@@ -35,6 +37,9 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.getPageItems();
     this.getArtifactFiles();
     this.getInstancsLogs();
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
   }
 
   workflowsInstance = {} as WorkflowInstance;
@@ -50,9 +55,14 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private timeFormatService: TimeFormatService
   ) {
     this.workflowInstanceId = this.route.snapshot.params['id'];
+  }
+
+  toggleTimeFormat() {
+    this.timeFormatService.toggleTimeFormat();
   }
 
   getPageItems() {

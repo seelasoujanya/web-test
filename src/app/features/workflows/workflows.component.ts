@@ -156,14 +156,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   searchWorkflow(): void {
-    if (this.workflowName) {
-      this.filteredWorkflows = this.workflowsData.filter(workflow =>
-        workflow.name.toLowerCase().includes(this.workflowName.toLowerCase())
-      );
-    } else {
-      this.filteredWorkflows = [...this.workflowsData];
-    }
-    this.noWorkflows = this.filteredWorkflows.length === 0;
+    this.pageParams.search = this.workflowName;
+    this.getPageItems(this.pageParams);
     this.cdRef.detectChanges();
   }
   clearInput(): void {

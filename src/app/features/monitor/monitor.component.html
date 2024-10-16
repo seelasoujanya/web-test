@@ -47,8 +47,14 @@
             <td class="table-cell">{{ instance.workflow.name }}</td>
             <td class="table-cell">{{ instance.identifier }}</td>
             <td class="table-cell">
-              {{ instance.created | date: 'yyyy-MM-dd' }}<br />
-              <span class="time">{{ instance.created | date: 'HH:mm' }}</span>
+              {{
+                instance.completed
+                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}<br />
+              <span class="time">{{
+                instance.completed
+                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}</span>
             </td>
             <td class="table-cell">
               <div class="action-content" (click)="expandAction(instance)">

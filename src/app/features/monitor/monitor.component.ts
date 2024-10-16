@@ -21,6 +21,7 @@ import {
   SystemPropertiesDTO,
   SystemProperty,
 } from 'src/app/core/models/workflow.model';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 @Component({
   selector: 'app-monitor',
@@ -47,6 +48,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
   priority: any;
   noPendingInstances: boolean = false;
   noRunningInstances: boolean = false;
+  isUTC = false;
 
   headings: string[] = [
     'INSTANCE ID',
@@ -74,7 +76,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private spinnerService: SpinnerService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private timeFormatService: TimeFormatService
   ) {}
 
   onPage(pageNumber: number) {
@@ -95,6 +98,13 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.updateInstances(this.pageParams);
     this.updateDataFromWebSocket();
     this.getPausedProperty('paused');
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
+  }
+
+  toggleTimeFormat() {
+    this.timeFormatService.toggleTimeFormat();
   }
 
   public get getBsModalRef(): BsModalRef {
