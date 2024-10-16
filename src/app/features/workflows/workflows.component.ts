@@ -156,13 +156,15 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   searchWorkflow(): void {
+    this.pageParams.page = 0;
     this.pageParams.search = this.workflowName;
     this.getPageItems(this.pageParams);
     this.cdRef.detectChanges();
   }
   clearInput(): void {
     this.workflowName = '';
-    this.filteredWorkflows = [...this.workflowsData];
+    this.pageParams.search = '';
+    this.getPageItems(this.pageParams);
     this.noWorkflows = this.filteredWorkflows.length === 0;
   }
 

@@ -1,6 +1,6 @@
 export interface IPageParams {
   page?: number;
-  pazeSize?: number;
+  pageSize?: number;
   sortBy?: string;
   order?: string;
   search?: string;
