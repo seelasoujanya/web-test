@@ -70,9 +70,10 @@ export class ApiService {
   getWorkflows(pageParams: any): Observable<IPage<any>> {
     let params = new HttpParams()
       .set('page', pageParams.page)
-      .set('pageSize', pageParams.pageSize)
+      .set('size', pageParams.pageSize)
       .set('sortBy', pageParams.sortBy)
-      .set('order', pageParams.order);
+      .set('order', pageParams.order)
+      .set('search', pageParams.search);
 
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
@@ -160,6 +161,10 @@ export class ApiService {
 
   public getWorkflowById(id: number | unknown): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/workflow/${id}`);
+  }
+
+  public getWorkflowByAlias(alias: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/workflow/alias/${alias}`);
   }
 
   public getEmailsByWorkflowId(id: number | unknown): Observable<any> {

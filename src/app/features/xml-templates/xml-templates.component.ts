@@ -20,6 +20,7 @@ import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 @Component({
   selector: 'app-xml-templates',
@@ -55,6 +56,8 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
 
   updatedTemplate: any = '';
 
+  isUTC = false;
+
   newTemplateData = {
     name: '',
     description: '',
@@ -86,6 +89,13 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getPageItems(this.pageParams);
     //  this.getTemplates(this.pageParams);
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
+  }
+
+  toggleTimeFormat() {
+    this.timeFormatService.toggleTimeFormat();
   }
 
   public get getBsModalRef(): BsModalRef {
@@ -101,7 +111,8 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     private router: Router,
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private timeFormatService: TimeFormatService
   ) {
     this.reactiveForm = this.fb.group({
       code: [''],

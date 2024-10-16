@@ -12,6 +12,7 @@ import { DialogComponent } from 'src/app/shared/components/dialog/dialog.compone
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/core/services/api.service';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 @Component({
   selector: 'app-header',
@@ -30,13 +31,26 @@ import { ApiService } from 'src/app/core/services/api.service';
 export class HeaderComponent {
   selectedMenu: string | undefined;
 
+  isUTC = false;
+
   modalRef: BsModalRef | undefined;
 
   constructor(
     private modalService: BsModalService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private timeFormatService: TimeFormatService
   ) {}
+
+  ngOnInit() {
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
+  }
+
+  toggleTimeFormat() {
+    this.timeFormatService.toggleTimeFormat();
+  }
 
   public selectMenu(event: Event, menuType: string) {
     if (this.selectedMenu === menuType) {

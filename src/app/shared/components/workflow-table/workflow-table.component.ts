@@ -21,6 +21,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { ApiService } from 'src/app/core/services/api.service';
+import { TimeFormatService } from 'src/app/time-format.service';
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
@@ -90,13 +91,20 @@ export class WorkflowTableComponent implements OnDestroy {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
-
+  isUTC = false;
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private timeFormatService: TimeFormatService
   ) {}
 
+  ngOnInit() {
+    // ITC TO UTC
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
+  }
   public increaseLimitWorkflows(): void {
     this.increasePageEvent.emit(true);
   }

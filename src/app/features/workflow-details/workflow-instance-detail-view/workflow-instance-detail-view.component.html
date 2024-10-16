@@ -76,7 +76,14 @@
               <tr>
                 <td class="detail-field-key">Created</td>
                 <td class="detail-field-value">
-                  {{ workflowsInstance.created | date: 'MMM, dd YYYY HH:mm' }}
+                  {{
+                    workflowsInstance.created
+                      | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
+                  }}<br />
+                  <span class="time">{{
+                    workflowsInstance.created
+                      | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+                  }}</span>
                 </td>
               </tr>
               <tr>
@@ -84,10 +91,13 @@
                 <td class="detail-field-value">
                   <ng-container
                     *ngIf="workflowsInstance.completed; else noDate">
-                    {{ workflowsInstance.completed | date: 'MMM dd, yyyy'
+                    {{
+                      workflowsInstance.completed
+                        | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
                     }}<br />
                     <span class="time">{{
-                      workflowsInstance.completed | date: 'HH:mm:ss'
+                      workflowsInstance.completed
+                        | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
                     }}</span>
                   </ng-container>
                   <ng-template #noDate> NA </ng-template>
