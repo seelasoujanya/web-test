@@ -1,4 +1,6 @@
 @import 'src/styles/_datepicker.scss';
+@import 'src/styles/button';
+@import 'src/styles/ngselect.scss';
 .workflow-history-container {
   height: 75vh;
   width: 98%;
@@ -10,6 +12,12 @@
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
   background-color: white;
+  .filter-deliveries {
+    position: absolute;
+    top: 84px;
+    right: 0;
+    border: none;
+  }
   .workflows-instance-table {
     height: 65vh;
     position: relative;
@@ -31,77 +39,85 @@
   }
 }
 
-::ng-deep .modal-dialog {
-  .modal-content {
+.workflow-history-container.blurred {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.filter-template {
+  z-index: 1000;
+  position: absolute;
+  width: 30vw;
+  height: 110vh;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 6px;
+  .header {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background: white;
-    border-radius: 6px;
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-inline: 20px;
-      margin-top: 20px;
-      .header_title {
-        font-family: Graphik, serif;
-        font-size: 24px;
-        font-weight: 500;
-        font-style: normal;
-        line-height: 40px;
-        height: 39px;
-        color: black;
-        margin-bottom: 0px !important;
-      }
-      .header_close-btn {
-        cursor: pointer;
-        border: none;
-        outline: none;
-        background: white;
-        height: 20px;
-      }
-    }
-    .form-details {
-      height: 100%;
-      font-family: 'Graphik', sans-serif;
+    align-items: center;
+    justify-content: space-between;
+    padding-inline: 20px;
+    .header_title {
+      font-family: Graphik, serif;
+      font-size: 24px;
+      font-weight: 500;
       font-style: normal;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-      color: #828282;
-      padding-inline: 20px;
-      .field {
+      line-height: 40px;
+      height: 39px;
+      color: black;
+      margin-bottom: 0px !important;
+    }
+    .header_close-btn {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: white;
+      height: 20px;
+    }
+  }
+  .form-details {
+    height: 100%;
+    font-family: 'Graphik', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #828282;
+    padding-inline: 20px;
+    .field {
+      width: 100%;
+      box-sizing: border-box;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+      display: block;
+      letter-spacing: 0.3px;
+      padding-block: 15px;
+      color: #344054;
+      .input-field {
         width: 100%;
-        box-sizing: border-box;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 20px;
-        display: block;
-        letter-spacing: 0.3px;
-        padding-block: 15px;
-        color: #344054;
-        .input-field {
-          width: 100%;
-          height: 44px;
-          margin-top: 10px;
-          padding-left: 10px;
-          font-size: 14px;
-          border: 1px solid #d0d5dd;
-          border-radius: 4px;
-        }
-      }
-      .email-type {
-        margin-bottom: 15px;
+        height: 44px;
+        margin-top: 10px;
+        padding-left: 10px;
+        font-size: 14px;
+        border: 1px solid #d0d5dd;
+        border-radius: 4px;
       }
     }
-    .buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 5px;
-      align-items: flex-end;
-      padding-inline: 20px;
-      margin-bottom: 20px;
+    .email-type {
+      margin-bottom: 15px;
     }
+  }
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    align-items: flex-end;
+    padding-inline: 20px;
+    margin-bottom: 20px;
   }
 }
 

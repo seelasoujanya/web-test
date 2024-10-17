@@ -20,25 +20,25 @@ export const FOLDER_STRUCTURE = [
 ];
 
 export const WORKFLOW_INSTANCE_STATUS = [
-  { label: 'CREATED', value: 'CREATED' },
-  { label: 'RUNNING', value: 'RUNNING' },
-  { label: 'QUEUED', value: 'QUEUED' },
-  { label: 'COMPLETED', value: 'COMPLETED' },
-  { label: 'FAILED', value: 'FAILED' },
-  { label: 'TERMINATED', value: 'TERMINATED' },
-  { label: 'PENDING', value: 'PENDING' },
-  { label: 'PAUSED', value: 'PAUSED' },
+  { label: 'Created', value: 'CREATED' },
+  { label: 'Running', value: 'RUNNING' },
+  { label: 'Queued', value: 'QUEUED' },
+  { label: 'Completed', value: 'COMPLETED' },
+  { label: 'Failed', value: 'FAILED' },
+  { label: 'Terminated', value: 'TERMINATED' },
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Paused', value: 'PAUSED' },
 ];
 
 export const DELIVERY_TYPE = [
-  { label: 'DATA_ONLY', value: 'DATA_ONLY' },
-  { label: 'PACKSHOT', value: 'PACKSHOT' },
-  { label: 'FULL_DELIVERY', value: 'FULL_DELIVERY' },
-  { label: 'SCREENGRAB', value: 'SCREENGRAB' },
-  { label: 'COVER_ART', value: 'COVER_ART' },
-  { label: 'INSERT', value: 'INSERT' },
-  { label: 'TAKE_DOWN', value: 'TAKE_DOWN' },
-  { label: 'NONE', value: 'NONE' },
+  { label: 'Data Only', value: 'DATA_ONLY' },
+  { label: 'Packshot', value: 'PACKSHOT' },
+  { label: 'Full Delivery', value: 'FULL_DELIVERY' },
+  { label: 'Screengrab', value: 'SCREENGRAB' },
+  { label: 'Cover Art', value: 'COVER_ART' },
+  { label: 'Insert', value: 'INSERT' },
+  { label: 'Take Down', value: 'TAKE_DOWN' },
+  { label: 'None', value: 'NONE' },
 ];
 
 export const DDEX = 'DDEX';

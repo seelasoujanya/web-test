@@ -1,9 +1,6 @@
-<div class="workflow-history-container">
-  <button
-    class="btn btn--red"
-    type="button"
-    (click)="filterDeliveries(filterDeliveriesForm)">
-    Filter
+<div class="workflow-history-container" [ngClass]="{ blurred: showFilters }">
+  <button class="filter-deliveries" type="button" (click)="filterDeliveries()">
+    <img src="assets/icons/filter.svg" alt="" />
   </button>
   <div class="workflows-instance-table">
     <app-workflow-table
@@ -25,10 +22,10 @@
   </div>
 </div>
 
-<ng-template #filterDeliveriesForm class="modal-content">
+<div class="filter-template" *ngIf="showFilters">
   <div class="header">
     <p class="header_title">Filter</p>
-    <button type="button" class="header_close-btn" (click)="closeModal()">
+    <button type="button" class="header_close-btn" (click)="cancelFilters()">
       <img src="assets/icons/close-circle.svg" alt="" />
     </button>
   </div>
@@ -39,12 +36,11 @@
         appearance="outline"
         color="accent"
         class="w-100 datepicker__size_s">
-        <mat-label>DD MMM, YYYY</mat-label>
+        <mat-label>Select Start Date</mat-label>
         <input
           matInput
           [matDatepicker]="startDatepicker"
           [(ngModel)]="filter.startDate"
-          placeholder="Select Start Date"
           readonly />
         <mat-datepicker-toggle
           matSuffix
@@ -52,19 +48,17 @@
         <mat-datepicker #startDatepicker></mat-datepicker>
       </mat-form-field>
     </div>
-
     <div class="field">
       <span>Completed Date</span>
       <mat-form-field
         appearance="outline"
         color="accent"
         class="w-100 datepicker__size_s">
-        <mat-label>DD MMM, YYYY</mat-label>
+        <mat-label>Select Completed Date</mat-label>
         <input
           matInput
           [matDatepicker]="completedDatepicker"
           [(ngModel)]="filter.completedDate"
-          placeholder="Select Completed Date"
           readonly />
         <mat-datepicker-toggle
           matSuffix
@@ -72,28 +66,20 @@
         <mat-datepicker #completedDatepicker></mat-datepicker>
       </mat-form-field>
     </div>
-
-    <!-- <div class="field">
-            <span>Duration</span>
-            <div class="duration-slider">
-                <mat-slider min="0" max="60" step="1" thumbLabel tickInterval="5" [(ngModel)]="durationValue" (change)="onDurationChange($event)">
-                </mat-slider>
-                <span>{{ formattedDuration }}</span>
-            </div>
-        </div> -->
-
     <div class="field">
       <span>Duration</span>
-      <div class="duration-slider">
+      <div class="duration-slider" style="width: 100%">
         <input
           type="range"
           min="0"
           max="60"
           step="1"
-          [(ngModel)]="filter.duration" />
+          [(ngModel)]="filter.duration"
+          style="width: 100%"
+          (input)="updateDurationValue()" />
+        <span>{{ filter.duration }} min</span>
       </div>
     </div>
-
     <div class="field">
       <span>Status</span>
       <ng-select
@@ -106,24 +92,9 @@
         [(ngModel)]="filter.status">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>
-          <svg
-            width="14"
-            height="8"
-            viewBox="0 0 14 8"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1.375 1.125L7 6.75L12.625 1.125"
-              stroke="#262626"
-              stroke-width="1.25"
-              stroke-miterlimit="10"
-              stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
         </ng-template>
       </ng-select>
     </div>
-
     <div class="field">
       <span>Priority</span>
       <ng-select
@@ -132,28 +103,13 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select status"
+        placeholder="select priority"
         [(ngModel)]="filter.priority">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>
-          <svg
-            width="14"
-            height="8"
-            viewBox="0 0 14 8"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1.375 1.125L7 6.75L12.625 1.125"
-              stroke="#262626"
-              stroke-width="1.25"
-              stroke-miterlimit="10"
-              stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
         </ng-template>
       </ng-select>
     </div>
-
     <div class="field">
       <span>Delivery Type</span>
       <ng-select
@@ -162,35 +118,20 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select status"
+        placeholder="select deliveryType"
         [(ngModel)]="filter.deliveryType">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>
-          <svg
-            width="14"
-            height="8"
-            viewBox="0 0 14 8"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M1.375 1.125L7 6.75L12.625 1.125"
-              stroke="#262626"
-              stroke-width="1.25"
-              stroke-miterlimit="10"
-              stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
         </ng-template>
       </ng-select>
     </div>
   </div>
-
   <div class="buttons" style="position: relative">
-    <button class="btn btn--black">RESET ALL</button>
-    <div class="tooltip-wrapper">
+    <button class="btn btn--black" (click)="cancelFilters()">RESET ALL</button>
+    <div>
       <button class="btn btn--red" (click)="applyFilters()">
         APPLY FILTER
       </button>
     </div>
   </div>
-</ng-template>
+</div>

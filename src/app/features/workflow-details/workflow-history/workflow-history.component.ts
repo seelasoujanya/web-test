@@ -1,28 +1,15 @@
-import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  TemplateRef,
-} from '@angular/core';
+import { CommonModule, formatDate } from '@angular/common';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -56,7 +43,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   ],
   templateUrl: './workflow-history.component.html',
   styleUrl: './workflow-history.component.scss',
-  providers: [ApiService, BsModalService],
+  providers: [ApiService],
 })
 export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
@@ -105,7 +92,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     deliveryType: null,
     status: null,
     priority: null,
-    duration: null,
+    duration: 0,
   };
 
   workflowInstanceStatus = WORKFLOW_INSTANCE_STATUS;
@@ -114,14 +101,14 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   deliveryType = DELIVERY_TYPE;
 
+  showFilters: boolean = false;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService,
-    private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private spinnerService: SpinnerService
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -235,25 +222,51 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.router.navigate(['/workflowinstance', data.id]);
   }
 
-  openAddEmailDialog(emailTemplate: TemplateRef<any>) {
-    const config = {
-      backdrop: true,
-      ignoreBackdropClick: true,
-      keyboard: false,
+  updateDurationValue() {
+    console.log(this.filter.duration);
+  }
+
+  public resetFilters() {
+    this.filter = {
+      startDate: null,
+      completedDate: null,
+      deliveryType: null,
+      status: null,
+      priority: null,
+      duration: 0,
     };
-    this.bsModalRef = this.modalService.show(emailTemplate, config);
   }
 
-  public closeModal(): void {
-    this.bsModalRef.hide();
+  filterDeliveries() {
+    this.resetFilters();
+    this.showFilters = true;
   }
 
-  filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
-    this.reset();
-    this.openAddEmailDialog(filterDeliveriesTemplate);
+  public cancelFilters() {
+    this.showFilters = false;
+    this.resetFilters();
+    this.getPageItems(this.pageParams);
   }
 
   applyFilters() {
+    this.formatFilterDates();
     this.getPageItems(this.pageParams);
+    this.showFilters = false;
+  }
+
+  formatFilterDates() {
+    if (this.filter.startDate) {
+      this.filter.startDate = this.formatDateForApi(this.filter.startDate);
+    }
+    if (this.filter.completedDate) {
+      this.filter.completedDate = this.formatDateForApi(
+        this.filter.completedDate
+      );
+    }
+  }
+
+  formatDateForApi(date: Date | null): any {
+    if (!date) return null;
+    return formatDate(date, 'yyyy-MM-dd HH:mm:ss.SSS', 'en-US');
   }
 }
