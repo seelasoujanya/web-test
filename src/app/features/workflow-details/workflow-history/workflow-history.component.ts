@@ -1,16 +1,40 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
+import {
+  DELIVERY_TYPE,
+  PRIORITY,
+  WORKFLOW_INSTANCE_STATUS,
+} from 'src/app/core/utils/constants';
+import { NgSelectModule } from '@ng-select/ng-select';
 @Component({
   selector: 'app-workflow-history',
   standalone: true,
@@ -20,10 +44,19 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
     DurationPipe,
     PaginationComponent,
     FormsModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatSliderModule,
+    NgSelectModule,
   ],
   templateUrl: './workflow-history.component.html',
   styleUrl: './workflow-history.component.scss',
-  providers: [ApiService],
+  providers: [ApiService, BsModalService],
 })
 export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
@@ -34,6 +67,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.getPageItems(this.pageParams);
+    // this.formatDuration(this.durationValue);
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
@@ -66,12 +100,50 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   totalInstancesCount = 0;
   failedInstancesCount = 0;
 
+  filter = {
+    startDate: null,
+    completedDate: null,
+    deliveryType: null,
+    status: null,
+    priority: null,
+    duration: null,
+  };
+
+  // startDate : any;
+
+  // completedDate : any;
+
+  workflowInstanceStatus = WORKFLOW_INSTANCE_STATUS;
+
+  prority = PRIORITY;
+
+  deliveryType = DELIVERY_TYPE;
+
+  durationValue: number = 0; // Initial value for the slider
+  formattedDuration: string = '0m'; // Displayed duration
+
+  // Update the formatted duration value when the slider value changes
+  onDurationChange(event: any): void {
+    this.formatDuration(event.value);
+  }
+
+  // Format duration: Display in minutes (m) for values < 60 and 1h for 60
+  formatDuration(value: number): void {
+    if (value === 60) {
+      this.formattedDuration = '1h';
+    } else {
+      this.formattedDuration = `${value}m`;
+    }
+  }
+
   constructor(
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -84,7 +156,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   getPageItems(pageParams: any) {
     this.spinnerService.show();
     this.apiService
-      .getWorkflowInstances(pageParams, this.workflowId, this.identifier)
+      .getWorkflowInstances(pageParams, this.workflowId, this.filter)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
@@ -183,5 +255,27 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   public viewInstanceDetails(data: any): void {
     this.router.navigate(['/workflowinstance', data.id]);
+  }
+
+  openAddEmailDialog(emailTemplate: TemplateRef<any>) {
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(emailTemplate, config);
+  }
+
+  public closeModal(): void {
+    this.bsModalRef.hide();
+  }
+
+  filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
+    this.reset();
+    this.openAddEmailDialog(filterDeliveriesTemplate);
+  }
+
+  applyFilters() {
+    this.getPageItems(this.pageParams);
   }
 }
