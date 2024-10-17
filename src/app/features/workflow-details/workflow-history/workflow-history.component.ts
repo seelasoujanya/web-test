@@ -67,7 +67,6 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     this.getPageItems(this.pageParams);
-    // this.formatDuration(this.durationValue);
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
@@ -109,32 +108,11 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     duration: null,
   };
 
-  // startDate : any;
-
-  // completedDate : any;
-
   workflowInstanceStatus = WORKFLOW_INSTANCE_STATUS;
 
   prority = PRIORITY;
 
   deliveryType = DELIVERY_TYPE;
-
-  durationValue: number = 0; // Initial value for the slider
-  formattedDuration: string = '0m'; // Displayed duration
-
-  // Update the formatted duration value when the slider value changes
-  onDurationChange(event: any): void {
-    this.formatDuration(event.value);
-  }
-
-  // Format duration: Display in minutes (m) for values < 60 and 1h for 60
-  formatDuration(value: number): void {
-    if (value === 60) {
-      this.formattedDuration = '1h';
-    } else {
-      this.formattedDuration = `${value}m`;
-    }
-  }
 
   constructor(
     private apiService: ApiService,
