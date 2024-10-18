@@ -12,11 +12,13 @@
   -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
   background-color: white;
-  .filter-deliveries {
-    position: absolute;
-    top: 84px;
-    right: 0;
-    border: none;
+  .btn {
+    &--red {
+      position: absolute;
+      top: 84px;
+      right: 0;
+      margin-right: 15px;
+    }
   }
   .workflows-instance-table {
     height: 65vh;
@@ -48,7 +50,8 @@
   z-index: 1000;
   position: absolute;
   width: 30vw;
-  height: 110vh;
+  height: 105vh;
+  overflow-y: auto;
   top: 0;
   right: 0;
   padding: 10px;

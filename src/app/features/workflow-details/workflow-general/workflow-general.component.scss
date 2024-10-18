@@ -1,6 +1,5 @@
 @import 'src/styles/ngselect.scss';
 @import 'src/styles/button';
-
 .workflow-general-container {
   width: 98%;
   margin-inline: 15px;
@@ -358,27 +357,6 @@ textarea:focus {
   display: none !important;
 }
 
-::ng-deep .ng-select .ng-arrow-wrapper {
-  display: none !important;
-}
-
-::ng-deep .workflow-field .ng-select .ng-select-container .ng-value-container {
-  position: relative;
-}
-
-::ng-deep
-  .workflow-field
-  .ng-select
-  .ng-select-container
-  .ng-value-container
-  .ng-value
-  svg {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
 .url-link {
   font-size: 12px;
   font-weight: 500;
@@ -392,17 +370,4 @@ textarea:focus {
 
 .copy-icon {
   height: 20px;
-}
-
-.workflow-field {
-  position: relative;
-}
-
-.ng-select-dropdown-icon {
-  position: absolute;
-  right: 10px;
-  top: 65%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 10;
 }
