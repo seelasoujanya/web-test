@@ -1,6 +1,7 @@
 <div class="workflow-history-container" [ngClass]="{ blurred: showFilters }">
-  <button class="filter-deliveries" type="button" (click)="filterDeliveries()">
+  <button class="btn btn--red" type="button" (click)="filterDeliveries()">
     <img src="assets/icons/filter.svg" alt="" />
+    <span>FILTERS</span>
   </button>
   <div class="workflows-instance-table">
     <app-workflow-table
@@ -88,7 +89,7 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select status"
+        placeholder="Select Status"
         [(ngModel)]="filter.status">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>
@@ -103,7 +104,7 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select priority"
+        placeholder="Select Priority"
         [(ngModel)]="filter.priority">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>
@@ -118,7 +119,7 @@
         bindValue="value"
         [searchable]="false"
         [clearable]="false"
-        placeholder="select deliveryType"
+        placeholder="Select Delivery Type"
         [(ngModel)]="filter.deliveryType">
         <ng-template ng-label-tmp let-item="item">
           <span>{{ item.label }}</span>

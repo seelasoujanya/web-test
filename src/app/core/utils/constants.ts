@@ -11,8 +11,8 @@ export const EMAIL_STATUS = [
 
 export const PRIORITY = [
   { label: 'High', value: 'HIGH' },
-  { label: 'Low', value: 'LOW' },
   { label: 'Medium', value: 'MEDIUM' },
+  { label: 'Low', value: 'LOW' },
 ];
 export const FOLDER_STRUCTURE = [
   { label: 'ReleaseByRelease', value: 'Release By Release' },
@@ -31,14 +31,13 @@ export const WORKFLOW_INSTANCE_STATUS = [
 ];
 
 export const DELIVERY_TYPE = [
+  { label: 'Full Delivery', value: 'FULL_DELIVERY' },
   { label: 'Data Only', value: 'DATA_ONLY' },
   { label: 'Packshot', value: 'PACKSHOT' },
-  { label: 'Full Delivery', value: 'FULL_DELIVERY' },
   { label: 'Screengrab', value: 'SCREENGRAB' },
   { label: 'Cover Art', value: 'COVER_ART' },
   { label: 'Insert', value: 'INSERT' },
   { label: 'Take Down', value: 'TAKE_DOWN' },
-  { label: 'None', value: 'NONE' },
 ];
 
 export const DDEX = 'DDEX';
