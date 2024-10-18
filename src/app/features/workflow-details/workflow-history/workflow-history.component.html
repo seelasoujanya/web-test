@@ -26,7 +26,7 @@
 <div class="filter-template" *ngIf="showFilters">
   <div class="header">
     <p class="header_title">Filter</p>
-    <button type="button" class="header_close-btn" (click)="cancelFilters()">
+    <button type="button" class="header_close-btn" (click)="closeFilters()">
       <img src="assets/icons/close-circle.svg" alt="" />
     </button>
   </div>
@@ -42,6 +42,7 @@
           matInput
           [matDatepicker]="startDatepicker"
           [(ngModel)]="filter.startDate"
+          [matDatepickerFilter]="startDateFilter"
           readonly />
         <mat-datepicker-toggle
           matSuffix
@@ -60,6 +61,7 @@
           matInput
           [matDatepicker]="completedDatepicker"
           [(ngModel)]="filter.completedDate"
+          [matDatepickerFilter]="completedDateFilter"
           readonly />
         <mat-datepicker-toggle
           matSuffix
@@ -76,6 +78,7 @@
           max="60"
           step="1"
           [(ngModel)]="filter.duration"
+          class="duration-input"
           style="width: 100%"
           (input)="updateDurationValue()" />
         <span>{{ filter.duration }} min</span>

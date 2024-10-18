@@ -237,9 +237,27 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     };
   }
 
+  completedDateFilter = (date: null): boolean => {
+    if (!this.filter.startDate) {
+      return true;
+    }
+    return date ? date >= this.filter.startDate : false;
+  };
+
+  startDateFilter = (date: null): boolean => {
+    if (this.filter.completedDate) {
+      return !date || date <= this.filter.completedDate;
+    }
+    return true;
+  };
+
   filterDeliveries() {
     this.resetFilters();
     this.showFilters = true;
+  }
+
+  public closeFilters() {
+    this.showFilters = false;
   }
 
   public cancelFilters() {

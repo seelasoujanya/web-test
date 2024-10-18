@@ -1,4 +1,4 @@
-@import 'src/styles/_datepicker.scss';
+@import 'src/styles/datepicker.scss';
 @import 'src/styles/button';
 @import 'src/styles/ngselect.scss';
 .workflow-history-container {
@@ -124,10 +124,23 @@
   }
 }
 
-::ng-deep .mat-datepicker-content {
-  z-index: 1060 !important;
-}
-
 ::ng-deep .cdk-overlay-container {
   z-index: 10000 !important;
+}
+
+.duration-input {
+  border: none;
+  accent-color: #ca0a3d;
+}
+
+.duration-input::-webkit-slider-thumb {
+  background-color: #ca0a3d;
+}
+
+.duration-input::-moz-range-thumb {
+  background-color: #ca0a3d;
+}
+
+.duration-input::-ms-thumb {
+  background-color: #ca0a3d;
 }
