@@ -19,6 +19,28 @@ export const FOLDER_STRUCTURE = [
   { label: 'Batched', value: 'Batched' },
 ];
 
+export const WORKFLOW_INSTANCE_STATUS = [
+  { label: 'Created', value: 'CREATED' },
+  { label: 'Running', value: 'RUNNING' },
+  { label: 'Queued', value: 'QUEUED' },
+  { label: 'Completed', value: 'COMPLETED' },
+  { label: 'Failed', value: 'FAILED' },
+  { label: 'Terminated', value: 'TERMINATED' },
+  { label: 'Pending', value: 'PENDING' },
+  { label: 'Paused', value: 'PAUSED' },
+];
+
+export const DELIVERY_TYPE = [
+  { label: 'Data Only', value: 'DATA_ONLY' },
+  { label: 'Packshot', value: 'PACKSHOT' },
+  { label: 'Full Delivery', value: 'FULL_DELIVERY' },
+  { label: 'Screengrab', value: 'SCREENGRAB' },
+  { label: 'Cover Art', value: 'COVER_ART' },
+  { label: 'Insert', value: 'INSERT' },
+  { label: 'Take Down', value: 'TAKE_DOWN' },
+  { label: 'None', value: 'NONE' },
+];
+
 export const DDEX = 'DDEX';
 export const SLEEPING = 'SLEEPING';
 export const SFTP = 'SFTP';

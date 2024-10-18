@@ -1,0 +1,86 @@
+::ng-deep {
+  ::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+    padding: 0.7em 0 !important;
+  }
+  .mat-form-field-outline-start,
+  .mat-form-field-outline-end {
+    border-radius: 0 !important;
+  }
+  .mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: 0 !important;
+  }
+  .mat-form-field-wrapper {
+    margin-bottom: -1.25em !important;
+  }
+  .mat-calendar-table-header th {
+    font-size: 14px;
+  }
+  .mat-calendar-body-cell-content {
+    border-radius: 4px !important;
+  }
+  .mat-calendar-body-preview-end,
+  .mat-calendar-body-in-preview,
+  .mat-calendar-body-preview-end .mat-calendar-body-cell-preview {
+    border-radius: 4px !important;
+  }
+  .mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #c5c5c5;
+  }
+  .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #c5c5c5;
+  }
+  //mat-input focused color
+  .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #c5c5c5 !important;
+  }
+  // mat-label focused style
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: #222 !important;
+  }
+  .mat-form-field-wrapper {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .mat-form-field:not(.mat-form-field-has-label) .mat-form-field-infix {
+    top: -0.2em;
+  }
+  .mat-button-focus-overlay {
+    background-color: transparent !important;
+  }
+  .datepicker__size_m {
+    width: 296px !important;
+  }
+  .datepicker__size_l {
+    width: 400px !important;
+  }
+}
+
+.datepicker-clean {
+  transform: scale(0.6);
+  ::ng-deep .mat-icon-button {
+    width: 15px !important;
+    height: 15px !important;
+  }
+}
+
+::ng-deep {
+  .datepicker__size_s {
+    height: 40px !important;
+    .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.4em 0 !important;
+    }
+  }
+}
+
+::ng-deep {
+  .datepicker_height_m {
+    height: 48px !important;
+    .mat-form-field-flex > .mat-form-field-infix {
+      padding: 0.65em 0 !important;
+    }
+  }
+}
+
+::ng-deep .mat-datepicker-content {
+  z-index: 1060 !important;
+}
