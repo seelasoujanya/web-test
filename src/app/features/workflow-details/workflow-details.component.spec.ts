@@ -19,6 +19,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { IPage } from 'src/app/core/models/page.model';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 describe('WorkflowDetailsComponent', () => {
   let component: WorkflowDetailsComponent;
@@ -49,11 +50,13 @@ describe('WorkflowDetailsComponent', () => {
       imports: [
         WorkflowDetailsComponent,
         HttpClientModule,
+        ToastrModule.forRoot(),
         RouterModule.forRoot([]),
       ],
       providers: [
         {
           provide: ActivatedRoute,
+          ToastrService,
           useValue: {
             queryParams: of({ tab: 'general' }),
             snapshot: { params: { id: '123' } },

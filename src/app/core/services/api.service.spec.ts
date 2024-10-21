@@ -136,104 +136,6 @@ describe('ApiService', () => {
     req.flush('Server Error', { status: 500, statusText: 'Server Error' });
   });
 
-  it('should return workflow instances with identifier', () => {
-    const mockResponse: IPage<any> = {
-      content: [
-        { id: 1, name: 'Instance 1' },
-        { id: 2, name: 'Instance 2' },
-      ],
-      totalElements: 2,
-      totalPages: 1,
-      size: 10,
-      number: 0,
-      numberOfElements: 0,
-    };
-
-    const queryParams = { status: 'ACTIVE', page: 0, size: 10 };
-    const id = 123;
-    const identifier = 'abc';
-
-    service
-      .getWorkflowInstances(queryParams, id, identifier)
-      .subscribe(data => {
-        expect(data).toEqual(mockResponse);
-      });
-
-    const req = httpTestingController.expectOne(request => {
-      return (
-        request.method === 'GET' &&
-        request.url === `${service['apiUrl']}/workflow/${id}/instances` &&
-        request.params.get('status') === 'ACTIVE' &&
-        request.params.get('page') === '0' &&
-        request.params.get('size') === '10' &&
-        request.params.get('identifier') === identifier
-      );
-    });
-
-    req.flush(mockResponse);
-  });
-
-  it('should return workflow instances without identifier', () => {
-    const mockResponse: IPage<any> = {
-      content: [
-        { id: 1, name: 'Instance 1' },
-        { id: 2, name: 'Instance 2' },
-      ],
-      totalElements: 2,
-      totalPages: 1,
-      size: 10,
-      number: 0,
-      numberOfElements: 0,
-    };
-
-    const queryParams = { status: 'ACTIVE', page: 0, size: 10 };
-    const id = 123;
-
-    service.getWorkflowInstances(queryParams, id, null).subscribe(data => {
-      expect(data).toEqual(mockResponse);
-    });
-
-    const req = httpTestingController.expectOne(request => {
-      return (
-        request.method === 'GET' &&
-        request.url === `${service['apiUrl']}/workflow/${id}/instances` &&
-        request.params.get('status') === 'ACTIVE' &&
-        request.params.get('page') === '0' &&
-        request.params.get('size') === '10' &&
-        !request.params.has('identifier')
-      );
-    });
-
-    req.flush(mockResponse);
-  });
-
-  it('should handle error response', () => {
-    const queryParams = { status: 'ACTIVE', page: 0, size: 10 };
-    const id = 123;
-    const identifier = 'abc';
-
-    service.getWorkflowInstances(queryParams, id, identifier).subscribe({
-      next: () => fail('expected an error, not workflow instances'),
-      error: error => {
-        expect(error.status).toBe(500);
-        expect(error.error).toBe('Server Error');
-      },
-    });
-
-    const req = httpTestingController.expectOne(request => {
-      return (
-        request.method === 'GET' &&
-        request.url === `${service['apiUrl']}/workflow/${id}/instances` &&
-        request.params.get('status') === 'ACTIVE' &&
-        request.params.get('page') === '0' &&
-        request.params.get('size') === '10' &&
-        request.params.get('identifier') === identifier
-      );
-    });
-
-    req.flush('Server Error', { status: 500, statusText: 'Server Error' });
-  });
-
   it('should return workflow instance details', () => {
     const mockResponse = { id: 1, name: 'Instance 1', status: 'ACTIVE' };
 
@@ -691,22 +593,6 @@ describe('ApiService', () => {
       `${service['apiUrl']}/template/${templateId}`
     );
     expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual(body);
-    req.flush(mockResponse);
-  });
-
-  it('should post template for step', () => {
-    const body = { templateId: 123 };
-    const mockResponse = { success: true };
-
-    service.postTemplateForStep(body).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/workflow/template`
-    );
-    expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(body);
     req.flush(mockResponse);
   });

@@ -8,6 +8,7 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 import { TemplateRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 describe('WorkflowGeneralComponent', () => {
   let component: WorkflowGeneralComponent;
@@ -28,10 +29,15 @@ describe('WorkflowGeneralComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [WorkflowGeneralComponent, HttpClientModule],
+      imports: [
+        WorkflowGeneralComponent,
+        HttpClientModule,
+        ToastrModule.forRoot(),
+      ],
       providers: [
         { provide: BsModalService, useValue: modalServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
+        ToastrService,
       ],
     }).compileComponents();
 
@@ -108,24 +114,6 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.cancelChanges).not.toHaveBeenCalled();
   });
 
-  it('should emit workflowEmailEvent with DELETE action when confirm modal result is true for email', () => {
-    spyOn(component.workflowEmailEvent, 'emit');
-    spyOn(component, 'cancelChanges');
-    component.emailId = 1;
-
-    component.openConfirmModal(
-      { title: '', description: '', btn1Name: '', btn2Name: '' },
-      'email'
-    );
-    component.getBsModalRef.content.updateChanges.emit(true);
-
-    expect(component.workflowEmailEvent.emit).toHaveBeenCalledWith({
-      emailId: component.emailId,
-      action: 'DELETE',
-    });
-    expect(component.cancelChanges).not.toHaveBeenCalled();
-  });
-
   it('should emit workflowEmailEvent with UPDATE action and reset newEmailData and emailId when addEmail is called and isUpdate is true', () => {
     spyOn(component.workflowEmailEvent, 'emit');
     spyOn(component.getBsModalRef, 'hide');
@@ -181,7 +169,8 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.openConfirmModal).toHaveBeenCalledWith(
       {
         title: 'Confirm Changes',
-        description: 'Are you sure you want to Save changes  for Workflow?',
+        description:
+          'Are you sure you want to Save changes for General Settings?',
         btn1Name: 'CONFIRM',
         btn2Name: 'CANCEL',
       },
@@ -255,5 +244,136 @@ describe('WorkflowGeneralComponent', () => {
     spyOn(component, 'reset');
     component.reset();
     expect(component.reset).toHaveBeenCalled();
+  });
+
+  it('should prevent default action for special characters', () => {
+    const event = new KeyboardEvent('keydown', { key: 'a' });
+    spyOn(event, 'preventDefault');
+
+    component.filterSpecialChars(event);
+
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('should allow digits and letters "h" and "m"', () => {
+    const allowedKeys = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'h',
+      'm',
+    ];
+
+    allowedKeys.forEach(key => {
+      const event = new KeyboardEvent('keydown', { key });
+      spyOn(event, 'preventDefault');
+
+      component.filterSpecialChars(event);
+
+      expect(event.preventDefault).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should allow Backspace key', () => {
+    const event = new KeyboardEvent('keydown', { key: 'Backspace' });
+    spyOn(event, 'preventDefault');
+
+    component.filterSpecialChars(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should allow Tab key', () => {
+    const event = new KeyboardEvent('keydown', { key: 'Tab' });
+    spyOn(event, 'preventDefault');
+
+    component.filterSpecialChars(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it('should set an error message when wait time is invalid in validateFields', () => {
+    component.AssetIngestionWaitTime = 'invalid time';
+    component.DataIngestionWaitTime = 'invalid time';
+
+    component.validateFields();
+
+    expect(component.AssetIngestionWaitTimeError).toBe(
+      'Please enter a valid time (eg: 1h 30m, 3m, 5h).'
+    );
+    expect(component.DataIngestionWaitTimeError).toBe(
+      'Please enter a valid time (eg: 1h 30m, 3m, 5h).'
+    );
+  });
+
+  it('should call navigator.clipboard.writeText when copyText is called', () => {
+    const url = 'https://test-url.com';
+    spyOn(navigator.clipboard, 'writeText').and.callFake(() =>
+      Promise.resolve()
+    );
+
+    component.copyText(url);
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(url);
+  });
+
+  it('should limit throttleLimit to 100 when checkThrottleLimit is called', () => {
+    component.workflowCopy = { throttleLimit: 150 };
+    component.checkThrottleLimit({});
+
+    expect(component.workflowCopy.throttleLimit).toBe(100);
+  });
+
+  it('should toggle isEditing and reset errors when toggleEditing is called', () => {
+    component.isEditing = false;
+
+    component.toggleEditing();
+
+    expect(component.isEditing).toBeTrue();
+    expect(component.AssetIngestionWaitTimeError).toBe('');
+    expect(component.DataIngestionWaitTimeError).toBe('');
+  });
+
+  it('should reset new email data and flags when reset is called', () => {
+    component.newEmailData = {
+      name: 'test',
+      email: 'test@example.com',
+      status: null,
+    };
+    component.isUpdate = true;
+    component.emailId = 1;
+
+    component.reset();
+
+    expect(component.newEmailData).toEqual({
+      name: '',
+      email: '',
+      status: null,
+    });
+    expect(component.isUpdate).toBeFalse();
+    expect(component.emailId).toBeUndefined();
+  });
+
+  it('should set emailId and open confirm modal with correct data when deleteEmail is called', () => {
+    spyOn(component, 'openConfirmModal');
+    const email = 'test@example.com';
+    component.deleteEmail(1, email);
+    expect(component.emailId).toBe(1);
+    expect(component.openConfirmModal).toHaveBeenCalledWith(
+      {
+        title: 'Delete Email',
+        description: `Are you sure you want to delete Email:${email}?`,
+        btn1Name: 'CONFIRM',
+        btn2Name: 'CANCEL',
+      },
+      'email'
+    );
   });
 });

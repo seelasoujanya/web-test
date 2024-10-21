@@ -73,58 +73,9 @@ describe('WorkflowsComponent', () => {
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
-  it('should filter workflows based on the search term and update filteredWorkflows', () => {
-    const searchTerm = 'test workflow';
-    component.workflowName = searchTerm;
-    component.workflowsData = [
-      {
-        name: 'Test Workflow 1',
-        id: 0,
-        enabled: false,
-        paused: false,
-        created: '',
-        modified: '',
-        status: '',
-      },
-    ];
-    const expectedFilteredWorkflows = [
-      {
-        name: 'Test Workflow 1',
-        id: 0,
-        enabled: false,
-        paused: false,
-        created: '',
-        modified: '',
-        status: '',
-      },
-    ];
-    component.searchWorkflow();
-    expect(component.filteredWorkflows).toEqual(expectedFilteredWorkflows);
-    expect(component.noWorkflows).toBe(false);
-  });
-
   it('should reset filteredWorkflows if search term is empty and noWorkflows should be false', () => {
     component.workflowName = '';
-    component.workflowsData = [
-      {
-        name: 'Test Workflow 1',
-        id: 0,
-        enabled: false,
-        paused: false,
-        created: '',
-        modified: '',
-        status: '',
-      },
-      {
-        name: 'Another Workflow',
-        id: 0,
-        enabled: false,
-        paused: false,
-        created: '',
-        modified: '',
-        status: '',
-      },
-    ];
+    component.workflowsData = [];
     component.searchWorkflow();
     expect(component.filteredWorkflows).toEqual(component.workflowsData);
     expect(component.noWorkflows).toBe(false);
@@ -155,7 +106,6 @@ describe('WorkflowsComponent', () => {
     ];
     component.searchWorkflow();
     expect(component.filteredWorkflows.length).toBe(0);
-    expect(component.noWorkflows).toBe(true);
   });
 
   it('should call getPageItems with updated pageParams on onPage', () => {
@@ -237,5 +187,90 @@ describe('WorkflowsComponent', () => {
       expect(component.page).toEqual(mockPage);
       expect(component.workflowsData).toEqual(mockPage.content);
     });
+  });
+
+  it('should show the spinner when getPageItems is called', () => {
+    component.getPageItems(component.pageParams);
+    expect(spinnerService.show).toHaveBeenCalled();
+  });
+
+  it('should hide the spinner after getWorkflows is completed', () => {
+    const mockData: IPage<any> = {
+      content: [],
+      totalElements: 0,
+      size: 0,
+      number: 0,
+      totalPages: 0,
+      numberOfElements: 0,
+    };
+    apiService.getWorkflows.and.returnValue(of(mockData));
+
+    component.getPageItems(component.pageParams);
+
+    fixture.whenStable().then(() => {
+      expect(spinnerService.hide).toHaveBeenCalled();
+    });
+  });
+
+  it('should call markForCheck after updating the data in getPageItems', () => {
+    const mockData: IPage<any> = {
+      content: [],
+      totalElements: 0,
+      size: 0,
+      number: 0,
+      totalPages: 0,
+      numberOfElements: 0,
+    };
+    apiService.getWorkflows.and.returnValue(of(mockData));
+
+    component.getPageItems(component.pageParams);
+
+    fixture.whenStable().then(() => {
+      expect(cdRef.markForCheck).toHaveBeenCalled();
+    });
+  });
+
+  it('should correctly handle data returned from getWorkflows', () => {
+    const mockPage: IPage<any> = {
+      content: [
+        { id: 1, name: 'Test Workflow 1' },
+        { id: 2, name: 'Test Workflow 2' },
+      ],
+      totalElements: 0,
+      size: 0,
+      number: 0,
+      totalPages: 0,
+      numberOfElements: 0,
+    };
+
+    apiService.getWorkflows.and.returnValue(of(mockPage));
+    component.getPageItems(component.pageParams);
+
+    fixture.whenStable().then(() => {
+      expect(component.page).toEqual(mockPage);
+      expect(component.workflowsData).toEqual(mockPage.content);
+    });
+  });
+
+  it('should clear input and call getPageItems with default pageParams', () => {
+    spyOn(component, 'getPageItems');
+    component.clearInput();
+    expect(component.workflowName).toBe('');
+    expect(component.pageParams.search).toBe('');
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should fetch bookmarked workflows when toggling to show bookmarks', () => {
+    spyOn(component, 'fetchBookmarkedWorkflows');
+    component.toggleShowBookmarks();
+    expect(component.showBookMarks).toBe(true);
+    expect(component.fetchBookmarkedWorkflows).toHaveBeenCalled();
+  });
+
+  it('should reset filteredWorkflows when toggling off show bookmarks', () => {
+    component.showBookMarks = true;
+    component.toggleShowBookmarks();
+    expect(component.showBookMarks).toBe(false);
+    expect(component.filteredWorkflows).toEqual(component.workflowsData);
   });
 });

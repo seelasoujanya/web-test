@@ -298,4 +298,64 @@ describe('WorkflowHistoryComponent', () => {
       component['pageParams']
     );
   });
+
+  it('should reset filters and show filter modal on filterDeliveries', () => {
+    component.showFilters = false;
+    spyOn(component, 'resetFilters');
+    component.filterDeliveries();
+    expect(component.resetFilters).toHaveBeenCalled();
+    expect(component.showFilters).toBeTrue();
+  });
+
+  it('should hide the filter modal on closeFilters', () => {
+    component.showFilters = true;
+    component.closeFilters();
+    expect(component.showFilters).toBeFalse();
+  });
+
+  it('should reset filters and hide filter modal on cancelFilters', () => {
+    component.showFilters = true;
+    spyOn(component, 'resetFilters');
+    spyOn(component, 'getPageItems');
+
+    component.cancelFilters();
+    expect(component.resetFilters).toHaveBeenCalled();
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
+    expect(component.showFilters).toBeFalse();
+  });
+
+  it('should format a valid date in formatDateForApi', () => {
+    const date = new Date('2023-01-01T12:00:00');
+    const formattedDate = component.formatDateForApi(date);
+    expect(formattedDate).toBe('2023-01-01 12:00:00.000');
+  });
+
+  it('should return null for a null date in formatDateForApi', () => {
+    const formattedDate = component.formatDateForApi(null);
+    expect(formattedDate).toBeNull();
+  });
+
+  it('should format filter dates correctly in formatFilterDates', () => {
+    component.filter.startDate = null;
+    component.filter.completedDate = null;
+    spyOn(component, 'formatDateForApi').and.callThrough();
+    component.formatFilterDates();
+    expect(component.filter.startDate).toBe(null);
+    expect(component.filter.completedDate).toBe(null);
+  });
+
+  it('should reset filters and hide filter modal on cancelFilters', () => {
+    component.showFilters = true;
+    spyOn(component, 'resetFilters');
+    spyOn(component, 'getPageItems');
+
+    component.cancelFilters();
+    expect(component.resetFilters).toHaveBeenCalled();
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
+    expect(component.showFilters).toBeFalse();
+  });
 });

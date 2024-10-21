@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowStatisticsViewComponent } from './workflow-statistics-view.component';
 import { ChartOptions } from 'chart.js';
+import { StatsDTO } from 'src/app/core/models/workflowinstance.model';
 
 describe('WorkflowStatisticsViewComponent', () => {
   let component: WorkflowStatisticsViewComponent;
@@ -66,6 +67,12 @@ describe('WorkflowStatisticsViewComponent', () => {
     );
   });
 
+  it('should call initialWorkflowsStatistics on init', () => {
+    const spy = spyOn(component, 'initialWorkflowsStatistics');
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('should return correct datasets for bar chart', () => {
     const datasets = component.datasets();
     expect(datasets).toEqual([
@@ -80,5 +87,17 @@ describe('WorkflowStatisticsViewComponent', () => {
         backgroundColor: '#dc3545',
       },
     ]);
+  });
+
+  it('should call updateBarChartData with correct data on successful API call', () => {
+    const mockData = {
+      totalSuccessfulInstances: 10,
+      totalFailedInstances: 5,
+      deliveryTypeStats: { FULL_DELIVERY: { successful: 5, failures: 1 } },
+    } as StatsDTO;
+
+    apiService.getWorkflowsStatistics.and.returnValue(of(mockData));
+    component.initialWorkflowsStatistics();
+    expect(component.stats).toEqual(mockData);
   });
 });

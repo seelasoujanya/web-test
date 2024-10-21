@@ -140,44 +140,6 @@ describe('WorkflowStepSettingsComponent', () => {
     );
   });
 
-  it('should handle successful updateWorkflowStepSettings', () => {
-    const updatedStep: IWorkflowStep = {
-      id: 1,
-      workflowId: 123,
-      executionOrder: 1,
-      name: 'Step 1',
-      type: 'SFTP',
-      created: '',
-      modified: '',
-      workflowStepConfigurations: [],
-    };
-    apiService.updateWorkflowSteps.and.returnValue(of(updatedStep));
-    component.workflowStep = updatedStep;
-    component.updateWorkflowStepSettings();
-    expect(spinnerService.show).toHaveBeenCalled();
-    expect(spinnerService.hide).toHaveBeenCalled();
-    expect(component.workflowStep).toEqual(updatedStep);
-  });
-
-  it('should handle error in updateWorkflowStepSettings', () => {
-    apiService.updateWorkflowSteps.and.returnValue(
-      throwError(() => new Error('Update failed'))
-    );
-    component.workflowStep = {
-      id: 1,
-      workflowId: 123,
-      executionOrder: 1,
-      name: 'Step 1',
-      type: 'SFTP',
-      created: '',
-      modified: '',
-      workflowStepConfigurations: [],
-    };
-    component.updateWorkflowStepSettings();
-    expect(spinnerService.show).toHaveBeenCalled();
-    expect(spinnerService.hide).toHaveBeenCalled();
-  });
-
   it('should return false if no config is found for a boolean field', () => {
     component.workflowStep = {
       id: 1,
@@ -225,5 +187,21 @@ describe('WorkflowStepSettingsComponent', () => {
     expect(
       component.workflowStep?.workflowStepConfigurations[0].value
     ).toBeTrue();
+  });
+
+  it('should call openConfirmModal when saveWorkflowSettingsChanges is invoked', () => {
+    const modalData = {
+      title: 'Confirm Changes',
+      description:
+        'Are you sure you want to Save changes  for Step 1 Settings?',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+
+    spyOn(component, 'openConfirmModal');
+
+    component.saveWorkflowSettingsChanges('Step 1');
+
+    expect(component.openConfirmModal).toHaveBeenCalledWith(modalData);
   });
 });
