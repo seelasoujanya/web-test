@@ -22,6 +22,9 @@ describe('WorkflowsComponent', () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', [
       'getWorkflows',
       'updateWorkflow',
+      'bookmarkWorkflow',
+      'removeBookmark',
+      'getBookmarkedWorkflowsByUsername',
     ]);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', [
@@ -272,5 +275,91 @@ describe('WorkflowsComponent', () => {
     component.toggleShowBookmarks();
     expect(component.showBookMarks).toBe(false);
     expect(component.filteredWorkflows).toEqual(component.workflowsData);
+  });
+
+  it('should clear input and reset workflows', () => {
+    spyOn(component, 'getPageItems');
+
+    component.clearInput();
+
+    expect(component.workflowName).toBe('');
+    expect(component.pageParams.search).toBe('');
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should toggle bookmarks and update workflows when toggleShowBookmarks is called', () => {
+    spyOn(component, 'fetchBookmarkedWorkflows');
+    component.showBookMarks = false;
+
+    component.toggleShowBookmarks();
+
+    expect(component.showBookMarks).toBe(true);
+    expect(component.fetchBookmarkedWorkflows).toHaveBeenCalled();
+
+    component.toggleShowBookmarks();
+    expect(component.showBookMarks).toBe(false);
+    expect(component.filteredWorkflows).toEqual(component.workflowsData);
+  });
+
+  it('should show and hide spinner for fetchBookmarkedWorkflows', () => {
+    const mockData: IPage<any> = {
+      content: [],
+      totalElements: 0,
+      size: 0,
+      number: 0,
+      totalPages: 0,
+      numberOfElements: 0,
+    };
+    apiService.getBookmarkedWorkflowsByUsername.and.returnValue(of(mockData));
+
+    component.fetchBookmarkedWorkflows();
+
+    expect(spinnerService.show).toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      expect(spinnerService.hide).toHaveBeenCalled();
+    });
+  });
+
+  it('should update workflow status when paused or resumed', () => {
+    const mockWorkflow: Workflow = {
+      id: 1,
+      enabled: true,
+      name: 'Test Workflow',
+    } as Workflow;
+    const updatedWorkflow: Workflow = { ...mockWorkflow, enabled: false };
+    apiService.updateWorkflow.and.returnValue(of(updatedWorkflow));
+
+    component.pauseWorkflow(mockWorkflow);
+
+    expect(mockWorkflow.enabled).toBe(true);
+  });
+
+  it('should toggle bookmark state correctly', () => {
+    const mockWorkflow: Workflow = { id: 1, name: 'Test Workflow' } as Workflow;
+    spyOn(component, 'bookmarkWorkflow');
+    spyOn(component, 'removeBookmark');
+    component.bookmarkedIds = [];
+    component.toggleBookmark(mockWorkflow);
+    expect(component.bookmarkWorkflow).toHaveBeenCalledWith(
+      mockWorkflow,
+      component.BGroupId
+    );
+    component.bookmarkedIds = [1];
+    component.toggleBookmark(mockWorkflow);
+    expect(component.removeBookmark).toHaveBeenCalledWith(
+      mockWorkflow,
+      component.BGroupId
+    );
+  });
+
+  it('should return default page params', () => {
+    const defaultParams = component.getDefaultPageParams();
+    expect(defaultParams).toEqual({
+      page: 0,
+      pageSize: 20,
+      sortBy: '',
+      order: 'desc',
+      search: '',
+    });
   });
 });

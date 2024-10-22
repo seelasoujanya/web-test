@@ -7,6 +7,7 @@ import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { IPage } from 'src/app/core/models/page.model';
+import { ConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 
 describe('XmlStepSettingsComponent', () => {
   let component: XmlStepSettingsComponent;
@@ -114,38 +115,6 @@ describe('XmlStepSettingsComponent', () => {
     expect(component.enableEditing).toBeFalse();
   });
 
-  // it('should update template when updateTemplate is called with hasSelectedTemplate true', () => {
-  //   const workflowStep: IWorkflowStep = {
-  //     id: 1,
-  //     workflowId: 1,
-  //     executionOrder: 1,
-  //     name: 'Test',
-  //     type: 'SFTP',
-  //     created: '',
-  //     modified: '',
-  //     workflowStepConfigurations: [],
-  //   };
-  //   component.workflowStep = workflowStep;
-  //   component.selectedTemplateId = 1;
-  //   component.hasSelectedTemplate = true;
-
-  //   apiService.updateTemplate.and.returnValue(of({}));
-  //   spinnerService.show.and.callThrough();
-  //   spinnerService.hide.and.callThrough();
-
-  //   component.updateTemplate();
-
-  //   expect(spinnerService.show).toHaveBeenCalled();
-  //   expect(apiService.updateTemplate).toHaveBeenCalledWith(
-  //     workflowStep.workflowId,
-  //     {
-  //       workflowStepId: workflowStep.id,
-  //       templateId: component.selectedTemplateId,
-  //     }
-  //   );
-  //   expect(spinnerService.hide).toHaveBeenCalled();
-  // });
-
   it('should update template when updateTemplate is called with hasSelectedTemplate false', () => {
     const workflowStep: IWorkflowStep = {
       id: 1,
@@ -174,40 +143,6 @@ describe('XmlStepSettingsComponent', () => {
     });
     expect(spinnerService.hide).toHaveBeenCalled();
   });
-
-  // it('should handle error when updateTemplate fails', () => {
-  //   const workflowStep: IWorkflowStep = {
-  //     id: 1,
-  //     workflowId: 1,
-  //     executionOrder: 1,
-  //     name: 'Test',
-  //     type: 'SFTP',
-  //     created: '',
-  //     workflowStepConfigurations: [],
-  //     modified: '',
-  //   };
-  //   component.workflowStep = workflowStep;
-  //   component.selectedTemplateId = 1;
-  //   component.hasSelectedTemplate = true;
-
-  //   apiService.updateTemplate.and.returnValue(
-  //     throwError(() => new Error('Error updating template'))
-  //   );
-  //   spinnerService.show.and.callThrough();
-  //   spinnerService.hide.and.callThrough();
-
-  //   component.updateTemplate();
-
-  //   expect(spinnerService.show).toHaveBeenCalled();
-  //   expect(apiService.updateTemplate).toHaveBeenCalledWith(
-  //     workflowStep.workflowId,
-  //     {
-  //       workflowStepId: workflowStep.id,
-  //       templateId: component.selectedTemplateId,
-  //     }
-  //   );
-  //   expect(spinnerService.hide).toHaveBeenCalled();
-  // });
 
   it('should not call any API if workflowStep is null', () => {
     component.workflowStep = null;
@@ -255,5 +190,13 @@ describe('XmlStepSettingsComponent', () => {
 
     expect(apiService.updateTemplate).not.toHaveBeenCalled();
     expect(apiService.postTemplateForStep).not.toHaveBeenCalled();
+  });
+
+  it('should cancel changes when cancelChanges is called', () => {
+    component.selectedTemplateId = 2;
+    component.originalTemplateId = 1;
+    component.cancelChanges();
+    expect(component.enableEditing).toBeFalse();
+    expect(component.selectedTemplateId).toEqual(1);
   });
 });

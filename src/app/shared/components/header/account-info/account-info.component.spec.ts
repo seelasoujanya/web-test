@@ -1,10 +1,4 @@
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountInfoComponent } from './account-info.component';
 import { CommonModule } from '@angular/common';
@@ -12,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { of, throwError } from 'rxjs';
 
 describe('AccountInfoComponent', () => {
   let component: AccountInfoComponent;
@@ -64,5 +57,10 @@ describe('AccountInfoComponent', () => {
     component.ngOnInit();
     expect(spinnerService.show).toHaveBeenCalled();
     expect(component.getAccountInfo).toHaveBeenCalled();
+  });
+
+  it('should calculate tabContentHeight correctly', () => {
+    const expectedHeight = window.innerHeight - 220;
+    expect(component.tabContentHeight).toBe(expectedHeight);
   });
 });

@@ -358,4 +358,46 @@ describe('WorkflowHistoryComponent', () => {
     );
     expect(component.showFilters).toBeFalse();
   });
+
+  it('should apply filters and get page items on applyFilters', () => {
+    spyOn(component, 'formatFilterDates').and.callThrough();
+    spyOn(component, 'getPageItems');
+
+    component.applyFilters();
+
+    expect(component.formatFilterDates).toHaveBeenCalled();
+    expect(component.getPageItems).toHaveBeenCalledWith(
+      component['pageParams']
+    );
+    expect(component.showFilters).toBeFalse();
+  });
+
+  it('should return true if completedDate is not set in completedDateFilter', () => {
+    component.filter.startDate = null;
+
+    const result = component.completedDateFilter(null);
+
+    expect(result).toBeTrue();
+  });
+
+  it('should log the current filter duration value in updateDurationValue', () => {
+    spyOn(console, 'log');
+    component.filter.duration = 5;
+
+    component.updateDurationValue();
+
+    expect(console.log).toHaveBeenCalledWith(5);
+  });
+
+  it('should return formatted date string for valid date in formatDateForApi', () => {
+    const date = new Date('2023-01-01T12:00:00');
+    const formattedDate = component.formatDateForApi(date);
+
+    expect(formattedDate).toBe('2023-01-01 12:00:00.000');
+  });
+
+  it('should return null for a null date in formatDateForApi', () => {
+    const formattedDate = component.formatDateForApi(null);
+    expect(formattedDate).toBeNull();
+  });
 });

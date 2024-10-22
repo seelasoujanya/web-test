@@ -272,4 +272,13 @@ describe('WorkflowDetailsComponent', () => {
     expect(component.deliveredInstancesCount).toBe(0);
     expect(component.totalInstancesCount).toBe(0);
   });
+
+  it('should call getPageItems when identifier is empty in searchWorkflowInstance', () => {
+    component.identifier = '';
+    spyOn(component, 'getPageItems').and.callThrough();
+
+    component.searchWorkflowInstance();
+
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
 });

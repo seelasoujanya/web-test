@@ -6,6 +6,7 @@ import { IWorkflowStep } from 'src/app/core/models/workflow-step';
 import { ApiService } from 'src/app/core/services/api.service';
 import { of, throwError } from 'rxjs';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 describe('WorkflowStepSettingsComponent', () => {
   let component: WorkflowStepSettingsComponent;
@@ -16,6 +17,7 @@ describe('WorkflowStepSettingsComponent', () => {
   beforeEach(async () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', [
       'updateWorkflowSteps',
+      'updateWorkflowStepConfigs',
     ]);
     const spinnerServiceSpy = jasmine.createSpyObj('SpinnerService', [
       'show',
@@ -203,5 +205,207 @@ describe('WorkflowStepSettingsComponent', () => {
     component.saveWorkflowSettingsChanges('Step 1');
 
     expect(component.openConfirmModal).toHaveBeenCalledWith(modalData);
+  });
+
+  it('should update the field value if configuration exists', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [
+        {
+          key: 'testKey',
+          value: 'oldValue',
+          id: 0,
+          workflowStepId: 0,
+          created: '',
+          modified: '',
+        },
+      ],
+    };
+
+    component.setFieldValue('testKey', 'newValue');
+
+    expect(component.workflowStep?.workflowStepConfigurations[0].value).toBe(
+      'newValue'
+    );
+  });
+
+  it('should add a new configuration if key does not exist', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+
+    component.setFieldValue('newKey', 'newValue');
+
+    expect(component.workflowStep?.workflowStepConfigurations.length).toBe(1);
+    expect(component.workflowStep?.workflowStepConfigurations[0].key).toBe(
+      'newKey'
+    );
+    expect(component.workflowStep?.workflowStepConfigurations[0].value).toBe(
+      'newValue'
+    );
+  });
+
+  it('should update workflow step settings successfully', () => {
+    const mockWorkflowStep: IWorkflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '2024-01-01T00:00:00Z',
+      modified: '2024-01-02T00:00:00Z',
+      workflowStepConfigurations: [],
+    };
+    apiService.updateWorkflowStepConfigs.and.returnValue(of(mockWorkflowStep));
+
+    component.workflowStep = mockWorkflowStep;
+    component.updateWorkflowStepSettings();
+
+    expect(spinnerService.show).toHaveBeenCalled();
+    expect(apiService.updateWorkflowStepConfigs).toHaveBeenCalledWith(
+      1,
+      component.workflowStep
+    );
+    expect(component.workflowStep).toEqual(mockWorkflowStep);
+    expect(spinnerService.hide).toHaveBeenCalled();
+    expect(component.enableEditing).toBeFalse();
+  });
+
+  it('should handle error during workflow step settings update', () => {
+    apiService.updateWorkflowStepConfigs.and.returnValue(
+      throwError(() => new Error('Error updating'))
+    );
+
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '2024-01-01T00:00:00Z',
+      modified: '2024-01-02T00:00:00Z',
+      workflowStepConfigurations: [],
+    };
+
+    component.updateWorkflowStepSettings();
+
+    expect(spinnerService.show).toHaveBeenCalled();
+    expect(apiService.updateWorkflowStepConfigs).toHaveBeenCalledWith(
+      1,
+      component.workflowStep
+    );
+    expect(spinnerService.hide).toHaveBeenCalled();
+    expect(component.enableEditing).toBeFalse();
+  });
+
+  it('should initialize workflowStep and fields on ngOnInit', () => {
+    const mockWorkflowStep: IWorkflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    component.workflowStep = mockWorkflowStep;
+    component.ngOnInit();
+    expect(component.originalWorkflowStep).toEqual(mockWorkflowStep);
+  });
+
+  it('should revert changes and disable editing on cancelChanges', () => {
+    const originalWorkflowStep: IWorkflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+
+    component.originalWorkflowStep = originalWorkflowStep;
+    component.workflowStep = { ...originalWorkflowStep, name: 'Changed Step' };
+    component.enableEditing = true;
+
+    component.cancelChanges();
+
+    expect(component.workflowStep).toEqual(originalWorkflowStep);
+    expect(component.enableEditing).toBeFalse();
+  });
+
+  it('should emit workflowStepChange when updateWorkflowStep is called', () => {
+    spyOn(component.workflowStepChange, 'emit');
+    const mockWorkflowStep: IWorkflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+
+    component.workflowStep = mockWorkflowStep;
+    component.updateWorkflowStep();
+
+    expect(component.workflowStepChange.emit).toHaveBeenCalledWith(
+      mockWorkflowStep
+    );
+  });
+
+  it('should open confirm modal with correct modal data', () => {
+    spyOn(component['modalService'], 'show').and.callThrough();
+    const modalData = {
+      title: 'Confirm Changes',
+      description: 'Test description',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+
+    component.openConfirmModal(modalData);
+
+    expect(component['modalService'].show).toHaveBeenCalledWith(
+      ConfirmModalComponent
+    );
+  });
+
+  it('should not throw error when workflowStep is null on ngOnInit', () => {
+    component.workflowStep = null;
+
+    expect(() => component.ngOnInit()).not.toThrow();
+    expect(component.originalWorkflowStep).toBeNull();
+    expect(component.fields).toEqual([]);
+  });
+
+  it('should return default value when field configuration is not found', () => {
+    component.workflowStep = {
+      id: 1,
+      workflowId: 123,
+      executionOrder: 1,
+      name: 'Step 1',
+      type: 'SFTP',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
+    };
+    expect(component.getFieldValue('nonExistingKey')).toBe('');
+    expect(component.getFieldValue('nonExistingKey', 'boolean')).toBeFalse();
   });
 });
