@@ -37,11 +37,8 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/property/${key}`);
   }
 
-  updateSystemProperty(
-    id: number | undefined,
-    dto: SystemPropertiesDTO
-  ): Observable<SystemProperty> {
-    return this.http.put<SystemProperty>(`${this.apiUrl}/property/${id}`, dto);
+  updateSystemProperty(dto: SystemPropertiesDTO): Observable<SystemProperty> {
+    return this.http.post<SystemProperty>(`${this.apiUrl}/property`, dto);
   }
 
   private apiUrl = `${environment.BE_URL}/api`;
@@ -172,6 +169,18 @@ export class ApiService {
       `${this.apiUrl}/workflowinstance/${id}`,
       updateData
     );
+  }
+
+  retrieveTotalWorkflowsStatusCount() {
+    return this.http.get<any>(`${this.apiUrl}/workflow/status/count`);
+  }
+  retrieveStatusCountByWorkflow(pageParams: any) {
+    const params = new HttpParams()
+      .set('page', pageParams.page)
+      .set('size', pageParams.size);
+    return this.http.get<any>(`${this.apiUrl}/workflow/status/by-workflow`, {
+      params,
+    });
   }
 
   public getWorkflowById(id: number | unknown): Observable<any> {

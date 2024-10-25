@@ -1,0 +1,74 @@
+<div class="table">
+  <table class="table-container">
+    <thead class="table-head">
+      <tr>
+        <th *ngFor="let heading of headings" class="table-header-cell">
+          <div class="table-header-content">
+            {{ heading }}
+          </div>
+        </th>
+        <th *ngIf="showActions" class="table-header-cell">
+          <div class="table-header-content">ACTIONS</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let row of values">
+        <tr>
+          <td *ngFor="let value of row; let i = index" class="table-cell">
+            <ng-container *ngIf="isObject(value); else displayValue">
+              <!-- Toggle for pause -->
+              <label class="toggle">
+                <input
+                  type="checkbox"
+                  [checked]="!toggleStates[row[4]?.id]"
+                  (change)="onToggle(row)" />
+                <span class="slider"></span>
+              </label>
+            </ng-container>
+            <ng-template #displayValue>
+              <span [innerHTML]="value.html ? value.html : value"></span>
+            </ng-template>
+            <input type="hidden" [value]="row[4]" />
+          </td>
+
+          <!-- Show Actions button when required -->
+          <td *ngIf="showActions" class="table-cell">
+            <button (click)="expandAction(row[0])" class="down-arrow">
+              <img
+                src="assets/icons/down-arrow-logo.svg"
+                alt="Action Icon"
+                [class.rotate]="expandedId == row[0]" />
+            </button>
+          </td>
+        </tr>
+
+        <!-- Expanded row -->
+        <tr *ngIf="expandedId == row[0]">
+          <td colspan="12" class="expanded-td">
+            <div class="expanded-row">
+              <div>
+                <h6>Instance Is Pending To Run</h6>
+              </div>
+              <div class="buttons-container">
+                <button
+                  class="change-priority-button"
+                  type="button"
+                  (click)="onEditPriority(row)">
+                  CHANGE PRIORITY
+                  <img src="assets/icons/priority-logo.svg" alt="" />
+                </button>
+                <button
+                  class="cancel-button"
+                  type="button"
+                  (click)="onTerminateInstance(row[0])">
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
