@@ -1,5 +1,11 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -22,6 +28,7 @@ import {
   WORKFLOW_INSTANCE_STATUS,
 } from 'src/app/core/utils/constants';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 @Component({
   selector: 'app-workflow-history',
   standalone: true,
@@ -43,7 +50,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
   ],
   templateUrl: './workflow-history.component.html',
   styleUrl: './workflow-history.component.scss',
-  providers: [ApiService],
+  providers: [ApiService, BsModalService],
 })
 export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
@@ -93,11 +100,12 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     status: null,
     priority: null,
     duration: 0,
+    identifier: null,
   };
 
   workflowInstanceStatus = WORKFLOW_INSTANCE_STATUS;
 
-  prority = PRIORITY;
+  priority = PRIORITY;
 
   deliveryType = DELIVERY_TYPE;
 
@@ -108,7 +116,9 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -234,6 +244,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       status: null,
       priority: null,
       duration: 0,
+      identifier: null,
     };
   }
 
@@ -251,27 +262,25 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     return true;
   };
 
-  filterDeliveries() {
+  openDialog(emailTemplate: TemplateRef<any>) {
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(emailTemplate, config);
+  }
+  public closeModal(): void {
+    this.bsModalRef.hide();
+  }
+  filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
     this.resetFilters();
-    this.showFilters = true;
+    this.openDialog(filterDeliveriesTemplate);
   }
-
-  public closeFilters() {
-    this.showFilters = false;
-  }
-
-  public cancelFilters() {
-    this.showFilters = false;
-    this.resetFilters();
-    this.getPageItems(this.pageParams);
-  }
-
   applyFilters() {
     this.formatFilterDates();
     this.getPageItems(this.pageParams);
-    this.showFilters = false;
   }
-
   formatFilterDates() {
     if (this.filter.startDate) {
       this.filter.startDate = this.formatDateForApi(this.filter.startDate);

@@ -117,6 +117,9 @@ export class ApiService {
     if (filter.duration) {
       params = params.set('duration', filter.duration.toString());
     }
+    if (filter.identifier) {
+      params = params.set('identifier', filter.identifier);
+    }
 
     return this.http.get<IPage<any>>(
       `${this.apiUrl}/workflow/${id}/instances`,
