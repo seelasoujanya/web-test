@@ -1,0 +1,16 @@
+<div *ngIf="workflows.length === 0" class="no-pendingInstances-message">
+  No Instances for Processing
+</div>
+<div class="monitor-instance-table">
+  <app-common-table
+    [headings]="headings"
+    [isToggle]="true"
+    [values]="workflowValues"
+    (toggleChange)="handleToggleChange($event)">
+  </app-common-table>
+</div>
+
+<div class="page-view">
+  <app-pagination [page]="page" (paginationEvent)="onPage($event)">
+  </app-pagination>
+</div>

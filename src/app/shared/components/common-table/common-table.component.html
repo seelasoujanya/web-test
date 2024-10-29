@@ -1,0 +1,107 @@
+<div class="table">
+  <table class="table-container">
+    <thead class="table-head">
+      <tr>
+        <th *ngFor="let heading of headings" class="table-header-cell">
+          <div class="table-header-content">
+            {{ heading }}
+          </div>
+        </th>
+        <th *ngIf="showActions" class="table-header-cell">
+          <div class="table-header-content">ACTIONS</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="scrollable-table__body">
+      <ng-container *ngFor="let row of values">
+        <tr (click)="onRowClick(row)">
+          <td *ngFor="let value of row; let i = index" class="table-cell">
+            <ng-container *ngIf="isObject(value); else displayValue">
+              <!-- Toggle for pause -->
+              <label class="toggle" *ngIf="isToggle">
+                <input
+                  type="checkbox"
+                  [checked]="!toggleStates[row[4]?.id]"
+                  (change)="onToggle(row)" />
+                <span class="slider"></span>
+              </label>
+            </ng-container>
+            <ng-template #displayValue>
+              <span [innerHTML]="value.html ? value.html : value"></span>
+            </ng-template>
+            <input type="hidden" [value]="row[4]" />
+          </td>
+          <!-- Show Actions button when required -->
+          <td *ngIf="showActions" class="table-cell">
+            <div class="buttons-container">
+              <div class="tooltip-container">
+                <img
+                  src="assets/icons/priority-logo.svg"
+                  type="button"
+                  (click)="onEditPriority(row)"
+                  alt="" />
+                <p class="tooltip">Change priority</p>
+              </div>
+              <div class="tooltip-container">
+                <i
+                  type="button"
+                  class="fas fa-trash-alt dlt"
+                  (click)="onTerminateInstance(row[0])"></i>
+                <p class="tooltip">Terminate Instance</p>
+              </div>
+            </div>
+            <!-- Show Actions button when required 
+          <td *ngIf="showActions" class="table-cell">
+            
+           <div class="buttons-container">
+              <div class="tooltip-container">
+                <button
+                  class="change-priority-button"
+                  type="button"
+                  (click)="onEditPriority(row)">
+                  <img src="assets/icons/priority-logo.svg" alt="" />
+                </button>
+                <p class="tooltip">Change priority</p>
+              </div>
+              <div class="tooltip-container">
+                <button
+                  class="cancel-button"
+                  type="button"
+                  (click)="onTerminateInstance(row[0])">
+                  <i class="fas fa-trash-alt dlt"></i>
+                </button>
+                <p class="tooltip">Terminate Instance</p>
+              </div>
+            </div> -->
+          </td>
+        </tr>
+
+        <!-- Expanded row -->
+        <!-- <tr *ngIf="expandedId == row[0]">
+          <td colspan="12" class="expanded-td">
+            <div class="expanded-row">
+              <div>
+                <h6>Instance Is Pending To Run</h6>
+              </div>
+              <div class="buttons-container">
+                <button
+                  class="change-priority-button"
+                  type="button"
+                  (click)="onEditPriority(row)">
+                  CHANGE PRIORITY
+                  <img src="assets/icons/priority-logo.svg" alt="" />
+                </button>
+                <button
+                  class="cancel-button"
+                  type="button"
+                  (click)="onTerminateInstance(row[0])">
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr> -->
+      </ng-container>
+    </tbody>
+  </table>
+</div>

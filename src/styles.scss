@@ -45,6 +45,8 @@ $deliver-upgrade-frontend-theme: mat.define-light-theme(
 
 @import './fonts/fonts.scss';
 @import '~@ng-select/ng-select/themes/default.theme.css';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
 
 * {
   margin: 0;

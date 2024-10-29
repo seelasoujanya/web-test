@@ -81,20 +81,47 @@
                   else failureLogo
                 ">
                 <div class="active-class">
-                  <img
-                    src="assets/icons/success-logo.svg"
-                    alt="Active Icon"
-                    class="success-icon" />
-                  <p>
-                    {{
-                      workflow.status === 'COMPLETED'
-                        ? 'Success'
-                        : (workflow.status | titlecase)
-                    }}
-                  </p>
+                  <ng-container *ngIf="workflow.status === 'RUNNING'">
+                    <div class="icon-item running">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      <span>Running</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="workflow.status === 'QUEUED'">
+                    <div class="icon-item queued">
+                      <i class="fas fa-clock"></i>
+                      <span>Queued</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="workflow.status === 'CREATED'">
+                    <div class="icon-item created">
+                      <i class="fas fa-file-alt"></i>
+                      <span>Created</span>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="workflow.status === 'COMPLETED'">
+                    <div class="icon-item success">
+                      <i class="fas fa-check-circle"></i>
+                      <span>Success</span>
+                    </div>
+                    <!-- <div class="active-class">
+                      <img
+                        src="assets/icons/success-logo.svg"
+                        alt="Active Icon"
+                        class="success-icon" />
+                      <p>
+                        {{
+                          workflow.status === 'COMPLETED'
+                            ? 'Success'
+                            : (workflow.status | titlecase)
+                        }}
+                      </p>
+                    </div> -->
+                  </ng-container>
                 </div>
               </ng-container>
-
               <ng-template #failureLogo>
                 <div class="inactive-class">
                   <ng-container
@@ -192,33 +219,71 @@
                     else failureLogo
                   ">
                   <div class="active-class">
-                    <img
-                      src="assets/icons/success-logo.svg"
-                      alt="Active Icon"
-                      class="success-icon" />
-                    <p>
-                      {{
-                        workflow.status === 'COMPLETED'
-                          ? 'Success'
-                          : (workflow.status | titlecase)
-                      }}
-                    </p>
+                    <ng-container *ngIf="workflow.status === 'RUNNING'">
+                      <div class="icon-item running">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Running</span>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="workflow.status === 'QUEUED'">
+                      <div class="icon-item queued">
+                        <i class="fas fa-clock"></i>
+                        <span>Queued</span>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="workflow.status === 'CREATED'">
+                      <div class="icon-item created">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Created</span>
+                      </div>
+                    </ng-container>
+                    <ng-container *ngIf="workflow.status === 'COMPLETED'">
+                      <div class="icon-item success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Success</span>
+                      </div>
+                      <!-- <div class="active-class">
+                        <img
+                          src="assets/icons/success-logo.svg"
+                          alt="Active Icon"
+                          class="success-icon" />
+                        <p>
+                          {{
+                            workflow.status === 'COMPLETED'
+                              ? 'Success'
+                              : (workflow.status | titlecase)
+                          }}
+                        </p>
+                      </div> -->
+                    </ng-container>
                   </div>
                 </ng-container>
-
                 <ng-template #failureLogo>
                   <div class="inactive-class">
-                    <img
-                      src="assets/icons/failure-logo.svg"
-                      alt="Active Icon"
-                      class="failure-icon" />
-                    <p>
-                      {{
-                        workflow.status === 'TERMINATED'
-                          ? 'Terminated'
-                          : 'Error'
-                      }}
-                    </p>
+                    <ng-container
+                      *ngIf="
+                        workflow.status === null || workflow.status === ''
+                      ">
+                      <p>NA</p>
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        workflow.status !== null && workflow.status !== ''
+                      ">
+                      <img
+                        src="assets/icons/failure-logo.svg"
+                        alt="Inactive Icon"
+                        class="failure-icon" />
+                      <p>
+                        {{
+                          workflow.status === 'TERMINATED'
+                            ? 'Terminated'
+                            : 'Error'
+                        }}
+                      </p>
+                    </ng-container>
                   </div>
                 </ng-template>
               </div>
