@@ -7,7 +7,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { TimeFormatService } from '../time-format.service';
+import { TimeFormatService } from '../../../time-format.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({

@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CommonTableComponent } from 'src/app/common-table/common-table.component';
+import { CommonTableComponent } from 'src/app/shared/components/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
