@@ -32,6 +32,8 @@ export class CommonTableComponent {
   @Output() toggleChange: EventEmitter<{ id: any; state: boolean }> =
     new EventEmitter();
 
+  @Output() template: EventEmitter<any> = new EventEmitter();
+
   constructor(
     private timeFormatService: TimeFormatService,
     private cdr: ChangeDetectorRef
@@ -75,6 +77,7 @@ export class CommonTableComponent {
   }
 
   isObject(value: any): boolean {
+    // this.isToggle = value.isToggle;
     return value && typeof value === 'object' && !Array.isArray(value);
   }
 
@@ -88,5 +91,12 @@ export class CommonTableComponent {
 
   expandAction(id: any) {
     this.expandedId = this.expandedId === id ? undefined : id;
+  }
+
+  onRowClick(row: any) {
+    const templateId = row[4]?.id;
+    if (templateId !== undefined) {
+      this.template.emit(templateId);
+    }
   }
 }

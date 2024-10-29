@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Subject, takeUntil } from 'rxjs';
+import { CommonTableComponent } from 'src/app/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
@@ -32,10 +33,11 @@ import { TimeFormatService } from 'src/app/time-format.service';
     FormsModule,
     ReactiveFormsModule,
     PaginationComponent,
+    CommonTableComponent,
   ],
   templateUrl: './xml-templates.component.html',
   styleUrl: './xml-templates.component.scss',
-  providers: [BsModalService],
+  providers: [BsModalService, DatePipe],
 })
 export class XmlTemplatesComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
@@ -108,6 +110,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private apiService: ApiService,
     private cdRef: ChangeDetectorRef,
+    private datePipe: DatePipe,
     private router: Router,
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
@@ -145,6 +148,19 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     this.apiService.updateTemplate(id, template).subscribe((result: any) => {
       this.updatedTemplate = result;
     });
+  }
+
+  getTableValues(): any[] {
+    const values = this.xmlTemplates.map(template => [
+      template.name,
+      template.description,
+      `${this.datePipe.transform(template.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
+        `${this.datePipe.transform(template.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+      `${this.datePipe.transform(template.modified, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
+        `${this.datePipe.transform(template.modified, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+      { id: template.id },
+    ]);
+    return values;
   }
 
   public saveTemplateChanges() {

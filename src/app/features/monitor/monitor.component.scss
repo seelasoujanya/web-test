@@ -29,10 +29,7 @@
     border-radius: 4px;
     display: flex;
     flex-direction: row;
-    padding-right: 110px;
-    // position: sticky;
-    // z-index: 10;
-    // top: 0;
+    padding-right: 20px;
     align-items: center;
     justify-content: space-between;
     .left-buttons {
@@ -76,9 +73,6 @@
       z-index: 9;
       .table-head {
         background-color: white;
-        // position: sticky;
-        // top: -0.3px;
-        // z-index: 10;
       }
       .table-header-cell {
         position: sticky;
