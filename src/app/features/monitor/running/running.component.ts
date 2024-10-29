@@ -86,13 +86,9 @@ export class RunningComponent {
     this.apiService.getInstancesByStatus(pageParams).subscribe(data => {
       this.page = data;
       this.runningInstances = data.content;
-      // Check if there are no instances left on the current page
-      if (this.page.content.length === 0) {
-        // If on the first page, don't navigate back
-        if (this.pageParams.page > 0) {
-          this.pageParams.page--; // Move to the previous page
-        }
-        this.updateRunningInstances(this.pageParams); // Fetch new instances for the updated page
+      if (this.page.content.length === 0 && this.pageParams.page > 0) {
+        this.pageParams.page--;
+        this.updateRunningInstances(this.pageParams);
       }
       this.noRunningInstances = this.runningInstances.length === 0;
       this.spinnerService.hide();
