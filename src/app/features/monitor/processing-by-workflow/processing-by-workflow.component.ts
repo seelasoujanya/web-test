@@ -46,7 +46,7 @@ export class ProcessingByWorkflowComponent implements OnInit {
   ngOnInit(): void {
     this.websocketSubscription =
       this.webSocketAPI.statusCountByWorkflow.subscribe(data => {
-        this.workflows = data.content;
+        this.workflows = data;
       });
     this.initialValues();
     this.timeFormatService.isUTC$.subscribe(value => {
@@ -55,10 +55,9 @@ export class ProcessingByWorkflowComponent implements OnInit {
   }
 
   initialValues() {
-    this.apiService.retrieveStatusCountByWorkflow(this.pageParams).subscribe(
+    this.apiService.retrieveStatusCountByWorkflow().subscribe(
       data => {
-        this.page = data;
-        this.workflows = data.content;
+        this.workflows = data;
         this.cd.detectChanges();
       },
       error => {
@@ -68,15 +67,18 @@ export class ProcessingByWorkflowComponent implements OnInit {
   }
 
   get workflowValues(): any[] {
-    const values = this.workflows.map(workflow => [
-      workflow.workflowName,
-      workflow.totalInstances.runningCount,
-      workflow.totalInstances.pendingCount,
-      `${this.datePipe.transform(workflow.completed, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-        `${this.datePipe.transform(workflow.completed, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
-      { isPaused: workflow.paused, id: workflow.workflowId },
-    ]);
-    return values;
+    if (this.workflows) {
+      const values = this.workflows.map(workflow => [
+        workflow.workflowName,
+        workflow.totalInstances.runningCount,
+        workflow.totalInstances.pendingCount,
+        `${this.datePipe.transform(workflow.completed, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
+          `${this.datePipe.transform(workflow.completed, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+        { isPaused: workflow.paused, id: workflow.workflowId },
+      ]);
+      return values;
+    }
+    return [];
   }
 
   handleToggleChange(event: { id: any; state: boolean }) {
@@ -96,9 +98,5 @@ export class ProcessingByWorkflowComponent implements OnInit {
     } else {
       console.warn(`Workflow with ID ${event.id} not found.`);
     }
-  }
-  onPage(pageNumber: number) {
-    this.pageParams.page = pageNumber - 1;
-    this.initialValues();
   }
 }
