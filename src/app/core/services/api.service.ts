@@ -174,13 +174,8 @@ export class ApiService {
   retrieveTotalWorkflowsStatusCount() {
     return this.http.get<any>(`${this.apiUrl}/workflow/status/count`);
   }
-  retrieveStatusCountByWorkflow(pageParams: any) {
-    const params = new HttpParams()
-      .set('page', pageParams.page)
-      .set('size', pageParams.size);
-    return this.http.get<any>(`${this.apiUrl}/workflow/status/by-workflow`, {
-      params,
-    });
+  retrieveStatusCountByWorkflow() {
+    return this.http.get<any>(`${this.apiUrl}/workflow/status/by-workflow`);
   }
 
   public getWorkflowById(id: number | unknown): Observable<any> {

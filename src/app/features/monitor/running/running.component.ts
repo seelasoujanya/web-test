@@ -12,6 +12,8 @@ import { PRIORITY } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-running',
@@ -37,6 +39,9 @@ export class RunningComponent {
 
   public runningInstances: any[] = [];
   public noRunningInstances: boolean = false;
+  websocketSubscription!: Subscription;
+  public destroyed$ = new Subject<void>();
+
   priority: any;
   propertyDTO: any;
   priorityConstants = PRIORITY;
@@ -56,25 +61,44 @@ export class RunningComponent {
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
     private datePipe: DatePipe,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private webSocketAPI: WebSocketAPI
   ) {}
 
   ngOnInit(): void {
     this.pageParams.status = 'RUNNING';
-    console.log('runnig ' + this.runningInstances);
 
     this.updateRunningInstances(this.pageParams);
-    console.log('runnig ' + 'runningInstances');
+    this.updateDataFromWebSocket();
 
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
     });
   }
 
+  updateDataFromWebSocket() {
+    this.websocketSubscription =
+      this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
+        if (data) {
+          // get data from web socket
+          this.runningInstances = data.runningInstances.content;
+
+          this.noRunningInstances = this.runningInstances.length === 0;
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    if (this.websocketSubscription) {
+      this.websocketSubscription.unsubscribe();
+    }
+  }
   getTableValues() {
     return this.runningInstances.map(instance => [
       instance.id,
-      instance.workflow.name,
+      instance.workflowName,
       instance.identifier,
       `${this.datePipe.transform(instance.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
         `${this.datePipe.transform(instance.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,

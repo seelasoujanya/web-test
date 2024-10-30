@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, TemplateRef } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { CommonTableComponent } from 'src/app/shared/components/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
@@ -12,6 +12,7 @@ import { PRIORITY } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 
 @Component({
   selector: 'app-pending',
@@ -45,6 +46,8 @@ export class PendingComponent {
   priorityConstants = PRIORITY;
   public tableValues: any[] = [];
   private bsModalRef!: BsModalRef;
+  websocketSubscription!: Subscription;
+  public destroyed$ = new Subject<void>();
 
   constructor(
     private apiService: ApiService,
@@ -52,24 +55,60 @@ export class PendingComponent {
     private timeFormatService: TimeFormatService,
     private cdRef: ChangeDetectorRef,
     private modalService: BsModalService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private webSocketAPI: WebSocketAPI
   ) {}
 
   ngOnInit(): void {
     this.updatePendingInstances(this.pageParams);
+    this.updateDataFromWebSocket();
+
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
     });
   }
 
+  updateDataFromWebSocket() {
+    this.websocketSubscription =
+      this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
+        if (data) {
+          this.pendingInstances = data.pendingInstances.content;
+          this.noPendingInstances = this.pendingInstances.length === 0;
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+    if (this.websocketSubscription) {
+      this.websocketSubscription.unsubscribe();
+    }
+  }
+
+  // getTableValues() {
+  //   return this.pendingInstances.map(instance => [
+  //     instance.id,
+  //     instance.workflowName,
+  //     instance.identifier,
+  //     `${this.datePipe.transform(instance.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
+  //       `${this.datePipe.transform(instance.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+  //   ]);
+  // }
+
   getTableValues() {
-    return this.pendingInstances.map(instance => [
-      instance.id,
-      instance.workflow.name,
-      instance.identifier,
-      `${this.datePipe.transform(instance.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-        `${this.datePipe.transform(instance.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
-    ]);
+    return this.pendingInstances.map(instance => {
+      const createdDate = instance.created ? new Date(instance.created) : null;
+      return [
+        instance.id,
+        instance.workflowName,
+        instance.identifier,
+        createdDate
+          ? `${this.datePipe.transform(createdDate, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
+            `${this.datePipe.transform(createdDate, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`
+          : 'N/A', // or some default value
+      ];
+    });
   }
 
   updatePendingInstances(pageParams: any) {
