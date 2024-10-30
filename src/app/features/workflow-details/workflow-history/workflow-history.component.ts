@@ -185,30 +185,28 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
         value: [`${this.filter.duration} min`],
       });
     }
-    if (this.filter.status) {
+    if (this.filter.status && this.filter.status.length > 0) {
       appliedFilters.push({
         key: 'status',
         label: 'Status',
         value: this.filter.status,
       });
     }
-    if (this.filter.priority) {
-      console.log(this.filter.priority);
+    if (this.filter.priority && this.filter.priority.length > 0) {
       appliedFilters.push({
         key: 'priority',
         label: 'Priority',
         value: this.filter.priority,
       });
     }
-    if (this.filter.deliveryType) {
-      console.log(this.filter.deliveryType);
+    if (this.filter.deliveryType && this.filter.deliveryType.length > 0) {
       appliedFilters.push({
         key: 'deliveryType',
         label: 'Delivery Type',
         value: this.filter.deliveryType,
       });
     }
-    if (this.filter.identifier) {
+    if (this.filter.identifier && this.filter.identifier.length > 0) {
       appliedFilters.push({
         key: 'identifier',
         label: 'Identifier',
