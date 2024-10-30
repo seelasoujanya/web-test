@@ -18,7 +18,10 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  MatDatepicker,
+  MatDatepickerModule,
+} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
@@ -96,11 +99,11 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   filter = {
     startDate: null,
     completedDate: null,
-    deliveryType: null,
-    status: null,
-    priority: null,
+    deliveryType: [] as string[],
+    status: [] as string[],
+    priority: [] as string[],
     duration: 0,
-    identifier: null,
+    identifier: [] as string[],
   };
 
   workflowInstanceStatus = WORKFLOW_INSTANCE_STATUS;
@@ -110,6 +113,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   deliveryType = DELIVERY_TYPE;
 
   showFilters: boolean = false;
+
+  selectedFilter: string = 'startDate';
 
   constructor(
     private apiService: ApiService,
@@ -126,6 +131,135 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     if (state) {
       this.workflowName = state.name;
     }
+  }
+
+  selectFilter(filterName: string) {
+    this.selectedFilter = filterName;
+  }
+
+  getSelectedFilterLabel(): string {
+    switch (this.selectedFilter) {
+      case 'startDate':
+        return 'Start Date';
+      case 'completedDate':
+        return 'Completed Date';
+      case 'duration':
+        return 'Duration';
+      case 'status':
+        return 'Status';
+      case 'priority':
+        return 'Priority';
+      case 'deliveryType':
+        return 'Delivery Type';
+      case 'identifier':
+        return 'Identifier';
+      default:
+        return '';
+    }
+  }
+
+  hasActiveFilters(): boolean {
+    return this.getAppliedFilters().length > 0;
+  }
+
+  getAppliedFilters(): { key: string; label: string; value: string[] }[] {
+    const appliedFilters = [];
+    if (this.filter.startDate) {
+      appliedFilters.push({
+        key: 'startDate',
+        label: 'Start Date',
+        value: [formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')],
+      });
+    }
+    if (this.filter.completedDate) {
+      appliedFilters.push({
+        key: 'completedDate',
+        label: 'Completed Date',
+        value: [formatDate(this.filter.completedDate, 'yyyy-MM-dd', 'en-US')],
+      });
+    }
+    if (this.filter.duration > 0) {
+      appliedFilters.push({
+        key: 'duration',
+        label: 'Duration',
+        value: [`${this.filter.duration} min`],
+      });
+    }
+    if (this.filter.status) {
+      appliedFilters.push({
+        key: 'status',
+        label: 'Status',
+        value: this.filter.status,
+      });
+    }
+    if (this.filter.priority) {
+      console.log(this.filter.priority);
+      appliedFilters.push({
+        key: 'priority',
+        label: 'Priority',
+        value: this.filter.priority,
+      });
+    }
+    if (this.filter.deliveryType) {
+      console.log(this.filter.deliveryType);
+      appliedFilters.push({
+        key: 'deliveryType',
+        label: 'Delivery Type',
+        value: this.filter.deliveryType,
+      });
+    }
+    if (this.filter.identifier) {
+      appliedFilters.push({
+        key: 'identifier',
+        label: 'Identifier',
+        value: this.filter.identifier,
+      });
+    }
+    return appliedFilters;
+  }
+
+  clearFilter(key: string): void {
+    if (key === 'startDate' || key === 'completedDate') {
+      this.filter[key] = null;
+    } else if (
+      key === 'priority' ||
+      key === 'deliveryType' ||
+      key === 'status' ||
+      key === 'identifier'
+    ) {
+      this.filter[key].shift();
+    } else if (key === 'duration') {
+      this.filter[key] = 0;
+    }
+    this.getPageItems(this.pageParams);
+  }
+
+  identifiers: string[] = [];
+
+  identifierInput: string = '';
+
+  addIdentifier() {
+    if (this.identifierInput) {
+      const trimmedIdentifiers = this.identifierInput
+        .split(',')
+        .map(id => id.trim())
+        .filter(id => id);
+      trimmedIdentifiers.forEach(id => {
+        if (!this.filter.identifier.includes(id)) {
+          this.filter.identifier.push(id);
+        }
+      });
+      this.identifierInput = '';
+    }
+  }
+
+  clearAllIdentifiers() {
+    this.filter.identifier = [];
+    this.identifierInput = '';
+  }
+
+  removeIdentifier(index: number): void {
+    this.filter.identifier.splice(index, 1);
   }
 
   getPageItems(pageParams: any) {
@@ -155,8 +289,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
-      sortBy: '',
+      pazeSize: 20,
+      sortBy: 'id',
       order: 'asc',
     };
   }
@@ -240,11 +374,11 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.filter = {
       startDate: null,
       completedDate: null,
-      deliveryType: null,
-      status: null,
-      priority: null,
+      deliveryType: [],
+      status: [],
+      priority: [],
       duration: 0,
-      identifier: null,
+      identifier: [],
     };
   }
 
@@ -274,10 +408,10 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.bsModalRef.hide();
   }
   filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
-    this.resetFilters();
     this.openDialog(filterDeliveriesTemplate);
   }
   applyFilters() {
+    this.bsModalRef.hide();
     this.formatFilterDates();
     this.getPageItems(this.pageParams);
   }
