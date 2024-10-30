@@ -20,14 +20,12 @@ export const FOLDER_STRUCTURE = [
 ];
 
 export const WORKFLOW_INSTANCE_STATUS = [
-  { label: 'Created', value: 'CREATED' },
-  { label: 'Running', value: 'RUNNING' },
-  { label: 'Queued', value: 'QUEUED' },
-  { label: 'Completed', value: 'COMPLETED' },
+  { label: 'Success', value: 'COMPLETED' },
   { label: 'Failed', value: 'FAILED' },
+  { label: 'Created', value: 'CREATED' },
+  { label: 'Queued', value: 'QUEUED' },
+  { label: 'Running', value: 'RUNNING' },
   { label: 'Terminated', value: 'TERMINATED' },
-  { label: 'Pending', value: 'PENDING' },
-  { label: 'Paused', value: 'PAUSED' },
 ];
 
 export const DELIVERY_TYPE = [

@@ -1,5 +1,26 @@
-<div class="workflow-history-container" [ngClass]="{ blurred: showFilters }">
-  <button class="btn btn--red" type="button" (click)="filterDeliveries()">
+<div class="workflow-history-container">
+  <div *ngIf="hasActiveFilters()" class="applied-filters">
+    <span *ngFor="let filter of getAppliedFilters()" class="filter-badge">
+      <ng-container *ngIf="filter.value && filter.value.length > 0">
+        <span class="filter-label">{{ filter.label }}</span
+        >: {{ filter.value[0] }}
+        <button
+          type="button"
+          class="filter-remove-btn"
+          (click)="clearFilter(filter.key)">
+          <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
+        </button>
+        <span *ngIf="filter.value.length > 1" class="showfilter"
+          >+{{ filter.value.length - 1 }}</span
+        >
+      </ng-container>
+    </span>
+  </div>
+
+  <button
+    class="btn btn--red"
+    type="button"
+    (click)="filterDeliveries(filterDeliveriesForm)">
     <img src="assets/icons/filter.svg" alt="" />
     <span>FILTERS</span>
   </button>
@@ -24,119 +45,244 @@
   </div>
 </div>
 
-<div class="filter-template" *ngIf="showFilters">
-  <div class="header">
-    <p class="header_title">Filter</p>
-    <button type="button" class="header_close-btn" (click)="closeFilters()">
-      <img src="assets/icons/close-circle.svg" alt="" />
-    </button>
-  </div>
+<ng-template #filterDeliveriesForm class="modal-content">
   <div class="form-details">
-    <div class="field">
-      <span>Start Date</span>
-      <mat-form-field
-        appearance="outline"
-        color="accent"
-        class="w-100 datepicker__size_s">
-        <mat-label>Select Start Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="startDatepicker"
-          [(ngModel)]="filter.startDate"
-          [matDatepickerFilter]="startDateFilter"
-          readonly />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="startDatepicker"></mat-datepicker-toggle>
-        <mat-datepicker #startDatepicker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <div class="field">
-      <span>Completed Date</span>
-      <mat-form-field
-        appearance="outline"
-        color="accent"
-        class="w-100 datepicker__size_s">
-        <mat-label>Select Completed Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="completedDatepicker"
-          [(ngModel)]="filter.completedDate"
-          [matDatepickerFilter]="completedDateFilter"
-          readonly />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="completedDatepicker"></mat-datepicker-toggle>
-        <mat-datepicker #completedDatepicker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    <div class="field">
-      <span>Duration</span>
-      <div class="duration-slider" style="width: 100%">
-        <input
-          type="range"
-          min="0"
-          max="60"
-          step="1"
-          [(ngModel)]="filter.duration"
-          class="duration-input"
-          style="width: 100%"
-          (input)="updateDurationValue()" />
-        <span>{{ filter.duration }} min</span>
+    <div class="side-bar">
+      <div class="field">
+        <span></span>
+        <span
+          [class.selected]="selectedFilter === 'startDate'"
+          (click)="selectFilter('startDate')"
+          class="input-field"
+          style="margin-top: 40px">
+          <img
+            *ngIf="filter.startDate"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Start Date
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'completedDate'"
+          (click)="selectFilter('completedDate')"
+          class="input-field">
+          <img
+            *ngIf="filter.completedDate"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Completed Date
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'duration'"
+          (click)="selectFilter('duration')"
+          class="input-field">
+          <img
+            *ngIf="filter.duration"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Duration
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'status'"
+          (click)="selectFilter('status')"
+          class="input-field">
+          <img
+            *ngIf="filter.status?.length"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Status
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'priority'"
+          (click)="selectFilter('priority')"
+          class="input-field">
+          <img
+            *ngIf="filter.priority?.length"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+
+          Priority
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'deliveryType'"
+          (click)="selectFilter('deliveryType')"
+          class="input-field">
+          <img
+            *ngIf="filter.deliveryType?.length"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Delivery Type
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'identifier'"
+          (click)="selectFilter('identifier')"
+          class="input-field"
+          style="margin-bottom: 60px">
+          <img
+            *ngIf="filter.identifier?.length"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Identifier
+        </span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="buttons" style="margin-top: 20px">
+        <button class="btn btn--black" (click)="resetFilters()">RESET</button>
+        <button
+          class="btn btn--red"
+          (click)="applyFilters()"
+          style="margin-left: 10px">
+          APPLY
+        </button>
       </div>
     </div>
-    <div class="field">
-      <span>Status</span>
-      <ng-select
-        [items]="workflowInstanceStatus"
-        bindLabel="label"
-        bindValue="value"
-        [searchable]="false"
-        [clearable]="false"
-        placeholder="Select Status"
-        [(ngModel)]="filter.status">
-        <ng-template ng-label-tmp let-item="item">
-          <span>{{ item.label }}</span>
-        </ng-template>
-      </ng-select>
-    </div>
-    <div class="field">
-      <span>Priority</span>
-      <ng-select
-        [items]="prority"
-        bindLabel="label"
-        bindValue="value"
-        [searchable]="false"
-        [clearable]="false"
-        placeholder="Select Priority"
-        [(ngModel)]="filter.priority">
-        <ng-template ng-label-tmp let-item="item">
-          <span>{{ item.label }}</span>
-        </ng-template>
-      </ng-select>
-    </div>
-    <div class="field">
-      <span>Delivery Type</span>
-      <ng-select
-        [items]="deliveryType"
-        bindLabel="label"
-        bindValue="value"
-        [searchable]="false"
-        [clearable]="false"
-        placeholder="Select Delivery Type"
-        [(ngModel)]="filter.deliveryType">
-        <ng-template ng-label-tmp let-item="item">
-          <span>{{ item.label }}</span>
-        </ng-template>
-      </ng-select>
+
+    <div class="form-content">
+      <div class="header">
+        <p class="header_title">{{ getSelectedFilterLabel() }}</p>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+      <div>
+        <div *ngIf="selectedFilter === 'startDate'">
+          <div *ngIf="filter.startDate" class="selected-date">
+            <span>{{ filter.startDate | date: 'mediumDate' }}</span>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="filter.startDate = null">
+              <img
+                src="/assets/icons/delete-icon.svg"
+                class="delete-icon"
+                alt="delete" />
+            </button>
+          </div>
+          <mat-form-field
+            appearance="outline"
+            color="accent"
+            class="w-100 datepicker__size_s">
+            <mat-label>Select Start Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="startDatepicker"
+              [(ngModel)]="filter.startDate"
+              [matDatepickerFilter]="startDateFilter"
+              readonly />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="startDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatepicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div *ngIf="selectedFilter === 'completedDate'">
+          <div *ngIf="filter.completedDate" class="selected-date">
+            <span>{{ filter.completedDate | date: 'mediumDate' }}</span>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="filter.completedDate = null">
+              <img
+                src="/assets/icons/delete-icon.svg"
+                class="delete-icon"
+                alt="delete" />
+            </button>
+          </div>
+          <mat-form-field
+            appearance="outline"
+            color="accent"
+            class="w-100 datepicker__size_s">
+            <mat-label>Select Completed Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="completedDatepicker"
+              [(ngModel)]="filter.completedDate"
+              [matDatepickerFilter]="completedDateFilter"
+              readonly />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="completedDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #completedDatepicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div *ngIf="selectedFilter === 'duration'">
+          <input
+            type="range"
+            min="0"
+            max="60"
+            step="1"
+            [(ngModel)]="filter.duration"
+            class="duration-input"
+            (input)="updateDurationValue()" />
+          <span>{{ filter.duration }} min</span>
+        </div>
+        <div *ngIf="selectedFilter === 'status'">
+          <ng-select
+            [items]="workflowInstanceStatus"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Select Status"
+            [(ngModel)]="filter.status"
+            [multiple]="true"></ng-select>
+        </div>
+        <div *ngIf="selectedFilter === 'priority'">
+          <ng-select
+            [items]="priority"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Select Priority"
+            [(ngModel)]="filter.priority"
+            [multiple]="true"></ng-select>
+        </div>
+        <div *ngIf="selectedFilter === 'deliveryType'">
+          <ng-select
+            [items]="deliveryType"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Select Delivery Type"
+            [(ngModel)]="filter.deliveryType"
+            [multiple]="true"></ng-select>
+        </div>
+        <div *ngIf="selectedFilter === 'identifier'">
+          <textarea
+            placeholder="Enter comma-separated barcodes..."
+            [(ngModel)]="identifierInput"
+            class="identifier-input"></textarea>
+
+          <div class="button-group">
+            <button (click)="addIdentifier()" class="btn btn--black">
+              ADD
+            </button>
+            <button (click)="clearAllIdentifiers()" class="btn btn--black">
+              CLEAR ALL
+            </button>
+          </div>
+
+          <div
+            *ngIf="filter.identifier && filter.identifier.length > 0"
+            class="identifier-list">
+            <p *ngFor="let id of filter.identifier; let i = index" class="item">
+              {{ id }}
+              <img
+                src="assets/icons/remove-icon.svg"
+                (click)="removeIdentifier(i)" />
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="buttons" style="position: relative">
-    <button class="btn btn--black" (click)="cancelFilters()">RESET ALL</button>
-    <div>
-      <button class="btn btn--red" (click)="applyFilters()">
-        APPLY FILTER
-      </button>
-    </div>
-  </div>
-</div>
+</ng-template>

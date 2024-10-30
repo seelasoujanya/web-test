@@ -102,17 +102,20 @@ export class ApiService {
     if (filter.completedDate) {
       params = params.set('completedDate', filter.completedDate);
     }
-    if (filter.deliveryType) {
+    if (filter.deliveryType?.length > 0) {
       params = params.set('deliveryType', filter.deliveryType);
     }
-    if (filter.status) {
+    if (filter.status?.length > 0) {
       params = params.set('status', filter.status);
     }
-    if (filter.priority) {
+    if (filter.priority?.length > 0) {
       params = params.set('priority', filter.priority);
     }
     if (filter.duration) {
       params = params.set('duration', filter.duration.toString());
+    }
+    if (filter.identifier?.length > 0) {
+      params = params.set('identifier', filter.identifier);
     }
 
     return this.http.get<IPage<any>>(
