@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -11,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { AuthorizationService } from 'src/app/core/services/authorization.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-workflows',
@@ -24,7 +31,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
   ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
-  providers: [ApiService],
+  providers: [ApiService, BsModalService],
 })
 export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
@@ -42,6 +49,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   BGroupId: string = '';
 
   showBookMarks: boolean = false;
+
+  selectedFilter: string = 'enabled';
 
   headings: string[] = [
     'Workflow Name',
@@ -74,15 +83,74 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private router: Router,
     private cdRef: ChangeDetectorRef,
     private spinnerService: SpinnerService,
-    private authorizationService: AuthorizationService
+    private authorizationService: AuthorizationService,
+    private modalService: BsModalService,
+    private bsModalRef: BsModalRef
   ) {
     this.getUserId();
+  }
+
+  filter = {
+    enabled: null,
+    bookmark: null,
+  };
+
+  selectFilter(filterName: string) {
+    this.selectedFilter = filterName;
+  }
+
+  getSelectedFilterLabel(): string {
+    switch (this.selectedFilter) {
+      case 'enabled':
+        return 'Status';
+      case 'bookmarks':
+        return 'Bookmarks';
+      default:
+        return '';
+    }
+  }
+
+  public resetFilters() {
+    this.filter = {
+      enabled: null,
+      bookmark: null,
+    };
+  }
+
+  applyFilters() {
+    this.bsModalRef.hide();
+    if (this.filter.bookmark) {
+      this.showBookMarks = true;
+      this.bookmarkedPageParams = this.getDefaultPageParams();
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.showBookMarks = false;
+      this.pageParams = this.getDefaultPageParams();
+      this.getPageItems(this.pageParams);
+    }
+  }
+
+  public closeModal(): void {
+    this.bsModalRef.hide();
+  }
+
+  filterDeliveries(filterWorkflowsTemplate: TemplateRef<any>) {
+    this.openDialog(filterWorkflowsTemplate);
+  }
+
+  openDialog(workflowsTemplate: TemplateRef<any>) {
+    const config = {
+      backdrop: true,
+      ignoreBackdropClick: true,
+      keyboard: false,
+    };
+    this.bsModalRef = this.modalService.show(workflowsTemplate, config);
   }
 
   getPageItems(pageParams: any) {
     this.spinnerService.show();
     this.apiService
-      .getWorkflows(pageParams)
+      .getWorkflows(pageParams, this.filter)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.workflowsPage = data;
@@ -222,7 +290,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.apiService
       .getBookmarkedWorkflowsByUsername(
         this.BGroupId,
-        this.bookmarkedPageParams
+        this.bookmarkedPageParams,
+        this.filter
       )
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
@@ -239,5 +308,43 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
           this.spinnerService.hide();
         }
       );
+  }
+
+  hasActiveFilters(): boolean {
+    return this.getAppliedFilters().length > 0;
+  }
+
+  getAppliedFilters(): { key: string; label: string; value: string }[] {
+    const appliedFilters = [];
+
+    if (this.filter.bookmark) {
+      appliedFilters.push({
+        key: 'bookmark',
+        label: 'Bookmarks',
+        value: 'Yes',
+      });
+    }
+
+    if (this.filter.enabled === true) {
+      appliedFilters.push({
+        key: 'enabled',
+        label: 'Status',
+        value: 'Active',
+      });
+    } else if (this.filter.enabled === false) {
+      appliedFilters.push({
+        key: 'enabled',
+        label: 'Status',
+        value: 'Inactive',
+      });
+    }
+    return appliedFilters;
+  }
+
+  clearFilter(key: string): void {
+    if (key === 'bookmark' || key === 'enabled') {
+      this.filter[key] = null;
+    }
+    this.getPageItems(this.pageParams);
   }
 }

@@ -64,7 +64,7 @@ export class ApiService {
     return this.http.get<StatsDTO>(`${this.apiUrl}/workflow/${id}/stats`);
   }
 
-  getWorkflows(pageParams: any): Observable<IPage<any>> {
+  getWorkflows(pageParams: any, filter: any): Observable<IPage<any>> {
     let params = new HttpParams()
       .set('page', pageParams.page)
       .set('size', pageParams.pageSize)
@@ -74,6 +74,10 @@ export class ApiService {
 
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
+    }
+
+    if (filter.enabled !== null) {
+      params = params.set('enabled', filter.enabled);
     }
     return this.http.get<IPage<any>>(`${this.apiUrl}/workflow`, { params });
   }
@@ -271,7 +275,8 @@ export class ApiService {
 
   getBookmarkedWorkflowsByUsername(
     username: string,
-    pageParams: any
+    pageParams: any,
+    filter: any
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', pageParams.page)
@@ -280,6 +285,9 @@ export class ApiService {
       .set('order', pageParams.order);
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
+    }
+    if (filter.enabled !== null) {
+      params = params.set('enabled', filter.enabled);
     }
     return this.http.get<any>(
       `${this.apiUrl}/bookmark/user/${username}/workflows`,

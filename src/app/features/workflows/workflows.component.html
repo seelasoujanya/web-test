@@ -18,6 +18,20 @@
               class="filter-bookmarks-img"
               alt="" />
           </button>
+          <div *ngIf="hasActiveFilters()" class="applied-filters">
+            <span
+              *ngFor="let filter of getAppliedFilters()"
+              class="filter-badge">
+              <span class="filter-label">{{ filter.label }}</span
+              ><span class="filter-value">: {{ filter.value }}</span>
+              <button
+                type="button"
+                class="filter-remove-btn"
+                (click)="clearFilter(filter.key)">
+                <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
+              </button>
+            </span>
+          </div>
         </div>
         <div class="workflow-header-right">
           <div>
@@ -48,6 +62,13 @@
               Search
             </button>
           </div>
+          <button
+            class="btn btn--red"
+            type="button"
+            (click)="filterDeliveries(filterWorkflowsForm)">
+            <img src="assets/icons/filter.svg" alt="" />
+            <span>FILTERS</span>
+          </button>
         </div>
       </div>
     </div>
@@ -74,3 +95,114 @@
     </div>
   </div>
 </div>
+
+<ng-template #filterWorkflowsForm class="modal-content">
+  <div class="form-details">
+    <div class="side-bar">
+      <div class="field">
+        <span
+          [class.selected]="selectedFilter === 'bookmarks'"
+          (click)="selectFilter('bookmarks')"
+          class="input-field"
+          style="margin-top: 80px">
+          <img
+            *ngIf="filter.bookmark"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Bookmarks
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'enabled'"
+          (click)="selectFilter('enabled')"
+          class="input-field"
+          style="margin-bottom: 80px">
+          <img
+            *ngIf="filter.enabled"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Status
+        </span>
+      </div>
+      <div class="buttons" style="margin-top: 20px">
+        <button class="btn btn--black" (click)="resetFilters()">RESET</button>
+        <button
+          class="btn btn--red"
+          (click)="applyFilters()"
+          style="margin-left: 10px">
+          APPLY
+        </button>
+      </div>
+    </div>
+
+    <div class="form-content">
+      <div class="header">
+        <p class="header_title">Filter Workflows</p>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+      <div>
+        <div *ngIf="selectedFilter === 'bookmarks'">
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [(ngModel)]="filter.bookmark"
+                class="checkbox-input" />
+              <div class="radio__icon" [class.checked]="filter.bookmark">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Bookmarks</span>
+            </label>
+          </div>
+        </div>
+
+        <div *ngIf="selectedFilter === 'enabled'">
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="radio"
+                [(ngModel)]="filter.enabled"
+                [value]="true"
+                class="checkbox-input" />
+              <div
+                class="radio__icon"
+                [class.checked]="filter.enabled === true">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Active</span>
+            </label>
+          </div>
+          <br />
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="radio"
+                [(ngModel)]="filter.enabled"
+                [value]="false"
+                class="checkbox-input" />
+              <div
+                class="radio__icon"
+                [class.checked]="filter.enabled === false">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Inactive</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
