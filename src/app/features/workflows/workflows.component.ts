@@ -55,6 +55,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   headings: string[] = [
     'Workflow Name',
     'Status',
+    'Created',
     'Last Run On',
     'Last Run Status',
     'Actions',
@@ -63,9 +64,12 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   headingEnum = {
     'Workflow Name': 'name',
     Status: 'enabled',
+    Created: 'created',
     'Last Run On': 'created',
     'Last Run Status': 'status',
   };
+
+  filtersApplied: boolean = false;
 
   public destroyed$ = new Subject<void>();
 
@@ -119,6 +123,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   applyFilters() {
     this.bsModalRef.hide();
+    this.filtersApplied = this.hasActiveFilters();
     if (this.filter.bookmark) {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
@@ -132,6 +137,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   public closeModal(): void {
     this.bsModalRef.hide();
+    if (!this.filtersApplied) {
+      this.resetFilters();
+    }
   }
 
   filterDeliveries(filterWorkflowsTemplate: TemplateRef<any>) {
@@ -272,19 +280,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     }
   }
 
-  toggleShowBookmarks() {
-    this.showBookMarks = !this.showBookMarks;
-    if (this.showBookMarks) {
-      this.bookmarkedPageParams = this.getDefaultPageParams();
-      this.page = this.bookmarksPage;
-      this.fetchBookmarkedWorkflows();
-    } else {
-      this.page = this.workflowsPage;
-      this.filteredWorkflows = [...this.workflowsData];
-      this.noBookmarkedWorkflows = false;
-    }
-  }
-
   fetchBookmarkedWorkflows() {
     this.spinnerService.show();
     this.apiService
@@ -311,7 +306,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   hasActiveFilters(): boolean {
-    return this.getAppliedFilters().length > 0;
+    return this.filter.bookmark !== null || this.filter.enabled !== null;
   }
 
   getAppliedFilters(): { key: string; label: string; value: string }[] {
@@ -345,6 +340,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     if (key === 'bookmark' || key === 'enabled') {
       this.filter[key] = null;
     }
+    this.filtersApplied = this.hasActiveFilters();
     this.getPageItems(this.pageParams);
   }
 }
