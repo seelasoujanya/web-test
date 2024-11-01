@@ -59,11 +59,26 @@
             </div>
           </td>
           <td class="table-cell">
+            <ng-container *ngIf="workflow.created; else noDate">
+              {{
+                workflow.created
+                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}
+              <br />
+              <span class="time">{{
+                workflow.created
+                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+              }}</span>
+            </ng-container>
+            <ng-template #noDate> NA </ng-template>
+          </td>
+          <td class="table-cell">
             <ng-container *ngIf="workflow.completed; else noDate">
               {{
                 workflow.completed
                   | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}<br />
+              }}
+              <br />
               <span class="time">{{
                 workflow.completed
                   | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
@@ -181,7 +196,8 @@
               {{
                 workflow.created
                   | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}<br />
+              }}
+              <br />
               <span class="time">{{
                 workflow.created
                   | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
@@ -192,7 +208,8 @@
                 {{
                   workflow.completed
                     | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-                }}<br />
+                }}
+                <br />
                 <span class="time">{{
                   workflow.completed
                     | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')

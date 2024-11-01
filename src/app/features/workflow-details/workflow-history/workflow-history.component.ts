@@ -116,6 +116,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   selectedFilter: string = 'startDate';
 
+  filtersApplied: boolean = false;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -159,7 +161,15 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   hasActiveFilters(): boolean {
-    return this.getAppliedFilters().length > 0;
+    return (
+      this.filter.startDate !== null ||
+      this.filter.completedDate !== null ||
+      this.filter.deliveryType.length > 0 ||
+      this.filter.status.length > 0 ||
+      this.filter.priority.length > 0 ||
+      this.filter.duration > 0 ||
+      this.filter.identifier.length > 0
+    );
   }
 
   getAppliedFilters(): { key: string; label: string; value: string[] }[] {
@@ -229,6 +239,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     } else if (key === 'duration') {
       this.filter[key] = 0;
     }
+    this.filtersApplied = this.hasActiveFilters();
     this.getPageItems(this.pageParams);
   }
 
@@ -404,6 +415,9 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
   public closeModal(): void {
     this.bsModalRef.hide();
+    if (!this.filtersApplied) {
+      this.resetFilters();
+    }
   }
   filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
     this.openDialog(filterDeliveriesTemplate);
@@ -411,6 +425,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   applyFilters() {
     this.bsModalRef.hide();
     this.formatFilterDates();
+    this.filtersApplied = this.hasActiveFilters();
     this.getPageItems(this.pageParams);
   }
   formatFilterDates() {

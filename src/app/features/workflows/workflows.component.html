@@ -3,22 +3,14 @@
     <div class="heading-section">
       <div class="workflow-header">
         <div class="workflows-label">
-          <p id="track-assets-copy">Workflows</p>
           <button
+            class="btn btn--red"
             type="button"
-            class="filter-bookmarks-btn"
-            (click)="toggleShowBookmarks()"
-            [tooltip]="'Show All Bookmarks'">
-            <img
-              [src]="
-                showBookMarks
-                  ? 'assets/icons/bookmark-fill-logo.svg'
-                  : 'assets/icons/bookmark-logo.svg'
-              "
-              class="filter-bookmarks-img"
-              alt="" />
+            (click)="filterDeliveries(filterWorkflowsForm)">
+            <img src="assets/icons/filter.svg" alt="" />
+            <span>FILTERS</span>
           </button>
-          <div *ngIf="hasActiveFilters()" class="applied-filters">
+          <div *ngIf="filtersApplied" class="applied-filters">
             <span
               *ngFor="let filter of getAppliedFilters()"
               class="filter-badge">
@@ -62,13 +54,6 @@
               Search
             </button>
           </div>
-          <button
-            class="btn btn--red"
-            type="button"
-            (click)="filterDeliveries(filterWorkflowsForm)">
-            <img src="assets/icons/filter.svg" alt="" />
-            <span>FILTERS</span>
-          </button>
         </div>
       </div>
     </div>
@@ -126,14 +111,14 @@
           Status
         </span>
       </div>
-      <div class="buttons" style="margin-top: 20px">
-        <button class="btn btn--black" (click)="resetFilters()">RESET</button>
+      <div class="buttons">
         <button
-          class="btn btn--red"
-          (click)="applyFilters()"
-          style="margin-left: 10px">
-          APPLY
+          class="btn btn--black"
+          (click)="resetFilters()"
+          style="margin-left: 14px">
+          RESET
         </button>
+        <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
       </div>
     </div>
 

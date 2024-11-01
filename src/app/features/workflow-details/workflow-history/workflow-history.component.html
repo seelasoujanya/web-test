@@ -1,5 +1,5 @@
 <div class="workflow-history-container">
-  <div *ngIf="hasActiveFilters()" class="applied-filters">
+  <div *ngIf="filtersApplied" class="applied-filters">
     <span *ngFor="let filter of getAppliedFilters()" class="filter-badge">
       <ng-container *ngIf="filter.value && filter.value.length > 0">
         <span class="filter-label">{{ filter.label }}</span
@@ -138,14 +138,14 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="buttons" style="margin-top: 20px">
-        <button class="btn btn--black" (click)="resetFilters()">RESET</button>
+      <div class="buttons">
         <button
-          class="btn btn--red"
-          (click)="applyFilters()"
-          style="margin-left: 10px">
-          APPLY
+          class="btn btn--black"
+          (click)="resetFilters()"
+          style="margin-left: 14px">
+          RESET
         </button>
+        <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
       </div>
     </div>
 
