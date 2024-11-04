@@ -86,10 +86,9 @@ export class ProcessingByWorkflowComponent implements OnInit {
     if (workflow) {
       // Update the workflow in the backend
       this.apiService
-        .updateWorkflow(workflow.workflowId, { enabled: event.state })
+        .updateWorkflow(workflow.workflowId, { paused: event.state })
         .subscribe(response => {
           if (response) {
-            console.log('Workflow updated successfully:', response);
             this.initialValues();
           } else {
             console.error('Failed to update workflow.');

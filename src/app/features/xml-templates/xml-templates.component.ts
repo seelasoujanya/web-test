@@ -96,8 +96,8 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleTimeFormat() {
-    this.timeFormatService.toggleTimeFormat();
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
   }
 
   public get getBsModalRef(): BsModalRef {
@@ -154,10 +154,10 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     const values = this.xmlTemplates.map(template => [
       template.name,
       template.description,
-      `${this.datePipe.transform(template.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-        `${this.datePipe.transform(template.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
-      `${this.datePipe.transform(template.modified, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-        `${this.datePipe.transform(template.modified, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+      `${this.formatDate(template.created).date}<br />` +
+        `<span class="time">${this.formatDate(template.created).time} </span>`,
+      `${this.formatDate(template.modified).date}<br />` +
+        `<span class="time">${this.formatDate(template.modified).time} </span>`,
       { id: template.id },
     ]);
     return values;

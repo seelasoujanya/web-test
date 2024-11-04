@@ -66,6 +66,7 @@
         (workflowDetailEvent)="viewInstances($event)"
         (workflowUpdateEvent)="pauseWorkflow($event)"
         (bookMarkEvent)="toggleBookmark($event)"
+        (reload)="reload($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
       <div *ngIf="noWorkflows" class="no-workflows-message">
         No Workflows Found

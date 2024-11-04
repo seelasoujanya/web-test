@@ -42,11 +42,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.getPageItems(this.pageParams);
     this.getWorkflow();
     this.getEmailsByWorkflowId();
-    this.getWorkflowSteps(this.workflowId);
-
     this.route.queryParams.subscribe(params => {
       this.selectedTab = params['tab'] || 'general';
       this.selectTab(this.selectedTab);
@@ -109,45 +106,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     }
   }
 
-  getPageItems(pageParams: any) {
-    this.apiService
-      .getWorkflowInstances(pageParams, this.workflowId, this.identifier)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.reset();
-        this.workflowsInstances = data.content;
-        this.updateWorkflowsData();
-        this.cdRef.markForCheck();
-        this.noInstancesFound = false;
-      });
-  }
-  onPage(pageNumber: number) {
-    this.pageParams.page = pageNumber - 1;
-    this.getPageItems(this.pageParams);
-  }
-  public page!: IPage<any>;
-  public pageParams = this.getDefaultPageParams();
-
-  getDefaultPageParams() {
-    return {
-      page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
-    };
-  }
-
   public backToWorkflows(): void {
     this.router.navigate(['/workflows']);
-  }
-
-  sortColumn(event: any) {
-    let heading = event.sortBy;
-    this.pageParams.sortBy =
-      this.headingEnum[heading as keyof typeof this.headingEnum];
-    this.pageParams.order = event.order;
-    this.getPageItems(this.pageParams);
   }
 
   updateWorkflowsData(): void {
@@ -175,35 +135,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.totalInstancesCount = 0;
   }
 
-  searchWorkflowInstance(): void {
-    if (this.identifier) {
-      this.apiService
-        .getWorkflowInstances(
-          this.pageParams,
-          this.workflowId,
-          this.identifier.toLowerCase()
-        )
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe({
-          next: data => {
-            this.page = data;
-            this.reset();
-            this.workflowsInstances = data.content;
-            this.updateWorkflowsData();
-            this.cdRef.markForCheck();
-            this.noInstancesFound = this.workflowsInstances.length === 0;
-          },
-          error: () => {
-            this.workflowsInstances = [];
-            this.noInstancesFound = true;
-            this.cdRef.markForCheck();
-          },
-        });
-    } else {
-      this.getPageItems(this.pageParams);
-    }
-  }
-
   public viewInstanceDetails(data: any): void {
     this.router.navigate(['/workflowinstance', data.id]);
   }
@@ -223,7 +154,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
         this.workflowCopy = JSON.parse(JSON.stringify(result));
       });
   }
-
   public getEmailsByWorkflowId() {
     this.apiService
       .getEmailsByWorkflowId(this.workflowId)
@@ -266,9 +196,10 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public addEmail(emailData: any) {
+    console.log('emailData ' + emailData.email);
     this.spinnerService.show();
     this.apiService
-      .addEmail(this.workflow.id, emailData)
+      .addEmail(emailData.workflowId, emailData)
       .subscribe((result: any) => {
         this.emails.push(result);
         this.spinnerService.hide();
@@ -281,15 +212,5 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
       this.getEmailsByWorkflowId();
       this.spinnerService.hide();
     });
-  }
-
-  public getWorkflowSteps(id: any) {
-    this.apiService
-      .getWorkflowSteps(id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.workflowSteps = data;
-        this.cdRef.markForCheck();
-      });
   }
 }

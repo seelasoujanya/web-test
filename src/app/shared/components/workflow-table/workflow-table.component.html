@@ -10,7 +10,11 @@
             <ng-container *ngIf="isWorkflow">
               {{ heading }}
               <img
-                *ngIf="heading !== 'Actions' && heading !== 'Last Run Status'"
+                *ngIf="
+                  heading !== 'Actions' &&
+                  heading !== 'Last Run Status' &&
+                  heading !== 'Pause'
+                "
                 src="assets/icons/down-arrow-logo.svg"
                 alt="{{ heading }} Icon"
                 class="heading-icon"
@@ -44,44 +48,44 @@
           <td class="table-cell">{{ workflow.name }}</td>
           <td class="table-cell">
             <div class="status-content">
-              <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+              <ng-container
+                *ngIf="
+                  workflow.paused || isPauseProperty;
+                  else activOrInactive
+                ">
                 <img
-                  src="assets/icons/active-logo.svg"
+                  src="assets/icons/paused-logo.svg"
                   alt="Active Icon"
                   class="active-status-icon" />
               </ng-container>
-              <ng-template #inactiveLogo>
-                <img
-                  src="assets/icons/inactive-logo.svg"
-                  alt="Inactive Icon"
-                  class="inactive-status-icon" />
+              <ng-template #activOrInactive>
+                <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+                  <img
+                    src="assets/icons/active-logo.svg"
+                    alt="Active Icon"
+                    class="active-status-icon" />
+                </ng-container>
+                <ng-template #inactiveLogo>
+                  <img
+                    src="assets/icons/inactive-logo.svg"
+                    alt="Inactive Icon"
+                    class="" />
+                </ng-template>
               </ng-template>
             </div>
           </td>
           <td class="table-cell">
             <ng-container *ngIf="workflow.created; else noDate">
-              {{
-                workflow.created
-                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}
-              <br />
-              <span class="time">{{
-                workflow.created
-                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}</span>
+              {{ formatDate(workflow.created).date }}<br />
+              <span class="time">{{ formatDate(workflow.created).time }}</span>
             </ng-container>
             <ng-template #noDate> NA </ng-template>
           </td>
           <td class="table-cell">
             <ng-container *ngIf="workflow.completed; else noDate">
-              {{
-                workflow.completed
-                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}
-              <br />
+              {{ formatDate(workflow.completed).date }}<br />
               <span class="time">{{
-                workflow.completed
-                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+                formatDate(workflow.completed).time
               }}</span>
             </ng-container>
             <ng-template #noDate> NA </ng-template>
@@ -90,9 +94,13 @@
             <div class="status-content">
               <ng-container
                 *ngIf="
-                  ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
-                    workflow.status
-                  );
+                  [
+                    'COMPLETED',
+                    'CREATED',
+                    'RUNNING',
+                    'QUEUED',
+                    'PAUSED'
+                  ].includes(workflow.status);
                   else failureLogo
                 ">
                 <div class="active-class">
@@ -116,6 +124,14 @@
                       <span>Created</span>
                     </div>
                   </ng-container>
+
+                  <ng-container *ngIf="workflow.status === 'PAUSED'">
+                    <div class="icon-item queued">
+                      <i class="fas fa-clock"></i>
+                      <span>Paused</span>
+                    </div>
+                  </ng-container>
+
                   <ng-container *ngIf="workflow.status === 'COMPLETED'">
                     <div class="icon-item success">
                       <i class="fas fa-check-circle"></i>
@@ -182,6 +198,22 @@
                 (click)="bookMarkWorkflow($event, workflow)" />
             </div>
           </td>
+
+          <td class="table-cell">
+            <div class="action-content">
+              <button
+                class="toggle"
+                (click)="togglePaused($event, workflow)"
+                type="button">
+                <input
+                  type="checkbox"
+                  class="action-icon"
+                  [checked]="isToggle(workflow.paused)" />
+                <span class="slider"></span>
+                <p class="tooltip" *ngIf="isPauseProperty">Globally Paused</p>
+              </button>
+            </div>
+          </td>
         </tr>
       </ng-container>
       <ng-container *ngIf="!isWorkflow">
@@ -193,19 +225,12 @@
               </div>
             </td>
             <td class="table-cell">
-              {{
-                workflow.created
-                  | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}
-              <br />
-              <span class="time">{{
-                workflow.created
-                  | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
-              }}</span>
+              {{ formatDate(workflow.created).date }}<br />
+              <span class="time">{{ formatDate(workflow.created).time }}</span>
             </td>
             <td class="table-cell">
               <ng-container *ngIf="workflow.completed; else noDate">
-                {{
+                <!-- {{
                   workflow.completed
                     | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
                 }}
@@ -213,6 +238,11 @@
                 <span class="time">{{
                   workflow.completed
                     | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+                }}</span> -->
+
+                {{ formatDate(workflow.completed).date }}<br />
+                <span class="time">{{
+                  formatDate(workflow.completed).time
                 }}</span>
               </ng-container>
               <ng-template #noDate> NA </ng-template>
@@ -230,9 +260,13 @@
               <div class="status-content">
                 <ng-container
                   *ngIf="
-                    ['COMPLETED', 'CREATED', 'RUNNING', 'QUEUED'].includes(
-                      workflow.status
-                    );
+                    [
+                      'COMPLETED',
+                      'CREATED',
+                      'RUNNING',
+                      'QUEUED',
+                      'PAUSED'
+                    ].includes(workflow.status);
                     else failureLogo
                   ">
                   <div class="active-class">
@@ -256,6 +290,13 @@
                         <span>Created</span>
                       </div>
                     </ng-container>
+                    <ng-container *ngIf="workflow.status === 'PAUSED'">
+                      <div class="icon-item queued">
+                        <i class="fas fa-clock"></i>
+                        <span>Paused</span>
+                      </div>
+                    </ng-container>
+
                     <ng-container *ngIf="workflow.status === 'COMPLETED'">
                       <div class="icon-item success">
                         <i class="fas fa-check-circle"></i>

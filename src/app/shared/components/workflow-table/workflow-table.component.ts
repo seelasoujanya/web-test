@@ -18,7 +18,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
 import { Router, RouterOutlet } from '@angular/router';
-import { Workflow } from 'src/app/core/models/workflow.model';
+import { SystemProperty, Workflow } from 'src/app/core/models/workflow.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TimeFormatService } from 'src/app/time-format.service';
@@ -30,8 +30,11 @@ import { TimeFormatService } from 'src/app/time-format.service';
   imports: [CommonModule, RouterOutlet, DurationPipe],
 })
 export class WorkflowTableComponent implements OnDestroy {
+  public timeFormatService: TimeFormatService;
+
   @Input()
   public workflows: any[] = [];
+  pausedProperty: SystemProperty | undefined;
 
   @Input()
   public headings: any[] = [];
@@ -61,6 +64,9 @@ export class WorkflowTableComponent implements OnDestroy {
   public getSortParam = new EventEmitter<any>();
 
   @Output()
+  public reload = new EventEmitter<any>();
+
+  @Output()
   public bookMarkEvent = new EventEmitter<any>();
 
   expandedInstaceId: number | undefined;
@@ -74,6 +80,8 @@ export class WorkflowTableComponent implements OnDestroy {
   currentSort: 'asc' | 'desc' = 'asc';
 
   selectedHeading: string | undefined;
+
+  isPauseProperty: boolean = true;
 
   headingEnum = {
     'Workflow Name': 'name',
@@ -96,15 +104,24 @@ export class WorkflowTableComponent implements OnDestroy {
     private apiService: ApiService,
     private router: Router,
     private cdRef: ChangeDetectorRef,
-    private timeFormatService: TimeFormatService
-  ) {}
+    timeFormatService: TimeFormatService
+  ) {
+    this.timeFormatService = timeFormatService;
+  }
 
   ngOnInit() {
+    this.getPausedProperty('paused');
+
     // ITC TO UTC
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
     });
   }
+
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
+  }
+
   public increaseLimitWorkflows(): void {
     this.increasePageEvent.emit(true);
   }
@@ -126,13 +143,46 @@ export class WorkflowTableComponent implements OnDestroy {
     }
   }
 
-  public bookMarkWorkflow(event: MouseEvent, workflow: Workflow): void {
+  public bookMarkWorkflow(event: Event, workflow: Workflow): void {
     event.stopPropagation();
     if (this.isWorkflow) {
       this.bookMarkEvent.emit(workflow);
     }
   }
+  isToggle(isPasued: any) {
+    if (this.isPauseProperty) {
+      return true;
+    } else {
+      return isPasued;
+    }
+  }
 
+  togglePaused(event: Event, workflow: Workflow) {
+    event.stopPropagation(); // Prevent the click event from bubbling up to the row
+    // Your logic to handle the toggle here
+    if (this.isPauseProperty) {
+      workflow.paused = true;
+    } else {
+      workflow.paused = !workflow.paused;
+
+      this.apiService
+        .updateWorkflow(workflow.id, { paused: workflow.paused })
+        .subscribe(response => {
+          if (response) {
+            this.reload.emit(workflow);
+          } else {
+            console.error('Failed to update workflow.');
+          }
+        });
+    }
+  }
+
+  getPausedProperty(key: string): void {
+    this.apiService.getPausedProperty(key).subscribe((data: SystemProperty) => {
+      this.pausedProperty = data;
+      this.isPauseProperty = data.value === 'true' ? true : false;
+    });
+  }
   public getArtifactFiles(workflow: Workflow): void {
     if (!this.isWorkflow) {
       this.apiService.getArtifacts(workflow.id).subscribe(result => {
@@ -183,7 +233,6 @@ export class WorkflowTableComponent implements OnDestroy {
   }
 
   getDisplayName(deliveryType: string): string {
-    console.log('deliveryType' + deliveryType);
     switch (deliveryType) {
       case DATA_ONLY:
         return 'Data Only';

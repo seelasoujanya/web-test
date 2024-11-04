@@ -95,13 +95,17 @@ export class RunningComponent {
       this.websocketSubscription.unsubscribe();
     }
   }
+
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
+  }
   getTableValues() {
     return this.runningInstances.map(instance => [
       instance.id,
       instance.workflowName,
       instance.identifier,
-      `${this.datePipe.transform(instance.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-        `${this.datePipe.transform(instance.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+      `${this.formatDate(instance.created).date}<br />` +
+        `<span class="time">${this.formatDate(instance.created).time} </span>`,
     ]);
   }
 
@@ -140,31 +144,23 @@ export class RunningComponent {
   onEditPriority(instance: any, priorityTemplate: TemplateRef<any>) {
     const instanceId = instance[0];
     this.expandedId = Number(instanceId);
-    console.log('Selected Instance ID:', instanceId);
-
     const selectedInstance = this.runningInstances.find(
       inst => inst.id === Number(instanceId)
     );
 
     if (selectedInstance) {
-      console.log('Selected Instance:', selectedInstance);
       this.priority = selectedInstance.priority;
       this.openChangePriorityDialog(priorityTemplate);
-    } else {
-      console.error('Instance not found with ID:', instanceId);
     }
   }
 
   deleteInstance(id: any) {
     const updateData = { status: 'TERMINATED' };
-    this.apiService.updateWorkflowInstance(id, updateData).subscribe(
-      updatedInstance => {
+    this.apiService
+      .updateWorkflowInstance(id, updateData)
+      .subscribe(updatedInstance => {
         this.updateRunningInstances(this.pageParams);
-      },
-      error => {
-        console.error('Error updating workflow instance', error);
-      }
-    );
+      });
   }
 
   onTerminateInstance(id: any) {
@@ -187,9 +183,6 @@ export class RunningComponent {
         .subscribe({
           next: response => {
             this.updateRunningInstances(this.pageParams);
-          },
-          error: err => {
-            console.error('Error updating priority', err);
           },
         });
     }

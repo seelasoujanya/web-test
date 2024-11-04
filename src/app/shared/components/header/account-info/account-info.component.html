@@ -28,6 +28,23 @@
           </ng-container>
         </ul>
       </div>
+
+      <div>
+        <h4 class="item-heading">Time Zone</h4>
+        <div class="toggle-container">
+          <label class="toggle">
+            <input
+              id="timezone-toggle"
+              type="checkbox"
+              [checked]="isUTC"
+              (change)="toggleTimeFormat()" />
+            <span class="slider"></span>
+          </label>
+          <label class="toggle-text" for="timezone-toggle">{{
+            isUTC ? 'UTC Time' : 'Local Time'
+          }}</label>
+        </div>
+      </div>
     </ng-container>
 
     <div *ngIf="!userDataLoaded" class="nodata">

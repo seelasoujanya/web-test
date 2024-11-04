@@ -103,15 +103,10 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
   getPausedProperty(key: string): void {
-    this.apiService.getPausedProperty(key).subscribe(
-      (data: SystemProperty) => {
-        this.pausedProperty = data;
-        this.isChecked = data.value === 'true' ? true : false;
-      },
-      (error: any) => {
-        console.error('Error fetching  property:', error);
-      }
-    );
+    this.apiService.getPausedProperty(key).subscribe((data: SystemProperty) => {
+      this.pausedProperty = data;
+      this.isChecked = data.value === 'true' ? true : false;
+    });
   }
   pauseInstances() {
     this.isChecked = !this.isChecked;

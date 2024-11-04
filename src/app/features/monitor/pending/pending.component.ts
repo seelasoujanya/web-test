@@ -68,6 +68,9 @@ export class PendingComponent {
     });
   }
 
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
+  }
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
@@ -86,27 +89,14 @@ export class PendingComponent {
     }
   }
 
-  // getTableValues() {
-  //   return this.pendingInstances.map(instance => [
-  //     instance.id,
-  //     instance.workflowName,
-  //     instance.identifier,
-  //     `${this.datePipe.transform(instance.created, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-  //       `${this.datePipe.transform(instance.created, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
-  //   ]);
-  // }
-
   getTableValues() {
     return this.pendingInstances.map(instance => {
-      const createdDate = instance.created ? new Date(instance.created) : null;
       return [
         instance.id,
         instance.workflowName,
         instance.identifier,
-        createdDate
-          ? `${this.datePipe.transform(createdDate, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-            `${this.datePipe.transform(createdDate, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`
-          : 'N/A', // or some default value
+        `${this.formatDate(instance.created).date}<br />` +
+          `<span class="time">${this.formatDate(instance.created).time} </span>`,
       ];
     });
   }
@@ -148,8 +138,6 @@ export class PendingComponent {
     if (selectedInstance) {
       this.priority = selectedInstance.priority;
       this.openChangePriorityDialog(priorityTemplate);
-    } else {
-      console.error('Instance not found with ID:', instanceId);
     }
   }
 
@@ -163,9 +151,6 @@ export class PendingComponent {
           next: () => {
             this.updatePendingInstances(this.pageParams);
             this.cdRef.detectChanges();
-          },
-          error: err => {
-            console.error('Error updating priority', err);
           },
         });
     }
@@ -210,10 +195,9 @@ export class PendingComponent {
 
   deleteInstance(id: any) {
     const updateData = { status: 'TERMINATED' };
-    this.apiService.updateWorkflowInstance(id, updateData).subscribe(
-      () => this.updatePendingInstances(this.pageParams),
-      error => console.error('Error deleting instance', error)
-    );
+    this.apiService
+      .updateWorkflowInstance(id, updateData)
+      .subscribe(() => this.updatePendingInstances(this.pageParams));
   }
 
   onPage(pageNumber: number) {

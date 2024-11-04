@@ -79,7 +79,7 @@
                   {{
                     workflowsInstance.created
                       | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-                  }}<br />
+                  }}
                   <span class="time">{{
                     workflowsInstance.created
                       | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
@@ -94,7 +94,7 @@
                     {{
                       workflowsInstance.completed
                         | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-                    }}<br />
+                    }}
                     <span class="time">{{
                       workflowsInstance.completed
                         | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
@@ -108,17 +108,30 @@
                 <td class="detail-field-value">
                   <ng-container
                     *ngIf="workflowsInstance.completed; else noDate">
-                    {{ secondsToHHMMSS(workflowsInstance.duration) }}
+                    {{ convertMilliSeconds(workflowsInstance.duration) }}
                   </ng-container>
                   <ng-template #noDate> NA </ng-template>
                 </td>
               </tr>
+
               <tr>
                 <td class="detail-field-key">Error Message</td>
                 <td class="detail-field-value">
                   <ng-container
                     *ngIf="workflowsInstance.errorMessage; else noMsg">
-                    {{ workflowsInstance.errorMessage }}
+                    <div class="tooltip-container">
+                      <span class="error-message">
+                        {{
+                          workflowsInstance.errorMessage.length > 30
+                            ? (workflowsInstance.errorMessage | slice: 0 : 30) +
+                              '...'
+                            : workflowsInstance.errorMessage
+                        }}
+                      </span>
+                      <span class="tooltip">
+                        {{ workflowsInstance.errorMessage }}
+                      </span>
+                    </div>
                   </ng-container>
                   <ng-template #noMsg> NA </ng-template>
                 </td>
