@@ -59,6 +59,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     'Last Run On',
     'Last Run Status',
     'Actions',
+    'Pause',
   ];
 
   headingEnum = {
@@ -177,13 +178,19 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     });
   }
 
+  public reload(workflows: any) {
+    this.getPageItems(this.pageParams);
+  }
+
   public pauseWorkflow(workflow: Workflow) {
     const newStatus = !workflow.enabled;
+    const pause = workflow.paused;
     const newData = {
       name: null,
       description: null,
       enabled: newStatus,
       throttleLimit: null,
+      paused: pause,
       isTaskChainIsValid: null,
     };
     this.apiService.updateWorkflow(workflow.id, newData).subscribe(result => {

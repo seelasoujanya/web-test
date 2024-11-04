@@ -38,8 +38,8 @@ export class WorkflowGeneralComponent implements OnInit {
 
   emailStatus = EMAIL_STATUS;
 
-  AssetIngestionWaitTime: string | undefined = '';
-  DataIngestionWaitTime: string | undefined = '';
+  AssetIngestionWaitTime: string = '';
+  DataIngestionWaitTime: string = '';
 
   AssetIngestionWaitTimeError: string | undefined = '';
   DataIngestionWaitTimeError: string | undefined = '';
@@ -71,23 +71,6 @@ export class WorkflowGeneralComponent implements OnInit {
     ACTIONS: '',
   };
 
-  workflowConfigurations: WorkflowConfiguration[] = [
-    {
-      key: 'AssetIngestionWaitTime',
-      value: this.AssetIngestionWaitTime,
-    },
-    {
-      key: 'DataIngestionWaitTime',
-      value: this.DataIngestionWaitTime,
-    },
-  ];
-
-  newEmailData = {
-    name: '',
-    email: '',
-    status: null,
-  };
-
   isEditing: boolean = false;
 
   emailId: number | undefined;
@@ -101,6 +84,13 @@ export class WorkflowGeneralComponent implements OnInit {
   selectedHeading: string | undefined;
   alias: any;
 
+  newEmailData = {
+    name: '',
+    email: '',
+    status: null,
+    workflowId: null,
+  };
+
   constructor(
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
@@ -112,7 +102,6 @@ export class WorkflowGeneralComponent implements OnInit {
   ngOnInit(): void {
     const workflowId = this.route.snapshot.params['id'];
     this.initialConfigurations();
-    this.getWorkflowSettings(workflowId);
   }
 
   filterSpecialChars(event: KeyboardEvent) {
@@ -127,29 +116,16 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   initialConfigurations() {
-    console.log('workflowCopy' + this.workflowCopy);
-
     const workflowId = this.route.snapshot.params['id'];
     this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
       this.workflow = result;
       this.workflowCopy = JSON.parse(JSON.stringify(result));
-    });
-
-    this.apiService.getWorkflowConfigurations(workflowId).subscribe(
-      (configs: WorkflowConfiguration[]) => {
-        this.workflowConfigurations = configs;
-        this.updateConfigurationValues();
-      },
-      (error: any) => {
-        console.error('Error fetching workflow configurations:', error);
-      }
-    );
-  }
-
-  getWorkflowSettings(workflowId: any) {
-    this.apiService.getWorkflowById(workflowId).subscribe((result: any) => {
-      this.workflow = result;
-      console.log(this.workflow.alias);
+      this.AssetIngestionWaitTime = this.workflowCopy
+        ? this.formatMinutes(this.workflowCopy.assetIngestionTime)
+        : '';
+      this.DataIngestionWaitTime = this.workflowCopy
+        ? this.formatMinutes(this.workflowCopy.dataIngestionTime)
+        : '';
       this.copyUrl =
         this.workflowCopy.alias == null || this.workflowCopy.alias == ''
           ? ''
@@ -228,23 +204,11 @@ export class WorkflowGeneralComponent implements OnInit {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        console.log('Text copied to clipboard');
         this.showCustom();
       })
       .catch(err => {
         console.error('Failed to copy: ', err);
       });
-  }
-
-  private updateConfigurationValues() {
-    this.workflowConfigurations.forEach(config => {
-      if (config.key === 'AssetIngestionWaitTime') {
-        this.AssetIngestionWaitTime = this.formatMinutes(config.value);
-      }
-      if (config.key === 'DataIngestionWaitTime') {
-        this.DataIngestionWaitTime = this.formatMinutes(config.value);
-      }
-    });
   }
 
   public toggleEditing() {
@@ -258,7 +222,6 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   public saveWorkflowChanges() {
-    this.updatingWorkflowConfigurationsArray();
     const modalData = {
       title: 'Confirm Changes',
       description: `Are you sure you want to Save changes for General Settings?`,
@@ -310,17 +273,21 @@ export class WorkflowGeneralComponent implements OnInit {
     this.bsModalRef.content.updateChanges.subscribe((result: boolean) => {
       if (result) {
         if (modalType === 'general') {
+          this.workflowCopy.assetIngestionTime = this.convertToMinutes(
+            this.AssetIngestionWaitTime
+          );
+          this.workflowCopy.dataIngestionTime = this.convertToMinutes(
+            this.DataIngestionWaitTime
+          );
           this.updateWorkflowEvent.emit(this.workflowCopy);
-          if (
-            this.AssetIngestionWaitTimeError == '' &&
-            this.DataIngestionWaitTimeError == ''
-          ) {
-            this.updateWorkflowConfiguration(
-              this.workflowCopy.id,
-              this.workflowConfigurations
-            );
-            this.initialConfigurations();
-          }
+
+          this.AssetIngestionWaitTime = this.workflowCopy
+            ? this.formatMinutes(this.workflowCopy.assetIngestionTime)
+            : '';
+          this.DataIngestionWaitTime = this.workflowCopy
+            ? this.formatMinutes(this.workflowCopy.dataIngestionTime)
+            : '';
+
           this.isEditing = false;
         } else {
           const emailData = {
@@ -333,22 +300,7 @@ export class WorkflowGeneralComponent implements OnInit {
     });
   }
 
-  private updatingWorkflowConfigurationsArray() {
-    this.AssetIngestionWaitTime = this.AssetIngestionWaitTime || '';
-    this.DataIngestionWaitTime = this.DataIngestionWaitTime || '';
-    this.workflowConfigurations = [
-      {
-        key: 'AssetIngestionWaitTime',
-        value: this.convertToMinutes(this.AssetIngestionWaitTime),
-      },
-      {
-        key: 'DataIngestionWaitTime',
-        value: this.convertToMinutes(this.DataIngestionWaitTime),
-      },
-    ];
-  }
-
-  convertToMinutes(value: string): string {
+  convertToMinutes(value: any): string {
     let totalMinutes = 0;
     const hoursMatch = value.match(/(\d+)h/);
     const minutesMatch = value.match(/(\d+)m/);
@@ -376,27 +328,6 @@ export class WorkflowGeneralComponent implements OnInit {
     }
   }
 
-  updateWorkflowConfiguration(
-    workflowId: any,
-    workflowConfigurations: WorkflowConfiguration[]
-  ) {
-    workflowConfigurations.forEach(config => {
-      this.apiService
-        .updateOrCreateWorkflowConfiguration(workflowId, config)
-        .subscribe(
-          response => {
-            console.log(
-              'Workflow configuration updated successfully:',
-              response
-            );
-          },
-          error => {
-            console.error('Error updating workflow configuration:', error);
-          }
-        );
-    });
-  }
-
   addNewEmail(emailTemplate: TemplateRef<any>) {
     this.reset();
     this.openAddEmailDialog(emailTemplate);
@@ -404,6 +335,7 @@ export class WorkflowGeneralComponent implements OnInit {
 
   addEmail() {
     this.bsModalRef.hide();
+    this.newEmailData.workflowId = this.workflowCopy.id;
     let data;
     if (this.isUpdate) {
       data = {
@@ -453,6 +385,7 @@ export class WorkflowGeneralComponent implements OnInit {
       name: '',
       email: '',
       status: null,
+      workflowId: null,
     };
   }
 

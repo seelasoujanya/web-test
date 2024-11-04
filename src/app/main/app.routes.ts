@@ -27,6 +27,9 @@ export const routes: Routes = [
       { path: 'history', component: WorkflowHistoryComponent },
     ],
   },
-  { path: 'workflowinstance/:id', component: WorkflowDetailViewComponent },
+  {
+    path: 'workflows/workflowinstance/:id',
+    component: WorkflowDetailViewComponent,
+  },
   { path: 'templates/:id', component: TemplateVersionDetailsComponent },
 ];

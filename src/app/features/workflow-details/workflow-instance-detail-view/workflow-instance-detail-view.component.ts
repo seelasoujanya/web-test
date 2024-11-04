@@ -9,6 +9,7 @@ import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-workflow-detail-view',
@@ -19,6 +20,7 @@ import { TimeFormatService } from 'src/app/time-format.service';
     DurationPipe,
     PaginationComponent,
     FormsModule,
+    TooltipModule,
   ],
   templateUrl: './workflow-instance-detail-view.component.html',
   styleUrl: './workflow-instance-detail-view.component.scss',
@@ -146,16 +148,26 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     }
   }
 
-  public secondsToHHMMSS(seconds: number | null): string {
+  public convertMilliSeconds(seconds: number | null): string {
     if (seconds === null) {
       return '';
     }
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
 
-    const pad = (num: number) => String(num).padStart(2, '0');
+    const parts: string[] = [];
 
-    return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+    if (hours > 0) {
+      parts.push(`${hours}h`);
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes}m`);
+    }
+
+    parts.push(`${secs}s`);
+
+    return parts.join(' ');
   }
 }

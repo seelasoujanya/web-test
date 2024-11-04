@@ -31,11 +31,6 @@
       </a> -->
       <!-- <a routerLink="monitor" routerLinkActive="active">Bookmarks</a> -->
       <div class="nav-right__container-actions">
-        <div>
-          <button class="timeButton" (click)="toggleTimeFormat()">
-            {{ isUTC ? 'UTC' : 'IST' }}
-          </button>
-        </div>
         <!-- <img src="/assets/icons/settings.svg" alt="" /> -->
         <div [class.header_navbar_item_active]="selectedMenu === 'USER'">
           <img
