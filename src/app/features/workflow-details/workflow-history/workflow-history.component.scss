@@ -49,7 +49,6 @@
 ::ng-deep .modal-dialog {
   max-width: 800px;
   .modal-content {
-    height: 510px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -93,6 +92,7 @@
           padding: 10px;
           gap: 12px;
           margin-top: 54px;
+          margin-bottom: 20px;
           display: flex;
           align-items: center;
         }

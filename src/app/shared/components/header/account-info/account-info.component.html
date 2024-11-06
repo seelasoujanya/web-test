@@ -12,7 +12,7 @@
   </div>
 
   <div class="account__body noscroll">
-    <ng-container *ngIf="userDataLoaded">
+    <ng-container>
       <!-- <div class="user-details">
         <h4>User Details</h4>
         <p>Name:{{ user.principal.fullName }}</p>
@@ -21,16 +21,21 @@
       </div> -->
 
       <div class="user-roles">
-        <h4 class="item-heading">Permissions</h4>
-        <ul class="item-list noscroll" *ngIf="userAuthorities">
-          <ng-container *ngFor="let role of userAuthorities">
+        <h5 class="item-heading">Permissions</h5>
+        <ng-container
+          class="item-list noscroll"
+          *ngIf="!userDataLoaded; else noUserAuthorities">
+          <ul *ngFor="let role of userAuthorities">
             <li class>{{ role }}</li>
-          </ng-container>
-        </ul>
+          </ul>
+        </ng-container>
+        <ng-template #noUserAuthorities>
+          <p class="noUserAuthorities">No permissions found.</p>
+        </ng-template>
       </div>
 
-      <div>
-        <h4 class="item-heading">Time Zone</h4>
+      <div class="user-roles">
+        <h5 class="item-heading">Time Zone</h5>
         <div class="toggle-container">
           <label class="toggle">
             <input
@@ -46,9 +51,5 @@
         </div>
       </div>
     </ng-container>
-
-    <div *ngIf="!userDataLoaded" class="nodata">
-      Failed to fetch user permissions.
-    </div>
   </div>
 </div>

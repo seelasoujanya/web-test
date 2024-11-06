@@ -21,7 +21,7 @@
               <label class="toggle" *ngIf="isToggle">
                 <input
                   type="checkbox"
-                  [checked]="toggleStates[row[4]?.id]"
+                  [checked]="isToggleChange(toggleStates[row[4]?.id])"
                   (change)="onToggle(row)" />
                 <span class="slider"></span>
               </label>

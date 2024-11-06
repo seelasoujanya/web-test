@@ -28,7 +28,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'workflows/workflowinstance/:id',
+    path: 'workflows/:workflowId/workflowinstance/:id',
     component: WorkflowDetailViewComponent,
   },
   { path: 'templates/:id', component: TemplateVersionDetailsComponent },

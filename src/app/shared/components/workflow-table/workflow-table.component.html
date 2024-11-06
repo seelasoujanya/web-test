@@ -50,7 +50,7 @@
             <div class="status-content">
               <ng-container
                 *ngIf="
-                  workflow.paused || isPauseProperty;
+                  (workflow.paused || isPauseProperty) && workflow.enabled;
                   else activOrInactive
                 ">
                 <img
@@ -249,7 +249,7 @@
             </td>
             <td class="table-cell">
               <ng-container *ngIf="workflow.completed; else noDate">
-                {{ workflow.duration | duration }}
+                {{ convertMilliSeconds(workflow.duration) }}
               </ng-container>
               <ng-template #noDate> NA </ng-template>
             </td>

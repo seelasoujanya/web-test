@@ -252,4 +252,23 @@ export class WorkflowTableComponent implements OnDestroy {
         return 'None';
     }
   }
+
+  public convertMilliSeconds(ms: number | null): string {
+    if (ms === null) {
+      return '';
+    }
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    const milliseconds = ms % 1000;
+
+    let formattedTime = '';
+
+    if (hours > 0) formattedTime += `${hours}h `;
+    if (minutes > 0) formattedTime += `${minutes}m `;
+    if (seconds > 0) formattedTime += `${seconds}s `;
+    if (milliseconds > 0) formattedTime += `${milliseconds}ms`;
+
+    return formattedTime.trim();
+  }
 }

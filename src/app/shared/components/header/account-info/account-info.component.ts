@@ -20,7 +20,7 @@ export class AccountInfoComponent implements OnInit {
   user: any;
   selectedTabIndex = 0;
   tabContentHeight = window.innerHeight - 220;
-  userDataLoaded: boolean = false;
+  userDataLoaded: boolean | undefined = false;
   userAuthorities: string[] = [];
   isUTC = false;
 
@@ -53,16 +53,16 @@ export class AccountInfoComponent implements OnInit {
       .subscribe({
         next: data => {
           this.user = data;
-          this.userDataLoaded = true;
           if (this.user.authorities) {
             this.user.authorities.forEach((role: any) => {
               this.userAuthorities.push(role);
             });
+            this.userDataLoaded = this.userAuthorities.length === 0;
           }
           this.spinnerService.hide();
         },
         error: () => {
-          this.userDataLoaded = true;
+          // this.userDataLoaded = false;
           this.spinnerService.hide();
         },
       });

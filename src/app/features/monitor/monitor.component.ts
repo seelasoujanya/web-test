@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
@@ -16,11 +16,13 @@ import {
   SystemPropertiesDTO,
   SystemProperty,
 } from 'src/app/core/models/workflow.model';
+import { PausedPropertyService } from 'src/app/paused-property.service';
 
 @Component({
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
     NgSelectModule,
@@ -41,6 +43,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
   isUTC: boolean | undefined;
   public destroyed$ = new Subject<void>();
   isChecked: boolean | undefined;
+  pausedSubscription!: Subscription;
 
   runningInstancesCount: number = 0;
   pendingInstancesCount: number = 0;
@@ -58,7 +61,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
   constructor(
     private webSocketAPI: WebSocketAPI,
     private apiService: ApiService,
-    private timeFormatService: TimeFormatService
+    private timeFormatService: TimeFormatService,
+    private pausedPropertyService: PausedPropertyService
   ) {}
 
   getDefaultPageParams() {
@@ -99,6 +103,9 @@ export class MonitorComponent implements OnInit, OnDestroy {
     if (this.websocketSubscription) {
       this.websocketSubscription.unsubscribe();
     }
+    if (this.pausedSubscription) {
+      this.pausedSubscription.unsubscribe();
+    }
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -106,6 +113,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.apiService.getPausedProperty(key).subscribe((data: SystemProperty) => {
       this.pausedProperty = data;
       this.isChecked = data.value === 'true' ? true : false;
+      this.pausedPropertyService.setPausedProperty(data);
     });
   }
   pauseInstances() {
@@ -113,6 +121,15 @@ export class MonitorComponent implements OnInit, OnDestroy {
     this.propertyDTO.value = this.isChecked.toString();
     this.propertyDTO.key = 'paused';
     this.propertyDTO.description = this.pausedProperty?.description;
-    this.apiService.updateSystemProperty(this.propertyDTO).subscribe();
+    this.apiService.updateSystemProperty(this.propertyDTO).subscribe(
+      (data: SystemProperty) => {
+        this.pausedProperty = data;
+        this.isChecked = data.value === 'true' ? true : false;
+        this.pausedPropertyService.setPausedProperty(data);
+      },
+      error => {
+        console.error('Error updating system property:', error);
+      }
+    );
   }
 }
