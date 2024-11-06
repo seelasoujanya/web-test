@@ -109,8 +109,14 @@ export class ApiService {
     if (filter.startDate) {
       params = params.set('startDate', filter.startDate);
     }
+    if (filter.endDate) {
+      params = params.set('endDate', filter.endDate);
+    }
+    if (filter.start) {
+      params = params.set('completedStart', filter.start);
+    }
     if (filter.completedDate) {
-      params = params.set('completedDate', filter.completedDate);
+      params = params.set('completedEnd', filter.completedDate);
     }
     if (filter.deliveryType?.length > 0) {
       params = params.set('deliveryType', filter.deliveryType);

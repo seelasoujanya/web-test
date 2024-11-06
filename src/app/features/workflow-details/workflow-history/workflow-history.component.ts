@@ -97,8 +97,10 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   failedInstancesCount = 0;
 
   filter = {
-    startDate: null,
-    completedDate: null,
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+    start: null as Date | null,
+    completedDate: null as Date | null,
     deliveryType: [] as string[],
     status: [] as string[],
     priority: [] as string[],
@@ -163,6 +165,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   hasActiveFilters(): boolean {
     return (
       this.filter.startDate !== null ||
+      this.filter.endDate !== null ||
+      this.filter.start !== null ||
       this.filter.completedDate !== null ||
       this.filter.deliveryType.length > 0 ||
       this.filter.status.length > 0 ||
@@ -174,20 +178,39 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   getAppliedFilters(): { key: string; label: string; value: string[] }[] {
     const appliedFilters = [];
-    if (this.filter.startDate) {
+
+    if (this.filter.startDate && this.filter.endDate) {
+      appliedFilters.push({
+        key: 'startDate',
+        label: 'Start Date',
+        value: [
+          `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
+        ],
+      });
+    } else if (this.filter.startDate) {
       appliedFilters.push({
         key: 'startDate',
         label: 'Start Date',
         value: [formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')],
       });
     }
-    if (this.filter.completedDate) {
+
+    if (this.filter.start && this.filter.completedDate) {
       appliedFilters.push({
         key: 'completedDate',
         label: 'Completed Date',
-        value: [formatDate(this.filter.completedDate, 'yyyy-MM-dd', 'en-US')],
+        value: [
+          `${formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.completedDate, 'yyyy-MM-dd', 'en-US')}`,
+        ],
+      });
+    } else if (this.filter.start) {
+      appliedFilters.push({
+        key: 'completedDate',
+        label: 'Completed Date',
+        value: [formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US')],
       });
     }
+
     if (this.filter.duration > 0) {
       appliedFilters.push({
         key: 'duration',
@@ -227,8 +250,10 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   clearFilter(key: string): void {
-    if (key === 'startDate' || key === 'completedDate') {
-      this.filter[key] = null;
+    if (key === 'completedDate') {
+      (this.filter.start = null), (this.filter.completedDate = null);
+    } else if (key == 'startDate') {
+      (this.filter.startDate = null), (this.filter.endDate = null);
     } else if (
       key === 'priority' ||
       key === 'deliveryType' ||
@@ -382,6 +407,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   public resetFilters() {
     this.filter = {
       startDate: null,
+      endDate: null,
+      start: null,
       completedDate: null,
       deliveryType: [],
       status: [],
@@ -391,19 +418,19 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     };
   }
 
-  completedDateFilter = (date: null): boolean => {
-    if (!this.filter.startDate) {
-      return true;
-    }
-    return date ? date >= this.filter.startDate : false;
-  };
+  // completedDateFilter = (date: null): boolean => {
+  //   if (!this.filter.startDate) {
+  //     return true;
+  //   }
+  //   return date ? date >= this.filter.startDate : false;
+  // };
 
-  startDateFilter = (date: null): boolean => {
-    if (this.filter.completedDate) {
-      return !date || date <= this.filter.completedDate;
-    }
-    return true;
-  };
+  // startDateFilter = (date: null): boolean => {
+  //   if (this.filter.completedDate) {
+  //     return !date || date <= this.filter.completedDate;
+  //   }
+  //   return true;
+  // };
 
   openDialog(emailTemplate: TemplateRef<any>) {
     const config = {
@@ -432,6 +459,12 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     if (this.filter.startDate) {
       this.filter.startDate = this.formatDateForApi(this.filter.startDate);
     }
+    if (this.filter.endDate) {
+      this.filter.endDate = this.formatDateForApi(this.filter.endDate);
+    }
+    if (this.filter.start) {
+      this.filter.start = this.formatDateForApi(this.filter.start);
+    }
     if (this.filter.completedDate) {
       this.filter.completedDate = this.formatDateForApi(
         this.filter.completedDate
@@ -442,5 +475,15 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   formatDateForApi(date: Date | null): any {
     if (!date) return null;
     return formatDate(date, 'yyyy-MM-dd HH:mm:ss.SSS', 'en-US');
+  }
+
+  clearDates(): void {
+    this.filter.startDate = null;
+    this.filter.endDate = null;
+  }
+
+  clearCompletedDatesRange(): void {
+    this.filter.start = null;
+    this.filter.completedDate = null;
   }
 }
