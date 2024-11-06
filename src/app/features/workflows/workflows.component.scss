@@ -1,4 +1,5 @@
 @import 'src/styles/button';
+@import 'src/styles/datepicker.scss';
 .workflow-container {
   background: #fff;
   .workflows-section {
@@ -78,7 +79,7 @@
 ::ng-deep .modal-dialog {
   max-width: 800px;
   .modal-content {
-    height: 350px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -128,13 +129,13 @@
       }
       .form-content {
         width: 80%;
-        padding-inline: 20px;
+        padding-inline: 30px;
         margin-top: 20px;
         .header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 50px;
+          margin-bottom: 10px;
           .header_title {
             font-family: Graphik, serif;
             font-size: 24px;
@@ -164,6 +165,10 @@
   }
 }
 
+::ng-deep .cdk-overlay-container {
+  z-index: 10000 !important;
+}
+
 .selected {
   background-color: white;
   color: #262626;
@@ -171,6 +176,7 @@
 
 .custom-checkbox {
   position: relative;
+  top: 80px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -224,9 +230,9 @@
 .applied-filters {
   display: flex;
   position: absolute;
-  top: 84px;
+  top: 80px;
   left: 0;
-  margin-left: 200px;
+  margin-left: 180px;
   display: flex;
   align-items: center;
   gap: 2px;
@@ -252,7 +258,7 @@
   }
 }
 
-.filter-badge:nth-child(n + 3) {
+.filter-badge:nth-child(n + 4) {
   display: none;
 }
 
@@ -268,4 +274,17 @@
   padding-left: 10px;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.delete-icon {
+  margin-left: 20px;
+}
+
+.label-heading {
+  font-size: 14px;
+  color: #262626;
+}
+
+.label-value {
+  font-size: 14px;
 }

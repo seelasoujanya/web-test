@@ -79,6 +79,12 @@ export class ApiService {
     if (filter.enabled !== null) {
       params = params.set('enabled', filter.enabled);
     }
+    if (filter.startDate !== null) {
+      params = params.set('startDate', filter.startDate);
+    }
+    if (filter.endDate !== null) {
+      params = params.set('endDate', filter.endDate);
+    }
     return this.http.get<IPage<any>>(`${this.apiUrl}/workflow`, { params });
   }
 
@@ -289,6 +295,12 @@ export class ApiService {
     if (filter.enabled !== null) {
       params = params.set('enabled', filter.enabled);
     }
+    if (filter.startDate !== null) {
+      params = params.set('startDate', filter.startDate);
+    }
+    if (filter.endDate !== null) {
+      params = params.set('endDate', filter.endDate);
+    }
     return this.http.get<any>(
       `${this.apiUrl}/bookmark/user/${username}/workflows`,
       { params }
@@ -307,43 +319,4 @@ export class ApiService {
       responseType: 'text',
     });
   }
-
-  // getFilteredInstances(queryParams: any,
-  //   id: number | unknown,
-  //   filter: any
-  // ): Observable<IPage<any>> {
-  //   let params = new HttpParams();
-  //   for (const key in queryParams) {
-  //     if (queryParams.hasOwnProperty(key)) {
-  //       params = params.set(key, queryParams[key]);
-  //     }
-  //   }
-
-  //   if (filter.startDate) {
-  //     params = params.set('startDate', filter.startDate);
-  //   }
-  //   if (filter.completedDate) {
-  //     params = params.set('completedDate', filter.completedDate);
-  //   }
-  //   if (filter.deliveryType) {
-  //     params = params.set('deliveryType', filter.deliveryType);
-  //   }
-  //   if (filter.status) {
-  //     params = params.set('status', filter.status);
-  //   }
-  //   if (filter.priority) {
-  //     params = params.set('priority', filter.priority);
-  //   }
-  //   if (filter.duration) {
-  //     params = params.set('duration', filter.duration.toString());
-  //   }
-
-  //   return this.http.get<IPage<any>>(
-  //     `${this.apiUrl}/workflow/${id}/instances`,
-  //     {
-  //       params,
-  //     }
-  //   );
-
-  // }
 }

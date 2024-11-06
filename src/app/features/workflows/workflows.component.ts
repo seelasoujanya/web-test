@@ -5,7 +5,7 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -13,11 +13,17 @@ import { IPage } from 'src/app/core/models/page.model';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { AuthorizationService } from 'src/app/core/services/authorization.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'app-workflows',
@@ -28,6 +34,14 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
     FormsModule,
     CommonModule,
     TooltipModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatSliderModule,
   ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
@@ -50,7 +64,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   showBookMarks: boolean = false;
 
-  selectedFilter: string = 'enabled';
+  selectedFilter: string = 'created';
 
   headings: string[] = [
     'Workflow Name',
@@ -71,6 +85,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   };
 
   filtersApplied: boolean = false;
+
+  selectingStart = true;
 
   public destroyed$ = new Subject<void>();
 
@@ -98,6 +114,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   filter = {
     enabled: null,
     bookmark: null,
+    startDate: null as Date | null,
+    endDate: null as Date | null,
   };
 
   selectFilter(filterName: string) {
@@ -119,11 +137,14 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.filter = {
       enabled: null,
       bookmark: null,
+      startDate: null,
+      endDate: null,
     };
   }
 
   applyFilters() {
     this.bsModalRef.hide();
+    this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
     if (this.filter.bookmark) {
       this.showBookMarks = true;
@@ -134,6 +155,20 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }
+  }
+
+  formatFilterDates() {
+    if (this.filter.startDate) {
+      this.filter.startDate = this.formatDateForApi(this.filter.startDate);
+    }
+    if (this.filter.endDate) {
+      this.filter.endDate = this.formatDateForApi(this.filter.endDate);
+    }
+  }
+
+  formatDateForApi(date: Date | null): any {
+    if (!date) return null;
+    return formatDate(date, 'yyyy-MM-dd HH:mm:ss.SSS', 'en-US');
   }
 
   public closeModal(): void {
@@ -313,7 +348,12 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   hasActiveFilters(): boolean {
-    return this.filter.bookmark !== null || this.filter.enabled !== null;
+    return (
+      this.filter.bookmark !== null ||
+      this.filter.enabled !== null ||
+      this.filter.startDate !== null ||
+      this.filter.endDate !== null
+    );
   }
 
   getAppliedFilters(): { key: string; label: string; value: string }[] {
@@ -340,14 +380,44 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
         value: 'Inactive',
       });
     }
+
+    if (this.filter.startDate && this.filter.endDate) {
+      appliedFilters.push({
+        key: 'created',
+        label: 'Created Date',
+        value: `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
+      });
+    } else if (this.filter.startDate) {
+      appliedFilters.push({
+        key: 'created',
+        label: 'Created Date',
+        value: formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US'),
+      });
+    }
+
     return appliedFilters;
   }
 
   clearFilter(key: string): void {
     if (key === 'bookmark' || key === 'enabled') {
       this.filter[key] = null;
+    } else if (key == 'created') {
+      (this.filter.startDate = null), (this.filter.endDate = null);
     }
     this.filtersApplied = this.hasActiveFilters();
-    this.getPageItems(this.pageParams);
+    if (this.filter.bookmark) {
+      this.showBookMarks = true;
+      this.bookmarkedPageParams = this.getDefaultPageParams();
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.showBookMarks = false;
+      this.pageParams = this.getDefaultPageParams();
+      this.getPageItems(this.pageParams);
+    }
+  }
+
+  clearDates(): void {
+    this.filter.startDate = null;
+    this.filter.endDate = null;
   }
 }
