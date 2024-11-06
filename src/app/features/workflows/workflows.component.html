@@ -87,10 +87,22 @@
     <div class="side-bar">
       <div class="field">
         <span
+          [class.selected]="selectedFilter === 'created'"
+          (click)="selectFilter('created')"
+          class="input-field"
+          style="margin-top: 150px">
+          <img
+            *ngIf="filter.startDate"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Created
+        </span>
+        <br />
+        <span
           [class.selected]="selectedFilter === 'bookmarks'"
           (click)="selectFilter('bookmarks')"
-          class="input-field"
-          style="margin-top: 80px">
+          class="input-field">
           <img
             *ngIf="filter.bookmark"
             src="assets/icons/checkmark-icon.svg"
@@ -103,7 +115,7 @@
           [class.selected]="selectedFilter === 'enabled'"
           (click)="selectFilter('enabled')"
           class="input-field"
-          style="margin-bottom: 80px">
+          style="margin-bottom: 170px">
           <img
             *ngIf="filter.enabled"
             src="assets/icons/checkmark-icon.svg"
@@ -131,6 +143,46 @@
         </button>
       </div>
       <div>
+        <div *ngIf="selectedFilter === 'created'">
+          <div class="selected-date">
+            <span class="date-label">
+              <span class="label-heading">From:</span>
+              <span class="label-value">{{
+                filter.startDate
+                  ? (filter.startDate | date: 'd MMM, y')
+                  : 'DD MMM, YYYY'
+              }}</span>
+              <span class="label-heading" style="margin-left: 10px">To:</span>
+              <span class="label-value">{{
+                filter.endDate
+                  ? (filter.endDate | date: 'd MMM, y')
+                  : 'DD MMM, YYYY'
+              }}</span>
+            </span>
+
+            <button x mat-icon-button color="warn" (click)="clearDates()">
+              <img
+                src="/assets/icons/delete-icon.svg"
+                class="delete-icon"
+                alt="delete" />
+            </button>
+          </div>
+
+          <mat-form-field
+            appearance="outline"
+            color="accent"
+            class="w-100 datepicker__size_s">
+            <mat-label>Select Date Range</mat-label>
+            <mat-date-range-input [rangePicker]="dateRangePicker">
+              <input matStartDate [(ngModel)]="filter.startDate" readonly />
+              <input matEndDate [(ngModel)]="filter.endDate" readonly />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="dateRangePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
         <div *ngIf="selectedFilter === 'bookmarks'">
           <div class="checkbox__icon checkbox_icon_circle">
             <label class="custom-checkbox">
