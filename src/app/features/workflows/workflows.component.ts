@@ -409,8 +409,10 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
       this.fetchBookmarkedWorkflows();
+      this.getPageItems(this.pageParams);
     } else {
       this.showBookMarks = false;
+      this.noBookmarkedWorkflows = false;
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }

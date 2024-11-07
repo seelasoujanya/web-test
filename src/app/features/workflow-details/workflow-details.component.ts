@@ -196,7 +196,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public addEmail(emailData: any) {
-    console.log('emailData ' + emailData.email);
     this.spinnerService.show();
     this.apiService
       .addEmail(emailData.workflowId, emailData)
