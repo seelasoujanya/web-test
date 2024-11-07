@@ -111,6 +111,7 @@
     }
     .file-item {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       margin-block: 10px;
@@ -126,6 +127,10 @@
       }
     }
   }
+}
+
+.file-name {
+  margin: 10px 0px;
 }
 
 .visually-hidden {

@@ -88,6 +88,7 @@ export class HeaderComponent {
       backdrop: true,
       ignoreBackdropClick: true,
       keyboard: false,
+      class: 'modal-lg',
     };
     this.modalRef = this.modalService.show(AccountInfoComponent, config);
   }

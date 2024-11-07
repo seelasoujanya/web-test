@@ -1,5 +1,10 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, TemplateRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  TemplateRef,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -25,6 +30,7 @@ import { WebSocketAPI } from 'src/app/core/services/websocket.service';
     CommonTableComponent,
     CommonModule,
   ],
+  encapsulation: ViewEncapsulation.Emulated,
   templateUrl: './pending.component.html',
   styleUrls: ['./pending.component.scss'],
   providers: [BsModalService, DatePipe],

@@ -158,8 +158,8 @@ export class WorkflowTableComponent implements OnDestroy {
   }
 
   togglePaused(event: Event, workflow: Workflow) {
-    event.stopPropagation(); // Prevent the click event from bubbling up to the row
-    // Your logic to handle the toggle here
+    event.stopPropagation();
+
     if (this.isPauseProperty) {
       workflow.paused = true;
     } else {
@@ -251,5 +251,26 @@ export class WorkflowTableComponent implements OnDestroy {
       default:
         return 'None';
     }
+  }
+
+  public convertMilliSeconds(ms: number | null): string {
+    if (ms === null) {
+      return '';
+    }
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+
+    const milliseconds = Math.floor((ms % 1000) / 10);
+
+    let formattedTime = '';
+
+    if (hours > 0) formattedTime += `${hours}h `;
+    if (minutes > 0) formattedTime += `${minutes}m `;
+    if (seconds > 0) formattedTime += `${seconds}s `;
+    if (milliseconds > 0 && !(minutes > 0) && !hours)
+      formattedTime += `${milliseconds}ms`;
+
+    return formattedTime.trim();
   }
 }

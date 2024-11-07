@@ -397,11 +397,10 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   public viewInstanceDetails(data: any): void {
-    this.router.navigate(['/workflows/workflowinstance', data.id]);
-  }
-
-  updateDurationValue() {
-    console.log(this.filter.duration);
+    this.router.navigate([
+      `/workflows/${this.workflowId}/workflowinstance`,
+      data.id,
+    ]);
   }
 
   public resetFilters() {

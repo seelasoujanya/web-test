@@ -76,13 +76,9 @@
               <tr>
                 <td class="detail-field-key">Created</td>
                 <td class="detail-field-value">
-                  {{
-                    workflowsInstance.created
-                      | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-                  }}
+                  {{ formatDate(workflowsInstance.created).date }}
                   <span class="time">{{
-                    workflowsInstance.created
-                      | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+                    formatDate(workflowsInstance.created).time
                   }}</span>
                 </td>
               </tr>
@@ -91,13 +87,9 @@
                 <td class="detail-field-value">
                   <ng-container
                     *ngIf="workflowsInstance.completed; else noDate">
-                    {{
-                      workflowsInstance.completed
-                        | date: 'MMM dd, yyyy' : (isUTC ? 'UTC' : 'GMT+5:30')
-                    }}
+                    {{ formatDate(workflowsInstance.completed).date }}
                     <span class="time">{{
-                      workflowsInstance.completed
-                        | date: 'HH:mm:ss' : (isUTC ? 'UTC' : 'GMT+5:30')
+                      formatDate(workflowsInstance.completed).time
                     }}</span>
                   </ng-container>
                   <ng-template #noDate> NA </ng-template>
@@ -154,7 +146,7 @@
         <p>Artifacts</p>
         <div>
           <div *ngFor="let step of filteredFiles" class="file-item">
-            <div>
+            <div class="file-name">
               <img
                 [src]="getIcon(step.filename)"
                 class="file-icon"

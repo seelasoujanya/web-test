@@ -56,7 +56,6 @@ export class WorkflowStatisticsViewComponent {
     const woflowId = this.route.snapshot.params['id'];
     this.apiService.getWorkflowsStatistics(woflowId).subscribe(
       data => {
-        console.log(data);
         this.stats = data;
         this.updateBarChartData(data.deliveryTypeStats);
       },
@@ -121,9 +120,6 @@ export class WorkflowStatisticsViewComponent {
     this.failedCounts = this.barChartLabels.map(
       label => labelMap[label]?.failed || 0
     );
-
-    console.log('Successful Counts:', this.successfulCounts);
-    console.log('Failed Counts:', this.failedCounts);
   }
 
   datasets() {

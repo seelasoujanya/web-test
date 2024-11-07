@@ -248,8 +248,7 @@
             max="60"
             step="1"
             [(ngModel)]="filter.duration"
-            class="duration-input"
-            (input)="updateDurationValue()" />
+            class="duration-input" />
           <span>{{ filter.duration }} min</span>
         </div>
         <div *ngIf="selectedFilter === 'status'">

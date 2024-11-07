@@ -80,7 +80,7 @@
 }
 
 ::ng-deep .modal-dialog {
-  min-width: 800px;
+  max-width: 800px;
   .modal-content {
     display: flex;
     flex-direction: column;

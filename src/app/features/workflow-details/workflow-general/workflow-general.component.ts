@@ -314,6 +314,8 @@ export class WorkflowGeneralComponent implements OnInit {
   }
 
   formatMinutes(totalMinutes: string) {
+    totalMinutes =
+      totalMinutes === null || totalMinutes === '' ? '0' : totalMinutes;
     const minutesValue = parseInt(totalMinutes, 10);
 
     const hours = Math.floor(minutesValue / 60);

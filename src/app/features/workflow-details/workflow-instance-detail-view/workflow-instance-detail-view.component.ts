@@ -67,6 +67,10 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.timeFormatService.toggleTimeFormat();
   }
 
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
+  }
+
   getPageItems() {
     this.apiService
       .getWorkflowInstanceDetails(this.workflowInstanceId)
@@ -148,26 +152,24 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     }
   }
 
-  public convertMilliSeconds(seconds: number | null): string {
-    if (seconds === null) {
+  public convertMilliSeconds(ms: number | null): string {
+    if (ms === null) {
       return '';
     }
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
 
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const milliseconds = Math.floor((ms % 1000) / 10);
 
-    const parts: string[] = [];
+    let formattedTime = '';
 
-    if (hours > 0) {
-      parts.push(`${hours}h`);
-    }
-    if (minutes > 0) {
-      parts.push(`${minutes}m`);
-    }
+    if (hours > 0) formattedTime += `${hours}h `;
+    if (minutes > 0) formattedTime += `${minutes}m `;
+    if (seconds > 0) formattedTime += `${seconds}s `;
+    if (milliseconds > 0 && !(minutes > 0) && !hours)
+      formattedTime += `${milliseconds}ms`;
 
-    parts.push(`${secs}s`);
-
-    return parts.join(' ');
+    return formattedTime.trim();
   }
 }
