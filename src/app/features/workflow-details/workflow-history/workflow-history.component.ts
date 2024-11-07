@@ -378,10 +378,6 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     ]);
   }
 
-  // updateDurationValue() {
-  //   console.log(this.filter.duration);
-  // }
-
   public resetFilters() {
     this.filter = {
       startDate: null,
