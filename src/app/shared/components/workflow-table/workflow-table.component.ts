@@ -268,7 +268,7 @@ export class WorkflowTableComponent implements OnDestroy {
     if (hours > 0) formattedTime += `${hours}h `;
     if (minutes > 0) formattedTime += `${minutes}m `;
     if (seconds > 0) formattedTime += `${seconds}s `;
-    if (milliseconds > 0 && !(minutes > 0) && !hours)
+    if (milliseconds >= 0 && !(minutes > 0) && !hours)
       formattedTime += `${milliseconds}ms`;
 
     return formattedTime.trim();

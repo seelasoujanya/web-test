@@ -75,13 +75,6 @@
             </div>
           </td>
           <td class="table-cell">
-            <ng-container *ngIf="workflow.created; else noDate">
-              {{ formatDate(workflow.created).date }}<br />
-              <span class="time">{{ formatDate(workflow.created).time }}</span>
-            </ng-container>
-            <ng-template #noDate> NA </ng-template>
-          </td>
-          <td class="table-cell">
             <ng-container *ngIf="workflow.completed; else noDate">
               {{ formatDate(workflow.completed).date }}<br />
               <span class="time">{{
@@ -209,7 +202,9 @@
                   type="checkbox"
                   class="action-icon"
                   [checked]="isToggle(workflow.paused)" />
-                <span class="slider"></span>
+                <span
+                  class="slider"
+                  [ngClass]="{ 'paused-slider': isPauseProperty }"></span>
                 <p class="tooltip" *ngIf="isPauseProperty">Globally Paused</p>
               </button>
             </div>

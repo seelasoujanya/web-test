@@ -28,12 +28,13 @@
     </div>
     <div>
       <!-- Toggle for pause -->
+      <label class="toggle-text">Global Pause</label>
       <label class="toggle">
         <input
           type="checkbox"
           [checked]="isChecked"
           (change)="pauseInstances()" />
-        <span class="slider"></span>
+        <span class="slider" [ngClass]="{ 'paused-slider': isChecked }"></span>
       </label>
     </div>
   </div>

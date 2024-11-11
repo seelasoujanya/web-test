@@ -23,7 +23,10 @@
                   type="checkbox"
                   [checked]="isToggleChange(toggleStates[row[4]?.id])"
                   (change)="onToggle(row)" />
-                <span class="slider"></span>
+                <span
+                  class="slider"
+                  [ngClass]="{ 'paused-slider': isPauseProperty }"></span>
+                <p class="tooltip" *ngIf="isPauseProperty">Globally Paused</p>
               </label>
             </ng-container>
             <ng-template #displayValue>

@@ -104,8 +104,8 @@ export class RunningComponent {
       instance.id,
       instance.workflowName,
       instance.identifier,
-      `${this.formatDate(instance.created).date}<br />` +
-        `<span class="time">${this.formatDate(instance.created).time} </span>`,
+      `${this.formatDate(instance.started).date}<br />` +
+        `<span class="time">${this.formatDate(instance.started).time} </span>`,
     ]);
   }
 

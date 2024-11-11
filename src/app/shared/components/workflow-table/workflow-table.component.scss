@@ -324,6 +324,9 @@
 input:checked + .slider {
   background-color: #bd2c49;
 }
+.paused-slider {
+  background-color: grey !important;
+}
 
 input:checked + .slider:before {
   transform: translateX(16px);
