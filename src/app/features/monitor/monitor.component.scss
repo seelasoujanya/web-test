@@ -229,6 +229,13 @@
   display: inline-block;
   width: 36px;
   height: 22px;
+  color: white;
+}
+
+.toggle-text {
+  font-size: 14px;
+  color: #fff;
+  margin-right: 10px;
 }
 
 .toggle input {
@@ -261,8 +268,12 @@
   border-radius: 50%;
 }
 
-input:checked + .slider {
-  background-color: #bd2c49;
+// input:checked + .slider {
+//   background-color: #bd2c49;
+// }
+
+.paused-slider {
+  background-color: grey !important;
 }
 
 input:checked + .slider:before {

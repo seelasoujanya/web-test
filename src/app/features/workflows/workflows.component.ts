@@ -69,7 +69,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   headings: string[] = [
     'Workflow Name',
     'Status',
-    'Created',
     'Last Run On',
     'Last Run Status',
     'Actions',

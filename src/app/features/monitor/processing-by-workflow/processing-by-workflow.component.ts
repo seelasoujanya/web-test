@@ -72,13 +72,17 @@ export class ProcessingByWorkflowComponent implements OnInit {
         workflow.workflowName,
         workflow.totalInstances.runningCount,
         workflow.totalInstances.pendingCount,
-        `${this.datePipe.transform(workflow.completed, 'MMM dd, yyyy', this.isUTC ? 'UTC' : 'GMT+5:30')}<br/>` +
-          `${this.datePipe.transform(workflow.completed, 'HH:mm:ss', this.isUTC ? 'UTC' : 'GMT+5:30')}`,
+        `${this.formatDate(workflow.completed).date}<br />` +
+          `<span class="time">${this.formatDate(workflow.completed).time} </span>`,
         { isPaused: workflow.paused, id: workflow.workflowId },
       ]);
       return values;
     }
     return [];
+  }
+
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
   }
 
   handleToggleChange(event: { id: any; state: boolean }) {
