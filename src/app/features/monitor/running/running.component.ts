@@ -35,7 +35,13 @@ export class RunningComponent {
   page!: IPage<any>;
   expandedId: number | undefined;
 
-  headings: string[] = ['INSTANCE ID', 'WORKFLOW', 'IDENTIFIER', 'STARTED ON'];
+  headings: string[] = [
+    'INSTANCE ID',
+    'WORKFLOW',
+    'STATUS',
+    'IDENTIFIER',
+    'STARTED ON',
+  ];
 
   public runningInstances: any[] = [];
   public noRunningInstances: boolean = false;
@@ -103,6 +109,7 @@ export class RunningComponent {
     return this.runningInstances.map(instance => [
       instance.id,
       instance.workflowName,
+      instance.status,
       instance.identifier,
       `${this.formatDate(instance.started).date}<br />` +
         `<span class="time">${this.formatDate(instance.started).time} </span>`,

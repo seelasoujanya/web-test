@@ -13,6 +13,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { SystemProperty } from 'src/app/core/models/workflow.model';
 import { PausedPropertyService } from 'src/app/paused-property.service';
 import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-common-table',
@@ -33,6 +34,7 @@ export class CommonTableComponent {
   isUTC = false;
   toggleStates: { [key: string]: boolean } = {};
   isPauseProperty: boolean = true;
+  isQueuedInstance: boolean = false;
 
   @Output() editPriority: EventEmitter<any> = new EventEmitter();
   @Output() terminateInstance: EventEmitter<any> = new EventEmitter();
@@ -44,7 +46,8 @@ export class CommonTableComponent {
   constructor(
     private timeFormatService: TimeFormatService,
     private cdr: ChangeDetectorRef,
-    private pausedPropertyService: PausedPropertyService
+    private pausedPropertyService: PausedPropertyService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -119,11 +122,19 @@ export class CommonTableComponent {
   }
 
   onEditPriority(row: any) {
-    this.editPriority.emit(row);
+    if (row[2] !== 'QUEUED') {
+      this.editPriority.emit(row);
+    } else {
+      this.toastr.error('Unable to Change Priority');
+    }
   }
 
   onTerminateInstance(row: any) {
-    this.terminateInstance.emit(row);
+    if (row[2] !== 'QUEUED') {
+      this.terminateInstance.emit(row[0]);
+    } else {
+      this.toastr.error('Unable to Terminate The Instance');
+    }
   }
 
   expandAction(id: any) {

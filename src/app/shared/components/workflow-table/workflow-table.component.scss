@@ -273,6 +273,14 @@
   color: #388e3c;
 }
 
+.icon-item.error {
+  color: #c70a0a;
+}
+
+.icon-item.terminated {
+  color: #7f0531;
+}
+
 .icon-item:hover {
   transform: scale(1.1);
 }

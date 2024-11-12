@@ -399,3 +399,45 @@ input:checked + .slider:before {
   opacity: 0;
   transition: opacity 0.3s;
 }
+
+// status
+
+.icon-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  // padding: 10px;
+  gap: 10px;
+  transition: transform 0.3s;
+}
+
+.icon-item i {
+  font-size: 15px;
+}
+
+.icon-item.created {
+  color: #1976d2;
+}
+
+.icon-item.paused {
+  color: rgb(211, 15, 74); /* Dark Orange */
+}
+
+.icon-item.queued {
+  color: #ff9800; /* Dark Orange */
+}
+
+.icon-item.running {
+  // background-color: #e1bee7;
+  color: #0097a7; /* Deep Cyan */
+}
+
+.icon-item.success {
+  color: #388e3c;
+}
+
+.icon-item:hover {
+  transform: scale(1.1);
+}

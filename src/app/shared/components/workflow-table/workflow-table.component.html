@@ -113,14 +113,14 @@
 
                   <ng-container *ngIf="workflow.status === 'CREATED'">
                     <div class="icon-item created">
-                      <i class="fas fa-file-alt"></i>
+                      <i class="fa-regular fa-circle-check"></i>
                       <span>Created</span>
                     </div>
                   </ng-container>
 
                   <ng-container *ngIf="workflow.status === 'PAUSED'">
                     <div class="icon-item queued">
-                      <i class="fas fa-clock"></i>
+                      <i class="fa-solid fa-circle-pause"></i>
                       <span>Paused</span>
                     </div>
                   </ng-container>
@@ -154,7 +154,7 @@
                   </ng-container>
                   <ng-container
                     *ngIf="workflow.status !== null && workflow.status !== ''">
-                    <img
+                    <!-- <img
                       src="assets/icons/failure-logo.svg"
                       alt="Inactive Icon"
                       class="failure-icon" />
@@ -164,7 +164,21 @@
                           ? 'Terminated'
                           : 'Error'
                       }}
-                    </p>
+                    </p> -->
+
+                    <ng-container *ngIf="workflow.status === 'FAILED'">
+                      <div class="icon-item error">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                        <span>Error</span>
+                      </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="workflow.status === 'TERMINATED'">
+                      <div class="icon-item terminated">
+                        <i class="fa-solid fa-ban"></i>
+                        <span>Terminated</span>
+                      </div>
+                    </ng-container>
                   </ng-container>
                 </div>
               </ng-template>
@@ -281,13 +295,13 @@
 
                     <ng-container *ngIf="workflow.status === 'CREATED'">
                       <div class="icon-item created">
-                        <i class="fas fa-file-alt"></i>
+                        <i class="fa-regular fa-circle-check"></i>
                         <span>Created</span>
                       </div>
                     </ng-container>
                     <ng-container *ngIf="workflow.status === 'PAUSED'">
                       <div class="icon-item queued">
-                        <i class="fas fa-clock"></i>
+                        <i class="fa-solid fa-circle-pause"></i>
                         <span>Paused</span>
                       </div>
                     </ng-container>
@@ -297,19 +311,6 @@
                         <i class="fas fa-check-circle"></i>
                         <span>Success</span>
                       </div>
-                      <!-- <div class="active-class">
-                        <img
-                          src="assets/icons/success-logo.svg"
-                          alt="Active Icon"
-                          class="success-icon" />
-                        <p>
-                          {{
-                            workflow.status === 'COMPLETED'
-                              ? 'Success'
-                              : (workflow.status | titlecase)
-                          }}
-                        </p>
-                      </div> -->
                     </ng-container>
                   </div>
                 </ng-container>
@@ -325,7 +326,7 @@
                       *ngIf="
                         workflow.status !== null && workflow.status !== ''
                       ">
-                      <img
+                      <!-- <img
                         src="assets/icons/failure-logo.svg"
                         alt="Inactive Icon"
                         class="failure-icon" />
@@ -335,7 +336,21 @@
                             ? 'Terminated'
                             : 'Error'
                         }}
-                      </p>
+                      </p> -->
+
+                      <ng-container *ngIf="workflow.status === 'FAILED'">
+                        <div class="icon-item error">
+                          <i class="fa-solid fa-circle-xmark"></i>
+                          <span>Error</span>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="workflow.status === 'TERMINATED'">
+                        <div class="icon-item">
+                          <i class="fa-solid fa-ban"></i>
+                          <span>Terminated</span>
+                        </div>
+                      </ng-container>
                     </ng-container>
                   </div>
                 </ng-template>
