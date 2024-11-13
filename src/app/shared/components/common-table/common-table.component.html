@@ -16,7 +16,7 @@
       <ng-container *ngFor="let row of values">
         <tr (click)="onRowClick(row)">
           <td *ngFor="let value of row; let i = index" class="table-cell">
-            <ng-container *ngIf="isObject(value); else displayValue">
+            <ng-container *ngIf="isObject(value); else checkStatus">
               <!-- Toggle for pause -->
               <label class="toggle" *ngIf="isToggle">
                 <input
@@ -29,10 +29,55 @@
                 <p class="tooltip" *ngIf="isPauseProperty">Globally Paused</p>
               </label>
             </ng-container>
+
+            <!-- Render value display based on status -->
+            <ng-template #checkStatus>
+              <ng-container
+                *ngIf="
+                  [
+                    'COMPLETED',
+                    'CREATED',
+                    'RUNNING',
+                    'QUEUED',
+                    'PAUSED'
+                  ].includes(value);
+                  else displayValue
+                ">
+                <div class="active-class">
+                  <ng-container *ngIf="value === 'RUNNING'">
+                    <div class="icon-item running">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      <span>Running</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="value === 'QUEUED'">
+                    <div class="icon-item queued">
+                      <i class="fas fa-clock"></i>
+                      <span>Queued</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="value === 'CREATED'">
+                    <div class="icon-item created">
+                      <i class="fa-regular fa-circle-check"></i>
+                      <span>Created</span>
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="value === 'PAUSED'">
+                    <div class="icon-item paused">
+                      <i class="fa-solid fa-circle-pause"></i>
+                      <span>Paused</span>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </ng-template>
             <ng-template #displayValue>
               <span [innerHTML]="value.html ? value.html : value"></span>
             </ng-template>
-            <input type="hidden" [value]="row[4]" />
+            <!-- <input type="hidden" [value]="row[4]" /> -->
           </td>
           <!-- Show Actions button when required -->
           <td *ngIf="showActions" class="table-cell">
@@ -49,61 +94,12 @@
                 <i
                   type="button"
                   class="fas fa-trash-alt dlt"
-                  (click)="onTerminateInstance(row[0])"></i>
+                  (click)="onTerminateInstance(row)"></i>
                 <p class="tooltip">Terminate Instance</p>
-              </div>
-            </div>
-            <!-- Show Actions button when required 
-          <td *ngIf="showActions" class="table-cell">
-            
-           <div class="buttons-container">
-              <div class="tooltip-container">
-                <button
-                  class="change-priority-button"
-                  type="button"
-                  (click)="onEditPriority(row)">
-                  <img src="assets/icons/priority-logo.svg" alt="" />
-                </button>
-                <p class="tooltip">Change priority</p>
-              </div>
-              <div class="tooltip-container">
-                <button
-                  class="cancel-button"
-                  type="button"
-                  (click)="onTerminateInstance(row[0])">
-                  <i class="fas fa-trash-alt dlt"></i>
-                </button>
-                <p class="tooltip">Terminate Instance</p>
-              </div>
-            </div> -->
-          </td>
-        </tr>
-
-        <!-- Expanded row -->
-        <!-- <tr *ngIf="expandedId == row[0]">
-          <td colspan="12" class="expanded-td">
-            <div class="expanded-row">
-              <div>
-                <h6>Instance Is Pending To Run</h6>
-              </div>
-              <div class="buttons-container">
-                <button
-                  class="change-priority-button"
-                  type="button"
-                  (click)="onEditPriority(row)">
-                  CHANGE PRIORITY
-                  <img src="assets/icons/priority-logo.svg" alt="" />
-                </button>
-                <button
-                  class="cancel-button"
-                  type="button"
-                  (click)="onTerminateInstance(row[0])">
-                  CANCEL
-                </button>
               </div>
             </div>
           </td>
-        </tr> -->
+        </tr>
       </ng-container>
     </tbody>
   </table>

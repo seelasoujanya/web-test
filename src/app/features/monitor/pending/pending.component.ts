@@ -36,7 +36,13 @@ import { WebSocketAPI } from 'src/app/core/services/websocket.service';
   providers: [BsModalService, DatePipe],
 })
 export class PendingComponent {
-  headings: string[] = ['INSTANCE ID', 'WORKFLOW', 'IDENTIFIER', 'STARTED ON'];
+  headings: string[] = [
+    'INSTANCE ID',
+    'WORKFLOW',
+    'STATUS',
+    'IDENTIFIER',
+    'CREATED',
+  ];
 
   public pageParams = this.getDefaultPageParams();
   page!: IPage<any>;
@@ -100,6 +106,7 @@ export class PendingComponent {
       return [
         instance.id,
         instance.workflowName,
+        instance.status,
         instance.identifier,
         `${this.formatDate(instance.created).date}<br />` +
           `<span class="time">${this.formatDate(instance.created).time} </span>`,
