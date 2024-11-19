@@ -20,16 +20,31 @@ import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import 'codemirror/mode/xml/xml';
 
 @Component({
   selector: 'app-template-version-details',
   standalone: true,
-  imports: [NgSelectModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    NgSelectModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    CodemirrorModule,
+  ],
   templateUrl: './template-version-details.component.html',
   styleUrls: ['./template-version-details.component.scss'],
   providers: [BsModalService],
 })
 export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
+  editorOptions = {
+    lineNumbers: true,
+    mode: 'xml',
+    tabSize: 2,
+    indentWithTabs: true,
+    lineWrapping: true,
+  };
   private destroyed$ = new Subject<void>();
   public page!: IPage<any>;
   private pageParams = this.getDefaultPageParams();

@@ -2,7 +2,18 @@
   <div class="header">
     <p>XML Settings</p>
     <div class="general-setting-label">
-      <div class="edit-icon">
+      <div class="buttons" *ngIf="enableEditing">
+        <button
+          class="btn btn--red"
+          type="button"
+          (click)="saveTemplateChanges()">
+          save
+        </button>
+        <button class="btn btn--black" type="button" (click)="cancelChanges()">
+          cancel
+        </button>
+      </div>
+      <div class="edit-icon" *ngIf="!enableEditing">
         <img
           src="/assets/icons/edit-icon.svg"
           alt="edit Icon"
@@ -24,6 +35,7 @@
         [items]="templates"
         bindLabel="name"
         bindValue="id"
+        class="select-feild"
         [searchable]="false"
         [clearable]="false"
         placeholder="Templates"
@@ -39,20 +51,11 @@
         <input
           type="text"
           maxlength="255"
-          placeholder="Please enter the file name to save XML output"
+          placeholder="Please enter the file name "
           class="input-field"
           [ngModel]="fileName"
           [class.disabled]="!enableEditing" />
       </div>
     </div>
-  </div>
-
-  <div class="buttons" *ngIf="enableEditing">
-    <button class="btn btn--red" type="button" (click)="saveTemplateChanges()">
-      save
-    </button>
-    <button class="btn btn--black" type="button" (click)="cancelChanges()">
-      cancel
-    </button>
   </div>
 </div>

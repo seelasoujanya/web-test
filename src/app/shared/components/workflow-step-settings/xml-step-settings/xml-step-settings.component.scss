@@ -3,7 +3,8 @@
 .main-container {
   background: #fff;
   border-radius: 5px;
-  box-shadow: 2px 2px 5px #0003;
+  padding: 0px 20px;
+
   .general-setting-label {
     display: flex;
     gap: 20px;
@@ -15,6 +16,10 @@
     border-bottom: 1px solid #e8e8e8;
     margin: 16px 15px;
     padding-block: 16px;
+    height: 72px;
+    position: sticky !important;
+    top: 0;
+    z-index: 100 !important;
     .edit-icon {
       cursor: pointer;
     }
@@ -30,13 +35,14 @@
   }
   .fields-container {
     margin-inline: 15px;
-    padding-bottom: 40px;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto;
+    background-color: #f5f5f5;
+    padding: 20px 20px;
     gap: 30px;
   }
   .input-field {
-    width: 100%;
+    width: 300px;
     min-height: 44px;
     padding-inline: 10px;
     font-size: 14px;
@@ -44,9 +50,6 @@
     border-radius: 4px;
   }
   .buttons {
-    margin: 0px 15px;
-    padding-block: 16px;
-    border-top: 1px solid #e8e8e8;
     display: flex;
     justify-content: flex-end;
     .btn {
@@ -58,4 +61,14 @@
 .disabled {
   pointer-events: none;
   opacity: 0.5;
+}
+
+.field-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.select-feild {
+  width: 300px;
 }

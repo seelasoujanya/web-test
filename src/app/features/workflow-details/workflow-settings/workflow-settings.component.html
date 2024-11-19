@@ -1,4 +1,4 @@
-<div *ngFor="let workflowStep of workflowSteps">
+<!-- <div *ngFor="let workflowStep of workflowSteps">
   <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
     <app-xml-step-settings
       [workflowStep]="workflowStep"></app-xml-step-settings>
@@ -10,4 +10,64 @@
         updateWorkflowStep($event)
       "></app-workflow-step-settings>
   </div>
+</div> -->
+
+<!-- <div class="bg-container">
+
+    <div class="left-container" >
+      <div *ngFor = "let kk of headings">
+        <h6>{{kk}}</h6>
+      </div>
+
+    </div>
+    <div class="right-container">
+      <div class="bg-container"  *ngFor="let workflowStep of workflowSteps">
+
+        <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
+          <app-xml-step-settings
+            [workflowStep]="workflowStep"></app-xml-step-settings>
+        </div>
+        <div class="step-container" *ngIf="workflowStep.type !== 'XML_RUNNER'">
+          <app-workflow-step-settings
+            [workflowStep]="workflowStep"
+            (workflowStepChange)="
+              updateWorkflowStep($event)
+            "></app-workflow-step-settings>
+        </div>
+      </div>
+    </div>
+</div> -->
+<div class="bg-container" *ngIf="!showConfigs; else noConfigs">
+  <div class="left-container">
+    <div *ngFor="let heading of headings">
+      <h6
+        (click)="onHeadingClick(heading)"
+        [class.active]="heading === selectedHeading"
+        class="heading">
+        {{ heading }}
+      </h6>
+    </div>
+  </div>
+
+  <div class="right-container">
+    <div *ngFor="let workflowStep of workflowSteps">
+      <div *ngIf="!selectedHeading || workflowStep.name === selectedHeading">
+        <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
+          <app-xml-step-settings
+            [workflowStep]="workflowStep"></app-xml-step-settings>
+        </div>
+        <div class="step-container" *ngIf="workflowStep.type !== 'XML_RUNNER'">
+          <app-workflow-step-settings
+            [workflowStep]="workflowStep"
+            (workflowStepChange)="updateWorkflowStep($event)">
+          </app-workflow-step-settings>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+<ng-template #noConfigs>
+  <div class="noConfigs">
+    <p>No Configurations Found</p>
+  </div>
+</ng-template>

@@ -106,6 +106,7 @@ export class XmlStepSettingsComponent {
       } else {
         this.cancelChanges();
       }
+      this.enableEditing = false;
     });
   }
 

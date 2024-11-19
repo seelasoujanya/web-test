@@ -6,4 +6,5 @@ export interface IWorkflowStepField {
   values: string[];
   defaultValue?: string;
   description: string;
+  section?: string;
 }

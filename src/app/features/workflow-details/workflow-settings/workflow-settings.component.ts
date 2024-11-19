@@ -26,6 +26,11 @@ export class WorkflowSettingsComponent {
   @Input()
   workflowId: string | null = '';
 
+  headings: string[] = [];
+  selectedHeading: string = '';
+
+  showConfigs: boolean | undefined;
+
   workflowSteps: IWorkflowStep[] = [];
   public pageParams = this.getDefaultPageParams();
 
@@ -45,12 +50,21 @@ export class WorkflowSettingsComponent {
       this.apiServie.getWorkflowSteps(this.workflowId).subscribe({
         next: data => {
           this.workflowSteps = data;
+          this.workflowSteps.map(dd => {
+            this.headings.push(dd.name);
+            this.selectedHeading =
+              this.headings.length === 0 ? '' : this.headings[0];
+          });
+          this.showConfigs = this.headings.length === 0;
         },
         error: error => {
           console.error(error);
         },
       });
     }
+  }
+  onHeadingClick(type: string): void {
+    this.selectedHeading = type;
   }
 
   updateWorkflowStep(workflowStep: IWorkflowStep | null): void {

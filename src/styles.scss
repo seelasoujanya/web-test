@@ -47,6 +47,8 @@ $deliver-upgrade-frontend-theme: mat.define-light-theme(
 @import '~@ng-select/ng-select/themes/default.theme.css';
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
+@import '~codemirror/lib/codemirror.css'; /* Base CodeMirror styles */
+@import '~codemirror/theme/material.css';
 
 * {
   margin: 0;
@@ -59,6 +61,9 @@ input,
 select,
 textarea {
   font-family: 'Graphik', sans-serif;
+}
+.CodeMirror {
+  height: 500px !important;
 }
 
 html,
