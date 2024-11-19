@@ -19,10 +19,7 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #e8e8e8;
-    margin:
-      0px 10px,
-      10px,
-      0px;
+    margin: 10px;
     padding-block: 16px;
     background-color: #fff;
     .edit-icon {
@@ -57,7 +54,7 @@
     // width: 100%;
   }
   .input-field {
-    width: 300px;
+    width: 400px;
     min-height: 36px;
     padding-inline: 10px;
     font-size: 14px;
@@ -114,7 +111,7 @@ textarea:focus {
   align-items: center;
   padding: 20px 0px;
 }
-.feilds {
+.config-con {
   display: flex;
   justify-content: space-between;
   align-items: center;
