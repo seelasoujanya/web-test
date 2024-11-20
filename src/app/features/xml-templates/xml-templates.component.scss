@@ -220,7 +220,7 @@
   border: 0;
 }
 
-.time {
+::ng-deep.time {
   color: #565656;
   font-weight: 400;
   font-size: 14px;

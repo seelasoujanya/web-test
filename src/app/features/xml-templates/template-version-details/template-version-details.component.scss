@@ -272,6 +272,7 @@
 
       .form {
         height: 500px;
+        font-size: 14px;
 
         textarea {
           font-size: 14px;
@@ -422,4 +423,8 @@
 
 .selected-version {
   background-color: #f9fafb;
+}
+.bg-container {
+  height: 90vh;
+  overflow-y: auto;
 }

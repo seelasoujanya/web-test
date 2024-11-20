@@ -29,7 +29,9 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
               "node_modules/ngx-toastr/toastr.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/codemirror/lib/codemirror.css",
+              "node_modules/codemirror/theme/material.css"
             ],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
