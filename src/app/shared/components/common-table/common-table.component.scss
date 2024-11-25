@@ -422,16 +422,15 @@ input:checked + .slider:before {
 }
 
 .icon-item.paused {
-  color: rgb(211, 15, 74); /* Dark Orange */
+  color: #f04438;
 }
 
 .icon-item.queued {
-  color: #ff9800; /* Dark Orange */
+  color: #ff9800;
 }
 
 .icon-item.running {
-  // background-color: #e1bee7;
-  color: #0097a7; /* Deep Cyan */
+  color: #0097a7;
 }
 
 .icon-item.success {

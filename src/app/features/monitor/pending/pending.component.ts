@@ -167,7 +167,6 @@ export class PendingComponent {
           },
         });
     }
-    this.reset();
   }
 
   reset() {

@@ -13,6 +13,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Subject, takeUntil } from 'rxjs';
@@ -34,12 +35,20 @@ import { TimeFormatService } from 'src/app/time-format.service';
     ReactiveFormsModule,
     PaginationComponent,
     CommonTableComponent,
+    CodemirrorModule,
   ],
   templateUrl: './xml-templates.component.html',
   styleUrl: './xml-templates.component.scss',
   providers: [BsModalService, DatePipe],
 })
 export class XmlTemplatesComponent implements OnInit, OnDestroy {
+  editorOptions = {
+    lineNumbers: true,
+    mode: 'xml',
+    tabSize: 2,
+    indentWithTabs: true,
+    lineWrapping: true,
+  };
   private destroyed$ = new Subject<void>();
   public ngOnDestroy(): void {
     this.destroyed$.next();

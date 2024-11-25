@@ -57,6 +57,7 @@ export const ddexFields: IWorkflowStepField[] = [
     label: 'Album Streaming Deals',
     type: 'checkbox',
     placeholder: 'Create Album Streaming Deals',
+    defaultValue: 'false',
     values: [],
     description: 'Include Album Streaming Deals',
     section: 'properties',
@@ -65,6 +66,7 @@ export const ddexFields: IWorkflowStepField[] = [
     key: 'takeDownDeals',
     label: 'Take Down Deals',
     type: 'checkbox',
+    defaultValue: 'false',
     placeholder: 'Create Take Down Deals',
     values: [],
     description: 'Include Take Down Deals',
@@ -78,6 +80,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Additional Release Type.',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'marketingComments',
@@ -87,6 +90,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Marketing Comments.',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'synopsis',
@@ -96,6 +100,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Synopsis',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'dealExclusivity',
@@ -105,6 +110,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Exclusive Deal',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'adaContributorRoles',
@@ -114,6 +120,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include ADA Contributor Roles',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'spotifyReleaseType',
@@ -123,6 +130,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Spotify Release Type',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'fileName',
@@ -132,6 +140,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include File Name',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'catalogueNumber',
@@ -141,6 +150,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Catalogue Number',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'versionTitleBracketing',
@@ -150,6 +160,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Version Title Bracketing',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'includeAtmosFiles',
@@ -159,6 +170,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Atmos Files',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'includeKosovo',
@@ -168,6 +180,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Kosovo in Territories',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'projectDetails',
@@ -177,6 +190,7 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Include Project Details',
     section: 'properties',
+    defaultValue: 'false',
   },
   {
     key: 'useDateTime',
@@ -186,5 +200,6 @@ export const ddexFields: IWorkflowStepField[] = [
     values: [],
     description: 'Use Date Time',
     section: 'properties',
+    defaultValue: 'false',
   },
 ];

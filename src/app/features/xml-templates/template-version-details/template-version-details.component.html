@@ -20,48 +20,95 @@
       <div class="general-setting-label">
         <div class="buttons" *ngIf="detailEditing">
           <button
-            class="save-btn"
-            (click)="updateTemplateDetails()"
-            type="button">
+            class="btn btn--red"
+            type="button"
+            (click)="updateTemplateDetails()">
             save
           </button>
           <button
-            class="cancel-btn"
-            (click)="toggleDetailEditig()"
-            type="button">
+            class="btn btn--black"
+            type="button"
+            (click)="toggleDetailEditig()">
             cancel
           </button>
         </div>
-        <div class="edit-icon">
-          <img
-            src="/assets/icons/edit-icon.svg"
-            alt="edit Icon"
-            (click)="toggleDetailEditig()" />
-        </div>
+        <img
+          src="/assets/icons/edit-icon.svg"
+          alt="edit Icon"
+          (click)="toggleDetailEditig()"
+          *ngIf="!detailEditing" />
       </div>
     </div>
 
-    <div class="fields-container">
-      <div class="field-item">
-        <span>Name</span>
-        <input
-          type="text"
-          maxlength="255"
-          placeholder="Name"
-          class="input-field"
-          [(ngModel)]="templateName"
-          [disabled]="!detailEditing" />
+    <div class="tables-main-container">
+      <div class="table-container">
+        <table>
+          <tr>
+            <td class="detail-field-key">Name</td>
+            <td class="detail-field-value">
+              <input
+                type="text"
+                maxlength="255"
+                placeholder="Name"
+                class="input-field"
+                [class.input-field-highlet]="detailEditing"
+                [(ngModel)]="templateName"
+                [disabled]="!detailEditing" />
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Created</td>
+            <td class="detail-field-value">
+              <span class="time">
+                {{ formatDate(template.created).date }}
+                {{ formatDate(template.created).time }}
+              </span>
+            </td>
+          </tr>
+        </table>
       </div>
 
-      <div class="field-item">
-        <span>Description</span>
-        <input
-          type="text"
-          maxlength="255"
-          placeholder="Description"
-          class="input-field"
-          [(ngModel)]="templateDescription"
-          [disabled]="!detailEditing" />
+      <div class="table-container">
+        <table>
+          <tr>
+            <td class="detail-field-key">Description</td>
+            <td class="detail-field-value">
+              <input
+                type="text"
+                maxlength="255"
+                placeholder="Description"
+                class="input-field"
+                [class.input-field-highlet]="detailEditing"
+                [(ngModel)]="templateDescription"
+                [disabled]="!detailEditing" />
+            </td>
+          </tr>
+          <tr>
+            <td class="detail-field-key">Last Modified</td>
+            <td class="detail-field-value">
+              <span>
+                {{ formatDate(latestTemplateCreated).date }}
+                {{ formatDate(latestTemplateCreated).time }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="usages">
+      <div class="left-usage">
+        <p>Usage</p>
+      </div>
+      <div class="right-usage">
+        <ng-container *ngFor="let item of workflows; let last = last">
+          <span
+            (click)="logName(item)"
+            [tooltip]="'View ' + item.name"
+            class="workflowNames">
+            {{ item.name }}<span *ngIf="!last">, </span>
+          </span>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -69,54 +116,52 @@
   <div class="templates-container">
     <div class="left-container">
       <div class="heading">
-        <p class="label">History</p>
+        <p class="label">Versions</p>
       </div>
-      <div
-        *ngFor="let template of xmlTemplatesById; let i = index"
-        [ngClass]="{ 'selected-version': i === selectedTemplateIndex }"
-        class="version"
-        (click)="selectTemplate(i)">
-        <div class="version-number">
-          {{ template?.displayName }}
-        </div>
-        <div class="time">
-          {{ template.created | date: 'MMM, dd YYYY HH:mm' }}
+      <div class="versions-container">
+        <div
+          *ngFor="let template of xmlTemplatesById; let i = index"
+          [ngClass]="{ 'selected-version': i === selectedTemplateIndex }"
+          class="version"
+          (click)="selectTemplate(i)">
+          <div class="version-number">
+            {{ template?.displayName }}
+          </div>
+          <div class="time">
+            {{ template.created | date: 'MMM, dd YYYY HH:mm' }}
+          </div>
         </div>
       </div>
     </div>
     <div class="right-container">
       <div class="heading">
-        <!-- <p class="label">{{ templateName }}</p> -->
-        <div class="buttons">
-          <button class="edit-btn" (click)="isEditableTemplate()">
-            <img
-              src="/assets/icons/edit-icon.svg"
-              alt="export Icon"
-              class="edit-icon" />
-          </button>
-          <!-- <button
-          class="compare-btn"
-          (click)="openCompareDialog(compareTemplateForm)">
-          Compare
-        </button> -->
-          <button
-            class="save-as-btn"
-            [disabled]="!enableEditing"
-            [ngClass]="{ 'not-allowed': !enableEditing }"
-            (click)="editTemplate()">
-            Save
-          </button>
+        <div class="edit-icon">
+          <div class="buttons" *ngIf="enableEditing">
+            <button class="btn btn--red" type="button" (click)="editTemplate()">
+              save
+            </button>
+            <button
+              class="btn btn--black"
+              type="button"
+              (click)="cancelChanges()">
+              cancel
+            </button>
+          </div>
+          <img
+            src="/assets/icons/edit-icon.svg"
+            alt="edit Icon"
+            (click)="isEditableTemplate()"
+            *ngIf="!enableEditing" />
         </div>
       </div>
-      <div class="template">
+      <div class="template" [ngClass]="{ disabled: !enableEditing }">
         <form [formGroup]="reactiveForm" class="form">
           <!-- To change this height style.scss .CodeMirror -->
           <ngx-codemirror
             [options]="editorOptions"
             name="code"
             id="code"
-            formControlName="code"
-            [disabled]="!enableEditing"></ngx-codemirror>
+            formControlName="code"></ngx-codemirror>
         </form>
       </div>
     </div>

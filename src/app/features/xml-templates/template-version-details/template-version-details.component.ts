@@ -22,6 +22,8 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import 'codemirror/mode/xml/xml';
+import { TimeFormatService } from 'src/app/time-format.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-template-version-details',
@@ -32,6 +34,7 @@ import 'codemirror/mode/xml/xml';
     FormsModule,
     ReactiveFormsModule,
     CodemirrorModule,
+    TooltipModule,
   ],
   templateUrl: './template-version-details.component.html',
   styleUrls: ['./template-version-details.component.scss'],
@@ -44,6 +47,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     tabSize: 2,
     indentWithTabs: true,
     lineWrapping: true,
+    readOnly: true,
   };
   private destroyed$ = new Subject<void>();
   public page!: IPage<any>;
@@ -61,8 +65,11 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   originalCode: any;
   modifiedCode: any;
   templateName: any;
+  template: any;
   templateDescription: any;
   selectedTemplateIndex: any;
+  workflows: any;
+  workflowId: any;
 
   compareTemplate = {
     firstTemplate: '',
@@ -75,6 +82,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   reactiveForm: FormGroup;
 
   enableEditing = false;
+  latestTemplateCreated: any;
 
   constructor(
     private fb: FormBuilder,
@@ -84,16 +92,14 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private timeFormatService: TimeFormatService
   ) {
     this.templateId = +this.route.snapshot.params['id'];
-    this.reactiveForm = this.fb.group({
-      code: [''],
-    });
-  }
 
-  toggleEditing() {
-    this.enableEditing = !this.enableEditing;
+    this.reactiveForm = this.fb.group({
+      code: [{ value: '', disabled: true }],
+    });
   }
 
   detailEditing = false;
@@ -104,6 +110,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedTemplateIndex = 0;
     this.getTemplatesByTemplateId(this.templateId);
+    this.getTemplateUsages(this.templateId);
   }
 
   public get getBsModalRef(): BsModalRef {
@@ -148,10 +155,17 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       console.error('Invalid index', index);
     }
   }
-
+  formatDate(date: string | Date) {
+    return this.timeFormatService.formatDate(date);
+  }
   isEditableTemplate() {
     this.isReadOnly = !this.isReadOnly;
     this.enableEditing = !this.enableEditing;
+    if (this.enableEditing) {
+      this.reactiveForm.get('code')?.enable();
+    } else {
+      this.reactiveForm.get('code')?.disable();
+    }
     this.cdRef.detectChanges();
   }
 
@@ -162,23 +176,35 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;
-        this.xmlTemplatesById = data.content;
+        this.xmlTemplatesById = data;
         this.spinnerService.hide();
         this.cdRef.markForCheck();
         if (this.xmlTemplatesById.length > 0) {
           this.xmlTemplatesById.forEach((template, index) => {
-            const versionNumber = index + 1;
+            const versionNumber = template.id;
             if (!this.selectedTemplate) {
               this.selectedTemplate = template.templateCode;
             }
             template['displayName'] = 'Version ' + versionNumber;
           });
           this.templateName = this.xmlTemplatesById[0].template.name;
+          this.template = this.xmlTemplatesById[0].template;
           this.templateDescription =
             this.xmlTemplatesById[0].template.description;
-          this.xmlTemplatesById.reverse();
-          this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
+          this.latestTemplateCreated = this.xmlTemplatesById[0].created;
+          this.reactiveForm
+            .get('code')
+            ?.setValue(this.xmlTemplatesById[0].templateCode);
         }
+      });
+  }
+
+  getTemplateUsages(id: any) {
+    this.apiService
+      .getTemplateUsages(id, this.pageParams)
+      .subscribe((result: any) => {
+        this.workflows = result;
+        this.workflowId = result[0].id;
       });
   }
 
@@ -204,11 +230,14 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
         const editedVersion = {
           id: this.templateId,
           templateDescription: result,
-          templateCode: `"${this.editedTemplate}"`,
+          templateCode: `${this.editedTemplate}`,
         };
         this.apiService
           .updateTemplate(this.templateId, editedVersion)
           .subscribe((result: any) => {
+            this.enableEditing = false;
+            this.cdRef.detectChanges();
+
             this.getTemplatesByTemplateId(this.templateId);
           });
       } else {
@@ -265,6 +294,12 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.compareTemplate.secondTemplate = '';
   }
 
+  public cancelChanges(): void {
+    this.enableEditing = false;
+    this.reactiveForm.get('code')?.setValue(this.selectedTemplate);
+    this.reactiveForm.get('code')?.disable();
+  }
+
   selectFirstTemplate(firstTemplate: any) {
     this.firstTemplate = firstTemplate;
     this.originalCode = firstTemplate.templateCode;
@@ -285,5 +320,11 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
 
   backToWorkflows() {
     this.router.navigate(['/templates']);
+  }
+
+  logName(a: any) {
+    this.router.navigate(['workflows', a.id], {
+      queryParams: { tab: 'general' },
+    });
   }
 }

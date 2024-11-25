@@ -244,7 +244,7 @@ export class ApiService {
   public getTemplatesByTemplateId(
     id: number | any,
     queryParams: any
-  ): Observable<IPage<any>> {
+  ): Observable<any> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/versions`, {
       params: queryParams as any,
     });
@@ -252,6 +252,15 @@ export class ApiService {
 
   public getAllTemplates(queryParams: any): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template`, {
+      params: queryParams as any,
+    });
+  }
+
+  public getTemplateUsages(
+    id: number | any,
+    queryParams: any
+  ): Observable<IPage<any>> {
+    return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/usage`, {
       params: queryParams as any,
     });
   }
