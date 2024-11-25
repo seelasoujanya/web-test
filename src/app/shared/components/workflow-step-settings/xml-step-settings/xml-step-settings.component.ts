@@ -8,6 +8,8 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { routes } from 'src/app/main/app.routes';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-xml-step-settings',
@@ -49,7 +51,8 @@ export class XmlStepSettingsComponent {
     private apiService: ApiService,
     private spinnerService: SpinnerService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +134,10 @@ export class XmlStepSettingsComponent {
         },
       });
     }
+  }
+
+  viewTemplate() {
+    this.router.navigate(['templates', this.selectedTemplateId]);
   }
 
   createworkflowStepConfig() {}

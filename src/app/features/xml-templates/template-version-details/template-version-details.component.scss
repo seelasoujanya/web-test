@@ -1,4 +1,6 @@
 @import 'src/styles/_ngselect.scss';
+@import 'src/styles/checkbox';
+@import 'src/styles/button';
 
 .details-label {
   padding-inline: 15px;
@@ -125,12 +127,21 @@
 
   .input-field {
     width: 100%;
-    min-height: 44px;
-    padding-inline: 10px;
     font-size: 14px;
-    border: 1px solid #d0d5dd;
-    border-radius: 4px;
+    border: none;
+    background-color: white;
   }
+}
+.input-field-highlet {
+  width: 100%;
+  min-height: 44px !important;
+  padding-inline: 10px !important;
+  font-size: 14px;
+  border: 1px solid #d0d5dd !important;
+  border-radius: 4px;
+}
+.disabled {
+  opacity: 0.7;
 }
 
 .templates-container {
@@ -143,13 +154,15 @@
 
   .left-container {
     display: flex;
+    width: 20vw;
     flex-direction: column;
     background-color: #ffffff;
     border-right: 1px solid #f2f2f2;
+
     // border-radius: 8px;
 
     .heading {
-      width: 350px;
+      width: 100%;
       // height: 56px;
       display: flex;
       justify-content: flex-start;
@@ -205,7 +218,7 @@
     background: #fff;
     gap: 24px;
     padding: 24px;
-    width: 100%;
+    width: 80vw;
     .heading {
       display: flex;
       justify-content: flex-end;
@@ -427,4 +440,103 @@
 .bg-container {
   height: 90vh;
   overflow-y: auto;
+}
+.buttons {
+  height: 40px;
+  display: flex;
+  gap: 8px;
+  .edit-btn {
+    border-radius: 4px;
+    width: 40px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    .edit-icon {
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.tables-main-container {
+  display: flex;
+  gap: 40px;
+  margin: 10px;
+  padding: 10px;
+  .table-container {
+    width: 50%;
+    table {
+      width: 100%;
+      .detail-field-key {
+        font-size: 14px;
+        font-weight: bolder;
+        font-style: normal;
+        line-height: 17px;
+        letter-spacing: 0.3px;
+      }
+      .detail-field-value {
+        font-size: 14px;
+        font-weight: 400;
+        font-style: normal;
+        line-height: 17px;
+        gap: 10px;
+        letter-spacing: 0.3px;
+        // max-width: 300px; /* Adjust width as necessary */
+        // overflow: hidden;
+        // white-space: nowrap;
+        // text-overflow: ellipsis;
+      }
+      tr {
+        border-bottom: 1px solid #e0e0e0;
+        td {
+          padding-block: 10px;
+        }
+      }
+      tr:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.workflowNames {
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  color: #4481ec;
+  cursor: pointer;
+  gap: 10px;
+}
+.usages {
+  display: flex;
+  gap: 10px;
+  margin: 10px;
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+.left-usage {
+  border-right: 1px solid #000000;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bolder;
+  font-style: normal;
+  line-height: 17px;
+  letter-spacing: 0.3px;
+}
+.right-usage {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.versions-container {
+  height: 550px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.highlight {
+  background-color: #ffffcc; /* Light yellow for highlighting */
+  border: 1px solid #ffcc00; /* Optional: Highlight border */
 }

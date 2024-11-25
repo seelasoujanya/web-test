@@ -76,6 +76,7 @@ export class WorkflowStepSettingsComponent {
     );
     if (config) {
       if (type === 'boolean') {
+        console.log(config);
         return config.value === 'true';
       }
       return config.value as string;

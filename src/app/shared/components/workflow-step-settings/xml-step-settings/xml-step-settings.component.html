@@ -31,18 +31,30 @@
         >Template</span
       >
 
-      <ng-select
-        [items]="templates"
-        bindLabel="name"
-        bindValue="id"
-        class="select-feild"
-        [searchable]="false"
-        [clearable]="false"
-        placeholder="Templates"
-        [(ngModel)]="selectedTemplateId"
-        [class.disabled]="!enableEditing">
-      </ng-select>
+      <div>
+        <ng-select
+          [items]="templates"
+          bindLabel="name"
+          bindValue="id"
+          class="select-feild"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Templates"
+          [(ngModel)]="selectedTemplateId"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+
+        <p
+          class="viewTemplate"
+          (click)="viewTemplate()"
+          [tooltip]="'View Template'"
+          [tooltipPlacement]="'right'"
+          [tooltipTrigger]="'hover'">
+          View Template
+        </p>
+      </div>
     </div>
+
     <div class="field-item">
       <span [tooltip]="'Please enter the file name to save XML output'"
         >File Name</span
