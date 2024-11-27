@@ -85,12 +85,7 @@ export class RunningComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        if (data) {
-          // get data from web socket
-          this.runningInstances = data.runningInstances.content;
-
-          this.noRunningInstances = this.runningInstances.length === 0;
-        }
+        this.updateRunningInstances(this.pageParams);
       });
   }
 

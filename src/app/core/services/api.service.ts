@@ -185,7 +185,7 @@ export class ApiService {
 
   updateWorkflowInstance(id: number, updateData: any): Observable<any> {
     return this.http.put<any>(
-      `${this.apiUrl}/workflowinstance/${id}`,
+      `${this.apiUrl}/workflow/${id}/instance`,
       updateData
     );
   }

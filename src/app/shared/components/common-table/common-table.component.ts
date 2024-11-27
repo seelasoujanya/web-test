@@ -11,9 +11,9 @@ import { TimeFormatService } from '../../../time-format.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SystemProperty } from 'src/app/core/models/workflow.model';
-import { PausedPropertyService } from 'src/app/paused-property.service';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 
 @Component({
   selector: 'app-common-table',
@@ -30,10 +30,11 @@ export class CommonTableComponent {
   @Input() showActions: boolean = false;
   @Input() isToggle: boolean = false;
   pausedProperty: SystemProperty | undefined;
+  websocketSubscription!: Subscription;
 
   isUTC = false;
   toggleStates: { [key: string]: boolean } = {};
-  isPauseProperty: boolean = true;
+  isPauseProperty: boolean = false;
   isQueuedInstance: boolean = false;
 
   @Output() editPriority: EventEmitter<any> = new EventEmitter();
@@ -46,20 +47,32 @@ export class CommonTableComponent {
   constructor(
     private timeFormatService: TimeFormatService,
     private cdr: ChangeDetectorRef,
-    private pausedPropertyService: PausedPropertyService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private webSocketAPI: WebSocketAPI,
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
-    this.pausedPropertyService.paused$.subscribe(pausedProperty => {
-      if (pausedProperty) {
-        this.pausedProperty = pausedProperty;
-        this.isPauseProperty = pausedProperty.value === 'true' ? true : false;
-      }
-    });
+    this.updatePausedProperty('paused');
+    this.updatePausedPropertyFromWebSocket();
     this.initializeToggleStates();
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
+    });
+  }
+
+  updatePausedPropertyFromWebSocket() {
+    this.websocketSubscription = this.webSocketAPI.pausedStatus.subscribe(
+      pausedProperty => {
+        this.isPauseProperty = pausedProperty ? true : false;
+      }
+    );
+  }
+
+  updatePausedProperty(key: string): void {
+    this.apiService.getPausedProperty(key).subscribe((data: SystemProperty) => {
+      this.pausedProperty = data;
+      this.isPauseProperty = data.value === 'true' ? true : false;
     });
   }
 
@@ -89,8 +102,6 @@ export class CommonTableComponent {
       const id = row[4]?.id;
       if (id !== undefined) {
         this.toggleStates[id] = row[4]?.isPaused || false;
-      } else {
-        console.warn('Row ID is undefined:', row);
       }
     });
     this.cdr.detectChanges();
