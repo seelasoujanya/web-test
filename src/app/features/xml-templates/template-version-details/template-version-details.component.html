@@ -105,6 +105,7 @@
           <span
             (click)="logName(item)"
             [tooltip]="'View ' + item.name"
+            [tooltipPlacement]="'right'"
             class="workflowNames">
             {{ item.name }}<span *ngIf="!last">, </span>
           </span>

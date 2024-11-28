@@ -86,10 +86,7 @@ export class PendingComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        if (data) {
-          this.pendingInstances = data.pendingInstances.content;
-          this.noPendingInstances = this.pendingInstances.length === 0;
-        }
+        this.updatePendingInstances(this.pageParams);
       });
   }
 

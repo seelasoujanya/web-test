@@ -11,8 +11,10 @@ export class WebSocketAPI {
   private client!: Client;
   private isConnected = false;
   private apiUrl = `${environment.BE_URL}`;
+
   public totalWorkflowsStatusCounts = new BehaviorSubject<any>(null);
   public statusCountByWorkflow = new BehaviorSubject<any>(null);
+  public pausedStatus = new BehaviorSubject<any>(null);
 
   constructor() {
     this.connect();
@@ -22,13 +24,15 @@ export class WebSocketAPI {
     if (!this.isConnected) {
       this.client = new Client({
         webSocketFactory: () => new SockJS(`${this.apiUrl}/ws`),
-        reconnectDelay: 5000,
+        reconnectDelay: 10000,
       });
 
       this.client.onConnect = () => {
         this.isConnected = true;
+        console.log('WebSocket connected successfully');
         this.subscribeToWorkflowStatusCounts();
-        this.subscribeToWorkflowUpdaeteds();
+        this.subscribeToWorkflowUpdates();
+        this.subscribeToPausedStatus();
       };
 
       this.client.onStompError = frame => {
@@ -42,15 +46,35 @@ export class WebSocketAPI {
 
   private subscribeToWorkflowStatusCounts() {
     this.client.subscribe('/topic/workflow-status-counts', message => {
-      const statusCounts = JSON.parse(message.body);
-      this.totalWorkflowsStatusCounts.next(statusCounts);
+      try {
+        const statusCounts = JSON.parse(message.body);
+        this.totalWorkflowsStatusCounts.next(statusCounts);
+      } catch (error) {
+        console.error('Error parsing workflow status counts:', error);
+      }
     });
   }
 
-  private subscribeToWorkflowUpdaeteds() {
+  private subscribeToPausedStatus() {
+    this.client.subscribe('/topic/paused-status', message => {
+      try {
+        const pausedStatus = JSON.parse(message.body);
+        console.log('Paused status received:', pausedStatus);
+        this.pausedStatus.next(pausedStatus);
+      } catch (error) {
+        console.error('Error parsing paused status:', error);
+      }
+    });
+  }
+
+  private subscribeToWorkflowUpdates() {
     this.client.subscribe('/topic/workflow-updates', message => {
-      const statusCounts = JSON.parse(message.body);
-      this.statusCountByWorkflow.next(statusCounts);
+      try {
+        const statusCounts = JSON.parse(message.body);
+        this.statusCountByWorkflow.next(statusCounts);
+      } catch (error) {
+        console.error('Error parsing workflow updates:', error);
+      }
     });
   }
 
@@ -58,6 +82,7 @@ export class WebSocketAPI {
     if (this.isConnected) {
       this.client.deactivate();
       this.isConnected = false;
+      console.log('WebSocket disconnected successfully');
     }
   }
 }
