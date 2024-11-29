@@ -86,6 +86,7 @@ export class PendingComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
+        console.log('Websocket status in Pending Component');
         this.updatePendingInstances(this.pageParams);
       });
   }
@@ -93,9 +94,6 @@ export class PendingComponent {
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
-    if (this.websocketSubscription) {
-      this.websocketSubscription.unsubscribe();
-    }
   }
 
   getTableValues() {
@@ -176,7 +174,6 @@ export class PendingComponent {
 
   cancelChangesForPriority() {
     this.closeModal();
-    this.reset();
   }
 
   onTerminateInstance(id: any) {

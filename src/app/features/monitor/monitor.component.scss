@@ -28,6 +28,7 @@
     height: 40px;
     border-radius: 4px;
     display: flex;
+    margin-top: 20px;
     flex-direction: row;
     padding-right: 20px;
     align-items: center;
@@ -191,7 +192,7 @@
 .monitor-instance-table {
   margin-top: 15px;
   overflow-y: auto;
-  height: 65vh;
+  height: 80vh;
 }
 
 .no-pendingInstances-message {

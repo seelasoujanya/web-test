@@ -24,7 +24,7 @@ export class WebSocketAPI {
     if (!this.isConnected) {
       this.client = new Client({
         webSocketFactory: () => new SockJS(`${this.apiUrl}/ws`),
-        reconnectDelay: 10000,
+        reconnectDelay: 2000,
       });
 
       this.client.onConnect = () => {
@@ -47,6 +47,7 @@ export class WebSocketAPI {
   private subscribeToWorkflowStatusCounts() {
     this.client.subscribe('/topic/workflow-status-counts', message => {
       try {
+        console.log('got message from Be for total status counts');
         const statusCounts = JSON.parse(message.body);
         this.totalWorkflowsStatusCounts.next(statusCounts);
       } catch (error) {
@@ -58,6 +59,8 @@ export class WebSocketAPI {
   private subscribeToPausedStatus() {
     this.client.subscribe('/topic/paused-status', message => {
       try {
+        console.log('got message from Be for pause');
+
         const pausedStatus = JSON.parse(message.body);
         console.log('Paused status received:', pausedStatus);
         this.pausedStatus.next(pausedStatus);
@@ -70,6 +73,7 @@ export class WebSocketAPI {
   private subscribeToWorkflowUpdates() {
     this.client.subscribe('/topic/workflow-updates', message => {
       try {
+        console.log('got message from Be for updates');
         const statusCounts = JSON.parse(message.body);
         this.statusCountByWorkflow.next(statusCounts);
       } catch (error) {

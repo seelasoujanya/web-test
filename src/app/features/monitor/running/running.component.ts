@@ -85,6 +85,7 @@ export class RunningComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
+        console.log('Websocket status in Running Component');
         this.updateRunningInstances(this.pageParams);
       });
   }
@@ -92,9 +93,6 @@ export class RunningComponent {
   ngOnDestroy() {
     this.destroyed$.next();
     this.destroyed$.complete();
-    if (this.websocketSubscription) {
-      this.websocketSubscription.unsubscribe();
-    }
   }
 
   formatDate(date: string | Date) {

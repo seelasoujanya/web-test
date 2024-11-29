@@ -11,7 +11,7 @@ import { WorkflowHistoryComponent } from '../features/workflow-details/workflow-
 import { WorkflowSettingsComponent } from '../features/workflow-details/workflow-settings/workflow-settings.component';
 
 export const routes: Routes = [
-  { path: '', component: WorkflowsComponent },
+  { path: '', redirectTo: 'monitor', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'workflows', component: WorkflowsComponent },
   { path: 'templates', component: XmlTemplatesComponent },
