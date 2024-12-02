@@ -18,6 +18,7 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TimeFormatService } from 'src/app/time-format.service';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pending',
@@ -68,7 +69,8 @@ export class PendingComponent {
     private cdRef: ChangeDetectorRef,
     private modalService: BsModalService,
     private datePipe: DatePipe,
-    private webSocketAPI: WebSocketAPI
+    private webSocketAPI: WebSocketAPI,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -209,5 +211,21 @@ export class PendingComponent {
   onPage(pageNumber: number) {
     this.pageParams.page = pageNumber - 1;
     this.updatePendingInstances(this.pageParams);
+  }
+
+  navigateToWorkflow(instanceId: number): void {
+    const selectedInstance = this.pendingInstances.find(
+      inst => inst.id === Number(instanceId)
+    );
+    this.router.navigate(['/workflows', selectedInstance.workflowId]);
+  }
+  navigateToInstance(instanceId: number): void {
+    const selectedInstance = this.pendingInstances.find(
+      inst => inst.id === Number(instanceId)
+    );
+    this.router.navigate([
+      `/workflows/${selectedInstance.workflowId}/workflowinstance`,
+      instanceId,
+    ]);
   }
 }

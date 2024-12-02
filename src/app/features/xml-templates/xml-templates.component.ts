@@ -47,7 +47,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
     mode: 'xml',
     tabSize: 2,
     indentWithTabs: true,
-    lineWrapping: true,
+    // lineWrapping: true,
   };
   private destroyed$ = new Subject<void>();
   public ngOnDestroy(): void {

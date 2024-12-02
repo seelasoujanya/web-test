@@ -15,14 +15,35 @@
     <tbody class="scrollable-table__body">
       <ng-container *ngFor="let row of values">
         <tr (click)="onRowClick(row)">
-          <td *ngFor="let value of row; let i = index" class="table-cell">
+          <td
+            class="table-cell"
+            *ngIf="showActions"
+            (click)="navigateToInstance(row)">
+            <span class="navBtn">{{ row[0] }} </span>
+            <!-- Navigate to Instance ID -->
+          </td>
+          <td
+            class="table-cell"
+            *ngIf="showActions"
+            (click)="navigateToWorkflow(row)">
+            <span class="navBtn">{{ row[1] }} </span
+            ><!--Navigate to Workflow Name -->
+          </td>
+
+          <!-- Render other row values -->
+          <td
+            *ngFor="let value of showActions ? row.slice(2) : row"
+            class="table-cell">
             <ng-container *ngIf="isObject(value); else checkStatus">
               <!-- Toggle for pause -->
-              <label class="toggle" *ngIf="isToggle">
+              <label
+                class="toggle"
+                type="button"
+                (click)="onToggle($event, row)"
+                *ngIf="isToggle">
                 <input
                   type="checkbox"
-                  [checked]="isToggleChange(toggleStates[row[4]?.id])"
-                  (change)="onToggle(row)" />
+                  [checked]="isToggleChange(toggleStates[row[4]?.id])" />
                 <span
                   class="slider"
                   [ngClass]="{ 'paused-slider': isPauseProperty }"></span>
@@ -77,8 +98,8 @@
             <ng-template #displayValue>
               <span [innerHTML]="value.html ? value.html : value"></span>
             </ng-template>
-            <!-- <input type="hidden" [value]="row[4]" /> -->
           </td>
+
           <!-- Show Actions button when required -->
           <td *ngIf="showActions" class="table-cell">
             <div class="buttons-container">

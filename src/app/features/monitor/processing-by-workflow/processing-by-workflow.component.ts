@@ -7,6 +7,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-processing-by-workflow',
@@ -40,7 +41,8 @@ export class ProcessingByWorkflowComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
     private timeFormatService: TimeFormatService,
-    private webSocketAPI: WebSocketAPI
+    private webSocketAPI: WebSocketAPI,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -101,5 +103,12 @@ export class ProcessingByWorkflowComponent implements OnInit {
     } else {
       console.warn(`Workflow with ID ${event.id} not found.`);
     }
+  }
+
+  navigateToWorkflow(workflowName: string): void {
+    const selectedInstance = this.workflows.find(
+      inst => inst.workflowName === workflowName
+    );
+    this.router.navigate(['/workflows', selectedInstance.workflowId]);
   }
 }

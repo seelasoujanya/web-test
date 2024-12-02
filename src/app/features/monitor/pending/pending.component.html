@@ -4,7 +4,9 @@
     [values]="getTableValues()"
     (editPriority)="onEditPriority($event, changePriorityForm)"
     [showActions]="true"
-    (terminateInstance)="onTerminateInstance($event)">
+    (terminateInstance)="onTerminateInstance($event)"
+    (navToWorkflowId)="navigateToWorkflow($event)"
+    (navToInstanceId)="navigateToInstance($event)">
   </app-common-table>
 </div>
 

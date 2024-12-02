@@ -14,6 +14,7 @@ import { SystemProperty } from 'src/app/core/models/workflow.model';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-common-table',
@@ -39,6 +40,9 @@ export class CommonTableComponent {
 
   @Output() editPriority: EventEmitter<any> = new EventEmitter();
   @Output() terminateInstance: EventEmitter<any> = new EventEmitter();
+  @Output() navToWorkflowId: EventEmitter<any> = new EventEmitter();
+  @Output() navToInstanceId: EventEmitter<any> = new EventEmitter();
+  @Output() navToWorkflowName: EventEmitter<any> = new EventEmitter();
   @Output() toggleChange: EventEmitter<{ id: any; state: boolean }> =
     new EventEmitter();
 
@@ -49,7 +53,8 @@ export class CommonTableComponent {
     private cdr: ChangeDetectorRef,
     private toastr: ToastrService,
     private webSocketAPI: WebSocketAPI,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -115,7 +120,8 @@ export class CommonTableComponent {
     }
   }
 
-  onToggle(row: any) {
+  onToggle(event: Event, row: any) {
+    event.stopPropagation();
     const rowId = row[4]?.id;
     if (this.isPauseProperty) {
       this.toggleStates[rowId] = true;
@@ -153,9 +159,21 @@ export class CommonTableComponent {
   }
 
   onRowClick(row: any) {
-    const templateId = row[4]?.id;
-    if (templateId !== undefined) {
-      this.template.emit(templateId);
+    if (this.isToggle) {
+      this.navToWorkflowName.emit(row[0]);
+    } else {
+      const templateId = row[4]?.id;
+      if (templateId !== undefined) {
+        this.template.emit(templateId);
+      }
     }
+  }
+
+  navigateToInstance(row: any): void {
+    this.navToInstanceId.emit(row[0]);
+  }
+
+  navigateToWorkflow(row: any): void {
+    this.navToWorkflowId.emit(row[0]);
   }
 }

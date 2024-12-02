@@ -6,6 +6,7 @@
     [headings]="headings"
     [isToggle]="true"
     [values]="workflowValues"
+    (navToWorkflowName)="navigateToWorkflow($event)"
     (toggleChange)="handleToggleChange($event)">
   </app-common-table>
 </div>

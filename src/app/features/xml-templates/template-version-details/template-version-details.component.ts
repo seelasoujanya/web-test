@@ -46,7 +46,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     mode: 'xml',
     tabSize: 2,
     indentWithTabs: true,
-    lineWrapping: true,
+    // lineWrapping: true,
     readOnly: true,
   };
   private destroyed$ = new Subject<void>();
