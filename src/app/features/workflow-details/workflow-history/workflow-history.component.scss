@@ -2,7 +2,7 @@
 @import 'src/styles/button';
 @import 'src/styles/ngselect.scss';
 .workflow-history-container {
-  height: 75vh;
+  height: 100%;
   width: 98%;
   margin-inline: 15px;
   display: flex;
@@ -21,7 +21,7 @@
     }
   }
   .workflows-instance-table {
-    height: 65vh;
+    height: 90%;
     position: relative;
     border-radius: 8px;
     background-color: #ffffff;

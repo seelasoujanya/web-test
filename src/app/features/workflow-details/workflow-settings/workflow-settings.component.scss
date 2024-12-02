@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: row;
   margin: 0px 20px;
+  height: 100%;
 }
 
 h6.active {
@@ -25,6 +26,7 @@ h6.active {
   flex-direction: column;
   justify-content: center;
   margin: 0px;
+  cursor: pointer;
 }
 
 .left-container {
@@ -32,7 +34,7 @@ h6.active {
   border-right: 1px solid #f2f2f2;
 }
 .right-container {
-  height: 70vh;
+  height: 75vh;
   width: 100%;
   overflow-y: auto;
 }

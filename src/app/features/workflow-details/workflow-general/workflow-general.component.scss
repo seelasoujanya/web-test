@@ -3,6 +3,7 @@
 .workflow-general-container {
   width: 98%;
   margin-inline: 15px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -85,6 +86,7 @@
   }
   .email-setting {
     padding: 16px;
+    border-radius: 5px;
     background: #fff;
     font-weight: 500;
     font-size: 20px;
@@ -370,11 +372,4 @@ textarea:focus {
 
 .copy-icon {
   height: 20px;
-}
-
-.workflow-settings-container {
-  height: 65vh;
-  position: relative;
-  border-radius: 8px;
-  background-color: #ffffff;
 }
