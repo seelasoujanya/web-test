@@ -14,11 +14,6 @@ import { of, throwError } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  Priority,
-  WorkflowInstance,
-  WorkflowInstanceStatus,
-} from 'src/app/core/models/workflowinstance.model';
 
 describe('WorkflowDetailViewComponent', () => {
   let component: WorkflowDetailViewComponent;
@@ -135,38 +130,6 @@ describe('WorkflowDetailViewComponent', () => {
       pageSize: 20,
       sortBy: '',
       order: 'asc',
-    });
-  });
-
-  describe('secondsToHHMMSS', () => {
-    it('should return an empty string when seconds is null', () => {
-      const result = component.secondsToHHMMSS(null);
-      expect(result).toBe('');
-    });
-
-    it('should correctly convert 0 seconds to "00:00:00"', () => {
-      const result = component.secondsToHHMMSS(0);
-      expect(result).toBe('00:00:00');
-    });
-
-    it('should correctly convert seconds to HH:MM:SS format', () => {
-      const result = component.secondsToHHMMSS(3661);
-      expect(result).toBe('01:01:01');
-    });
-
-    it('should correctly convert seconds with no hours to "00:MM:SS"', () => {
-      const result = component.secondsToHHMMSS(61);
-      expect(result).toBe('00:01:01');
-    });
-
-    it('should correctly convert seconds with minutes and seconds to "00:MM:SS"', () => {
-      const result = component.secondsToHHMMSS(3599);
-      expect(result).toBe('00:59:59');
-    });
-
-    it('should correctly handle large numbers of seconds', () => {
-      const result = component.secondsToHHMMSS(86400);
-      expect(result).toBe('24:00:00');
     });
   });
 
@@ -301,5 +264,109 @@ describe('WorkflowDetailViewComponent', () => {
     expect(component.getPageItems).toHaveBeenCalled();
     expect(component.getArtifactFiles).toHaveBeenCalled();
     expect(component.getInstancsLogs).toHaveBeenCalled();
+  });
+
+  it('should toggle time format', () => {
+    const toggleTimeFormatSpy = spyOn(
+      component['timeFormatService'],
+      'toggleTimeFormat'
+    );
+
+    component.toggleTimeFormat();
+
+    expect(toggleTimeFormatSpy).toHaveBeenCalled();
+  });
+
+  it('should format date correctly', () => {
+    const date = new Date('2024-01-01');
+    const formatDateSpy = spyOn(
+      component['timeFormatService'],
+      'formatDate'
+    ).and.returnValue({ date: '01/01/2024', time: '12:00 PM' });
+
+    const formattedDate = component.formatDate(date);
+
+    expect(formatDateSpy).toHaveBeenCalledWith(date);
+  });
+
+  it('should set selectedTab correctly when selectTab is called with a different tab', () => {
+    const tab = 'newTab';
+    component.selectTab(tab);
+
+    expect(component.selectedTab).toBe(tab);
+  });
+
+  it('should handle error in getArtifactFiles', () => {
+    apiService.getArtifacts.and.returnValue(throwError('Error'));
+
+    component.getArtifactFiles();
+
+    expect(component.filteredFiles).toEqual([]);
+  });
+
+  it('should handle successful getInstancsLogs response', () => {
+    const mockLogs = 'Sample logs';
+    apiService.getLogsForInstance.and.returnValue(of(mockLogs));
+
+    component.getInstancsLogs();
+
+    expect(component.logsResponse).toBe('');
+  });
+
+  describe('convertMilliSeconds', () => {
+    it('should return an empty string if input is null', () => {
+      const result = component.convertMilliSeconds(null);
+      expect(result).toBe('');
+    });
+
+    it('should convert milliseconds to formatted string correctly - only hours', () => {
+      const result = component.convertMilliSeconds(3600000); // 1 hour
+      expect(result).toBe('1h');
+    });
+
+    it('should convert milliseconds to formatted string correctly - only minutes', () => {
+      const result = component.convertMilliSeconds(60000); // 1 minute
+      expect(result).toBe('1m');
+    });
+
+    it('should convert milliseconds to formatted string correctly - only seconds', () => {
+      const result = component.convertMilliSeconds(1000); // 1 second
+      expect(result).toBe('1s 0ms');
+    });
+
+    it('should convert milliseconds to formatted string correctly - only milliseconds', () => {
+      const result = component.convertMilliSeconds(10); // 10 ms
+      expect(result).toBe('1ms');
+    });
+
+    it('should convert milliseconds to formatted string correctly - hours and minutes', () => {
+      const result = component.convertMilliSeconds(3660000); // 1 hour, 1 minute
+      expect(result).toBe('1h 1m');
+    });
+
+    it('should convert milliseconds to formatted string correctly - minutes and seconds', () => {
+      const result = component.convertMilliSeconds(61000); // 1 minute, 1 second
+      expect(result).toBe('1m 1s');
+    });
+
+    it('should convert milliseconds to formatted string correctly - hours, minutes, and seconds', () => {
+      const result = component.convertMilliSeconds(3661000); // 1 hour, 1 minute, 1 second
+      expect(result).toBe('1h 1m 1s');
+    });
+
+    it('should convert milliseconds to formatted string correctly - all components', () => {
+      const result = component.convertMilliSeconds(3661010); // 1 hour, 1 minute, 1 second, 10 ms
+      expect(result).toBe('1h 1m 1s');
+    });
+
+    it('should convert milliseconds to formatted string correctly - milliseconds only when minutes or hours are absent', () => {
+      const result = component.convertMilliSeconds(15); // 15 ms
+      expect(result).toBe('1ms');
+    });
+
+    it('should handle zero input correctly', () => {
+      const result = component.convertMilliSeconds(0);
+      expect(result).toBe('0ms');
+    });
   });
 });

@@ -6,6 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 describe('AccountInfoComponent', () => {
   let component: AccountInfoComponent;
@@ -62,5 +64,33 @@ describe('AccountInfoComponent', () => {
   it('should calculate tabContentHeight correctly', () => {
     const expectedHeight = window.innerHeight - 220;
     expect(component.tabContentHeight).toBe(expectedHeight);
+  });
+
+  it('should handle empty authorities list in getAccountInfo', () => {
+    const mockResponse = {
+      authorities: [],
+    };
+    apiService.getUserDetails.and.returnValue(of(mockResponse));
+
+    component.getAccountInfo();
+
+    expect(component.userAuthorities.length).toBe(0);
+  });
+
+  it('should call toggleTimeFormat on toggleTimeFormat', () => {
+    const timeFormatService = TestBed.inject(TimeFormatService);
+    spyOn(timeFormatService, 'toggleTimeFormat');
+    component.toggleTimeFormat();
+    expect(timeFormatService.toggleTimeFormat).toHaveBeenCalled();
+  });
+
+  it('should subscribe to isUTC$ and set isUTC value on ngOnInit', () => {
+    const timeFormatService = TestBed.inject(TimeFormatService);
+    const isUTC$ = new BehaviorSubject<boolean>(true);
+    timeFormatService.isUTC$ = isUTC$;
+    component.ngOnInit();
+    expect(component.isUTC).toBe(true);
+    isUTC$.next(false);
+    expect(component.isUTC).toBe(false);
   });
 });

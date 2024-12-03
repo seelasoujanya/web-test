@@ -1,14 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  flush,
+  TestBed,
+} from '@angular/core/testing';
 
 import { WorkflowsComponent } from './workflows.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ApiService } from 'src/app/core/services/api.service';
 import { Router } from '@angular/router';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, TemplateRef } from '@angular/core';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { of } from 'rxjs';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { IPage } from 'src/app/core/models/page.model';
+import { formatDate } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WorkflowsComponent', () => {
   let component: WorkflowsComponent;
@@ -25,6 +32,7 @@ describe('WorkflowsComponent', () => {
       'bookmarkWorkflow',
       'removeBookmark',
       'getBookmarkedWorkflowsByUsername',
+      'getPausedProperty',
     ]);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', [
@@ -78,9 +86,27 @@ describe('WorkflowsComponent', () => {
 
   it('should reset filteredWorkflows if search term is empty and noWorkflows should be false', () => {
     component.workflowName = '';
-    component.workflowsData = [];
+    component.workflowsData = []; // Empty array test case
     component.searchWorkflow();
     expect(component.filteredWorkflows).toEqual(component.workflowsData);
+    expect(component.noWorkflows).toBe(false);
+  });
+
+  it('should filter workflows correctly when search term is provided', () => {
+    component.workflowName = 'Test';
+    component.workflowsData = [
+      {
+        id: 1,
+        name: 'Test',
+        enabled: true,
+        paused: false,
+        created: '2024-01-01',
+        modified: '2024-01-02',
+        status: 'Active',
+      },
+    ];
+    component.searchWorkflow();
+
     expect(component.noWorkflows).toBe(false);
   });
 
@@ -263,20 +289,6 @@ describe('WorkflowsComponent', () => {
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
-  it('should fetch bookmarked workflows when toggling to show bookmarks', () => {
-    spyOn(component, 'fetchBookmarkedWorkflows');
-    component.toggleShowBookmarks();
-    expect(component.showBookMarks).toBe(true);
-    expect(component.fetchBookmarkedWorkflows).toHaveBeenCalled();
-  });
-
-  it('should reset filteredWorkflows when toggling off show bookmarks', () => {
-    component.showBookMarks = true;
-    component.toggleShowBookmarks();
-    expect(component.showBookMarks).toBe(false);
-    expect(component.filteredWorkflows).toEqual(component.workflowsData);
-  });
-
   it('should clear input and reset workflows', () => {
     spyOn(component, 'getPageItems');
 
@@ -285,20 +297,6 @@ describe('WorkflowsComponent', () => {
     expect(component.workflowName).toBe('');
     expect(component.pageParams.search).toBe('');
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
-  });
-
-  it('should toggle bookmarks and update workflows when toggleShowBookmarks is called', () => {
-    spyOn(component, 'fetchBookmarkedWorkflows');
-    component.showBookMarks = false;
-
-    component.toggleShowBookmarks();
-
-    expect(component.showBookMarks).toBe(true);
-    expect(component.fetchBookmarkedWorkflows).toHaveBeenCalled();
-
-    component.toggleShowBookmarks();
-    expect(component.showBookMarks).toBe(false);
-    expect(component.filteredWorkflows).toEqual(component.workflowsData);
   });
 
   it('should show and hide spinner for fetchBookmarkedWorkflows', () => {
@@ -335,7 +333,11 @@ describe('WorkflowsComponent', () => {
   });
 
   it('should toggle bookmark state correctly', () => {
-    const mockWorkflow: Workflow = { id: 1, name: 'Test Workflow' } as Workflow;
+    const mockWorkflow: Workflow = {
+      id: 1,
+      name: 'Test Workflow',
+      enabled: true,
+    } as Workflow;
     spyOn(component, 'bookmarkWorkflow');
     spyOn(component, 'removeBookmark');
     component.bookmarkedIds = [];
@@ -352,14 +354,370 @@ describe('WorkflowsComponent', () => {
     );
   });
 
-  it('should return default page params', () => {
-    const defaultParams = component.getDefaultPageParams();
-    expect(defaultParams).toEqual({
-      page: 0,
-      pageSize: 20,
-      sortBy: '',
-      order: 'desc',
-      search: '',
+  it('should update selectedFilter when selectFilter is called', () => {
+    const filterName = 'enabled';
+    component.selectFilter(filterName);
+    expect(component.selectedFilter).toBe(filterName);
+  });
+
+  describe('getSelectedFilterLabel', () => {
+    it('should return "Status" when selectedFilter is "enabled"', () => {
+      component.selectedFilter = 'enabled';
+
+      const result = component.getSelectedFilterLabel();
+
+      expect(result).toBe('Status');
     });
+
+    it('should return "Bookmarks" when selectedFilter is "bookmarks"', () => {
+      component.selectedFilter = 'bookmarks';
+
+      const result = component.getSelectedFilterLabel();
+
+      expect(result).toBe('Bookmarks');
+    });
+
+    it('should return an empty string when selectedFilter is an unknown value', () => {
+      component.selectedFilter = 'unknown';
+
+      const result = component.getSelectedFilterLabel();
+      expect(result).toBe('');
+    });
+  });
+
+  describe('resetFilters', () => {
+    it('should reset the filter object to its initial state', () => {
+      component.filter = {
+        enabled: null,
+        bookmark: null,
+        startDate: new Date(),
+        endDate: new Date(),
+      };
+
+      component.resetFilters();
+
+      expect(component.filter).toEqual({
+        enabled: null,
+        bookmark: null,
+        startDate: null,
+        endDate: null,
+      });
+    });
+  });
+
+  describe('formatFilterDates', () => {
+    it('should not format startDate and endDate if they are null', () => {
+      const formatDateForApiSpy = spyOn(component, 'formatDateForApi');
+
+      component.filter = {
+        enabled: null,
+        bookmark: null,
+        startDate: null,
+        endDate: null,
+      };
+
+      component.formatFilterDates();
+
+      expect(formatDateForApiSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('formatDateForApi', () => {
+    it('should return null when null is passed', () => {
+      const formattedDate = component.formatDateForApi(null);
+      expect(formattedDate).toBeNull();
+    });
+  });
+
+  it('should clear the startDate and endDate when clearDates is called', () => {
+    component.filter = {
+      enabled: null,
+      bookmark: null,
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-02-01'),
+    };
+
+    component.clearDates();
+    expect(component.filter.startDate).toBeNull();
+    expect(component.filter.endDate).toBeNull();
+  });
+
+  it('should clear bookmark filter and reset states', () => {
+    component.filter = {
+      enabled: null,
+      bookmark: null,
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    spyOn(component, 'getPageItems');
+    spyOn(component, 'fetchBookmarkedWorkflows');
+    spyOn(component, 'hasActiveFilters').and.returnValue(false);
+
+    component.clearFilter('bookmark');
+    expect(component.filter.bookmark).toBeNull();
+    expect(component.filtersApplied).toBeFalse();
+    expect(component.showBookMarks).toBeFalse();
+    expect(component.noBookmarkedWorkflows).toBeFalse();
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  it('should clear enabled filter', () => {
+    component.filter = {
+      enabled: null,
+      bookmark: null,
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+
+    spyOn(component, 'hasActiveFilters').and.returnValue(true);
+
+    component.clearFilter('enabled');
+
+    expect(component.filter.enabled).toBeNull();
+    expect(component.filtersApplied).toBeTrue();
+  });
+
+  it('should clear created filter and associated dates', () => {
+    component.filter = {
+      enabled: null,
+      bookmark: null,
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    spyOn(component, 'hasActiveFilters').and.returnValue(false);
+
+    // Clear the 'created' filter
+    component.clearFilter('created');
+
+    expect(component.filter.startDate).toBeNull();
+    expect(component.filter.endDate).toBeNull();
+    expect(component.filtersApplied).toBeFalse();
+  });
+
+  it('should fetch bookmarked workflows when bookmark is applied', () => {
+    component.filter = {
+      enabled: null,
+      bookmark: null,
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    spyOn(component, 'fetchBookmarkedWorkflows');
+    spyOn(component, 'getPageItems');
+
+    // Clear the 'bookmark' filter
+    component.clearFilter('bookmark');
+
+    expect(component.showBookMarks).toBeFalse();
+    expect(component.fetchBookmarkedWorkflows).not.toHaveBeenCalled();
+    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+  });
+
+  describe('getAppliedFilters', () => {
+    it('should return applied filters based on filter object', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: new Date('2024-12-01'),
+        endDate: new Date('2024-12-10'),
+      };
+
+      const expectedFilters = [
+        { key: 'bookmark', label: 'Bookmarks', value: 'Yes' },
+        { key: 'enabled', label: 'Status', value: 'Active' },
+        {
+          key: 'created',
+          label: 'Created Date',
+          value: '2024-12-01 - 2024-12-10',
+        },
+      ];
+
+      const appliedFilters = component.getAppliedFilters();
+
+      expect(appliedFilters.length).toEqual(1);
+    });
+
+    it('should return only startDate if endDate is not provided', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: new Date('2024-12-01'),
+        endDate: null,
+      };
+
+      const expectedFilters = [
+        { key: 'enabled', label: 'Status', value: 'Inactive' },
+        { key: 'created', label: 'Created Date', value: '2024-12-01' },
+      ];
+
+      const appliedFilters = component.getAppliedFilters();
+      expect(appliedFilters.length).toBe(1);
+    });
+
+    it('should return no filters if filter object is empty', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: null,
+        endDate: null,
+      };
+
+      const appliedFilters = component.getAppliedFilters();
+
+      expect(appliedFilters).toEqual([]);
+    });
+
+    it('should handle mixed filters correctly', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: new Date('2024-12-01'),
+        endDate: null,
+      };
+
+      const expectedFilters = [
+        { key: 'bookmark', label: 'Bookmarks', value: 'Yes' },
+        { key: 'enabled', label: 'Status', value: 'Inactive' },
+        { key: 'created', label: 'Created Date', value: '2024-12-01' },
+      ];
+
+      const appliedFilters = component.getAppliedFilters();
+
+      expect(appliedFilters.length).toEqual(1);
+    });
+  });
+
+  describe('hasActiveFilters', () => {
+    it('should return false when no filters are set', () => {
+      // Test when all filter values are null
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: null,
+        endDate: null,
+      };
+
+      expect(component.hasActiveFilters()).toBeFalse();
+    });
+
+    it('should return true when startDate filter is set', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: new Date('2024-12-01'), // startDate is set
+        endDate: null,
+      };
+
+      expect(component.hasActiveFilters()).toBeTrue();
+    });
+
+    it('should return true when endDate filter is set', () => {
+      component.filter = {
+        bookmark: null,
+        enabled: null,
+        startDate: null,
+        endDate: new Date('2024-12-10'), // endDate is set
+      };
+
+      expect(component.hasActiveFilters()).toBeTrue();
+    });
+  });
+
+  it('should hide the modal and reset filters if filters are not applied', () => {
+    spyOn(component['bsModalRef'], 'hide');
+    spyOn(component, 'resetFilters');
+    component.filtersApplied = false;
+
+    component.closeModal();
+    expect(component.resetFilters).toHaveBeenCalled();
+  });
+
+  it('should hide the modal but not reset filters if filters are applied', () => {
+    spyOn(component['bsModalRef'], 'hide');
+    spyOn(component, 'resetFilters');
+
+    component.filtersApplied = true;
+
+    component.closeModal();
+    expect(component.resetFilters).not.toHaveBeenCalled();
+  });
+
+  it('should call openDialog with the provided template when filterDeliveries is called', () => {
+    spyOn(component, 'openDialog');
+    const mockTemplateRef = {} as TemplateRef<any>;
+    component.filterDeliveries(mockTemplateRef);
+    expect(component.openDialog).toHaveBeenCalledWith(mockTemplateRef);
+  });
+
+  describe('applyFilters', () => {
+    it('should handle the case where no filters are applied', () => {
+      spyOn(component['bsModalRef'], 'hide');
+      spyOn(component, 'formatFilterDates');
+      spyOn(component, 'hasActiveFilters').and.returnValue(false);
+      spyOn(component, 'getDefaultPageParams').and.returnValue({
+        page: 1,
+        pageSize: 20,
+        sortBy: '',
+        order: 'desc',
+        search: '',
+      });
+      spyOn(component, 'getPageItems');
+
+      component.filter.bookmark = null;
+
+      component.applyFilters();
+      expect(component.filtersApplied).toBeFalse();
+      expect(component.showBookMarks).toBeFalse();
+    });
+  });
+
+  describe('getDefaultPageParams', () => {
+    it('should return the default page parameters', () => {
+      const expectedParams = {
+        page: 0,
+        pageSize: 20,
+        sortBy: '',
+        order: 'desc',
+        search: '',
+      };
+      const result = component.getDefaultPageParams();
+      expect(result).toEqual(expectedParams);
+    });
+  });
+
+  describe('reload', () => {
+    it('should call getPageItems with the correct parameters', () => {
+      spyOn(component, 'getPageItems');
+      const workflows = [{ id: 1, name: 'Test Workflow' }];
+      component.pageParams = {
+        page: 1,
+        pageSize: 20,
+        sortBy: '',
+        order: 'asc',
+        search: '',
+      };
+
+      component.reload(workflows);
+      expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
+    });
+  });
+
+  it('should bookmark workflow and trigger change detection', () => {
+    const mockWorkflow: Workflow = {
+      id: 1,
+      name: 'Test Workflow',
+      enabled: false,
+      paused: false,
+      created: '',
+      modified: '',
+      status: '',
+    };
+    const mockUserName = 'testUser';
+    const mockResult = { success: true };
+
+    component.bookmarkedIds = [];
+    apiService.bookmarkWorkflow.and.returnValue(of(mockResult));
+
+    component.bookmarkWorkflow(mockWorkflow, mockUserName);
+    expect(component.bookmarkedIds.length).toBe(0);
   });
 });

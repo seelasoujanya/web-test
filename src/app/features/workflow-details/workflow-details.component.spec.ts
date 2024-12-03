@@ -81,32 +81,12 @@ describe('WorkflowDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should return default page params', () => {
-    const defaultParams = component.getDefaultPageParams();
-    expect(defaultParams).toEqual({
-      page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
-    });
-  });
-
   it('should navigate to workflows', () => {
     const navigateSpy = spyOn(router, 'navigate');
 
     component.backToWorkflows();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/workflows']);
-  });
-
-  it('should sort column', () => {
-    const event = { sortBy: 'Queued On', order: 'desc' };
-    spyOn(component, 'getPageItems').and.stub();
-
-    component.sortColumn(event);
-    expect(component.pageParams.sortBy).toBe('created');
-    expect(component.pageParams.order).toBe('desc');
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
   it('should reset counts', () => {
@@ -240,25 +220,12 @@ describe('WorkflowDetailsComponent', () => {
     expect(component.totalInstancesCount).toBe(2);
   });
 
-  it('should call getPageItems when identifier is empty', () => {
-    component.identifier = '';
-
-    spyOn(component, 'getPageItems').and.callThrough();
-
-    component.searchWorkflowInstance();
-
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
-  });
-
   it('should call ngOnInit methods', () => {
-    spyOn(component, 'getPageItems').and.stub();
     spyOn(component, 'getWorkflow').and.stub();
     spyOn(component, 'getEmailsByWorkflowId').and.stub();
-    spyOn(component, 'getWorkflowSteps').and.stub();
 
     component.ngOnInit();
 
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
     expect(component.getWorkflow).toHaveBeenCalled();
     expect(component.getEmailsByWorkflowId).toHaveBeenCalled();
   });
@@ -271,14 +238,5 @@ describe('WorkflowDetailsComponent', () => {
     expect(component.failedInstancesCount).toBe(0);
     expect(component.deliveredInstancesCount).toBe(0);
     expect(component.totalInstancesCount).toBe(0);
-  });
-
-  it('should call getPageItems when identifier is empty in searchWorkflowInstance', () => {
-    component.identifier = '';
-    spyOn(component, 'getPageItems').and.callThrough();
-
-    component.searchWorkflowInstance();
-
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 });

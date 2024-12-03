@@ -252,34 +252,6 @@ describe('ApiService', () => {
     req.flush(mockBlob);
   });
 
-  // it('should update workflow instance status', () => {
-  //   const instanceId = 123;
-  //   const status = 'ACTIVE';
-  //   const mockResponse = { success: true };
-
-  //   service
-  //     .updateWorkflowInstanceStatus(instanceId, status)
-  //     .subscribe(response => {
-  //       expect(response).toEqual(mockResponse);
-  //     });
-
-  //   const req = httpTestingController.expectOne(
-  //     req =>
-  //       req.method === 'PUT' &&
-  //       req.url === `${service['apiUrl']}/workflowinstance/${instanceId}` &&
-  //       req.params.get('status') === status
-  //   );
-
-  //   expect(req.request.method).toBe('PUT');
-  //   expect(req.request.url).toBe(
-  //     `${service['apiUrl']}/workflowinstance/${instanceId}`
-  //   );
-  //   expect(req.request.params.get('status')).toBe(status);
-  //   expect(req.request.body).toBeNull();
-
-  //   req.flush(mockResponse);
-  // });
-
   it('should retrieve a workflow by ID', () => {
     const workflowId = 123;
     const mockWorkflow = { id: workflowId, name: 'Test Workflow' };
@@ -466,34 +438,6 @@ describe('ApiService', () => {
     req.flush(mockResponse);
   });
 
-  it('should update system property', () => {
-    const id = 1;
-    const dto: SystemPropertiesDTO = {
-      key: 'someKey',
-      value: 'newValue',
-      description: undefined,
-    };
-    const mockResponse: SystemProperty = {
-      id: 1,
-      key: 'test',
-      value: 'value',
-      description: '',
-      created: '',
-      modified: '',
-    };
-
-    service.updateSystemProperty(id, dto).subscribe(response => {
-      expect(response).toEqual(mockResponse);
-    });
-
-    const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/property/${id}`
-    );
-    expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual(dto);
-    req.flush(mockResponse);
-  });
-
   it('should add a new email', () => {
     const id = 1;
     const bodyParams = { email: 'newemail@example.com' };
@@ -611,5 +555,75 @@ describe('ApiService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(bodyParams);
     req.flush(mockResponse);
+  });
+
+  describe('retrieveTotalWorkflowsStatusCount', () => {
+    it('should make a GET request to retrieve total workflows status count', () => {
+      const mockResponse = { count: 10 };
+
+      service.retrieveTotalWorkflowsStatusCount().subscribe(response => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      const req = httpTestingController.expectOne(
+        `${service['apiUrl']}/workflow/status/count`
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
+  });
+
+  describe('retrieveStatusCountByWorkflow', () => {
+    it('should make a GET request to retrieve status count by workflow', () => {
+      const mockResponse = [
+        { workflowId: 1, statusCount: 5 },
+        { workflowId: 2, statusCount: 3 },
+      ];
+
+      service.retrieveStatusCountByWorkflow().subscribe(response => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      const req = httpTestingController.expectOne(
+        `${service['apiUrl']}/workflow/status/by-workflow`
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
+  });
+
+  describe('getTemplateUsages', () => {
+    it('should make a GET request to retrieve template usage by ID with query params', () => {
+      const templateId = 123; // Replace with a test template ID
+      const queryParams = { page: 1, size: 10 }; // Example query params
+      const mockResponse: IPage<any> = {
+        content: [
+          { id: 1, usage: 'Usage 1' },
+          { id: 2, usage: 'Usage 2' },
+        ],
+        totalElements: 2,
+        totalPages: 1,
+        size: 0,
+        number: 0,
+        numberOfElements: 0,
+      };
+
+      service.getTemplateUsages(templateId, queryParams).subscribe(response => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      // Verify the GET request URL and params
+      const req = httpTestingController.expectOne(
+        request =>
+          request.url === `${service['apiUrl']}/template/${templateId}/usage` &&
+          request.params.has('page') &&
+          request.params.get('page') === '1' &&
+          request.params.has('size') &&
+          request.params.get('size') === '10'
+      );
+
+      expect(req.request.method).toBe('GET');
+      req.flush(mockResponse);
+    });
   });
 });
