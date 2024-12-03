@@ -28,6 +28,81 @@
 
   <ng-container *ngIf="workflowStep?.type === 'DDEX'; else otherSteps">
     <div class="line-with-text">
+      <h4 class="line-text">Properties</h4>
+    </div>
+    <div
+      class="properties-container"
+      *ngIf="workflowStep?.workflowStepConfigurations">
+      <ng-container class="field-item" *ngFor="let field of fields">
+        <div *ngIf="field.section === 'properties'">
+          <div *ngIf="field; in: availableKeys">
+            <div [ngSwitch]="field.type">
+              <div class="form-group" *ngSwitchCase="'checkbox'">
+                <label class="checkbox">
+                  <input
+                    type="checkbox"
+                    (change)="updateCheckboxFieldValue(field.key)"
+                    [checked]="getFieldValue(field.key, 'boolean')"
+                    [disabled]="!enableEditing" />
+                  <div class="checkbox__icon">
+                    <img src="/assets/icons/checkbox.svg" alt="" />
+                  </div>
+
+                  <span
+                    class="checkbox__label"
+                    style="font-size: 15px"
+                    [tooltip]="field.description"
+                    >{{ field.label }}</span
+                  >
+                </label>
+              </div>
+
+              <span
+                *ngIf="field.type !== 'checkbox'"
+                [tooltip]="field.description"
+                >{{ field.label }}</span
+              >
+              <input
+                *ngSwitchCase="'input'"
+                [type]="field.label === 'Password' ? 'password' : 'text'"
+                maxlength="255"
+                placeholder="{{ field.placeholder }}"
+                class="input-field"
+                [ngModel]="getFieldValue(field.key)"
+                (ngModelChange)="setFieldValue(field.key, $event)"
+                [class.disabled]="!enableEditing" />
+
+              <textarea
+                *ngSwitchCase="'textarea'"
+                [name]="field.key"
+                [id]="field.key"
+                placeholder="{{ field.placeholder }}"
+                [ngModel]="getFieldValue(field.key)"
+                class="input-field"
+                rows="5"
+                (ngModelChange)="setFieldValue(field.key, $event)"
+                [class.disabled]="!enableEditing"></textarea>
+
+              <ng-select
+                *ngSwitchCase="'select'"
+                class="select-feild"
+                [items]="field.values"
+                bindLabel="label"
+                bindValue="value"
+                [searchable]="false"
+                [clearable]="false"
+                placeholder="{{ field.placeholder }}"
+                [ngModel]="getFieldValue(field.key)"
+                (ngModelChange)="setFieldValue(field.key, $event)"
+                [class.disabled]="!enableEditing">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="line-with-text">
       <h4 class="line-text">Folder Structure</h4>
     </div>
     <div
@@ -240,81 +315,6 @@
                 *ngSwitchCase="'select'"
                 [items]="field.values"
                 class="select-feild"
-                bindLabel="label"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing">
-              </ng-select>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="line-with-text">
-      <h4 class="line-text">Properties</h4>
-    </div>
-    <div
-      class="properties-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field.section === 'properties'">
-          <div *ngIf="field; in: availableKeys">
-            <div [ngSwitch]="field.type">
-              <div class="form-group" *ngSwitchCase="'checkbox'">
-                <label class="checkbox">
-                  <input
-                    type="checkbox"
-                    (change)="updateCheckboxFieldValue(field.key)"
-                    [checked]="getFieldValue(field.key, 'boolean')"
-                    [disabled]="!enableEditing" />
-                  <div class="checkbox__icon">
-                    <img src="/assets/icons/checkbox.svg" alt="" />
-                  </div>
-
-                  <span
-                    class="checkbox__label"
-                    style="font-size: 15px"
-                    [tooltip]="field.description"
-                    >{{ field.label }}</span
-                  >
-                </label>
-              </div>
-
-              <span
-                *ngIf="field.type !== 'checkbox'"
-                [tooltip]="field.description"
-                >{{ field.label }}</span
-              >
-              <input
-                *ngSwitchCase="'input'"
-                [type]="field.label === 'Password' ? 'password' : 'text'"
-                maxlength="255"
-                placeholder="{{ field.placeholder }}"
-                class="input-field"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing" />
-
-              <textarea
-                *ngSwitchCase="'textarea'"
-                [name]="field.key"
-                [id]="field.key"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                class="input-field"
-                rows="5"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing"></textarea>
-
-              <ng-select
-                *ngSwitchCase="'select'"
-                class="select-feild"
-                [items]="field.values"
                 bindLabel="label"
                 bindValue="value"
                 [searchable]="false"

@@ -79,20 +79,19 @@ export class MonitorComponent implements OnInit, OnDestroy {
       this.isUTC = value;
     });
 
-    this.apiService.retrieveTotalWorkflowsStatusCount().subscribe(data => {
-      this.runningInstancesCount = data.runningCount;
-      this.pendingInstancesCount = data.pendingCount;
-    });
-
+    this.getCounts();
     // Subscribe to WebSocket updates for live count
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
         console.log('Websocket status in Monitor Component');
-        if (data) {
-          this.runningInstancesCount = data.runningCount;
-          this.pendingInstancesCount = data.pendingCount;
-        }
+        this.getCounts();
       });
+  }
+  getCounts(): void {
+    this.apiService.retrieveTotalWorkflowsStatusCount().subscribe(data => {
+      this.runningInstancesCount = data.runningCount;
+      this.pendingInstancesCount = data.pendingCount;
+    });
   }
 
   switchTab(tab: any) {

@@ -63,9 +63,9 @@
 .main-container {
   background: #fff;
   border-radius: 5px;
-  box-shadow: 2px 2px 5px #0003;
+  box-shadow: 2px 2px 2px #0003;
   margin-inline: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 
   .general-setting-label {
     display: flex;
@@ -76,9 +76,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e8e8e8;
-    margin: 16px 15px;
-    padding-block: 16px;
+    // border-bottom: 1px solid #e8e8e8;
+    margin: 10px 15px 0px 15px;
+    padding: 10px 0px;
 
     .edit-icon {
       cursor: pointer;
@@ -86,7 +86,7 @@
 
     p {
       border: 0px 0px 1px 0px;
-      font-weight: 500;
+      font-weight: 550;
       font-size: 20px;
       line-height: 24.2px;
       letter-spacing: 0.3px;
@@ -145,11 +145,12 @@
 }
 
 .templates-container {
-  width: 100%;
-  padding-inline: 15px;
-  height: 70vh;
+  background-color: white;
+  margin: 0px 15px;
+
+  padding-inline: 0px 0px 0px 15px;
   display: flex;
-  // border-radius: 8px;
+  border-radius: 8px;
   box-shadow: 2px 2px 5px #0003;
   // gap: 24px;
 
@@ -460,16 +461,18 @@
 
 .tables-main-container {
   display: flex;
+  border-bottom: 1px solid #e8e8e8;
+  border-top: 1px solid #e8e8e8;
   gap: 40px;
-  margin: 10px;
-  padding: 10px;
+  margin: 0px 10px;
+  padding: 0px 10px;
   .table-container {
     width: 50%;
     table {
       width: 100%;
       .detail-field-key {
         font-size: 14px;
-        font-weight: bolder;
+        font-weight: 500;
         font-style: normal;
         line-height: 17px;
         letter-spacing: 0.3px;
@@ -509,9 +512,9 @@
 .usages {
   display: flex;
   gap: 10px;
-  margin: 10px;
+  margin: 0px 10px;
   padding: 10px;
-  border-top: 1px solid #e0e0e0;
+  // border-top: 1px solid #e0e0e0;
 }
 .left-usage {
   border-right: 1px solid #000000;
@@ -521,7 +524,7 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  font-weight: bolder;
+  font-weight: 550;
   font-style: normal;
   line-height: 17px;
   letter-spacing: 0.3px;

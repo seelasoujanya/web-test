@@ -97,20 +97,22 @@
     </div>
 
     <div class="usages">
-      <div class="left-usage">
-        <p>Usage</p>
-      </div>
-      <div class="right-usage">
-        <ng-container *ngFor="let item of workflows; let last = last">
-          <span
-            (click)="logName(item)"
-            [tooltip]="'View ' + item.name"
-            [tooltipPlacement]="'right'"
-            class="workflowNames">
-            {{ item.name }}<span *ngIf="!last">, </span>
-          </span>
-        </ng-container>
-      </div>
+      <ng-container *ngIf="workflows && workflows.length > 0">
+        <div class="left-usage">
+          <p>Usage</p>
+        </div>
+        <div class="right-usage">
+          <ng-container *ngFor="let item of workflows; let last = last">
+            <span
+              (click)="logName(item)"
+              [tooltip]="'View ' + item.name"
+              [tooltipPlacement]="'right'"
+              class="workflowNames">
+              {{ item.name }}<span *ngIf="!last">, </span>
+            </span>
+          </ng-container>
+        </div>
+      </ng-container>
     </div>
   </div>
 

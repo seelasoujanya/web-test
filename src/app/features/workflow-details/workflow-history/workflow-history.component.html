@@ -36,12 +36,12 @@
     <div *ngIf="noInstancesFound" class="no-instances-message">
       No Instance Found
     </div>
+  </div>
 
-    <div class="page-view" *ngIf="!noInstancesFound">
-      <app-pagination
-        [page]="page"
-        (paginationEvent)="onPage($event)"></app-pagination>
-    </div>
+  <div class="page-view" *ngIf="!noInstancesFound">
+    <app-pagination
+      [page]="page"
+      (paginationEvent)="onPage($event)"></app-pagination>
   </div>
 </div>
 
