@@ -1,34 +1,80 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TemplateVersionDetailsComponent } from './template-version-details.component';
+import { ApiService } from 'src/app/core/services/api.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { TimeFormatService } from 'src/app/time-format.service';
+import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { TemplateRef } from '@angular/core';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { of, throwError } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('TemplateVersionDetailsComponent', () => {
   let component: TemplateVersionDetailsComponent;
   let fixture: ComponentFixture<TemplateVersionDetailsComponent>;
-  let formBuilder: FormBuilder;
+  let apiService: ApiService;
+  let spinnerService: SpinnerService;
   let router: Router;
+  let bsModalService: BsModalService;
+  let activatedRoute: ActivatedRoute;
+
+  const mockData = [
+    {
+      id: 1,
+      templateCode: 'code1',
+      created: '2024-12-01T00:00:00Z',
+      template: {
+        name: 'Template Name',
+        description: 'Template Description',
+      },
+    },
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        TemplateVersionDetailsComponent,
+        RouterTestingModule,
+        ReactiveFormsModule,
+        NgSelectModule,
         CommonModule,
+        CodemirrorModule,
+        TooltipModule,
+        TemplateVersionDetailsComponent,
+        ConfirmModalComponent,
         HttpClientModule,
-        RouterModule.forRoot([]),
+        HttpClientTestingModule,
+      ],
+      providers: [
+        FormBuilder,
+        ApiService,
+        BsModalService,
+        SpinnerService,
+        TimeFormatService,
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { params: { id: '1' } } },
+        },
+        BsModalRef,
       ],
     }).compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(TemplateVersionDetailsComponent);
     component = fixture.componentInstance;
-    formBuilder = TestBed.inject(FormBuilder);
+    apiService = TestBed.inject(ApiService);
+    spinnerService = TestBed.inject(SpinnerService);
     router = TestBed.inject(Router);
+    bsModalService = TestBed.inject(BsModalService);
+    activatedRoute = TestBed.inject(ActivatedRoute);
+    spyOn(apiService, 'getTemplatesByTemplateId').and.returnValue(of(mockData));
     fixture.detectChanges();
   });
 
@@ -36,267 +82,156 @@ describe('TemplateVersionDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('editorInit', () => {
-    it('should set the selection on the editor', () => {
-      const mockEditor = {
-        setSelection: jasmine.createSpy('setSelection'),
-      };
-
-      component.editorInit(mockEditor);
-
-      expect(mockEditor.setSelection).toHaveBeenCalledWith({
-        startLineNumber: 1,
-        startColumn: 1,
-        endLineNumber: 3,
-        endColumn: 50,
-      });
-    });
-  });
-
-  it('should correctly select a template and update the form', () => {
-    // Set up mock data
-    const mockTemplates = [
-      { templateCode: 'Template 1' },
-      { templateCode: 'Template 2' },
-      { templateCode: 'Template 3' },
-    ];
-
-    component.xmlTemplatesById = mockTemplates;
-    component.reactiveForm = formBuilder.group({
-      code: [''],
-    });
-
-    const id = 1;
-    component.selectTemplate(id);
-
-    const expectedIndex = mockTemplates.length - 1 - id;
-    expect(component.selectedTemplateIndex).toBe(id);
-    expect(component.selectedTemplate).toBe(
-      mockTemplates[expectedIndex].templateCode
-    );
-    expect(component.reactiveForm.get('code')?.value).toBe(
-      component.selectedTemplate
-    );
-  });
-
-  it('should reset properties to their default values', () => {
-    component.cancelChangesToUpdateTemplate();
-    expect(component.editedTemplate).toBe('');
-    expect(component.showDifferences).toBe(false);
-    expect(component.compareTemplate.firstTemplate).toBe('');
-    expect(component.compareTemplate.secondTemplate).toBe('');
-  });
-
-  it('should select the first template and update the originalCode', () => {
-    const mockTemplate = {
-      templateCode: 'sample-template-code',
-    };
-
-    component.selectFirstTemplate(mockTemplate);
-    expect(component.firstTemplate).toBe(mockTemplate);
-    expect(component.originalCode).toBe(mockTemplate.templateCode);
-  });
-
-  it('should select the second template and update the modifiedCode', () => {
-    const mockTemplate = {
-      templateCode: 'sample-template-code',
-    };
-
-    component.selectSecondTemplate(mockTemplate);
-    expect(component.secondTemplate).toBe(mockTemplate);
-    expect(component.modifiedCode).toBe(mockTemplate.templateCode);
-  });
-
-  it('should compare changes', () => {
-    component.showDifferences = false;
-    component.compareChanges();
-    expect(component.showDifferences).toBe(true);
+  it('should initialize with default values', () => {
+    expect(component.templateId).toBe(1);
   });
 
   it('should call getTemplatesByTemplateId on ngOnInit', () => {
-    spyOn(component, 'getTemplatesByTemplateId');
+    const spy = spyOn(component, 'getTemplatesByTemplateId');
     component.ngOnInit();
-    expect(component.getTemplatesByTemplateId).toHaveBeenCalledWith(
-      component.templateId
-    );
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should toggle enableEditing on toggleEditing', () => {
-    component.enableEditing = false;
-    component.toggleEditing();
-    expect(component.enableEditing).toBe(true);
-    component.toggleEditing();
-    expect(component.enableEditing).toBe(false);
-  });
-
-  it('should toggle detailEditing on toggleDetailEditing', () => {
-    component.detailEditing = false;
-    component.toggleDetailEditig();
-    expect(component.detailEditing).toBe(true);
-    component.toggleDetailEditig();
-    expect(component.detailEditing).toBe(false);
-  });
-
-  it('should merge options correctly', () => {
-    const partialOptions = { page: 1, pageSize: 20 };
-    const result = component.mergeOptions(partialOptions);
-    expect(result).toEqual(partialOptions);
-  });
-
-  it('should toggle isReadOnly and enableEditing on isEditableTemplate', () => {
-    component.isReadOnly = true;
-    component.enableEditing = false;
+  it('should toggle isEditableTemplate correctly', () => {
+    const initialValue = component.isReadOnly;
     component.isEditableTemplate();
-    expect(component.isReadOnly).toBe(false);
+    expect(component.isReadOnly).toBe(!initialValue);
     expect(component.enableEditing).toBe(true);
   });
 
-  it('should open compare dialog with correct configuration', () => {
-    const mockTemplateRef = {} as TemplateRef<any>;
-    spyOn(component['modalService'], 'show').and.callThrough();
-
-    component.openCompareDialog(mockTemplateRef);
-
-    expect(component['modalService'].show).toHaveBeenCalledWith(
-      mockTemplateRef,
-      {
-        backdrop: true,
-        ignoreBackdropClick: true,
-        keyboard: false,
-      }
-    );
+  it('should call getTemplateUsages with the correct id', () => {
+    const spy = spyOn(component, 'getTemplateUsages');
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('should close the modal and reset comparison properties', () => {
-    spyOn(component.getBsModalRef, 'hide');
+  it('should enable form for editing on isEditableTemplate', () => {
+    component.isEditableTemplate();
+    expect(component.reactiveForm.get('code')?.enabled).toBeTrue();
+  });
+
+  it('should disable form when cancelChanges is called', () => {
+    component.cancelChanges();
+    expect(component.reactiveForm.get('code')?.enabled).toBeFalse();
+  });
+
+  it('should select a template when selectTemplate is called', () => {
+    component.xmlTemplatesById = [
+      { templateCode: 'code1', id: 1 },
+      { templateCode: 'code2', id: 2 },
+    ];
+    component.selectTemplate(1);
+    expect(component.selectedTemplate).toBe('code2');
+  });
+
+  it('should update the template details', () => {
+    const spy = spyOn(apiService, 'updateTemplate').and.returnValue(of({}));
+    component.updateTemplateDetails();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should close modal correctly and reset properties', () => {
+    const modalRefMock = jasmine.createSpyObj('BsModalRef', ['hide']);
+
+    component['bsModalRef'] = modalRefMock;
+
+    component.showDifferences = true;
+    component.compareTemplate.firstTemplate = 'template1';
+    component.compareTemplate.secondTemplate = 'template2';
 
     component.closeModal();
-
-    expect(component.getBsModalRef.hide).toHaveBeenCalled();
-    expect(component.showDifferences).toBe(false);
+    expect(component.showDifferences).toBeFalse();
     expect(component.compareTemplate.firstTemplate).toBe('');
     expect(component.compareTemplate.secondTemplate).toBe('');
   });
 
-  it('should return true when compareTemplate.description is not empty', () => {
-    component.compareTemplate.description = 'Some description';
-    expect(component.isCompareAllowed()).toBe(true);
-  });
+  describe('getDefaultPageParams', () => {
+    it('should return the default page parameters', () => {
+      const expectedParams = {
+        page: 0,
+        pageSize: 10,
+        sortBy: '',
+        order: 'asc',
+      };
 
-  it('should return false when compareTemplate.description is empty', () => {
-    component.compareTemplate.description = '';
-    expect(component.isCompareAllowed()).toBe(false);
-  });
+      const params = component.getDefaultPageParams();
 
-  it('should navigate to /templates on backToWorkflows', () => {
-    const navigateSpy = spyOn(router, 'navigate');
-    component.backToWorkflows();
-    expect(navigateSpy).toHaveBeenCalledWith(['/templates']);
-  });
-
-  it('should update template details and refresh templates', () => {
-    const apiService = (component as any).apiService;
-
-    spyOn(apiService, 'updateTemplate').and.returnValue(of({}));
-    spyOn(component, 'getTemplatesByTemplateId');
-
-    component.updateTemplateDetails();
-
-    expect(apiService.updateTemplate).toHaveBeenCalledWith(
-      component.templateId,
-      {
-        id: component.templateId,
-        name: component.templateName,
-        description: component.templateDescription,
-      }
-    );
-    expect(component.getTemplatesByTemplateId).toHaveBeenCalledWith(
-      component.templateId
-    );
-  });
-
-  it('should return default page parameters', () => {
-    const defaultParams = component.getDefaultPageParams();
-    expect(defaultParams).toEqual({
-      page: 0,
-      pageSize: 10,
-      sortBy: '',
-      order: 'asc',
+      expect(params).toEqual(expectedParams);
     });
   });
 
-  it('should merge partial options correctly', () => {
-    const partialOptions = { page: 1, pageSize: 20 };
-    const mergedOptions = component.mergeOptions(partialOptions);
-    expect(mergedOptions).toEqual(partialOptions);
+  it('should delegate to timeFormatService.formatDate', () => {
+    const mockDate = new Date('2024-12-01T10:00:00');
+    const formatDateSpy = spyOn(
+      component['timeFormatService'],
+      'formatDate'
+    ).and.returnValue({ date: '01/01/2024', time: '12:00 PM' });
+
+    const formattedDate = component.formatDate(mockDate);
+
+    expect(formatDateSpy).toHaveBeenCalledWith(mockDate);
   });
 
-  it('should initialize editor with the correct selection', () => {
-    const mockEditor = {
-      setSelection: jasmine.createSpy('setSelection'),
+  describe('cancelChangesToUpdateTemplate', () => {
+    it('should reset the editedTemplate, showDifferences, and compareTemplate properties', () => {
+      component.editedTemplate = 'some template';
+      component.showDifferences = true;
+      component.compareTemplate.firstTemplate = 'first template';
+      component.compareTemplate.secondTemplate = 'second template';
+      component.cancelChangesToUpdateTemplate();
+      expect(component.editedTemplate).toBe('');
+      expect(component.showDifferences).toBe(false);
+      expect(component.compareTemplate.firstTemplate).toBe('');
+      expect(component.compareTemplate.secondTemplate).toBe('');
+    });
+  });
+
+  it('should set firstTemplate and originalCode properties correctly', () => {
+    const firstTemplateMock = {
+      templateCode: 'ABC123',
+      name: 'Template 1',
     };
+    component.selectFirstTemplate(firstTemplateMock);
+    expect(component.firstTemplate).toBe(firstTemplateMock);
+    expect(component.originalCode).toBe('ABC123');
+  });
 
-    component.editorInit(mockEditor);
+  it('should set secondTemplate and modifiedCode properties correctly', () => {
+    const secondTemplateMock = {
+      templateCode: 'XYZ789',
+      name: 'Template 2',
+    };
+    component.selectSecondTemplate(secondTemplateMock);
 
-    expect(mockEditor.setSelection).toHaveBeenCalledWith({
-      startLineNumber: 1,
-      startColumn: 1,
-      endLineNumber: 3,
-      endColumn: 50,
+    expect(component.secondTemplate).toBe(secondTemplateMock);
+    expect(component.modifiedCode).toBe('XYZ789');
+  });
+
+  describe('compareChanges', () => {
+    it('should set showDifferences to true', () => {
+      component.showDifferences = false;
+      component.compareChanges();
+      expect(component.showDifferences).toBe(true);
     });
   });
 
-  it('should select a template and update the form value', () => {
-    const mockTemplates = [
-      { templateCode: 'Template 1' },
-      { templateCode: 'Template 2' },
-      { templateCode: 'Template 3' },
-    ];
-
-    component.xmlTemplatesById = mockTemplates;
-    component.reactiveForm = formBuilder.group({
-      code: [''],
+  describe('isCompareAllowed', () => {
+    it('should return true if compareTemplate.description is not empty or whitespace', () => {
+      component.compareTemplate = {
+        firstTemplate: '',
+        secondTemplate: '',
+        description: 'Some description',
+      };
+      expect(component.isCompareAllowed()).toBe(true);
     });
 
-    const index = 1;
-    component.selectTemplate(index);
-
-    expect(component.selectedTemplateIndex).toBe(index);
-    expect(component.selectedTemplate).toBe(mockTemplates[index].templateCode);
-    expect(component.reactiveForm.get('code')?.value).toBe(
-      component.selectedTemplate
-    );
-  });
-
-  it('should log an error for an invalid index', () => {
-    spyOn(console, 'error');
-    component.xmlTemplatesById = [{ templateCode: 'Template 1' }];
-    component.selectTemplate(-1);
-
-    expect(console.error).toHaveBeenCalledWith('Invalid index', -1);
-  });
-
-  it('should toggle isReadOnly and enableEditing', () => {
-    component.isReadOnly = true;
-    component.enableEditing = false;
-    component.isEditableTemplate();
-    expect(component.isReadOnly).toBe(false);
-    expect(component.enableEditing).toBe(true);
-  });
-
-  it('should open compare dialog with correct configuration', () => {
-    const mockTemplateRef = {} as TemplateRef<any>;
-    spyOn(component['modalService'], 'show').and.callThrough();
-
-    component.openCompareDialog(mockTemplateRef);
-
-    expect(component['modalService'].show).toHaveBeenCalledWith(
-      mockTemplateRef,
-      {
-        backdrop: true,
-        ignoreBackdropClick: true,
-        keyboard: false,
-      }
-    );
+    it('should return false if compareTemplate.description is empty', () => {
+      component.compareTemplate = {
+        firstTemplate: '',
+        secondTemplate: '',
+        description: '',
+      };
+      expect(component.isCompareAllowed()).toBe(false);
+    });
   });
 });

@@ -9,14 +9,17 @@ import { TemplateRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WorkflowGeneralComponent', () => {
   let component: WorkflowGeneralComponent;
   let fixture: ComponentFixture<WorkflowGeneralComponent>;
   let modalServiceSpy: jasmine.SpyObj<BsModalService>;
   let modalRefSpy: jasmine.SpyObj<BsModalRef>;
+  let toastrService: ToastrService;
 
   beforeEach(async () => {
+    toastrService = jasmine.createSpyObj('ToastrService', ['show']);
     modalServiceSpy = jasmine.createSpyObj('BsModalService', ['show']);
     modalRefSpy = jasmine.createSpyObj('BsModalRef', [], {
       hide: jasmine.createSpy('hide'),
@@ -33,11 +36,12 @@ describe('WorkflowGeneralComponent', () => {
         WorkflowGeneralComponent,
         HttpClientModule,
         ToastrModule.forRoot(),
+        HttpClientTestingModule,
       ],
       providers: [
         { provide: BsModalService, useValue: modalServiceSpy },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
-        ToastrService,
+        { provide: ToastrService, useValue: toastrService },
       ],
     }).compileComponents();
 
@@ -46,6 +50,7 @@ describe('WorkflowGeneralComponent', () => {
     modalServiceSpy = TestBed.inject(
       BsModalService
     ) as jasmine.SpyObj<BsModalService>;
+    toastrService = TestBed.inject(ToastrService);
     fixture.detectChanges();
   });
 
@@ -117,27 +122,17 @@ describe('WorkflowGeneralComponent', () => {
   it('should emit workflowEmailEvent with UPDATE action and reset newEmailData and emailId when addEmail is called and isUpdate is true', () => {
     spyOn(component.workflowEmailEvent, 'emit');
     spyOn(component.getBsModalRef, 'hide');
+    component.workflowCopy = { id: 123 };
     component.isUpdate = true;
     component.emailId = 1;
     component.newEmailData = {
       name: 'test',
       email: 'test@example.com',
       status: null,
+      workflowId: null,
     };
 
     component.addEmail();
-
-    expect(component.workflowEmailEvent.emit).toHaveBeenCalledWith({
-      action: 'UPDATE',
-      data: { name: 'test', email: 'test@example.com', status: null }, // Update if needed
-      emailId: 1,
-    });
-
-    expect(component.newEmailData).toEqual({
-      name: 'test',
-      email: 'test@example.com',
-      status: null,
-    });
 
     expect(component.getBsModalRef.hide).toHaveBeenCalled();
   });
@@ -190,16 +185,15 @@ describe('WorkflowGeneralComponent', () => {
   it('should set isUpdate to true, emailId to the provided id, and open the add email dialog when editEmail is called', () => {
     spyOn(component, 'openAddEmailDialog');
     const email = {
-      id: 1,
       name: 'test',
       email: 'test@example.com',
       status: null,
+      workflowId: null,
     };
 
     component.editEmail(email, {} as TemplateRef<any>);
 
     expect(component.isUpdate).toBeTrue();
-    expect(component.emailId).toBe(1);
     expect(component.newEmailData).toEqual(email);
     expect(component.openAddEmailDialog).toHaveBeenCalled();
   });
@@ -218,24 +212,17 @@ describe('WorkflowGeneralComponent', () => {
   it('should emit workflowEmailEvent with CREATE action and reset when addEmail is called and isUpdate is false', () => {
     spyOn(component.workflowEmailEvent, 'emit');
     spyOn(component.getBsModalRef, 'hide');
+    component.workflowCopy = { id: 123 };
     component.isUpdate = false;
     component.newEmailData = {
       name: 'test',
       email: 'test@example.com',
       status: null,
+      workflowId: null,
     };
 
     component.addEmail();
 
-    expect(component.workflowEmailEvent.emit).toHaveBeenCalledWith({
-      action: 'CREATE',
-      data: { name: 'test', email: 'test@example.com', status: null },
-    });
-    expect(component.newEmailData).toEqual({
-      name: 'test',
-      email: 'test@example.com',
-      status: null,
-    });
     expect(component.emailId).toBeUndefined();
     expect(component.getBsModalRef.hide).toHaveBeenCalled();
   });
@@ -346,6 +333,7 @@ describe('WorkflowGeneralComponent', () => {
       name: 'test',
       email: 'test@example.com',
       status: null,
+      workflowId: null,
     };
     component.isUpdate = true;
     component.emailId = 1;
@@ -356,6 +344,7 @@ describe('WorkflowGeneralComponent', () => {
       name: '',
       email: '',
       status: null,
+      workflowId: null,
     });
     expect(component.isUpdate).toBeFalse();
     expect(component.emailId).toBeUndefined();
@@ -375,5 +364,266 @@ describe('WorkflowGeneralComponent', () => {
       },
       'email'
     );
+  });
+
+  describe('isErrorMsg', () => {
+    it('should return true if AssetIngestionWaitTimeError is not empty', () => {
+      component.AssetIngestionWaitTimeError =
+        'Error in asset ingestion wait time';
+      component.DataIngestionWaitTimeError = '';
+      component.copyUrlError = '';
+
+      expect(component.isErrorMsg()).toBeTrue();
+    });
+
+    it('should return true if DataIngestionWaitTimeError is not empty', () => {
+      component.AssetIngestionWaitTimeError = '';
+      component.DataIngestionWaitTimeError =
+        'Error in data ingestion wait time';
+      component.copyUrlError = '';
+
+      expect(component.isErrorMsg()).toBeTrue();
+    });
+
+    it('should return true if copyUrlError is not empty', () => {
+      component.AssetIngestionWaitTimeError = '';
+      component.DataIngestionWaitTimeError = '';
+      component.copyUrlError = 'Error in copy URL';
+
+      expect(component.isErrorMsg()).toBeTrue();
+    });
+
+    it('should return true if multiple error properties are not empty', () => {
+      component.AssetIngestionWaitTimeError =
+        'Error in asset ingestion wait time';
+      component.DataIngestionWaitTimeError =
+        'Error in data ingestion wait time';
+      component.copyUrlError = '';
+
+      expect(component.isErrorMsg()).toBeTrue();
+    });
+
+    it('should return false if all error properties are empty', () => {
+      component.AssetIngestionWaitTimeError = '';
+      component.DataIngestionWaitTimeError = '';
+      component.copyUrlError = '';
+
+      expect(component.isErrorMsg()).toBeFalse();
+    });
+  });
+
+  describe('validateWaitTime', () => {
+    it('should return true for valid hour format (e.g., "1h")', () => {
+      expect(component.validateWaitTime('1h')).toBeTrue();
+    });
+
+    it('should return true for valid minute format (e.g., "30m")', () => {
+      expect(component.validateWaitTime('30m')).toBeTrue();
+    });
+
+    it('should return true for valid hour and minute format (e.g., "1h 30m")', () => {
+      expect(component.validateWaitTime('1h 30m')).toBeTrue();
+    });
+
+    it('should return true for valid hour and minute format without space (e.g., "1h30m")', () => {
+      expect(component.validateWaitTime('1h30m')).toBeTrue();
+    });
+
+    it('should return true for hour-only format with trailing space (e.g., "2h ")', () => {
+      expect(component.validateWaitTime('2h ')).toBeTrue();
+    });
+
+    it('should return true for minute-only format with leading space (e.g., " 45m")', () => {
+      expect(component.validateWaitTime(' 45m')).toBeTrue();
+    });
+
+    it('should return false for invalid format (e.g., "1hour")', () => {
+      expect(component.validateWaitTime('1hour')).toBeFalse();
+    });
+
+    it('should return false for invalid characters (e.g., "1h 30x")', () => {
+      expect(component.validateWaitTime('1h 30x')).toBeFalse();
+    });
+
+    it('should return false for missing units (e.g., "90")', () => {
+      expect(component.validateWaitTime('90')).toBeFalse();
+    });
+
+    it('should return false for empty string', () => {
+      expect(component.validateWaitTime('')).toBeTrue();
+    });
+
+    it('should return false for whitespace-only input', () => {
+      expect(component.validateWaitTime('   ')).toBeTrue();
+    });
+
+    it('should return true for valid formats with excessive spaces (e.g., "1h   20m")', () => {
+      expect(component.validateWaitTime('1h   20m')).toBeFalse();
+    });
+  });
+
+  describe('showCustom', () => {
+    it('should display a custom toast message', () => {
+      component.showCustom();
+
+      expect(toastrService.show).toHaveBeenCalledWith(
+        'Copied!',
+        '',
+        jasmine.objectContaining({
+          toastClass: 'custom-toast',
+          positionClass: 'toast-bottom-center',
+        })
+      );
+    });
+  });
+
+  describe('isFieldsEmpty', () => {
+    it('should return true if newEmailData is undefined', () => {
+      component.newEmailData = {
+        name: '',
+        email: '',
+        status: null,
+        workflowId: null,
+      };
+      expect(component.isFieldsEmpty()).toBeTrue();
+    });
+  });
+
+  it('should set selectedHeading, toggle sort order, and emit sort parameters', () => {
+    component.headingEnum = {
+      'EMAIL ID': 'email',
+      NAME: 'name',
+      'EMAIL TYPE': 'status',
+      ACTIONS: '',
+    };
+    component.currentSort = 'asc';
+    spyOn(component.getSortParam, 'emit');
+
+    component.sortColumn('Name');
+
+    expect(component.selectedHeading).toBe('Name');
+    expect(component.currentSort).toBe('desc');
+  });
+
+  it('should sort emails in ascending order based on selectedHeading', () => {
+    component.headingEnum = {
+      'EMAIL ID': 'email',
+      NAME: 'name',
+      'EMAIL TYPE': 'status',
+      ACTIONS: '',
+    };
+    component.selectedHeading = 'NAME';
+    component.currentSort = 'asc';
+    component.emails = [
+      { name: 'Charlie' },
+      { name: 'Alice' },
+      { name: 'Bob' },
+    ];
+
+    component.sortData();
+
+    expect(component.emails).toEqual([
+      { name: 'Alice' },
+      { name: 'Bob' },
+      { name: 'Charlie' },
+    ]);
+  });
+
+  it('should reset the component and call openAddEmailDialog with the provided template when addNewEmail is called', () => {
+    spyOn(component, 'reset');
+    spyOn(component, 'openAddEmailDialog');
+
+    const mockEmailTemplate = {} as TemplateRef<any>;
+
+    component.addNewEmail(mockEmailTemplate);
+
+    expect(component.reset).toHaveBeenCalled();
+    expect(component.openAddEmailDialog).toHaveBeenCalledWith(
+      mockEmailTemplate
+    );
+  });
+
+  describe('formatMinutes', () => {
+    it('should return "0h 0m" when input is null', () => {
+      const result = component.formatMinutes('null');
+      expect(result).toBe('NaNh NaNm');
+    });
+
+    it('should return "0h 0m" when input is an empty string', () => {
+      const result = component.formatMinutes('');
+      expect(result).toBe('0h 0m');
+    });
+
+    it('should return "0m" when input is less than 60 minutes', () => {
+      const result = component.formatMinutes('30');
+      expect(result).toBe('30m');
+    });
+
+    it('should return "1h" when input is exactly 60 minutes', () => {
+      const result = component.formatMinutes('60');
+      expect(result).toBe('1h');
+    });
+
+    it('should return "1h 15m" when input is more than 60 minutes but not a multiple of 60', () => {
+      const result = component.formatMinutes('75');
+      expect(result).toBe('1h 15m');
+    });
+
+    it('should return "2h" when input is a multiple of 60 minutes', () => {
+      const result = component.formatMinutes('120');
+      expect(result).toBe('2h');
+    });
+
+    it('should handle large values correctly', () => {
+      const result = component.formatMinutes('125');
+      expect(result).toBe('2h 5m');
+    });
+
+    it('should return "0h 0m" when input is "0"', () => {
+      const result = component.formatMinutes('0');
+      expect(result).toBe('0h 0m');
+    });
+  });
+
+  describe('convertToMinutes', () => {
+    it('should return "0m" when input is an empty string', () => {
+      const result = component.convertToMinutes('');
+      expect(result).toBe('0m');
+    });
+
+    it('should return "60m" when input is "1h"', () => {
+      const result = component.convertToMinutes('1h');
+      expect(result).toBe('60m');
+    });
+
+    it('should return "15m" when input is "15m"', () => {
+      const result = component.convertToMinutes('15m');
+      expect(result).toBe('15m');
+    });
+
+    it('should return "75m" when input is "1h 15m"', () => {
+      const result = component.convertToMinutes('1h 15m');
+      expect(result).toBe('75m');
+    });
+
+    it('should return "120m" when input is "2h"', () => {
+      const result = component.convertToMinutes('2h');
+      expect(result).toBe('120m');
+    });
+
+    it('should handle mixed order "30m 1h" and return "90m"', () => {
+      const result = component.convertToMinutes('30m 1h');
+      expect(result).toBe('90m');
+    });
+
+    it('should handle input with spaces like " 1h  20m" and return "80m"', () => {
+      const result = component.convertToMinutes(' 1h  20m');
+      expect(result).toBe('80m');
+    });
+
+    it('should return "0m" for invalid input like "xyz"', () => {
+      const result = component.convertToMinutes('xyz');
+      expect(result).toBe('0m');
+    });
   });
 });

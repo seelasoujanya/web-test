@@ -89,7 +89,7 @@ export class XmlStepSettingsComponent {
   saveTemplateChanges() {
     const modalData = {
       title: 'Confirm Changes',
-      description: `Are you sure you want to Save changes  for XML Settings?`,
+      description: `Are you sure you want to Save changes for XML Settings?`,
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
     };

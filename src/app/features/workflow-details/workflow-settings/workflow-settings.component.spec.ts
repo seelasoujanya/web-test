@@ -102,13 +102,98 @@ describe('WorkflowSettingsComponent', () => {
     expect(component.workflowSteps.length).toBe(0);
   });
 
-  it('should return correct default page parameters', () => {
-    const expectedParams = {
-      page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
+  describe('onHeadingClick', () => {
+    it('should update selectedHeading when a heading is clicked', () => {
+      component.headings = ['Step 1', 'Step 2'];
+      component.selectedHeading = 'Step 1';
+
+      component.onHeadingClick('Step 2');
+
+      expect(component.selectedHeading).toBe('Step 2');
+    });
+  });
+
+  it('should not attempt to fetch workflow steps when workflowId is null or undefined', () => {
+    component.workflowId = null;
+    apiService.getWorkflowSteps.calls.reset();
+
+    component.ngOnInit();
+
+    expect(apiService.getWorkflowSteps).not.toHaveBeenCalled();
+  });
+
+  it('should not update workflow steps if the step does not exist', () => {
+    component.workflowSteps = [
+      {
+        id: 1,
+        name: 'Step 1',
+        workflowId: 0,
+        executionOrder: 0,
+        type: 'DDEX',
+        created: '',
+        modified: '',
+        workflowStepConfigurations: [],
+      },
+    ];
+
+    const updatedStep: IWorkflowStep = {
+      id: 2,
+      workflowId: 100,
+      executionOrder: 1,
+      name: 'Updated Step 2',
+      type: 'DDEX',
+      created: '',
+      modified: '',
+      workflowStepConfigurations: [],
     };
-    expect(component.getDefaultPageParams()).toEqual(expectedParams);
+
+    component.updateWorkflowStep(updatedStep);
+
+    expect(component.workflowSteps.length).toBe(1);
+  });
+
+  it('should return default page parameters with correct values', () => {
+    const defaultParams = component.getDefaultPageParams();
+
+    expect(defaultParams.page).toBe(0);
+    expect(defaultParams.pazeSize).toBe(10);
+    expect(defaultParams.sortBy).toBe('');
+    expect(defaultParams.order).toBe('asc');
+  });
+
+  it('should not change selectedHeading if there are no headings', () => {
+    component.headings = [];
+    component.selectedHeading = '';
+
+    component.onHeadingClick('Step 1');
+
+    expect(component.selectedHeading).toBe('Step 1');
+  });
+
+  it('should set headings and selectedHeading when no steps are returned', () => {
+    component.workflowId = '123';
+    apiService.getWorkflowSteps.and.returnValue(of([]));
+
+    component.ngOnInit();
+
+    expect(component.headings.length).toBe(0);
+    expect(component.selectedHeading).toBe('');
+    expect(component.showConfigs).toBe(true);
+  });
+
+  it('should set showConfigs to true when there are no headings', () => {
+    component.headings = [];
+    component.selectedHeading = '';
+
+    component.ngOnInit();
+    expect(component.selectedHeading).toBe('');
+  });
+
+  it('should set showConfigs to false when there are headings', () => {
+    component.headings = ['Step 1'];
+    component.selectedHeading = 'Step 1';
+
+    component.ngOnInit();
+    expect(component.selectedHeading).toBe('Step 1');
   });
 });

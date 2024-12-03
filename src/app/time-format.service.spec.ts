@@ -1,6 +1,7 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { TimeFormatService } from './time-format.service';
+import * as moment from 'moment';
 
 describe('TimeFormatService', () => {
   let service: TimeFormatService;
@@ -46,12 +47,22 @@ describe('TimeFormatService', () => {
   }));
 
   it('should return correct time format with getCurrentTimeFormat', () => {
-    expect(service.getCurrentTimeFormat()).toBe('Local');
+    const mockLocalTime = 'Nov 28, 2024 22:41:31';
+    const mockUTCTime = 'Nov 28, 2024 17:11:31';
+
+    spyOn(moment, 'tz').and.returnValue(
+      moment(mockLocalTime, 'MMM DD, YYYY HH:mm:ss')
+    );
+    spyOn(moment, 'utc').and.returnValue(
+      moment(mockUTCTime, 'MMM DD, YYYY HH:mm:ss')
+    );
+
+    expect(service.getCurrentTime()).toBe(mockLocalTime);
 
     service.toggleTimeFormat();
-    expect(service.getCurrentTimeFormat()).toBe('UTC');
+    expect(service.getCurrentTime()).toBe(mockUTCTime);
 
     service.toggleTimeFormat();
-    expect(service.getCurrentTimeFormat()).toBe('Local');
+    expect(service.getCurrentTime()).toBe(mockLocalTime);
   });
 });

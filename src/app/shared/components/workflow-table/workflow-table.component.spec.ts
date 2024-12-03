@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkflowTableComponent } from './workflow-table.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Workflow } from 'src/app/core/models/workflow.model';
+import { SystemProperty, Workflow } from 'src/app/core/models/workflow.model';
 import { of, throwError } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 
@@ -17,7 +17,12 @@ describe('WorkflowTableComponent', () => {
       'getArtifacts',
       'getLogsForInstance',
       'downloadArtifact',
+      'getPausedProperty',
+      'updateWorkflow',
     ]);
+
+    apiServiceSpy.getPausedProperty.and.returnValue(of(true));
+    apiServiceSpy.updateWorkflow.and.returnValue(of(true));
 
     await TestBed.configureTestingModule({
       imports: [WorkflowTableComponent, CommonModule, HttpClientModule],
@@ -147,5 +152,62 @@ describe('WorkflowTableComponent', () => {
       'Error downloading file:',
       error
     );
+  });
+
+  it('should toggle paused state and update workflow when togglePaused is called', () => {
+    component.isPauseProperty = false;
+    const workflow: Workflow = {
+      id: 1,
+      name: 'Test Workflow',
+      paused: false,
+    } as Workflow;
+    const event = new Event('click');
+    spyOn(component.reload, 'emit');
+
+    component.togglePaused(event, workflow);
+
+    expect(workflow.paused).toBe(true);
+    expect(apiService.updateWorkflow).toHaveBeenCalledWith(workflow.id, {
+      paused: true,
+    });
+    expect(component.reload.emit).toHaveBeenCalledWith(workflow);
+  });
+
+  it('should update pausedProperty and isPauseProperty when getPausedProperty is called', () => {
+    component.getPausedProperty('paused');
+
+    expect(apiService.getPausedProperty).toHaveBeenCalledWith('paused');
+  });
+
+  it('should return true from isToggle when isPauseProperty is true', () => {
+    component.isPauseProperty = true;
+    const result = component.isToggle(false);
+    expect(result).toBeTrue();
+  });
+
+  it('should return isPaused value from isToggle when isPauseProperty is false', () => {
+    component.isPauseProperty = false;
+    const result = component.isToggle(true);
+    expect(result).toBeTrue();
+  });
+
+  it('should return correct display name for delivery types', () => {
+    expect(component.getDisplayName('DATA_ONLY')).toBe('Data Only');
+    expect(component.getDisplayName('PACKSHOT')).toBe('Packshot');
+    expect(component.getDisplayName('FULL_DELIVERY')).toBe('Full Delivery');
+    expect(component.getDisplayName('SCREENGRAB')).toBe('Screengrab');
+    expect(component.getDisplayName('COVER_ART')).toBe('Cover Art');
+    expect(component.getDisplayName('INSERT')).toBe('Insert');
+    expect(component.getDisplayName('TAKE_DOWN')).toBe('Takedown');
+    expect(component.getDisplayName('UNKNOWN')).toBe('None'); // Default case
+  });
+
+  it('should convert milliseconds into readable time format', () => {
+    expect(component.convertMilliSeconds(3600000)).toBe('1h');
+    expect(component.convertMilliSeconds(60000)).toBe('1m');
+    expect(component.convertMilliSeconds(1000)).toBe('1s 0ms');
+    expect(component.convertMilliSeconds(10)).toBe('1ms');
+    expect(component.convertMilliSeconds(0)).toBe('0ms');
+    expect(component.convertMilliSeconds(null)).toBe('');
   });
 });

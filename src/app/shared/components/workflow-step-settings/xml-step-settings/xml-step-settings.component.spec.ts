@@ -8,12 +8,14 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { IPage } from 'src/app/core/models/page.model';
 import { ConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 describe('XmlStepSettingsComponent', () => {
   let component: XmlStepSettingsComponent;
   let fixture: ComponentFixture<XmlStepSettingsComponent>;
   let apiService: jasmine.SpyObj<ApiService>;
   let spinnerService: jasmine.SpyObj<SpinnerService>;
+  let router: Router;
 
   beforeEach(async () => {
     const apiServiceSpy = jasmine.createSpyObj('ApiService', [
@@ -26,9 +28,11 @@ describe('XmlStepSettingsComponent', () => {
       'show',
       'hide',
     ]);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     await TestBed.configureTestingModule({
       imports: [XmlStepSettingsComponent, HttpClientModule],
       providers: [
+        { provide: Router, useValue: routerSpy },
         { provide: ApiService, useValue: apiServiceSpy },
         { provide: SpinnerService, useValue: spinnerServiceSpy },
       ],
@@ -40,6 +44,7 @@ describe('XmlStepSettingsComponent', () => {
     spinnerService = TestBed.inject(
       SpinnerService
     ) as jasmine.SpyObj<SpinnerService>;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -198,5 +203,39 @@ describe('XmlStepSettingsComponent', () => {
     component.cancelChanges();
     expect(component.enableEditing).toBeFalse();
     expect(component.selectedTemplateId).toEqual(1);
+  });
+
+  it('should call openConfirmModal when saveTemplateChanges is called', () => {
+    const modalData = {
+      title: 'Confirm Changes',
+      description: 'Are you sure you want to Save changes for XML Settings?',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+
+    spyOn(component, 'openConfirmModal');
+
+    component.saveTemplateChanges();
+
+    expect(component.openConfirmModal).toHaveBeenCalledWith(modalData);
+  });
+
+  it('should toggle enableEditing from false to true and back to false', () => {
+    component.enableEditing = false;
+
+    component.toggleEditing();
+    expect(component.enableEditing).toBeTrue();
+
+    component.toggleEditing();
+    expect(component.enableEditing).toBeFalse();
+  });
+
+  it('should navigate to template detail page when viewTemplate is called', () => {
+    const routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    component.selectedTemplateId = 123;
+
+    component.viewTemplate();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['templates', 123]);
   });
 });

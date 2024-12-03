@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TemplateRef } from '@angular/core';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 
 describe('XmlTemplatesComponent', () => {
   let component: XmlTemplatesComponent;
@@ -15,8 +16,12 @@ describe('XmlTemplatesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [XmlTemplatesComponent, HttpClientModule],
-      providers: [],
+      imports: [
+        XmlTemplatesComponent,
+        HttpClientModule,
+        ToastrModule.forRoot(),
+      ],
+      providers: [ToastrService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(XmlTemplatesComponent);
