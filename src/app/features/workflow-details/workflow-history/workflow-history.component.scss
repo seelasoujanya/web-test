@@ -50,6 +50,7 @@
 ::ng-deep .modal-dialog {
   max-width: 800px;
   .modal-content {
+    height: 555px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -82,6 +83,7 @@
             padding: 10px 10px 10px 40px;
             font-size: 14px;
             line-height: 20px;
+            cursor: pointer;
           }
           .checkmark-icon {
             position: absolute;
@@ -92,7 +94,7 @@
         .buttons {
           padding: 10px;
           gap: 12px;
-          margin-top: 54px;
+          margin-top: 40px;
           margin-bottom: 20px;
           display: flex;
           align-items: center;
@@ -170,6 +172,7 @@
   width: 100%;
   border: none;
   accent-color: #ca0a3d;
+  cursor: pointer;
 }
 
 .duration-input::-webkit-slider-thumb {
@@ -186,6 +189,7 @@
 
 ::ng-deep .ng-select-container .ng-value-container .ng-placeholder {
   position: unset !important;
+  cursor: pointer;
 }
 
 ::ng-deep .ng-clear-wrapper[title='Clear all'] {
@@ -194,6 +198,7 @@
 
 ::ng-deep .ng-value.ng-star-inserted {
   background-color: transparent !important;
+  cursor: pointer;
 }
 
 .delete-icon {
