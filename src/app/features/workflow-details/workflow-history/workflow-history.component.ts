@@ -144,7 +144,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   getSelectedFilterLabel(): string {
     switch (this.selectedFilter) {
       case 'startDate':
-        return 'Start Date';
+        return 'Created Date';
       case 'completedDate':
         return 'Completed Date';
       case 'duration':
@@ -182,7 +182,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     if (this.filter.startDate && this.filter.endDate) {
       appliedFilters.push({
         key: 'startDate',
-        label: 'Start Date',
+        label: 'Created Date',
         value: [
           `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
         ],
@@ -190,7 +190,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     } else if (this.filter.startDate) {
       appliedFilters.push({
         key: 'startDate',
-        label: 'Start Date',
+        label: 'Created Date',
         value: [formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')],
       });
     }
