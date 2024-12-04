@@ -1,1 +1,80 @@
-<p>xml-templates works!</p>
+<div class="main-container">
+  <div class="label">
+    <div class="para">
+      <p id="track-assets-copy">Templates</p>
+    </div>
+    <div>
+      <button
+        class="btn btn--red"
+        type="button"
+        (click)="openCreateTemplateDialog(createTemplateForm)">
+        <img src="/assets/icons/create-logo.svg" alt="create Icon" />
+        create template
+      </button>
+    </div>
+  </div>
+  <div class="templates-table">
+    <app-common-table
+      [headings]="headings"
+      [values]="getTableValues()"
+      (template)="navigateToTemplateDetails($event)"
+      [isToggle]="false">
+    </app-common-table>
+  </div>
+
+  <div class="page-view">
+    <app-pagination
+      [page]="page"
+      (paginationEvent)="onPage($event)"></app-pagination>
+  </div>
+
+  <ng-template #createTemplateForm class="modal-content">
+    <div class="header">
+      <p class="header_title">Create Template</p>
+      <button type="button" class="header_close-btn" (click)="closeModal()">
+        <img src="assets/icons/close-circle.svg" alt="" />
+      </button>
+    </div>
+    <div class="form-details">
+      <div class="workflow-field">
+        <span>Name</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Name"
+          class="input-field"
+          [(ngModel)]="newTemplateData.name" />
+      </div>
+      <div class="workflow-field">
+        <span>Description</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Description"
+          class="input-field"
+          [(ngModel)]="newTemplateData.description" />
+      </div>
+      <div class="workflow-field">
+        <span>Template</span>
+        <!-- <textarea
+          name="templateCode"
+          id="templateCode"
+          [(ngModel)]="newTemplateData.templateCode"
+          rows="20"></textarea> -->
+
+        <!-- To change this height style.scss .CodeMirror -->
+        <div class="templateCode">
+          <ngx-codemirror
+            [options]="editorOptions"
+            name="templateCode"
+            id="templateCode"
+            [(ngModel)]="newTemplateData.templateCode"></ngx-codemirror>
+        </div>
+      </div>
+    </div>
+    <div class="buttons">
+      <button class="cancel-btn" (click)="cancelChanges()">CANCEL</button>
+      <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
+    </div>
+  </ng-template>
+</div>

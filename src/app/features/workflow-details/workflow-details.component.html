@@ -10,94 +10,71 @@
           class="navigate-back-icon"
           alt="export Icon" />
       </button>
-      <p>{{ workflowName }}</p>
-      <!-- <img
-        src="assets/icons/bookmark-fill-logo.svg"
-        alt="Bookmark Icon"
-        class="bookmark-fill-icon" /> -->
-    </div>
-
-    <div class="label-right">
-      <div class="workflow-header">
-        <div class="workflow-header-right">
-          <div class="searchBar">
-            <input
-              type="text"
-              class="searchField"
-              name="searchInput"
-              placeholder="Search for Workflow Instance"
-              [(ngModel)]="identifier"
-              required />
-          </div>
-
-          <div class="search-button">
-            <button
-              class="searchButton"
-              type="button"
-              (click)="searchWorkflowInstance()">
-              <img
-                src="/assets/icons/search.svg"
-                class="search-icon"
-                alt="Search Icon" />
-              Search
-            </button>
-          </div>
-        </div>
+      <div>
+        {{ workflow?.name }}
       </div>
-    </div>
-  </div>
-
-  <div class="details-section">
-    <div class="details-info">
-      <p class="info-heading">Triggered Times</p>
-      <p class="info-data">{{ totalInstancesCount }}</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Failed Instances</p>
-      <p class="info-data">{{ failedInstancesCount }}</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Avg.Executed Time</p>
-      <p class="info-data">19 m</p>
-    </div>
-    <div class="details-info">
-      <p class="info-heading">Delivered Items</p>
-      <p class="info-data">{{ deliveredInstancesCount }}</p>
-    </div>
-  </div>
-
-  <div class="details-filter">
-    <div class="left-filter">
-      <button class="instances-btn" type="button">Instances</button>
-      <!-- <button class="error-instances-btn" type="button">Error Instances</button> -->
-    </div>
-    <div class="right-filter">
-      <!-- <img src="/assets/icons/standard-logo.svg" class="standard-logo" alt="create Icon" /> -->
-      <!-- <button class="export-btn" type="button">
+      <ng-container *ngIf="workflow?.enabled; else inactiveLogo">
         <img
-          src="/assets/icons/export-logo.svg"
-          class="export-icon"
-          alt="export Icon" />
-        Export
-      </button> -->
+          src="assets/icons/active-logo.svg"
+          alt="Active Icon"
+          class="status-icon" />
+      </ng-container>
+      <ng-template #inactiveLogo>
+        <img
+          src="assets/icons/inactive-logo.svg"
+          alt="Inactive Icon"
+          class="status-icon" />
+      </ng-template>
     </div>
   </div>
-</div>
-<div class="workflows-instance-table">
-  <app-workflow-table
-    *ngIf="!noInstancesFound"
-    [workflows]="workflowsInstances"
-    [headings]="instanceHeadings"
-    [isWorkflow]="false"
-    (getSortParam)="sortColumn($event)"
-    (workflowDetailEvent)="viewInstanceDetails($event)"></app-workflow-table>
-  <div *ngIf="noInstancesFound" class="no-instances-message">
-    No Instance Found
-  </div>
-</div>
 
-<div class="page-view" *ngIf="!noInstancesFound">
-  <app-pagination
-    [page]="page"
-    (paginationEvent)="onPage($event)"></app-pagination>
+  <div class="navigate-btn-container">
+    <button
+      class="navigate-btn"
+      (click)="selectTab('general')"
+      [class.active-btn]="selectedTab === 'general'">
+      General
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('workflow')"
+      [class.active-btn]="selectedTab === 'workflow'">
+      Workflow Configurations
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('history')"
+      [class.active-btn]="selectedTab === 'history'">
+      Deliveries
+    </button>
+    <button
+      class="navigate-btn"
+      (click)="selectTab('statistics')"
+      [class.active-btn]="selectedTab === 'statistics'">
+      Statistics
+    </button>
+  </div>
+
+  <div class="detail-views">
+    <ng-container *ngIf="selectedTab === 'general'">
+      <app-workflow-general
+        [workflow]="workflow"
+        [workflowCopy]="workflowCopy"
+        [emails]="emails"
+        (workflowEmailEvent)="workflowEmailSettings($event)"
+        (updateWorkflowEvent)="updateWorkflow($event)"></app-workflow-general>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTab === 'history'">
+      <app-workflow-history> </app-workflow-history>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTab === 'statistics'">
+      <app-workflow-statistics-view> </app-workflow-statistics-view>
+    </ng-container>
+
+    <ng-container *ngIf="selectedTab === 'workflow'">
+      <app-workflow-settings [workflowId]="workflowId"> </app-workflow-settings>
+    </ng-container>
+  </div>
 </div>

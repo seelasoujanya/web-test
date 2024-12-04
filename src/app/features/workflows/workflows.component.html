@@ -1,62 +1,246 @@
 <div class="workflow-container">
   <div class="workflows-section">
-    <!-- <div class="workflow-header">
-            <div class="workflows-label">
-                <p id="track-assets-copy">Workflows</p>
-            </div>
-            <div class="workflow-header-right">
-                <div class="searchBar">
-                    <input type="text" class="searchField" name="searchInput" placeholder="Search in Workflow" required />
-                </div>
-                <div class="search-button">
-                    <button class="searchButton" type="button">
-            <img
-              src="/assets/icons/search.svg"
-              class="search-icon"
-              alt="Search Icon" />
-            Search
+    <div class="heading-section">
+      <div class="workflow-header">
+        <div class="workflows-label">
+          <button
+            class="btn btn--red"
+            type="button"
+            (click)="filterDeliveries(filterWorkflowsForm)">
+            <img src="assets/icons/filter.svg" alt="" />
+            <span>FILTERS</span>
           </button>
-                </div>
-                <div class="createWorkflow-button">
-                    <button class="createWorkflowButton" type="button">
-            <img
-              src="/assets/icons/create-logo.svg"
-              class="create-icon"
-              alt="create Icon" />
-            Create Workflow
-          </button>
-                </div>
-            </div>
+          <div *ngIf="filtersApplied" class="applied-filters">
+            <span
+              *ngFor="let filter of getAppliedFilters()"
+              class="filter-badge">
+              <span class="filter-label">{{ filter.label }}</span
+              ><span class="filter-value">: {{ filter.value }}</span>
+              <button
+                type="button"
+                class="filter-remove-btn"
+                (click)="clearFilter(filter.key)">
+                <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="workflow-header-right">
+          <div>
+            <input
+              type="text"
+              class="search-field"
+              name="searchInput"
+              placeholder="Search in Workflow"
+              [(ngModel)]="workflowName"
+              required />
+            <button
+              type="button"
+              *ngIf="workflowName"
+              class="clear-icon"
+              (click)="clearInput()">
+              <img src="assets/icons/close-circle.svg" alt="" />
+            </button>
+          </div>
+          <div class="search-button">
+            <button
+              class="btn btn--red"
+              type="button"
+              (click)="searchWorkflow()">
+              <img
+                src="/assets/icons/search.svg"
+                class="search-icon"
+                alt="Search Icon" />
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="workflows-table">
+      <app-workflow-table
+        [isWorkflow]="true"
+        [workflows]="filteredWorkflows"
+        [headings]="headings"
+        [bookmarkedIds]="bookmarkedIds"
+        (workflowDetailEvent)="viewInstances($event)"
+        (workflowUpdateEvent)="pauseWorkflow($event)"
+        (bookMarkEvent)="toggleBookmark($event)"
+        (reload)="reload($event)"
+        (getSortParam)="sortColumn($event)"></app-workflow-table>
+      <div *ngIf="noWorkflows" class="no-workflows-message">
+        No Workflows Found
+      </div>
+      <div *ngIf="noBookmarkedWorkflows" class="no-workflows-message">
+        No Bookmarks Found
+      </div>
+    </div>
+    <div class="page-view" *ngIf="!noWorkflows && !noBookmarkedWorkflows">
+      <app-pagination [page]="page" (paginationEvent)="onPage($event)">
+      </app-pagination>
+    </div>
+  </div>
+</div>
+
+<ng-template #filterWorkflowsForm class="modal-content">
+  <div class="form-details">
+    <div class="side-bar">
+      <div class="field">
+        <span
+          [class.selected]="selectedFilter === 'created'"
+          (click)="selectFilter('created')"
+          class="input-field"
+          style="margin-top: 150px">
+          <img
+            *ngIf="filter.startDate"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Created
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'bookmarks'"
+          (click)="selectFilter('bookmarks')"
+          class="input-field">
+          <img
+            *ngIf="filter.bookmark"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Bookmarks
+        </span>
+        <br />
+        <span
+          [class.selected]="selectedFilter === 'enabled'"
+          (click)="selectFilter('enabled')"
+          class="input-field"
+          style="margin-bottom: 170px">
+          <img
+            *ngIf="filter.enabled"
+            src="assets/icons/checkmark-icon.svg"
+            alt="Applied"
+            class="checkmark-icon" />
+          Status
+        </span>
+      </div>
+      <div class="buttons">
+        <button
+          class="btn btn--black"
+          (click)="resetFilters()"
+          style="margin-left: 14px">
+          RESET
+        </button>
+        <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
+      </div>
+    </div>
+
+    <div class="form-content">
+      <div class="header">
+        <p class="header_title">Filter Workflows</p>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+      <div>
+        <div *ngIf="selectedFilter === 'created'">
+          <div class="selected-date">
+            <span class="date-label">
+              <span class="label-heading">From:</span>
+              <span class="label-value">{{
+                filter.startDate
+                  ? (filter.startDate | date: 'd MMM, y')
+                  : 'DD MMM, YYYY'
+              }}</span>
+              <span class="label-heading" style="margin-left: 10px">To:</span>
+              <span class="label-value">{{
+                filter.endDate
+                  ? (filter.endDate | date: 'd MMM, y')
+                  : 'DD MMM, YYYY'
+              }}</span>
+            </span>
+
+            <button x mat-icon-button color="warn" (click)="clearDates()">
+              <img
+                src="/assets/icons/delete-icon.svg"
+                class="delete-icon"
+                alt="delete" />
+            </button>
+          </div>
+
+          <mat-form-field
+            appearance="outline"
+            color="accent"
+            class="w-100 datepicker__size_s">
+            <mat-label>Select Date Range</mat-label>
+            <mat-date-range-input [rangePicker]="dateRangePicker">
+              <input matStartDate [(ngModel)]="filter.startDate" readonly />
+              <input matEndDate [(ngModel)]="filter.endDate" readonly />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="dateRangePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+        <div *ngIf="selectedFilter === 'bookmarks'">
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [(ngModel)]="filter.bookmark"
+                class="checkbox-input" />
+              <div class="radio__icon" [class.checked]="filter.bookmark">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Bookmarks</span>
+            </label>
+          </div>
         </div>
 
-        <div class="workflow-contents">
-            <div class="contents-span">
-                <span>YouTube ContentId</span>
-                <span> Spotify Test </span>
-                <span> ADA Digital </span>
-                <span> Facebook Audio UGC </span>
-                <span> ADA - Video (Co-op) </span>
-            </div>
-            <div class="actions">
-                <img src="/assets/icons/standard-logo.svg" class="bookmark-icon" alt="create Icon" />
-                <button class="bookmark-button">All Bookmark</button>
-            </div>
-        </div>-->
+        <div *ngIf="selectedFilter === 'enabled'">
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="radio"
+                [(ngModel)]="filter.enabled"
+                [value]="true"
+                class="checkbox-input" />
+              <div
+                class="radio__icon"
+                [class.checked]="filter.enabled === true">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Active</span>
+            </label>
+          </div>
+          <br />
+          <div class="checkbox__icon checkbox_icon_circle">
+            <label class="custom-checkbox">
+              <input
+                type="radio"
+                [(ngModel)]="filter.enabled"
+                [value]="false"
+                class="checkbox-input" />
+              <div
+                class="radio__icon"
+                [class.checked]="filter.enabled === false">
+                <img
+                  src="assets/icons/check.svg"
+                  alt=""
+                  class="radio__icon_img" />
+              </div>
+              <span>Inactive</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="workflows-table">
-    <app-workflow-table
-      [workflows]="workflowsData"
-      [headings]="headings"
-      [isWorkflow]="true"
-      (workflowDetailEvent)="viewInstances($event)"
-      (workflowUpdateEvent)="pauseWorkflow($event)"
-      (getSortParam)="sortColumn($event)"></app-workflow-table>
-  </div>
-</div>
-
-<div class="page-view">
-  <app-pagination
-    [page]="page"
-    (paginationEvent)="onPage($event)"></app-pagination>
-</div>
+</ng-template>

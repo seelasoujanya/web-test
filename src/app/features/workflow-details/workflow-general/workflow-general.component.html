@@ -1,0 +1,270 @@
+<div class="workflow-settings-container">
+  <div class="workflow-general-container">
+    <div class="general-setting">
+      <div class="general-setting-label">
+        <span class="title">General Settings</span>
+        <span class="edit-icon"
+          ><img
+            src="/assets/icons/edit-icon.svg"
+            alt="edit Icon"
+            (click)="toggleEditing()"
+        /></span>
+      </div>
+      <div class="workflow-content" *ngIf="workflowCopy">
+        <div class="workflow-field">
+          <span>Name</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Workflow Name"
+            class="input-field"
+            [(ngModel)]="workflowCopy.name"
+            [class.disabled]="!isEditing" />
+        </div>
+        <div class="workflow-field">
+          <span>Enabled</span>
+          <ng-select
+            [items]="workflowStatus"
+            bindLabel="label"
+            bindValue="value"
+            [searchable]="false"
+            [clearable]="false"
+            placeholder="select status"
+            [class.disabled]="!isEditing"
+            [(ngModel)]="workflowCopy.enabled">
+            <ng-template ng-label-tmp let-item="item">
+              <span>{{ item.label }}</span>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="workflow-field">
+          <span>Asset Ingestion Wait Time</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Wait time"
+            class="input-field"
+            [(ngModel)]="AssetIngestionWaitTime"
+            (keydown)="filterSpecialChars($event)"
+            (ngModelChange)="validateFields()"
+            [class.disabled]="!isEditing" />
+          <p *ngIf="AssetIngestionWaitTimeError" class="timeError">
+            *{{ AssetIngestionWaitTimeError }}
+          </p>
+        </div>
+        <div class="workflow-field">
+          <span>Data Ingestion Wait Time</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Wait Name"
+            class="input-field"
+            [(ngModel)]="DataIngestionWaitTime"
+            (ngModelChange)="validateFields()"
+            (keydown)="filterSpecialChars($event)"
+            [class.disabled]="!isEditing" />
+          <p *ngIf="DataIngestionWaitTimeError" class="timeError">
+            *{{ DataIngestionWaitTimeError }}
+          </p>
+        </div>
+        <div class="workflow-field">
+          <div>
+            <span>Concurrency</span>
+            <input
+              type="number"
+              placeholder="throttle limit"
+              class="input-field"
+              [(ngModel)]="workflowCopy.throttleLimit"
+              [class.disabled]="!isEditing"
+              (blur)="checkThrottleLimit($event)" />
+          </div>
+        </div>
+        <div class="workflow-field">
+          <span>Alias</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Alias to trigger"
+            class="input-field"
+            [(ngModel)]="workflowCopy.alias"
+            (blur)="addText()"
+            [class.disabled]="!isEditing" />
+          <div *ngIf="copyUrl" class="url">
+            <span class="url-link">
+              {{ copyUrl }}
+            </span>
+            <button (click)="copyText(copyUrl)" class="copy-button">
+              <img
+                src="assets/icons/copy-logo.svg"
+                alt="Copy Icon"
+                class="copy-icon" />
+            </button>
+          </div>
+          <p *ngIf="copyUrlError" class="timeError">
+            {{ copyUrlError }}
+          </p>
+        </div>
+        <div class="workflow-field">
+          <span>Description</span>
+          <textarea
+            placeholder="Add description"
+            class="text-field"
+            [(ngModel)]="workflowCopy.description"
+            [class.disabled]="!isEditing"></textarea>
+        </div>
+      </div>
+
+      <div class="buttons" *ngIf="isEditing">
+        <button
+          class="btn btn--red"
+          type="button"
+          [disabled]="isErrorMsg()"
+          (click)="saveWorkflowChanges()">
+          SAVE
+        </button>
+        <button class="btn btn--black" type="button" (click)="cancelChanges()">
+          CANCEL
+        </button>
+      </div>
+    </div>
+
+    <div class="email-setting">
+      <div class="general-setting-label">
+        <span class="label">Email</span>
+        <span>
+          <button
+            class="btn btn--red"
+            type="button"
+            (click)="addNewEmail(addEmailForm)">
+            <img
+              src="/assets/icons/create-logo.svg"
+              class="create-icon"
+              alt="create Icon" />
+            Add Email
+          </button></span
+        >
+      </div>
+
+      <div class="email-table">
+        <table class="table-container">
+          <caption class="table-caption visually-hidden">
+            This Table shows list of Emails
+          </caption>
+          <thead class="table-head">
+            <tr>
+              <th *ngFor="let heading of headings" class="table-header-cell">
+                {{ heading }}
+                <img
+                  *ngIf="heading !== 'S.NO' && heading !== 'ACTIONS'"
+                  src="assets/icons/down-arrow-logo.svg"
+                  alt="{{ heading }} Icon"
+                  class="heading-icon"
+                  (click)="sortColumn(heading)"
+                  [class.rotate]="
+                    currentSort === 'desc' && selectedHeading === heading
+                  " />
+              </th>
+            </tr>
+          </thead>
+          <tbody class="scrollable-table__body">
+            <ng-container>
+              <tr *ngFor="let email of emails; let i = index">
+                <td class="table-cell">{{ i + 1 }}</td>
+                <td class="table-cell">{{ email.email }}</td>
+                <td class="table-cell">{{ email.name }}</td>
+                <td class="table-cell">
+                  <ng-select
+                    [items]="emailStatus"
+                    bindLabel="label"
+                    bindValue="value"
+                    [searchable]="false"
+                    [clearable]="false"
+                    placeholder="select status"
+                    [(ngModel)]="email.status"
+                    [class.disabled]="true">
+                    <ng-template ng-label-tmp let-item="item">
+                      <span>{{ item.label }}</span>
+                    </ng-template>
+                  </ng-select>
+                </td>
+                <td class="table-cell">
+                  <div class="actions">
+                    <img
+                      src="/assets/icons/delete-icon.svg"
+                      class="delete-icon"
+                      alt="delete"
+                      (click)="deleteEmail(email.id, email.email)" />
+                    <img
+                      src="/assets/icons/edit-icon.svg"
+                      alt="edit Icon"
+                      class="edit-icon"
+                      orm
+                      (click)="editEmail(email, addEmailForm)" />
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #addEmailForm class="modal-content">
+  <div class="header">
+    <p class="header_title">{{ isUpdate ? 'Edit' : 'Add' }} Email</p>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
+  </div>
+  <div class="form-details">
+    <div class="workflow-field">
+      <span>Email ID</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Enter Email"
+        class="input-field"
+        [(ngModel)]="newEmailData.email" />
+    </div>
+    <div class="workflow-field">
+      <span>Name</span>
+      <input
+        type="text"
+        maxlength="255"
+        placeholder="Enter Name"
+        class="input-field"
+        [(ngModel)]="newEmailData.name" />
+    </div>
+    <div class="workflow-field email-type">
+      <span>Email Type</span>
+      <ng-select
+        [items]="emailStatus"
+        placeholder="Select Type"
+        bindLabel="label"
+        bindValue="value"
+        [searchable]="false"
+        [clearable]="false"
+        [(ngModel)]="newEmailData.status"
+        [appendTo]="'scrollable-table__body'">
+      </ng-select>
+    </div>
+  </div>
+  <div class="buttons" style="position: relative">
+    <button class="btn btn--black" (click)="cancelChangesForEmail()">
+      CANCEL
+    </button>
+    <div
+      class="tooltip-wrapper"
+      [tooltip]="isFieldsEmpty() ? 'All Fields Are Required' : ''"
+      [tooltipPlacement]="'top'"
+      [tooltipTrigger]="'hover'">
+      <button
+        class="btn btn--red"
+        (click)="addEmail()"
+        [disabled]="isFieldsEmpty()">
+        CONFIRM
+      </button>
+    </div>
+  </div>
+</ng-template>

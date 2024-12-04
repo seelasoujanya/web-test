@@ -1,0 +1,73 @@
+<div class="main-container">
+  <div class="header">
+    <p>XML Settings</p>
+    <div class="general-setting-label">
+      <div class="buttons" *ngIf="enableEditing">
+        <button
+          class="btn btn--red"
+          type="button"
+          (click)="saveTemplateChanges()">
+          save
+        </button>
+        <button class="btn btn--black" type="button" (click)="cancelChanges()">
+          cancel
+        </button>
+      </div>
+      <div class="edit-icon" *ngIf="!enableEditing">
+        <img
+          src="/assets/icons/edit-icon.svg"
+          alt="edit Icon"
+          (click)="toggleEditing()" />
+      </div>
+    </div>
+  </div>
+
+  <div class="fields-container">
+    <div class="field-item">
+      <span
+        [tooltip]="
+          'Select the Template From the Templates Added To This Workflow'
+        "
+        >Template</span
+      >
+
+      <div>
+        <ng-select
+          [items]="templates"
+          bindLabel="name"
+          bindValue="id"
+          class="select-feild"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Templates"
+          [(ngModel)]="selectedTemplateId"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+
+        <p
+          class="viewTemplate"
+          (click)="viewTemplate()"
+          [tooltip]="'View Template'"
+          [tooltipPlacement]="'right'"
+          [tooltipTrigger]="'hover'">
+          View Template
+        </p>
+      </div>
+    </div>
+
+    <div class="field-item">
+      <span [tooltip]="'Please enter the file name to save XML output'"
+        >File Name</span
+      >
+      <div>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Please enter the file name "
+          class="input-field"
+          [ngModel]="fileName"
+          [class.disabled]="!enableEditing" />
+      </div>
+    </div>
+  </div>
+</div>

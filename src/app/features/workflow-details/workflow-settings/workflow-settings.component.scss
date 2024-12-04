@@ -1,0 +1,48 @@
+.step-container {
+  margin-inline: 15px;
+  margin-bottom: 30px;
+}
+.bg-container {
+  background: white;
+  border-radius: 5px;
+  padding: 20px 50px;
+  display: flex;
+  flex-direction: row;
+  margin: 0px 20px;
+  height: 100%;
+}
+
+h6.active {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.heading {
+  height: 46px;
+  padding-left: 20px;
+  border-bottom: 1px solid #f5f5f5;
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0px;
+  cursor: pointer;
+}
+
+.left-container {
+  width: 40%;
+  border-right: 1px solid #f2f2f2;
+}
+.right-container {
+  height: 75vh;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.noConfigs {
+  height: 80vh;
+  p {
+    margin-top: 20px;
+    text-align: center;
+  }
+}

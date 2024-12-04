@@ -1,0 +1,248 @@
+.table-container {
+  width: 100%;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #f2f2f2;
+  border-collapse: collapse;
+  z-index: 9;
+  .table-head {
+    background-color: white;
+    // position: sticky;
+    // top: -0.3px;
+    // z-index: 10;
+  }
+  .table-header-cell {
+    position: sticky;
+    z-index: 10;
+    top: 0px;
+    height: 36px;
+    background-color: #f9fafb;
+    border-width: 0px 0px 1px 0px;
+    border-bottom: 1px solid #f2f2f2;
+    text-align: left;
+    font-weight: 400 !important;
+    letter-spacing: 0.5px;
+    padding: 0px 10px;
+    font-size: 12px;
+    line-height: 14.52px;
+    text-transform: uppercase;
+    color: #656565;
+  }
+  .scrollable-table__body {
+    .table-cell {
+      padding: 10px;
+      height: 72px;
+      color: #333333;
+      font-weight: 400 !important;
+      line-height: 16.94px;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+    .expanded-row {
+      width: 90%;
+      padding: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      height: 80px;
+      .buttons-container {
+        width: 25%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .cancel-button {
+          border: none;
+          text-decoration: underline;
+          background-color: #f9fafb;
+          color: #262626;
+          font-weight: 400;
+          font-size: 12px;
+          letter-spacing: 0.5px;
+          border-radius: 4px;
+          width: 92px;
+          height: 40px;
+          padding: 10px 20px;
+        }
+        .change-priority-button {
+          border: none;
+          text-decoration: underline;
+          background-color: #f9fafb;
+          color: #262626;
+          font-weight: 400;
+          font-size: 12px;
+          letter-spacing: 0.5px;
+          border-radius: 4px;
+          width: Hug (192px) px;
+          height: Fixed (40px) px;
+          padding: 10px 20px 10px 20px;
+          gap: 12px;
+          opacity: 0px;
+          img {
+            width: 24px;
+            height: 24px;
+            gap: 0px;
+            opacity: 0px;
+          }
+        }
+        .change-priority-button:hover {
+          background-color: #e0e0e0;
+        }
+        .cancel-button:hover {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+  }
+  .scrollable-table__body tr:hover {
+    cursor: pointer;
+    background-color: #f9fafb;
+  }
+}
+
+.active-btn {
+  color: #ffff;
+}
+
+::ng-deep .modal-dialog {
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    border-radius: 6px;
+    transition: auto 0.3s ease;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 20px;
+      margin-top: 20px;
+      .header_title {
+        font-family: Graphik, serif;
+        font-size: 24px;
+        font-weight: 500;
+        font-style: normal;
+        line-height: 40px;
+        height: 39px;
+        color: black;
+        margin-bottom: 0px !important;
+      }
+      .header_close-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: white;
+        height: 20px;
+      }
+    }
+    .form-details {
+      height: 125px;
+      font-family: 'Graphik', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: #828282;
+      padding-inline: 20px;
+      p {
+        font-weight: 500;
+      }
+      .workflowInstance-field {
+        width: 100%;
+        box-sizing: border-box;
+        // font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        display: block;
+        letter-spacing: 0.3px;
+        padding-block: 15px;
+        color: #344054;
+      }
+    }
+    .buttons {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      padding-inline: 20px;
+      margin-bottom: 20px;
+      .confirm-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #bd2c49;
+        border: none;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+      }
+      .confirm-btn:hover {
+        opacity: 0.5;
+      }
+      .cancel-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #262626;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+        margin-left: 258px;
+      }
+      .cancel-btn:hover {
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.monitor-instance-table {
+  margin-top: 15px;
+  overflow-y: auto;
+  height: 77vh;
+}
+
+.no-pendingInstances-message {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  position: absolute;
+  top: 35vh;
+  font-size: 15px;
+}
+.time {
+  color: #565656;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  letter-spacing: 0.3px;
+}
+
+.active-btn {
+  color: #ffff;
+}
+
+.page-view {
+  margin-top: 20px;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,14 +1,19 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, ɵnormalizeQueryParams } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
-import { WorkflowTableComponent } from 'src/app/commons/workflow-table/workflow-table.component';
-import { IPage } from 'src/app/interfaces/page.model';
-import { WorkflowInstance } from 'src/app/interfaces/workflowinstance.model';
-import { DurationPipe } from 'src/app/pipes/duration.pipe';
-import { ApiService } from 'src/app/services/api.service';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { IPage } from 'src/app/core/models/page.model';
+import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
+import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
+import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
+import { ApiService } from 'src/app/core/services/api.service';
+import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
+import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
+import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
+import { WorkflowStatisticsViewComponent } from './workflow-statistics-view/workflow-statistics-view.component';
 
 @Component({
   selector: 'app-workflow-details',
@@ -19,6 +24,11 @@ import { FormsModule } from '@angular/forms';
     DurationPipe,
     PaginationComponent,
     FormsModule,
+    WorkflowHistoryComponent,
+    WorkflowGeneralComponent,
+    WorkflowSettingsComponent,
+    WorkflowStatisticsViewComponent,
+    RouterModule,
   ],
   templateUrl: './workflow-details.component.html',
   styleUrl: './workflow-details.component.scss',
@@ -32,11 +42,17 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.getPageItems(this.pageParams);
+    this.getWorkflow();
+    this.getEmailsByWorkflowId();
+    this.route.queryParams.subscribe(params => {
+      this.selectedTab = params['tab'] || 'general';
+      this.selectTab(this.selectedTab);
+    });
   }
   workflowsInstances: WorkflowInstance[] = [];
   identifier: string = '';
   noInstancesFound: boolean = false;
+  selectedTab: string = 'general';
 
   instanceHeadings: string[] = [
     'Identifier',
@@ -46,7 +62,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     'Delivery Type',
     'Status',
     'Priority',
-    'Actions',
   ];
 
   headingEnum = {
@@ -62,6 +77,16 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
 
   public workflowName: string | undefined;
 
+  public workflow: any | null;
+
+  public emails: any[] = [];
+
+  public workflowSteps: any[] = [];
+
+  public workflowTemplates: any[] = [];
+
+  public workflowCopy: any;
+
   deliveredInstancesCount = 0;
   totalInstancesCount = 0;
   failedInstancesCount = 0;
@@ -70,7 +95,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private spinnerService: SpinnerService
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -80,48 +106,11 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     }
   }
 
-  getPageItems(pageParams: any) {
-    this.apiService
-      .getWorkflowInstances(pageParams, this.workflowId, this.identifier)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.reset();
-        this.workflowsInstances = data.content;
-        this.updateWorkflowsData();
-        this.cdRef.markForCheck();
-        this.noInstancesFound = false;
-      });
-  }
-  onPage(pageNumber: number) {
-    this.pageParams.page = pageNumber - 1;
-    this.getPageItems(this.pageParams);
-  }
-  public page!: IPage<any>;
-  private pageParams = this.getDefaultPageParams();
-
-  getDefaultPageParams() {
-    return {
-      page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
-    };
-  }
-
   public backToWorkflows(): void {
     this.router.navigate(['/workflows']);
   }
 
-  sortColumn(event: any) {
-    let heading = event.sortBy;
-    this.pageParams.sortBy =
-      this.headingEnum[heading as keyof typeof this.headingEnum];
-    this.pageParams.order = event.order;
-    this.getPageItems(this.pageParams);
-  }
-
-  private updateWorkflowsData(): void {
+  updateWorkflowsData(): void {
     this.workflowsInstances.forEach(workflow => {
       if (
         workflow.status &&
@@ -146,39 +135,81 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     this.totalInstancesCount = 0;
   }
 
-  searchWorkflowInstance(): void {
-    if (this.identifier) {
-      const id = this.identifier;
-      this.apiService
-        .getWorkflowInstances(
-          this.pageParams,
-          this.workflowId,
-          this.identifier.toLowerCase()
-        )
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          data => {
-            this.page = data;
-            this.reset();
-            this.workflowsInstances = data.content;
-            this.updateWorkflowsData();
-            this.cdRef.markForCheck();
-            this.noInstancesFound = this.workflowsInstances.length === 0;
-            console.log(this.noInstancesFound);
-          },
-          error => {
-            console.error('Error fetching workflow instances', error);
-            this.workflowsInstances = [];
-            this.noInstancesFound = true;
-            this.cdRef.markForCheck();
-          }
-        );
-    } else {
-      this.getPageItems(this.pageParams);
+  public viewInstanceDetails(data: any): void {
+    this.router.navigate(['/workflowinstance', data.id]);
+  }
+
+  public selectTab(tab: string) {
+    this.selectedTab = tab;
+    this.router.navigate(['/workflows', this.workflowId], {
+      queryParams: { tab: tab },
+    });
+  }
+
+  public getWorkflow() {
+    this.apiService
+      .getWorkflowById(this.workflowId)
+      .subscribe((result: any) => {
+        this.workflow = result;
+        this.workflowCopy = JSON.parse(JSON.stringify(result));
+      });
+  }
+  public getEmailsByWorkflowId() {
+    this.apiService
+      .getEmailsByWorkflowId(this.workflowId)
+      .subscribe((result: any) => {
+        this.emails = result;
+      });
+  }
+
+  public updateWorkflow(workflow: any) {
+    this.spinnerService.show();
+    this.apiService
+      .updateWorkflow(this.workflowId, workflow)
+      .subscribe((result: any) => {
+        this.workflow = result;
+        this.workflowCopy = JSON.parse(JSON.stringify(result));
+        this.spinnerService.hide();
+      });
+  }
+
+  public deleteEmailById(id: any) {
+    this.spinnerService.show();
+    this.apiService.deleteEmailById(id).subscribe((result: any) => {
+      this.getEmailsByWorkflowId();
+      this.spinnerService.hide();
+    });
+  }
+
+  public workflowEmailSettings(emailData: any) {
+    if (emailData) {
+      if (emailData.action && emailData.action === 'DELETE') {
+        this.deleteEmailById(emailData.emailId);
+      }
+      if (emailData.action && emailData.action === 'CREATE') {
+        this.addEmail(emailData.data);
+      }
+      if (emailData.action && emailData.action === 'UPDATE') {
+        this.updateEmail(emailData.emailId, emailData.data);
+      }
     }
   }
 
-  public viewInstanceDetails(data: any): void {
-    this.router.navigate(['/workflowinstance', data.id]);
+  public addEmail(emailData: any) {
+    this.spinnerService.show();
+    this.apiService
+      .addEmail(emailData.workflowId, emailData)
+      .subscribe((result: any) => {
+        this.emails.push(result);
+        this.spinnerService.hide();
+      });
+  }
+
+  public updateEmail(id: any, emailData: any) {
+    this.spinnerService.show();
+    this.apiService.updateEmail(id, emailData).subscribe((result: any) => {
+      this.getEmailsByWorkflowId();
+      this.spinnerService.hide();
+    });
   }
 }

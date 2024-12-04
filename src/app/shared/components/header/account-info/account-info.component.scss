@@ -1,0 +1,210 @@
+.modal-wrapper {
+  height: 100%;
+}
+
+.account-dialog-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 8px;
+  .account__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 20px 10px 20px;
+    .account__header_title {
+      font-family: Graphik, serif;
+      font-size: 24px;
+      font-weight: normal;
+      font-style: normal;
+      line-height: 40px;
+      height: 39px;
+      color: black;
+    }
+    .account__header_close-btn {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: white;
+    }
+  }
+  .account__body {
+    height: 100%;
+    padding: 20px 20px 40px 40px;
+    font-family: 'Graphik', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    .user-roles {
+      .item-heading {
+        margin-bottom: 10px;
+      }
+      .item-list {
+        list-style-type: circle;
+        padding-left: 20px;
+        li {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+}
+.noUserAuthorities {
+  margin-left: 20px;
+}
+.toggle-container {
+  display: flex;
+  align-items: center;
+  width: 120px;
+  margin-left: 20px;
+  justify-content: space-between;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 22px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 22px;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #bd2c49;
+}
+
+input:checked + .slider:before {
+  transform: translateX(14px);
+}
+
+.toggle-text {
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+::ng-deep .modal-dialog {
+  max-width: 800px;
+  .modal-content {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    border-radius: 6px;
+    transition: auto 0.3s ease;
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 20px;
+      margin-top: 20px;
+      .header_title {
+        font-family: Graphik, serif;
+        font-size: 24px;
+        font-weight: 500;
+        font-style: normal;
+        line-height: 40px;
+        height: 39px;
+        color: black;
+        margin-bottom: 0px !important;
+      }
+      .header_close-btn {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: white;
+        height: 20px;
+      }
+    }
+    .form-details {
+      height: 125px;
+      overflow-y: auto;
+      font-family: 'Graphik', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: #828282;
+      padding-inline: 20px;
+      p {
+        font-weight: 500;
+      }
+      .workflowInstance-field {
+        width: 100%;
+        box-sizing: border-box;
+        // font-weight: 500;
+        font-size: 16px;
+        line-height: 20px;
+        display: block;
+        letter-spacing: 0.3px;
+        padding-block: 15px;
+        color: #344054;
+      }
+    }
+    .buttons {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      padding-inline: 20px;
+      margin-bottom: 20px;
+      .confirm-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #bd2c49;
+        border: none;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+      }
+      .confirm-btn:hover {
+        opacity: 0.5;
+      }
+      .cancel-btn {
+        width: 98px;
+        height: 34px;
+        border-radius: 4px;
+        padding: 6px;
+        background-color: #262626;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 20px;
+        color: #ffffff;
+        margin-left: 258px;
+      }
+      .cancel-btn:hover {
+        opacity: 0.5;
+      }
+    }
+  }
+}

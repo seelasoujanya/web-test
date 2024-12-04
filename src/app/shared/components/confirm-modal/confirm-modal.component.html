@@ -1,0 +1,34 @@
+<div class="confirm-dialog">
+  <div class="header">
+    <div class="header_title">{{ title }}</div>
+    <button type="button" class="header_close-btn" (click)="closeModal()">
+      <img src="assets/icons/close-circle.svg" alt="" />
+    </button>
+  </div>
+
+  <div class="body">
+    <p>{{ description }}</p>
+    <ng-container *ngIf="enableComments">
+      <div class="workflow-field">
+        <span>Description</span>
+        <textarea
+          placeholder="add description"
+          class="text-field"
+          [(ngModel)]="templateDescription"
+          [class.show-mandatory]="!templateDescription"></textarea>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="buttons">
+    <button class="btn btn--black" (click)="cancelModal()">
+      {{ cancelButton }}
+    </button>
+    <button
+      class="btn btn--red"
+      (click)="confirmModal()"
+      [class.not-allowed]="enableComments && !templateDescription">
+      {{ applyButton }}
+    </button>
+  </div>
+</div>

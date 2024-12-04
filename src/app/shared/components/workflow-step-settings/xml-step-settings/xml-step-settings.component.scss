@@ -1,0 +1,82 @@
+@import 'src/styles/checkbox';
+@import 'src/styles/button';
+.main-container {
+  background: #fff;
+  border-radius: 5px;
+  padding: 0px 20px;
+
+  .general-setting-label {
+    display: flex;
+    gap: 20px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e8e8e8;
+    margin: 16px 15px;
+    padding-block: 16px;
+    height: 72px;
+    position: sticky !important;
+    top: 0;
+    z-index: 100 !important;
+    .edit-icon {
+      cursor: pointer;
+    }
+    p {
+      border: 0px 0px 1px 0px;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24.2px;
+      letter-spacing: 0.3px;
+      color: #333333;
+      margin-bottom: 0;
+    }
+  }
+  .fields-container {
+    margin-inline: 15px;
+    display: grid;
+    grid-template-columns: auto;
+    background-color: #f5f5f5;
+    padding: 20px 20px;
+    gap: 30px;
+  }
+  .input-field {
+    width: 300px;
+    min-height: 44px;
+    padding-inline: 10px;
+    font-size: 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 4px;
+  }
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    .btn {
+      margin-left: 5px;
+    }
+  }
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.field-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.select-feild {
+  width: 300px;
+}
+
+.viewTemplate {
+  width: 100%;
+  font-size: 12px;
+  color: rgb(15, 128, 227);
+  cursor: pointer;
+  text-align: end;
+}

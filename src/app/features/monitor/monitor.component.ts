@@ -1,46 +1,69 @@
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { IPage } from 'src/app/core/models/page.model';
+import { WebSocketAPI } from 'src/app/core/services/websocket.service';
+import { ApiService } from 'src/app/core/services/api.service';
+import { TimeFormatService } from 'src/app/time-format.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription, take, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/commons/pagination/pagination.component';
-import { IPage } from 'src/app/interfaces/page.model';
-import { ApiService } from 'src/app/services/api.service';
-import { WebSocketAPI } from 'src/app/websocket/websocket.service';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
+import { PendingComponent } from './pending/pending.component';
+import { RunningComponent } from './running/running.component';
+import { ProcessingByWorkflowComponent } from './processing-by-workflow/processing-by-workflow.component';
+import {
+  SystemPropertiesDTO,
+  SystemProperty,
+} from 'src/app/core/models/workflow.model';
+import { PausedPropertyService } from 'src/app/paused-property.service';
 
 @Component({
   selector: 'app-monitor',
-  standalone: true,
-  imports: [CommonModule, PaginationComponent],
   templateUrl: './monitor.component.html',
-  styleUrl: './monitor.component.scss',
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
+  imports: [
+    CommonModule,
+    NgSelectModule,
+    PaginationComponent,
+    ReactiveFormsModule,
+    FormsModule,
+    PendingComponent,
+    RunningComponent,
+    ProcessingByWorkflowComponent,
+  ],
+  styleUrls: ['./monitor.component.scss'],
+  providers: [BsModalService],
 })
 export class MonitorComponent implements OnInit, OnDestroy {
-  private websocketSubscription!: Subscription;
-  public instances: any[] = [];
   public pageParams = this.getDefaultPageParams();
-  public runningInstancesCount: number = 0;
-  public pendingInstancesCount: number = 0;
+  public page!: IPage<any>;
+  public activeTab: any = 'RUNNING';
+  isUTC: boolean | undefined;
+  public destroyed$ = new Subject<void>();
+  isChecked: boolean | undefined;
+  pausedSubscription!: Subscription;
 
-  headings: string[] = [
-    'INSTANCE ID',
-    'WORKFLOW',
-    'IDENTIFIER',
-    'STARTED ON',
-    'ACTIONS',
-  ];
+  runningInstancesCount: number = 0;
+  pendingInstancesCount: number = 0;
+  websocketSubscription!: Subscription;
+  pausedProperty: SystemProperty | undefined;
 
-  expandedId: number | undefined;
+  pauseAllInstances: boolean = false;
+
+  propertyDTO: SystemPropertiesDTO = {
+    key: '',
+    value: '',
+    description: '',
+  };
 
   constructor(
     private webSocketAPI: WebSocketAPI,
     private apiService: ApiService,
-    private cdRef: ChangeDetectorRef
+    private timeFormatService: TimeFormatService,
+    private pausedPropertyService: PausedPropertyService
   ) {}
-
-  onPage(pageNumber: number) {
-    this.pageParams.page = pageNumber - 1;
-    this.updateInstances(this.pageParams);
-  }
-  public page!: IPage<any>;
 
   getDefaultPageParams() {
     return {
@@ -51,71 +74,61 @@ export class MonitorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.updateInstances(this.pageParams);
-    this.updateDataFromWebSocket();
-  }
+    this.getPausedProperty('paused');
+    this.timeFormatService.isUTC$.subscribe(value => {
+      this.isUTC = value;
+    });
 
-  updateInstances(pageParams: any) {
-    this.apiService
-      .getInstancesByStatus(pageParams)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(data => {
-        this.page = data;
-        this.instances = data.content;
-        if (pageParams.status == 'RUNNING') {
-          this.runningInstancesCount = data.totalElements;
-        } else {
-          this.pendingInstancesCount = data.totalElements;
-        }
-        this.cdRef.markForCheck();
+    this.getCounts();
+    // Subscribe to WebSocket updates for live count
+    this.websocketSubscription =
+      this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
+        console.log('Websocket status in Monitor Component');
+        this.getCounts();
       });
   }
-
-  updateDataFromWebSocket() {
-    this.webSocketAPI
-      .getProcessProgress()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((result: any) => {
-        this.updateInstances(this.pageParams);
-      });
+  getCounts(): void {
+    this.apiService.retrieveTotalWorkflowsStatusCount().subscribe(data => {
+      this.runningInstancesCount = data.runningCount;
+      this.pendingInstancesCount = data.pendingCount;
+    });
   }
 
-  getRunningInstances(status: string) {
-    this.pageParams.status = status;
-    this.updateInstances(this.pageParams);
+  switchTab(tab: any) {
+    this.activeTab = tab;
+    this.pageParams.status = tab;
   }
 
-  public expandAction(instance: any) {
-    if (this.expandedId != instance.id) {
-      this.expandedId = instance.id;
-    } else {
-      this.expandedId = undefined;
-    }
-  }
-
-  public destroyed$ = new Subject<void>();
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-    // Unsubscribe from WebSocket when component is destroyed
+  ngOnDestroy() {
     if (this.websocketSubscription) {
       this.websocketSubscription.unsubscribe();
     }
+    if (this.pausedSubscription) {
+      this.pausedSubscription.unsubscribe();
+    }
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
-
-  updateParams(status: string) {
-    this.pageParams.status = status;
-    this.updateInstances(this.pageParams);
+  getPausedProperty(key: string): void {
+    this.apiService.getPausedProperty(key).subscribe((data: SystemProperty) => {
+      this.pausedProperty = data;
+      this.isChecked = data.value === 'true' ? true : false;
+      this.pausedPropertyService.setPausedProperty(data);
+    });
   }
-
-  terminateInstance(id: any) {
-    this.apiService.updateWorkflowInstanceStatus(id, 'TERMINATED').subscribe(
-      updatedInstance => {
-        console.log('Workflow Instance updated:', updatedInstance);
+  pauseInstances() {
+    this.isChecked = !this.isChecked;
+    this.propertyDTO.value = this.isChecked.toString();
+    this.propertyDTO.key = 'paused';
+    this.propertyDTO.description = this.pausedProperty?.description;
+    this.apiService.updateSystemProperty(this.propertyDTO).subscribe(
+      (data: SystemProperty) => {
+        this.pausedProperty = data;
+        this.isChecked = data.value === 'true' ? true : false;
+        this.pausedPropertyService.setPausedProperty(data);
       },
       error => {
-        console.error('Error updating workflow instance', error);
+        console.error('Error updating system property:', error);
       }
     );
   }

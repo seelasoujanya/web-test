@@ -1,0 +1,83 @@
+@import 'src/styles/button';
+.modal-wrapper {
+  height: 100%;
+}
+
+.confirm-dialog {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 6px;
+  .header {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 20px 30px 20px;
+    .header_title {
+      font-family: Graphik, serif;
+      font-size: 24px;
+      font-weight: 500;
+      font-style: normal;
+      line-height: 40px;
+      height: 39px;
+      color: black;
+    }
+    .header_close-btn {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: white;
+    }
+  }
+  .body {
+    height: 100%;
+    padding: 0 20px 20px;
+    overflow-y: auto;
+    font-family: 'Graphik', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: #828282;
+    .workflow-field {
+      width: 100%;
+      box-sizing: border-box;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 20px;
+      display: block;
+      letter-spacing: 0.3px;
+      color: #344054;
+      .text-field {
+        width: 100%;
+        height: 90px;
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #d0d5dd;
+        border-radius: 4px;
+      }
+    }
+  }
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    align-items: flex-end;
+    padding-inline: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+.show-mandatory {
+  outline: 2px solid #bd2c49;
+}
+
+.not-allowed {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+textarea:focus {
+  outline: none;
+}

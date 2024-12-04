@@ -1,0 +1,55 @@
+<div class="account-dialog-wrapper">
+  <div class="account__header">
+    <div class="account__header_title">
+      <h2>Account Information</h2>
+    </div>
+    <button
+      type="button"
+      class="account__header_close-btn"
+      (click)="closeModal(false)">
+      <img src="assets/icons/close-circle.svg" alt="close modal" />
+    </button>
+  </div>
+
+  <div class="account__body noscroll">
+    <ng-container>
+      <!-- <div class="user-details">
+        <h4>User Details</h4>
+        <p>Name:{{ user.principal.fullName }}</p>
+        <p>Email:{{ user.principal.email }}</p>
+        <p>User Name:{{ user.principal.preferredUsername }}</p>
+      </div> -->
+
+      <div class="user-roles">
+        <h5 class="item-heading">Permissions</h5>
+        <ng-container
+          class="item-list noscroll"
+          *ngIf="!userDataLoaded; else noUserAuthorities">
+          <ul *ngFor="let role of userAuthorities">
+            <li class>{{ role }}</li>
+          </ul>
+        </ng-container>
+        <ng-template #noUserAuthorities>
+          <p class="noUserAuthorities">No permissions found.</p>
+        </ng-template>
+      </div>
+
+      <div class="user-roles">
+        <h5 class="item-heading">Time Zone</h5>
+        <div class="toggle-container">
+          <label class="toggle">
+            <input
+              id="timezone-toggle"
+              type="checkbox"
+              [checked]="isUTC"
+              (change)="toggleTimeFormat()" />
+            <span class="slider"></span>
+          </label>
+          <label class="toggle-text" for="timezone-toggle">{{
+            isUTC ? 'UTC Time' : 'Local Time'
+          }}</label>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

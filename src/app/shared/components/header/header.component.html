@@ -1,0 +1,70 @@
+<nav>
+  <div>
+    <a routerLink="workflows">
+      <img src="/assets/icons/bmg-logo.svg" alt="" class="logo" />
+    </a>
+  </div>
+  <div class="nav-container">
+    <div class="nav-container__left">
+      <a routerLink="monitor" routerLinkActive="active">Monitor</a>
+      <a routerLink="workflows" routerLinkActive="active">Workflows</a>
+      <a routerLink="templates" routerLinkActive="active">Templates</a>
+      <!-- <a routerLink="errors" routerLinkActive="active">Errors</a>
+         -->
+      <!-- <a routerLink="partners" routerLinkActive="active" class="nav-container__icon-link-container">Partners
+        <img
+          src="/assets/icons/partners.svg"
+          class="nav-container__link-icon"
+          alt=""
+      /></a> -->
+    </div>
+    <div class="nav-container__right">
+      <!-- <a
+        routerLink="search"
+        routerLinkActive="active"
+        class="nav-container__icon-link-container">
+        <img
+          src="/assets/icons/search.svg"
+          class="nav-container__link-icon"
+          alt="" />
+        Search
+      </a> -->
+      <!-- <a routerLink="monitor" routerLinkActive="active">Bookmarks</a> -->
+      <div class="nav-right__container-actions">
+        <!-- <img src="/assets/icons/settings.svg" alt="" /> -->
+        <div [class.header_navbar_item_active]="selectedMenu === 'USER'">
+          <img
+            src="/assets/icons/profile.svg"
+            alt=""
+            (click)="selectMenu($event, 'USER')" />
+        </div>
+        <ul *ngIf="selectedMenu === 'USER'" class="navbar__dropdown-menu">
+          <li class="header__navbar_item" (click)="showAbout(exampleTemplate)">
+            <span class="header__navbar_item-text item-text_black">
+              About
+            </span>
+          </li>
+          <li class="header__navbar_item" (click)="account_info()">
+            <span class="header__navbar_item-text item-text_black">
+              Account
+            </span>
+          </li>
+          <!-- <li class="header__navbar_item" (click)="Reportproblem()">
+            <span class="header__navbar_item-text item-text_black"> Help </span>
+          </li> -->
+          <li class="header__navbar_item" (click)="logout()">
+            <span class="header__navbar_item-text item-text_black">
+              Log out
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<ng-template #exampleTemplate>
+  <div>
+    <h2>Hello World!</h2>
+  </div>
+</ng-template>

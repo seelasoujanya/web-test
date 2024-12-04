@@ -1,0 +1,23 @@
+<div class="stats-container">
+  <div class="pichart">
+    <canvas
+      baseChart
+      [type]="'pie'"
+      [datasets]="pieChartDatasets()"
+      [labels]="pieChartLabels"
+      [options]="pieChartOptions"
+      [plugins]="pieChartPlugins"
+      [legend]="pieChartLegend">
+    </canvas>
+  </div>
+  <div class="bargraph">
+    <canvas
+      baseChart
+      [datasets]="datasets()"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="true"
+      [type]="'bar'">
+    </canvas>
+  </div>
+</div>

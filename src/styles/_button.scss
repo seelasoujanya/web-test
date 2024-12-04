@@ -1,0 +1,42 @@
+@import 'src/styles/variables';
+.btn {
+  display: inline-flex;
+  align-items: center;
+  font-family: Graphik;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 16px;
+  padding: 12px 20px;
+  transition: 0.2s;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  height: 38px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  img {
+    margin-right: 10px;
+  }
+}
+
+.btn--red {
+  background-color: #ca0a3d;
+  &:hover {
+    background-color: #f87598;
+  }
+}
+
+.btn--black {
+  background-color: #262626;
+  &:hover {
+    background-color: #8c8c8c;
+  }
+}
+
+.btn--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

@@ -1,0 +1,196 @@
+@import 'src/styles/button';
+.workflow-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .details-label {
+    padding-inline: 15px;
+    padding-top: 15px;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f3f3f3;
+    // position: sticky;
+    // top: 64px;
+    // z-index: 10;
+    .label-left {
+      height: 30px;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 30px;
+      color: #000000;
+      text-transform: capitalize;
+      .navigate-back-btn {
+        border: none;
+        background: #f3f3f3;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .cards {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .log-main-container {
+      width: 50%;
+    }
+    .artifacts-container {
+      width: 50%;
+    }
+  }
+  .detail-container {
+    margin-inline: 15px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 5px;
+    padding: 20px 30px 20px;
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
+    p {
+      font-size: 20px;
+      font-weight: 400;
+      font-style: normal;
+      line-height: 32px;
+      color: #333;
+    }
+    .tables-main-container {
+      display: flex;
+      gap: 40px;
+      .table-container {
+        width: 50%;
+        table {
+          width: 100%;
+          .detail-field-key {
+            font-size: 14px;
+            font-weight: bolder;
+            font-style: normal;
+            line-height: 17px;
+            letter-spacing: 0.3px;
+          }
+          .detail-field-value {
+            font-size: 14px;
+            font-weight: 400;
+            font-style: normal;
+            line-height: 17px;
+            letter-spacing: 0.3px;
+            // max-width: 300px; /* Adjust width as necessary */
+            // overflow: hidden;
+            // white-space: nowrap;
+            // text-overflow: ellipsis;
+          }
+          tr {
+            border-bottom: 1px solid #e0e0e0;
+            td {
+              padding-block: 10px;
+            }
+          }
+          tr:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+    .log-container {
+      height: 50vh;
+      overflow: scroll;
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      background: #f3f3f3;
+      border-radius: 5px;
+      pre {
+        height: 100%;
+      }
+    }
+    .file-item {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-block: 10px;
+      padding-block: 5px;
+      border-bottom: 1px solid #e0e0e0;
+      &:last-child {
+        border-bottom: none;
+      }
+      div:first-child {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.file-name {
+  margin: 10px 0px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+.detail-view {
+  height: 90vh;
+  overflow-y: auto;
+  gap: 25px;
+}
+
+.error-message {
+  display: inline-block;
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer; /* Indicate that it's interactive */
+}
+
+.tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  font-size: 12px;
+  color: white;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.8);
+  text-align: left;
+  max-width: 250px;
+  border-radius: 5px;
+  padding: 8px;
+  position: absolute;
+  z-index: 100;
+  top: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+  word-wrap: break-word;
+  font-weight: 400;
+}
+
+.tooltip.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}

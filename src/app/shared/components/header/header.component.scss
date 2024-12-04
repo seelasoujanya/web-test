@@ -1,0 +1,127 @@
+@import 'variables';
+nav {
+  width: 100%;
+  display: flex;
+  background: $black-1;
+  height: 64px;
+  position: sticky;
+  z-index: 100 !important;
+  .logo {
+    background: #bd2c49;
+    display: block;
+  }
+  .nav-container__icon-link-container {
+    display: flex;
+    align-items: center;
+    margin-inline: 1rem;
+    &:hover {
+      .nav-container__link-icon {
+        // This is a hack to make the icon change color on hover
+        filter: brightness(0) invert(1);
+      }
+    }
+    .nav-container__link-icon {
+      margin-inline: 0.5rem;
+    }
+  }
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    a {
+      text-decoration: none;
+      margin: 0 1rem;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .nav-container__left,
+    .nav-container__right {
+      display: flex;
+      align-items: center;
+    }
+    .nav-container__left {
+      a {
+        color: $black-3;
+        &:hover {
+          color: $white-1;
+        }
+      }
+      a.active {
+        color: $white-1;
+      }
+    }
+    .nav-container__right {
+      a {
+        color: $white-1;
+      }
+    }
+    .nav-right__container-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-inline: 1rem;
+      img {
+        margin-right: 1.5rem;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.navbar__dropdown-menu {
+  position: absolute;
+  z-index: 102;
+  top: 55px;
+  right: 40px;
+  box-sizing: border-box;
+  padding: 0px 0px;
+  cursor: pointer;
+  border: 1px solid #c4c4c4;
+  background: white;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
+}
+
+.header__navbar_item:hover {
+  background: #c4c4c4;
+}
+
+.header_navbar_item_active:after {
+  position: absolute;
+  top: 48px;
+  right: 40px;
+  width: 15px;
+  height: 4px;
+  content: '';
+  background: #bd2c49;
+}
+
+.header_navbar_item_active .header__navbar_item-icon,
+.navbar_item-icon_hovered:hover {
+  filter: drop-shadow(0px 1px 6px rgba(255, 255, 255, 0.35)) !important;
+}
+
+.header__navbar_item {
+  position: relative;
+  list-style: none;
+  white-space: nowrap;
+  opacity: 1;
+  padding: 10px 10px;
+  .header__navbar_item-text {
+    color: #000;
+    font-size: 12px;
+    line-height: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+}
+
+.timeButton {
+  padding: 0px 2px;
+  font-size: 14px;
+  width: 50px;
+}
