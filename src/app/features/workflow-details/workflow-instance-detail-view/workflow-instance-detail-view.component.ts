@@ -10,6 +10,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { TimeFormatService } from 'src/app/time-format.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { NavigationService } from 'src/app/navigation.service';
 
 @Component({
   selector: 'app-workflow-detail-view',
@@ -58,7 +59,8 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private timeFormatService: TimeFormatService
+    private timeFormatService: TimeFormatService,
+    private navigationService: NavigationService
   ) {
     this.workflowInstanceId = this.route.snapshot.params['id'];
   }
@@ -93,6 +95,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   public backToWorkflows(): void {
     let workflowId = this.workflowsInstance?.workflow?.id;
     if (workflowId) {
+      this.navigationService.clearHistory();
       this.router.navigate(['workflows', workflowId], {
         queryParams: { tab: 'history' },
       });

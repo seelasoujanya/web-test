@@ -1,6 +1,11 @@
 import { CommonModule, ɵnormalizeQueryParams } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterModule,
+} from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { IPage } from 'src/app/core/models/page.model';
@@ -14,6 +19,7 @@ import { WorkflowGeneralComponent } from './workflow-general/workflow-general.co
 import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings.component';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { WorkflowStatisticsViewComponent } from './workflow-statistics-view/workflow-statistics-view.component';
+import { NavigationService } from 'src/app/navigation.service';
 
 @Component({
   selector: 'app-workflow-details',
@@ -96,7 +102,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private spinnerService: SpinnerService
+    private spinnerService: SpinnerService,
+    private navigationService: NavigationService
   ) {
     this.workflowId = this.route.snapshot.params['id'];
     const navigation = this.router.getCurrentNavigation();
@@ -107,7 +114,8 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public backToWorkflows(): void {
-    this.router.navigate(['/workflows']);
+    // this.router.navigate(['/workflows']);
+    this.navigationService.goBack('/workflows');
   }
 
   updateWorkflowsData(): void {

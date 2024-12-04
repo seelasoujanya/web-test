@@ -19,7 +19,7 @@ export const ftpFields: IWorkflowStepField[] = [
   },
   {
     key: 'sftp_password',
-    label: 'Password',
+    label: 'text',
     type: 'input',
     placeholder: 'Password',
     values: [],

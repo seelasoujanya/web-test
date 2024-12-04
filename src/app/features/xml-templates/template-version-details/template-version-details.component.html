@@ -60,8 +60,8 @@
             <td class="detail-field-key">Created</td>
             <td class="detail-field-value">
               <span class="time">
-                {{ formatDate(template.created).date }}
-                {{ formatDate(template.created).time }}
+                {{ formatDate(template?.created).date }}
+                {{ formatDate(template?.created).time }}
               </span>
             </td>
           </tr>
@@ -97,11 +97,9 @@
     </div>
 
     <div class="usages">
-      <ng-container *ngIf="workflows && workflows.length > 0">
-        <div class="left-usage">
-          <p>Usage</p>
-        </div>
-        <div class="right-usage">
+      <p class="left-usage">Usage</p>
+      <p class="right-usage">
+        <ng-container *ngIf="workflows && workflows.length > 0; else noUsage">
           <ng-container *ngFor="let item of workflows; let last = last">
             <span
               (click)="logName(item)"
@@ -111,8 +109,12 @@
               {{ item.name }}<span *ngIf="!last">, </span>
             </span>
           </ng-container>
-        </div>
-      </ng-container>
+        </ng-container>
+
+        <ng-template #noUsage>
+          <p class="nousage">No usages found</p>
+        </ng-template>
+      </p>
     </div>
   </div>
 
