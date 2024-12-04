@@ -85,7 +85,7 @@
 
               <ng-select
                 *ngSwitchCase="'select'"
-                class="select-feild"
+                class="select-field"
                 [items]="field.values"
                 bindLabel="label"
                 bindValue="value"
@@ -163,7 +163,7 @@
                 *ngSwitchCase="'select'"
                 [items]="field.values"
                 bindLabel="label"
-                class="select-feild"
+                class="select-field"
                 bindValue="value"
                 [searchable]="false"
                 [clearable]="false"
@@ -237,7 +237,7 @@
 
               <ng-select
                 *ngSwitchCase="'select'"
-                class="select-feild"
+                class="select-field"
                 [items]="field.values"
                 bindLabel="label"
                 bindValue="value"
@@ -314,7 +314,7 @@
               <ng-select
                 *ngSwitchCase="'select'"
                 [items]="field.values"
-                class="select-feild"
+                class="select-field"
                 bindLabel="label"
                 bindValue="value"
                 [searchable]="false"
@@ -329,6 +329,93 @@
         </div>
       </ng-container>
     </div>
+
+    <div class="line-with-text">
+      <h4 class="line-text">Template Configuration</h4>
+    </div>
+
+    <div class="fields-container">
+      <div class="config-con">
+        <span
+          [tooltip]="
+            'Select the Template From the Templates Added To This Workflow'
+          "
+          >Template to generate Product XML</span
+        >
+        <ng-select
+          [items]="templates"
+          bindLabel="name"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Templates"
+          [(ngModel)]="selectedTemplateId"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+      <div
+        class="config-con"
+        style="margin-top: -10px"
+        *ngIf="selectedTemplateId !== undefined">
+        <p
+          style="margin-bottom: 5px"
+          class="viewTemplate"
+          (click)="viewTemplate()"
+          [tooltip]="'View Template'"
+          [tooltipPlacement]="'right'"
+          [tooltipTrigger]="'hover'">
+          View Template
+        </p>
+      </div>
+      <div class="config-con">
+        <span
+          [tooltip]="
+            'Please enter the file name to save XML output, default is identifier.xml'
+          "
+          >Filename to save XML</span
+        >
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter custom XML filename"
+          class="input-field"
+          [ngModel]="fileName"
+          [class.disabled]="!enableEditing" />
+      </div>
+    </div>
+
+    <!-- <div class="fields-container">
+      <div class="config-con">
+        <ng-container class="field-item">
+          <p
+            tooltip="Select a Template to generate the XML output."
+            class="lable">
+            Template to generate Product XML
+          </p>
+          <ng-select
+            [items]="templates"
+            bindLabel="name"
+            bindValue="id"
+            class="select-field"
+            [searchable]="false"
+            [clearable]="false"
+            placeholder="Templates"
+            [(ngModel)]="selectedTemplateId"
+            [class.disabled]="!enableEditing">
+          </ng-select>
+
+        <p
+          class="viewTemplate"
+          (click)="viewTemplate()"
+          [tooltip]="'View Template'"
+          [tooltipPlacement]="'right'"
+          [tooltipTrigger]="'hover'">
+          View Template
+        </p>
+        </ng-container>
+      </div>
+    </div> -->
   </ng-container>
 
   <ng-template #otherSteps>
@@ -389,7 +476,7 @@
               *ngSwitchCase="'select'"
               [items]="field.values"
               bindLabel="label"
-              class="select-feild"
+              class="select-field"
               bindValue="value"
               [searchable]="false"
               [clearable]="false"
