@@ -17,6 +17,7 @@ import {
   SystemProperty,
 } from 'src/app/core/models/workflow.model';
 import { PausedPropertyService } from 'src/app/paused-property.service';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-monitor',
@@ -32,6 +33,7 @@ import { PausedPropertyService } from 'src/app/paused-property.service';
     PendingComponent,
     RunningComponent,
     ProcessingByWorkflowComponent,
+    RouterModule,
   ],
   styleUrls: ['./monitor.component.scss'],
   providers: [BsModalService],
@@ -39,7 +41,7 @@ import { PausedPropertyService } from 'src/app/paused-property.service';
 export class MonitorComponent implements OnInit, OnDestroy {
   public pageParams = this.getDefaultPageParams();
   public page!: IPage<any>;
-  public activeTab: any = 'RUNNING';
+  public activeTab: any = 'running';
   isUTC: boolean | undefined;
   public destroyed$ = new Subject<void>();
   isChecked: boolean | undefined;
@@ -61,6 +63,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
   constructor(
     private webSocketAPI: WebSocketAPI,
     private apiService: ApiService,
+    private router: Router,
+    private route: ActivatedRoute,
     private timeFormatService: TimeFormatService,
     private pausedPropertyService: PausedPropertyService
   ) {}
@@ -79,6 +83,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
       this.isUTC = value;
     });
 
+    this.route.queryParams.subscribe(params => {
+      this.activeTab = params['tab'] || 'running';
+      this.switchTab(this.activeTab);
+    });
+
     this.getCounts();
     // Subscribe to WebSocket updates for live count
     this.websocketSubscription =
@@ -87,6 +96,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
         this.getCounts();
       });
   }
+
   getCounts(): void {
     this.apiService.retrieveTotalWorkflowsStatusCount().subscribe(data => {
       this.runningInstancesCount = data.runningCount;
@@ -97,6 +107,9 @@ export class MonitorComponent implements OnInit, OnDestroy {
   switchTab(tab: any) {
     this.activeTab = tab;
     this.pageParams.status = tab;
+    this.router.navigate(['/monitor'], {
+      queryParams: { tab: tab },
+    });
   }
 
   ngOnDestroy() {

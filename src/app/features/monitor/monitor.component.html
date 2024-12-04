@@ -9,20 +9,20 @@
     <div class="left-buttons">
       <button
         class="navigate-btn"
-        (click)="switchTab('RUNNING')"
-        [class.active-btn]="activeTab === 'RUNNING'">
+        (click)="switchTab('running')"
+        [class.active-btn]="activeTab === 'running'">
         Running - {{ runningInstancesCount }}
       </button>
       <button
         class="navigate-btn"
-        (click)="switchTab('PENDING')"
-        [class.active-btn]="activeTab === 'PENDING'">
+        (click)="switchTab('pending')"
+        [class.active-btn]="activeTab === 'pending'">
         Pending - {{ pendingInstancesCount }}
       </button>
       <button
         class="navigate-btn"
-        (click)="switchTab('BYWORKFLOW')"
-        [class.active-btn]="activeTab === 'BYWORKFLOW'">
+        (click)="switchTab('workflow')"
+        [class.active-btn]="activeTab === 'workflow'">
         Processing by workflow
       </button>
     </div>
@@ -39,15 +39,15 @@
     </div>
   </div>
 
-  <ng-container *ngIf="activeTab === 'RUNNING'">
+  <ng-container *ngIf="activeTab === 'running'">
     <app-running> </app-running>
   </ng-container>
 
-  <ng-container *ngIf="activeTab === 'PENDING'">
+  <ng-container *ngIf="activeTab === 'pending'">
     <app-pending></app-pending>
   </ng-container>
 
-  <ng-container *ngIf="activeTab === 'BYWORKFLOW'">
+  <ng-container *ngIf="activeTab === 'workflow'">
     <app-processing-by-workflow></app-processing-by-workflow>
   </ng-container>
 </div>
