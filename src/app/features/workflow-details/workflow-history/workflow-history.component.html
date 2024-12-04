@@ -53,13 +53,13 @@
           [class.selected]="selectedFilter === 'startDate'"
           (click)="selectFilter('startDate')"
           class="input-field"
-          style="margin-top: 40px">
+          style="margin-top: 70px">
           <img
             *ngIf="filter.startDate"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
-          Start Date
+          Created Date
         </span>
         <br />
         <span
@@ -67,25 +67,22 @@
           (click)="selectFilter('completedDate')"
           class="input-field">
           <img
-            *ngIf="filter.completedDate"
+            *ngIf="filter.start"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
           Completed Date
         </span>
         <br />
-        <span
-          [class.selected]="selectedFilter === 'duration'"
-          (click)="selectFilter('duration')"
-          class="input-field">
+        <!-- <span [class.selected]="selectedFilter === 'duration'" (click)="selectFilter('duration')" class="input-field">
           <img
             *ngIf="filter.duration"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
           Duration
-        </span>
-        <br />
+        </span> -->
+        <!-- <br /> -->
         <span
           [class.selected]="selectedFilter === 'status'"
           (click)="selectFilter('status')"
@@ -127,7 +124,7 @@
           [class.selected]="selectedFilter === 'identifier'"
           (click)="selectFilter('identifier')"
           class="input-field"
-          style="margin-bottom: 60px">
+          style="margin-bottom: 130px">
           <img
             *ngIf="filter.identifier?.length"
             src="assets/icons/checkmark-icon.svg"
