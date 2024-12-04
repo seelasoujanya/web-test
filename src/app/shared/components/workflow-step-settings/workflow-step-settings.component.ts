@@ -83,12 +83,15 @@ export class WorkflowStepSettingsComponent {
   }
 
   fetchTemplateData = (workflowId: number) => {
+    this.spinnerService.show();
     this.apiService.getAllTemplates(this.pageParams).subscribe({
       next: data => {
         this.templates = data.content;
+        this.spinnerService.hide();
       },
       error: error => {
         console.error(error);
+        this.spinnerService.hide();
       },
     });
 
@@ -103,9 +106,11 @@ export class WorkflowStepSettingsComponent {
             }
           }
         }
+        this.spinnerService.hide();
       },
       error: error => {
         console.error(error);
+        this.spinnerService.hide();
       },
     });
   };
