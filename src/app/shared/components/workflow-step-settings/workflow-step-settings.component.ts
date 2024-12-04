@@ -11,6 +11,7 @@ import { stepFields } from './constants';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-workflow-step-settings',
@@ -37,12 +38,33 @@ export class WorkflowStepSettingsComponent {
   enableEditing: boolean = false;
   availableKeys: string[] = [];
   originalWorkflowStep: IWorkflowStep | null = null;
+  fileName = '';
+
+  private pageParams = this.getDefaultPageParams();
+
+  selectedTemplateId: number | undefined;
+  originalTemplateId: number | undefined;
+  templates: {
+    id: number;
+    name: string;
+    description: string;
+  }[] = [];
+
+  getDefaultPageParams() {
+    return {
+      page: 0,
+      pazeSize: 10,
+      sortBy: '',
+      order: 'asc',
+    };
+  }
 
   constructor(
     private apiService: ApiService,
     private spinnerService: SpinnerService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -54,7 +76,47 @@ export class WorkflowStepSettingsComponent {
       if (stepField) {
         this.fields = stepField?.fields;
       }
+      if (this.workflowStep?.type == 'DDEX') {
+        this.fetchTemplateData(this.workflowStep.workflowId);
+      }
     }
+  }
+
+  fetchTemplateData = (workflowId: number) => {
+    this.spinnerService.show();
+    this.apiService.getAllTemplates(this.pageParams).subscribe({
+      next: data => {
+        this.templates = data.content;
+        this.spinnerService.hide();
+      },
+      error: error => {
+        console.error(error);
+        this.spinnerService.hide();
+      },
+    });
+
+    this.apiService.getSelectedTemplate(workflowId).subscribe({
+      next: data => {
+        if (data.length > 0) {
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].workflowStepId === this.workflowStep?.id) {
+              this.selectedTemplateId = data[i].templateId;
+              this.originalTemplateId = data[i].templateId;
+              break;
+            }
+          }
+        }
+        this.spinnerService.hide();
+      },
+      error: error => {
+        console.error(error);
+        this.spinnerService.hide();
+      },
+    });
+  };
+
+  viewTemplate() {
+    this.router.navigate(['templates', this.selectedTemplateId]);
   }
 
   toggleEditing(): void {
@@ -76,7 +138,6 @@ export class WorkflowStepSettingsComponent {
     );
     if (config) {
       if (type === 'boolean') {
-        console.log(config);
         return config.value === 'true';
       }
       return config.value as string;
@@ -153,9 +214,34 @@ export class WorkflowStepSettingsComponent {
     this.enableEditing = false;
   }
 
+  updateTemplate(): void {
+    if (this.workflowStep) {
+      const body = {
+        workflowStepId: this.workflowStep.id,
+        templateId: this.selectedTemplateId,
+      };
+      this.apiService.postTemplateForStep(body).subscribe({
+        next: data => {
+          this.originalTemplateId = this.selectedTemplateId;
+        },
+        error: error => {
+          console.log('Error updating template', error);
+        },
+      });
+    }
+  }
+
   updateWorkflowStepSettings() {
     if (this.workflowStep) {
       this.spinnerService.show();
+
+      if (
+        this.selectedTemplateId &&
+        this.selectedTemplateId !== this.originalTemplateId
+      ) {
+        this.updateTemplate();
+      }
+
       this.apiService
         .updateWorkflowStepConfigs(this.workflowStep.id, this.workflowStep)
         .subscribe({
