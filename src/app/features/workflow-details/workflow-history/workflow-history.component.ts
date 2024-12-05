@@ -18,10 +18,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {
-  MatDatepicker,
-  MatDatepickerModule,
-} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
@@ -251,9 +248,11 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   clearFilter(key: string): void {
     if (key === 'completedDate') {
-      (this.filter.start = null), (this.filter.completedDate = null);
+      this.filter.start = null;
+      this.filter.completedDate = null;
     } else if (key == 'startDate') {
-      (this.filter.startDate = null), (this.filter.endDate = null);
+      this.filter.startDate = null;
+      this.filter.endDate = null;
     } else if (
       key === 'priority' ||
       key === 'deliveryType' ||

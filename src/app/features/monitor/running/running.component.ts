@@ -5,7 +5,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CommonTableComponent } from 'src/app/shared/components/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
-import { SystemProperty } from 'src/app/core/models/workflow.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { PRIORITY } from 'src/app/core/utils/constants';
@@ -13,7 +12,7 @@ import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/c
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
 import { TimeFormatService } from 'src/app/time-format.service';
 import { WebSocketAPI } from 'src/app/core/services/websocket.service';
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-running',

@@ -45,16 +45,34 @@ export class WorkflowSettingsComponent {
 
   constructor(private apiServie: ApiService) {}
 
+  // ngOnInit(): void {
+  //   if (this.workflowId) {
+  //     this.apiServie.getWorkflowSteps(this.workflowId).subscribe({
+  //       next: data => {
+  //         this.workflowSteps = data;
+  //         this.workflowSteps.map(dd => {
+  //           this.headings.push(dd.name);
+  //           this.selectedHeading =
+  //             this.headings.length === 0 ? '' : this.headings[0];
+  //         });
+  //         this.showConfigs = this.headings.length === 0;
+  //       },
+  //       error: error => {
+  //         console.error(error);
+  //       },
+  //     });
+  //   }
+  // }
   ngOnInit(): void {
     if (this.workflowId) {
       this.apiServie.getWorkflowSteps(this.workflowId).subscribe({
         next: data => {
           this.workflowSteps = data;
-          this.workflowSteps.map(dd => {
+          this.workflowSteps.forEach(dd => {
             this.headings.push(dd.name);
-            this.selectedHeading =
-              this.headings.length === 0 ? '' : this.headings[0];
           });
+          this.selectedHeading =
+            this.headings.length === 0 ? '' : this.headings[0];
           this.showConfigs = this.headings.length === 0;
         },
         error: error => {

@@ -1,14 +1,8 @@
-import { CommonModule, ɵnormalizeQueryParams } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterModule,
-} from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
-import { IPage } from 'src/app/core/models/page.model';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';

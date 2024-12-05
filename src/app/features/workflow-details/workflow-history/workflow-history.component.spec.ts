@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkflowHistoryComponent } from './workflow-history.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, formatDate } from '@angular/common';
-import { RouterModule, Router, Navigation } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ApiService } from 'src/app/core/services/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeDetectorRef } from '@angular/core';
@@ -10,7 +10,7 @@ import {
   Priority,
   WorkflowInstanceStatus,
 } from 'src/app/core/models/workflowinstance.model';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 
 const mockData: IPage<any> = {

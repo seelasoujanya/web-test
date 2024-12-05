@@ -10,7 +10,6 @@ import {
   WorkflowConfiguration,
 } from '../models/workflow.model';
 import { StatsDTO } from '../models/workflowinstance.model';
-import { IStepConfiguration } from '../models/step-configuration.model';
 
 @Injectable({
   providedIn: 'root',
@@ -90,7 +89,7 @@ export class ApiService {
 
   public getInstancesByStatus(queryParams: any): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/workflowinstance`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
@@ -246,13 +245,13 @@ export class ApiService {
     queryParams: any
   ): Observable<any> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/versions`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
   public getAllTemplates(queryParams: any): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
@@ -261,7 +260,7 @@ export class ApiService {
     queryParams: any
   ): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/usage`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
