@@ -1,12 +1,7 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  flush,
-  TestBed,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowsComponent } from './workflows.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from 'src/app/core/services/api.service';
 import { Router } from '@angular/router';
 import { ChangeDetectorRef, TemplateRef } from '@angular/core';
@@ -14,8 +9,6 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { of } from 'rxjs';
 import { Workflow } from 'src/app/core/models/workflow.model';
 import { IPage } from 'src/app/core/models/page.model';
-import { formatDate } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('WorkflowsComponent', () => {
   let component: WorkflowsComponent;

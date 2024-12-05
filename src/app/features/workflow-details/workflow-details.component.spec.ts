@@ -81,12 +81,15 @@ describe('WorkflowDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to workflows', () => {
-    const navigateSpy = spyOn(router, 'navigate');
+  it('should navigate back to workflows using navigationService', () => {
+    const navigationServiceSpy = spyOn(
+      component['navigationService'],
+      'goBack'
+    );
 
     component.backToWorkflows();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/workflows']);
+    expect(navigationServiceSpy).toHaveBeenCalledWith('/workflows');
   });
 
   it('should reset counts', () => {

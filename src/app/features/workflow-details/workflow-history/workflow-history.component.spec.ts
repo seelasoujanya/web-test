@@ -609,7 +609,7 @@ describe('WorkflowHistoryComponent', () => {
     expect(appliedFilters).toEqual([
       {
         key: 'startDate',
-        label: 'Start Date',
+        label: 'Created Date',
         value: ['2024-01-01 - 2024-01-31'],
       },
     ]);
@@ -632,7 +632,7 @@ describe('WorkflowHistoryComponent', () => {
     expect(appliedFilters).toEqual([
       {
         key: 'startDate',
-        label: 'Start Date',
+        label: 'Created Date',
         value: ['2024-01-01'],
       },
     ]);
@@ -825,7 +825,7 @@ describe('WorkflowHistoryComponent', () => {
     expect(appliedFilters).toEqual([
       {
         key: 'startDate',
-        label: 'Start Date',
+        label: 'Created Date',
         value: ['2024-01-01 - 2024-01-31'],
       },
       {
@@ -901,7 +901,7 @@ describe('WorkflowHistoryComponent', () => {
 
   it('should return correct label for selected filter', () => {
     component.selectedFilter = 'startDate';
-    expect(component.getSelectedFilterLabel()).toBe('Start Date');
+    expect(component.getSelectedFilterLabel()).toBe('Created Date');
 
     // Test for 'completedDate'
     component.selectedFilter = 'completedDate';
