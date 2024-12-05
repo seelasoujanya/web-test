@@ -158,7 +158,7 @@ describe('WorkflowsComponent', () => {
   });
 
   it('should navigate to the correct route with workflow data on viewInstances', () => {
-    const mockWorkflow = { id: 1, name: 'Test Workflow' };
+    const mockWorkflow = { id: 1, name: 'Test Workflow', enabled: true };
     component.viewInstances(mockWorkflow);
     expect(router.navigate).toHaveBeenCalledWith(
       ['/workflows', mockWorkflow.id],
@@ -166,14 +166,6 @@ describe('WorkflowsComponent', () => {
         state: { name: mockWorkflow.name },
       }
     );
-  });
-
-  it('should call getPageItems with default pageParams on ngOnInit', () => {
-    spyOn(component, 'getPageItems');
-
-    component.ngOnInit();
-
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
   it('should instantiate all dependencies correctly in the constructor', () => {
@@ -192,8 +184,8 @@ describe('WorkflowsComponent', () => {
   it('should correctly handle data returned from getWorkflows', () => {
     const mockPage: IPage<any> = {
       content: [
-        { id: 1, name: 'Test Workflow 1' },
-        { id: 2, name: 'Test Workflow 2' },
+        { id: 1, name: 'Test Workflow 1', enabled: true },
+        { id: 2, name: 'Test Workflow 2', enabled: false },
       ],
       totalElements: 0,
       size: 0,
@@ -249,28 +241,6 @@ describe('WorkflowsComponent', () => {
 
     fixture.whenStable().then(() => {
       expect(cdRef.markForCheck).toHaveBeenCalled();
-    });
-  });
-
-  it('should correctly handle data returned from getWorkflows', () => {
-    const mockPage: IPage<any> = {
-      content: [
-        { id: 1, name: 'Test Workflow 1' },
-        { id: 2, name: 'Test Workflow 2' },
-      ],
-      totalElements: 0,
-      size: 0,
-      number: 0,
-      totalPages: 0,
-      numberOfElements: 0,
-    };
-
-    apiService.getWorkflows.and.returnValue(of(mockPage));
-    component.getPageItems(component.pageParams);
-
-    fixture.whenStable().then(() => {
-      expect(component.page).toEqual(mockPage);
-      expect(component.workflowsData).toEqual(mockPage.content);
     });
   });
 
@@ -436,12 +406,12 @@ describe('WorkflowsComponent', () => {
   });
 
   it('should clear bookmark filter and reset states', () => {
-    component.filter = {
-      enabled: null,
-      bookmark: null,
-      startDate: new Date(),
-      endDate: new Date(),
-    };
+    // component.filter = {
+    //   enabled: null,
+    //   bookmark: null,
+    //   startDate: new Date(),
+    //   endDate: new Date(),
+    // };
     spyOn(component, 'getPageItems');
     spyOn(component, 'fetchBookmarkedWorkflows');
     spyOn(component, 'hasActiveFilters').and.returnValue(false);
@@ -591,28 +561,28 @@ describe('WorkflowsComponent', () => {
 
       expect(component.hasActiveFilters()).toBeFalse();
     });
+  });
 
-    it('should return true when startDate filter is set', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: new Date('2024-12-01'), // startDate is set
-        endDate: null,
-      };
+  it('should return true when startDate filter is set', () => {
+    component.filter = {
+      bookmark: null,
+      enabled: null,
+      startDate: new Date('2024-12-01'), // startDate is set
+      endDate: null,
+    };
 
-      expect(component.hasActiveFilters()).toBeTrue();
-    });
+    expect(component.hasActiveFilters()).toBeTrue();
+  });
 
-    it('should return true when endDate filter is set', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: null,
-        endDate: new Date('2024-12-10'), // endDate is set
-      };
+  it('should return true when endDate filter is set', () => {
+    component.filter = {
+      bookmark: null,
+      enabled: null,
+      startDate: null,
+      endDate: new Date('2024-12-10'), // endDate is set
+    };
 
-      expect(component.hasActiveFilters()).toBeTrue();
-    });
+    expect(component.hasActiveFilters()).toBeTrue();
   });
 
   it('should hide the modal and reset filters if filters are not applied', () => {

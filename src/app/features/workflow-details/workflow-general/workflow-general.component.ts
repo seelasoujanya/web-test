@@ -14,7 +14,6 @@ import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ApiService } from 'src/app/core/services/api.service';
-import { WorkflowConfiguration } from 'src/app/core/models/workflow.model';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';

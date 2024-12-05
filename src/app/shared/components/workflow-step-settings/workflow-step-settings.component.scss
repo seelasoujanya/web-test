@@ -2,7 +2,6 @@
 @import 'src/styles/button';
 .main-container {
   background: #fff;
-
   padding: 0px 20px;
   // border-radius: 5px;
   // box-shadow: 2px 2px 5px #0003;
@@ -46,7 +45,6 @@
     column-gap: 30px;
     background-color: #f5f5f5;
     padding: 20px 20px 10px 20px;
-
     // display: flex;
     // flex-direction: row;
     // justify-content: space-between;
@@ -73,12 +71,11 @@
 
 .properties-container {
   margin-inline: 15px;
-  padding-bottom: 40px;
   display: grid;
   grid-template-columns: auto auto auto;
   gap: 30px;
   background-color: #f5f5f5;
-  padding: 20px;
+  padding: 20px 20px 40px 20px;
 }
 
 .disabled {
@@ -111,16 +108,19 @@ textarea:focus {
   align-items: center;
   padding: 20px 0px;
 }
+
 .config-con {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
+
 .select-field {
   max-width: 400px;
   width: 100%;
 }
+
 .line-text {
   margin: 0 15px;
   font-size: 18px;
