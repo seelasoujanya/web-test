@@ -51,17 +51,6 @@ export const ddexFields: IWorkflowStepField[] = [
       'The Selected Type of Assets Will Be Replaced with Download Links, If Not Present The Download Links Are Generated',
     section: 'Download Links',
   },
-
-  {
-    key: 'albumStreamingDeals',
-    label: 'Album Streaming Deals',
-    type: 'checkbox',
-    placeholder: 'Create Album Streaming Deals',
-    defaultValue: 'false',
-    values: [],
-    description: 'Include Album Streaming Deals',
-    section: 'properties',
-  },
   // {
   //   key: 'takeDownDeals',
   //   label: 'Take Down Deals',
