@@ -165,9 +165,9 @@ export class ApiService {
   }
 
   public getArtifacts(id: number | unknown): Observable<any> {
-    return this.http
-      .get<any>(`${this.apiUrl}/workflowinstance/${id}/artifacts`)
-      .pipe(pluck('content'));
+    return this.http.get<any>(
+      `${this.apiUrl}/workflowinstance/${id}/artifacts`
+    );
   }
 
   public getLogsForInstance(id: number | unknown): Observable<string> {
