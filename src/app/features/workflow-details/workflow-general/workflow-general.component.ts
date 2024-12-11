@@ -128,7 +128,7 @@ export class WorkflowGeneralComponent implements OnInit {
       this.copyUrl =
         this.workflowCopy.alias == null || this.workflowCopy.alias == ''
           ? ''
-          : `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
+          : `${environment.BE_URL}/api/workflow/${this.workflowCopy.alias}/instance`;
       this.copyUrlError = '';
     });
   }

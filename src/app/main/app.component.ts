@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../shared/components/header/header.component';
 import { ApiService } from '../core/services/api.service';
 import { AuthorizationService } from '../core/services/authorization.service';
+import { Title } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,14 +15,17 @@ import { AuthorizationService } from '../core/services/authorization.service';
   styleUrl: './app.component.scss',
   providers: [ApiService],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Deliver Test';
   userDetails: any;
 
-  constructor(private authorizationService: AuthorizationService) {}
+  constructor(
+    private authorizationService: AuthorizationService,
+    private titleService: Title
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    const authenticated = await this.authorizationService.isAuthenticated();
     this.userDetails = this.authorizationService.getUserData();
+    this.titleService.setTitle(environment.title);
   }
 }

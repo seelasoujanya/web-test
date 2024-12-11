@@ -34,16 +34,8 @@
     }
   }
   .cards {
-    display: flex;
     width: 100%;
-    justify-content: space-between;
     margin-bottom: 20px;
-    .log-main-container {
-      width: 50%;
-    }
-    .artifacts-container {
-      width: 50%;
-    }
   }
   .detail-container {
     margin-inline: 15px;

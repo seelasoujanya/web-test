@@ -57,6 +57,12 @@
                   {{ workflowsInstance.priority }}
                 </td>
               </tr>
+              <tr>
+                <td class="detail-field-key">Delivery Type</td>
+                <td class="detail-field-value">
+                  {{ workflowsInstance.deliveryType }}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -79,6 +85,21 @@
                   {{ formatDate(workflowsInstance.created).date }}
                   <span class="time">{{
                     formatDate(workflowsInstance.created).time
+                  }}</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="detail-field-key">Started</td>
+                <td class="detail-field-value">
+                  {{
+                    workflowsInstance.started !== null
+                      ? formatDate(workflowsInstance.started).date
+                      : 'NA'
+                  }}
+                  <span class="time">{{
+                    workflowsInstance.started !== null
+                      ? formatDate(workflowsInstance.started).time
+                      : ''
                   }}</span>
                 </td>
               </tr>

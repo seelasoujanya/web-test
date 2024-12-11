@@ -2,11 +2,14 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  catchError,
   finalize,
   forkJoin,
   interval,
+  of,
   startWith,
   Subject,
+  Subscription,
   switchMap,
   takeUntil,
   takeWhile,
@@ -32,9 +35,13 @@ import { SpinnerService } from 'src/app/core/services/spinner.service';
 })
 export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
+  intervalSubscription: Subscription | null = null;
   isUTC = false;
 
   public ngOnDestroy(): void {
+    if (this.intervalSubscription && !this.intervalSubscription.closed) {
+      this.intervalSubscription.unsubscribe();
+    }
     this.destroyed$.next();
     this.destroyed$.complete();
   }
@@ -43,8 +50,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
     });
-
-    interval(5000)
+    this.intervalSubscription = interval(5000)
       .pipe(
         startWith(0),
         takeWhile(
@@ -56,20 +62,25 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
         switchMap(() => {
           this.spinnerService.show();
           return forkJoin({
-            logs: this.apiService.getLogsForInstance(this.workflowInstanceId),
-            details: this.apiService.getWorkflowInstanceDetails(
-              this.workflowInstanceId
-            ),
-            artifacts: this.apiService.getArtifacts(this.workflowInstanceId),
-          });
+            logs: this.apiService
+              .getLogsForInstance(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+            details: this.apiService
+              .getWorkflowInstanceDetails(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+            artifacts: this.apiService
+              .getArtifacts(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+          }).pipe(finalize(() => this.spinnerService.hide()));
         })
       )
-      .subscribe(({ logs, details, artifacts }) => {
-        this.spinnerService.hide();
-        this.logsResponse = logs;
-        this.workflowsInstance = details;
-        this.filteredFiles = artifacts;
-        this.cdRef.markForCheck();
+      .subscribe({
+        next: ({ logs, details, artifacts }) => {
+          this.logsResponse = logs ?? '';
+          this.workflowsInstance = details;
+          this.filteredFiles = artifacts;
+          this.cdRef.markForCheck();
+        },
       });
   }
 
