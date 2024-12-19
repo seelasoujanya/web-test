@@ -13,6 +13,14 @@ export const ddexFields: IWorkflowStepField[] = [
   },
 
   {
+    key: 'all_date_deal',
+    label: 'Include All Date Deals',
+    type: 'checkbox',
+    placeholder: 'Create All Date Deals',
+    values: [],
+    description: 'Include All Date Deals',
+  },
+  {
     key: 'productAssetOption',
     label: 'Product Asset Transcode Type',
     type: 'select',
