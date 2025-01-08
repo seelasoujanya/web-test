@@ -17,6 +17,7 @@ import { ApiService } from 'src/app/core/services/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { Workflow } from 'src/app/core/models/workflow.model';
 
 @Component({
   selector: 'app-workflow-general',
@@ -46,7 +47,7 @@ export class WorkflowGeneralComponent implements OnInit {
   copyUrlError: string | undefined = '';
 
   @Input()
-  workflow: any;
+  workflow: Workflow | undefined;
 
   @Input()
   emails: any[] = [];
@@ -99,7 +100,6 @@ export class WorkflowGeneralComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const workflowId = this.route.snapshot.params['id'];
     this.initialConfigurations();
   }
 
@@ -128,7 +128,7 @@ export class WorkflowGeneralComponent implements OnInit {
       this.copyUrl =
         this.workflowCopy.alias == null || this.workflowCopy.alias == ''
           ? ''
-          : `${environment.BE_URL}/api/workflow/${this.workflowCopy.alias}/instance`;
+          : `${environment.BE_URL}/api/workflow/alias/${this.workflowCopy.alias}/instance`;
       this.copyUrlError = '';
     });
   }
@@ -177,6 +177,7 @@ export class WorkflowGeneralComponent implements OnInit {
           this.alias = data;
           if (
             this.alias != null &&
+            this.workflow &&
             !(this.alias.alias == this.workflow.alias)
           ) {
             this.copyUrlError =

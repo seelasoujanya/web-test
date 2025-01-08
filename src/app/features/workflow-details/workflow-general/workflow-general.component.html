@@ -30,8 +30,17 @@
             [searchable]="false"
             [clearable]="false"
             placeholder="select status"
-            [class.disabled]="!isEditing"
-            [(ngModel)]="workflowCopy.enabled">
+            [class.disabled]="
+              !isEditing || workflowCopy.status === 'NOT_RUNNABLE'
+            "
+            [(ngModel)]="workflowCopy.status">
+            <ng-template ng-label-tmp let-item="item">
+              <span>{{
+                item.value === 'INACTIVE' || item.value === 'NOT_RUNNABLE'
+                  ? 'NO'
+                  : item.label
+              }}</span>
+            </ng-template>
             <ng-template ng-label-tmp let-item="item">
               <span>{{ item.label }}</span>
             </ng-template>

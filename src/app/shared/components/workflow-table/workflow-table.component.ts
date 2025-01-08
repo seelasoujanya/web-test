@@ -87,7 +87,7 @@ export class WorkflowTableComponent implements OnDestroy {
     'Workflow Name': 'name',
     Status: 'enabled',
     'Last Run On': 'created',
-    'Last Run Status': 'status',
+    'Last Run Status': 'lastInstanceStatus',
     Priority: 'priority',
     'Queued On': 'created',
     'Started On': 'created',

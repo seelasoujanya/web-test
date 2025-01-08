@@ -1,8 +1,7 @@
 <svg width="90" height="22" viewBox="0 0 90 22" xmlns="http://www.w3.org/2000/svg">
   <rect x="0.333344" width="80" height="22" rx="11" fill="#FFEDD5"/>
   <circle cx="10.3334" cy="11" r="3" fill="#F04438"/>
-  <text x="50%" y="50%" alignment-baseline="middle" text-anchor="middle" font-family="Arial" font-size="12"  font-weight="10" fill="#F04438">
-    Paused
+  <text x="50%" y="50%" alignment-baseline="central" text-anchor="middle" font-family="Arial" font-size="12"  font-weight="10" fill="#F04438">
+    PAUSED
   </text>
 </svg>
-
