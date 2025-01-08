@@ -2,7 +2,7 @@ import { IWorkflowStepField } from '../field.model';
 
 export const ddexFields: IWorkflowStepField[] = [
   {
-    key: 'releaseType',
+    key: 'RELEASE_TYPE',
     label: 'Release Type',
     type: 'select',
     placeholder: 'Folder structure will be created based on Release Type',
@@ -21,7 +21,7 @@ export const ddexFields: IWorkflowStepField[] = [
     description: 'Include All Date Deals',
   },
   {
-    key: 'productAssetOption',
+    key: 'PRODUCT_TRANSCODE',
     label: 'Product Asset Transcode Type',
     type: 'select',
     placeholder: 'Transcode Type to be used for Product Assets',
@@ -31,7 +31,7 @@ export const ddexFields: IWorkflowStepField[] = [
     section: 'Transcodes',
   },
   {
-    key: 'trackAssetOption',
+    key: 'AUDIO_TRANSCODE',
     label: 'Audio Transcode Type',
     type: 'select',
     placeholder: 'Transcode Type to be used for Audio',
@@ -42,7 +42,7 @@ export const ddexFields: IWorkflowStepField[] = [
   },
 
   {
-    key: 'replaceWithDownloadLinks',
+    key: 'DOWNLOAD_LINK',
     label: 'Assets to Replace with Download Links',
     type: 'select',
     placeholder: 'Assets to Replace with Download Links',
@@ -170,7 +170,7 @@ export const ddexFields: IWorkflowStepField[] = [
   //   defaultValue: 'false',
   // },
   {
-    key: 'includeKosovo',
+    key: 'INCLUDE_KOSOVO',
     label: 'Include Kosovo in Definition of World',
     type: 'checkbox',
     placeholder: '',
@@ -190,7 +190,7 @@ export const ddexFields: IWorkflowStepField[] = [
   //   defaultValue: 'false',
   // },
   {
-    key: 'useDateTime',
+    key: 'USE_DATE_TIME',
     label: 'Use Date Time',
     type: 'checkbox',
     placeholder: '',

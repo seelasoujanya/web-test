@@ -2,7 +2,7 @@ import { IWorkflowStepField } from '../field.model';
 
 export const ftpFields: IWorkflowStepField[] = [
   {
-    key: 'sftp_host',
+    key: 'SFTP_HOST',
     label: 'Host',
     type: 'input',
     placeholder: 'Host',
@@ -10,7 +10,7 @@ export const ftpFields: IWorkflowStepField[] = [
     description: 'Add Host to Connect To Sftp',
   },
   {
-    key: 'sftp_username',
+    key: 'SFTP_USERNAME',
     label: 'Username',
     type: 'input',
     placeholder: 'Username',
@@ -18,7 +18,7 @@ export const ftpFields: IWorkflowStepField[] = [
     description: 'Add Username to Connect To Sftp',
   },
   {
-    key: 'sftp_password',
+    key: 'SFTP_PASSWORD',
     label: 'Password',
     type: 'input',
     placeholder: 'Password',
@@ -26,7 +26,7 @@ export const ftpFields: IWorkflowStepField[] = [
     description: 'Password to Connect To Sftp',
   },
   {
-    key: 'sftp_port',
+    key: 'SFTP_PORT',
     label: 'Port',
     type: 'input',
     placeholder: 'Port',
@@ -34,7 +34,7 @@ export const ftpFields: IWorkflowStepField[] = [
     description: 'Add Port On Which Sftp Is Running',
   },
   {
-    key: 'sftp_remote_path',
+    key: 'SFTP_REMOTE_PATH',
     label: 'Remote Path',
     type: 'input',
     placeholder: 'Remote Path',

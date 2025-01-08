@@ -1,6 +1,6 @@
 export const WORKFLOW_STATUS = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
+  { label: 'YES', value: 'ACTIVE' },
+  { label: 'NO', value: 'INACTIVE' },
 ];
 
 export const EMAIL_STATUS = [

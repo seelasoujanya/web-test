@@ -50,7 +50,7 @@
             <div class="status-content">
               <ng-container
                 *ngIf="
-                  (workflow.paused || isPauseProperty) && workflow.enabled;
+                  workflow.paused || isPauseProperty;
                   else activOrInactive
                 ">
                 <img
@@ -59,18 +59,23 @@
                   class="active-status-icon" />
               </ng-container>
               <ng-template #activOrInactive>
-                <ng-container *ngIf="workflow.enabled; else inactiveLogo">
+                <ng-container [ngSwitch]="workflow.status">
                   <img
+                    *ngSwitchCase="'ACTIVE'"
                     src="assets/icons/active-logo.svg"
                     alt="Active Icon"
                     class="active-status-icon" />
-                </ng-container>
-                <ng-template #inactiveLogo>
                   <img
+                    *ngSwitchCase="'INACTIVE'"
                     src="assets/icons/inactive-logo.svg"
                     alt="Inactive Icon"
                     class="" />
-                </ng-template>
+                  <img
+                    *ngSwitchCase="'NOT_RUNNABLE'"
+                    src="assets/icons/disabled-logo.svg"
+                    alt="Inactive Icon"
+                    class="" />
+                </ng-container>
               </ng-template>
             </div>
           </td>

@@ -5,7 +5,8 @@ export interface Workflow {
   paused: boolean;
   created: string;
   modified: string;
-  status: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'NOT_RUNNABLE';
+  alias: string;
 }
 
 export interface WorkflowResponse {
