@@ -18,6 +18,9 @@ export class ConfirmModalComponent {
   public description: string = '';
 
   @Input()
+  public workflows: any;
+
+  @Input()
   public applyButton: string = '';
 
   @Input()
@@ -31,7 +34,19 @@ export class ConfirmModalComponent {
 
   templateDescription: string = '';
 
+  public selectedWorkflows: number[] = [];
+
   constructor(private bsModalRef: BsModalRef) {}
+
+  public onWorkflowSelect(event: any, workflow: any): void {
+    if (event.target.checked) {
+      this.selectedWorkflows.push(workflow.id);
+    } else {
+      this.selectedWorkflows = this.selectedWorkflows.filter(
+        id => id !== workflow.id
+      );
+    }
+  }
 
   public closeModal(): void {
     this.updateChanges.emit(false);
@@ -39,11 +54,11 @@ export class ConfirmModalComponent {
   }
 
   public confirmModal(): void {
-    if (this.enableComments) {
-      this.updateChanges.emit(this.templateDescription);
-    } else {
-      this.updateChanges.emit(true);
-    }
+    const result = this.enableComments ? this.templateDescription : true;
+    this.updateChanges.emit({
+      result,
+      selectedWorkflows: this.selectedWorkflows,
+    });
     this.bsModalRef.hide();
   }
 

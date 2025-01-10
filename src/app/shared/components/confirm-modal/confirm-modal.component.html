@@ -17,6 +17,25 @@
           [(ngModel)]="templateDescription"
           [class.show-mandatory]="!templateDescription"></textarea>
       </div>
+      <div class="workflow-field">
+        <span>Add These Updated Version to below Workflows</span>
+        <ng-container
+          *ngIf="workflows && workflows.length > 0"
+          class="text-field">
+          <div
+            *ngFor="let item of workflows; let i = index"
+            class="workflow-item">
+            <label>
+              <input
+                type="checkbox"
+                [value]="item.id"
+                (change)="onWorkflowSelect($event, item)"
+                [checked]="selectedWorkflows.includes(item.id)" />
+              {{ item.name }}
+            </label>
+          </div>
+        </ng-container>
+      </div>
     </ng-container>
   </div>
 

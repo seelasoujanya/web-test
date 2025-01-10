@@ -344,13 +344,33 @@
         >
         <ng-select
           [items]="templates"
-          bindLabel="name"
+          bindLabel="id"
           bindValue="id"
           class="select-field"
           [searchable]="false"
           [clearable]="false"
           placeholder="Templates"
           [(ngModel)]="selectedTemplateId"
+          (ngModelChange)="onTemplateChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+      <div class="config-con">
+        <span
+          [tooltip]="
+            'Select the Template Version of the Template Added To This Workflow'
+          "
+          >Template Versions</span
+        >
+        <ng-select
+          [items]="templateVersions"
+          bindLabel="id"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Template Versions"
+          [(ngModel)]="selectedTemplateVersionId"
           [class.disabled]="!enableEditing">
         </ng-select>
       </div>

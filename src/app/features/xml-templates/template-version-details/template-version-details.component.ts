@@ -54,6 +54,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   private pageParams = this.getDefaultPageParams();
 
   templateId!: number;
+  updatedTemplateVersion!: number;
   xmlTemplatesById: any[] = [];
   selectedTemplate: string = '';
   isReadOnly: boolean = true;
@@ -217,6 +218,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
       enableComments: true,
+      workflows: this.workflows,
     };
 
     this.bsModalRef = this.modalService.show(ConfirmModalComponent);
@@ -225,20 +227,46 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.applyButton = modalData.btn1Name;
     this.bsModalRef.content.cancelButton = modalData.btn2Name;
     this.bsModalRef.content.enableComments = modalData.enableComments;
-    this.bsModalRef.content.updateChanges.subscribe((result: any) => {
+    this.bsModalRef.content.workflows = modalData.workflows;
+    this.bsModalRef.content.updateChanges.subscribe((data: any) => {
+      const { result, selectedWorkflows } = data;
       if (result) {
         const editedVersion = {
           id: this.templateId,
           templateDescription: result,
           templateCode: `${this.editedTemplate}`,
+          workflows: selectedWorkflows || [],
         };
         this.apiService
           .updateTemplate(this.templateId, editedVersion)
           .subscribe((result: any) => {
+            this.updatedTemplateVersion = result.primaryVersionId;
+            console.log('sri:', this.updatedTemplateVersion);
             this.enableEditing = false;
             this.cdRef.detectChanges();
-
             this.getTemplatesByTemplateId(this.templateId);
+            if (selectedWorkflows) {
+              console.log(selectedWorkflows);
+              console.log('id:', this.updatedTemplateVersion);
+              this.apiService
+                .updateTemplateVersion(
+                  this.updatedTemplateVersion,
+                  selectedWorkflows
+                )
+                .subscribe({
+                  next: response => {
+                    // Handle the successful response from the API
+                    console.log(
+                      'Template version updated successfully',
+                      response
+                    );
+                  },
+                  error: error => {
+                    // Handle any errors that occur during the API call
+                    console.error('Error updating template version', error);
+                  },
+                });
+            }
           });
       } else {
         this.cancelChangesToUpdateTemplate();

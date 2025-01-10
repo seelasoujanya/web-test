@@ -43,11 +43,18 @@ export class WorkflowStepSettingsComponent {
   private pageParams = this.getDefaultPageParams();
 
   selectedTemplateId: number | undefined;
+  selectedTemplateVersionId: number | undefined;
   originalTemplateId: number | undefined;
+  originalTemplateVersion: number | undefined;
+
   templates: {
     id: number;
     name: string;
     description: string;
+  }[] = [];
+
+  templateVersions: {
+    id: number;
   }[] = [];
 
   getDefaultPageParams() {
@@ -100,12 +107,16 @@ export class WorkflowStepSettingsComponent {
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
             if (data[i].workflowStepId === this.workflowStep?.id) {
+              console.log('helllo:', data[i]);
               this.selectedTemplateId = data[i].templateId;
               this.originalTemplateId = data[i].templateId;
+              this.selectedTemplateVersionId = data[i].templateVersionId;
+              this.originalTemplateVersion = data[i].templateVersionId;
               break;
             }
           }
         }
+        this.fetchTemplateVersions(this.selectedTemplateId);
         this.spinnerService.hide();
       },
       error: error => {
@@ -113,6 +124,45 @@ export class WorkflowStepSettingsComponent {
         this.spinnerService.hide();
       },
     });
+  };
+
+  onTemplateChange(templateId: number | undefined): void {
+    if (templateId) {
+      this.fetchTemplateVersions(templateId);
+    } else {
+      this.templateVersions = [];
+      this.selectedTemplateVersionId = undefined;
+    }
+  }
+
+  fetchTemplateVersions = (selectedTemplateId: number | undefined) => {
+    if (!selectedTemplateId) {
+      this.templateVersions = [];
+      this.selectedTemplateVersionId = undefined;
+      return;
+    }
+    this.spinnerService.show();
+    this.apiService
+      .getTemplatesByTemplateId(selectedTemplateId, this.pageParams)
+      .subscribe({
+        next: data => {
+          this.templateVersions = data;
+          if (this.selectedTemplateVersionId) {
+            const matchingVersion = this.templateVersions.find(
+              version => version.id === this.selectedTemplateVersionId
+            );
+            this.selectedTemplateVersionId = matchingVersion
+              ? matchingVersion.id
+              : undefined;
+          }
+
+          this.spinnerService.hide();
+        },
+        error: error => {
+          console.error(error);
+          this.spinnerService.hide();
+        },
+      });
   };
 
   viewTemplate() {
@@ -208,6 +258,8 @@ export class WorkflowStepSettingsComponent {
   }
 
   public cancelChanges() {
+    this.selectedTemplateVersionId = this.originalTemplateVersion;
+    this.selectedTemplateId = this.originalTemplateId;
     if (this.originalWorkflowStep) {
       this.workflowStep = JSON.parse(JSON.stringify(this.originalWorkflowStep));
     }
@@ -219,10 +271,12 @@ export class WorkflowStepSettingsComponent {
       const body = {
         workflowStepId: this.workflowStep.id,
         templateId: this.selectedTemplateId,
+        templateVersionId: this.selectedTemplateVersionId,
       };
       this.apiService.postTemplateForStep(body).subscribe({
         next: data => {
           this.originalTemplateId = this.selectedTemplateId;
+          this.originalTemplateVersion = this.selectedTemplateVersionId;
         },
         error: error => {
           console.log('Error updating template', error);
@@ -236,8 +290,10 @@ export class WorkflowStepSettingsComponent {
       this.spinnerService.show();
 
       if (
-        this.selectedTemplateId &&
-        this.selectedTemplateId !== this.originalTemplateId
+        (this.selectedTemplateId &&
+          this.selectedTemplateId !== this.originalTemplateId) ||
+        (this.selectedTemplateVersionId &&
+          this.selectedTemplateVersionId !== this.originalTemplateVersion)
       ) {
         this.updateTemplate();
       }

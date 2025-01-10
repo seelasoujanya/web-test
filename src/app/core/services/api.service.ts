@@ -271,6 +271,17 @@ export class ApiService {
     );
   }
 
+  public updateTemplateVersion(
+    templateVersionId: number,
+    workflowStepIds: number[]
+  ): Observable<any> {
+    console.log('second');
+    return this.http.put<any>(
+      `${this.apiUrl}/template/template-version/${templateVersionId}`,
+      workflowStepIds
+    );
+  }
+
   getWorkflowStepConfigurations(workflowId: string): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/workflow/${workflowId}/steps/configuration`
