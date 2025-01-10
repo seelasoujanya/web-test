@@ -107,7 +107,6 @@ export class WorkflowStepSettingsComponent {
         if (data.length > 0) {
           for (let i = 0; i < data.length; i++) {
             if (data[i].workflowStepId === this.workflowStep?.id) {
-              console.log('helllo:', data[i]);
               this.selectedTemplateId = data[i].templateId;
               this.originalTemplateId = data[i].templateId;
               this.selectedTemplateVersionId = data[i].templateVersionId;

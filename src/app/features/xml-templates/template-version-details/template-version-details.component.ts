@@ -241,13 +241,10 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
           .updateTemplate(this.templateId, editedVersion)
           .subscribe((result: any) => {
             this.updatedTemplateVersion = result.primaryVersionId;
-            console.log('sri:', this.updatedTemplateVersion);
             this.enableEditing = false;
             this.cdRef.detectChanges();
             this.getTemplatesByTemplateId(this.templateId);
             if (selectedWorkflows) {
-              console.log(selectedWorkflows);
-              console.log('id:', this.updatedTemplateVersion);
               this.apiService
                 .updateTemplateVersion(
                   this.updatedTemplateVersion,
@@ -255,14 +252,12 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
                 )
                 .subscribe({
                   next: response => {
-                    // Handle the successful response from the API
                     console.log(
                       'Template version updated successfully',
                       response
                     );
                   },
                   error: error => {
-                    // Handle any errors that occur during the API call
                     console.error('Error updating template version', error);
                   },
                 });
