@@ -24,6 +24,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-workflows',
@@ -42,6 +43,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatNativeDateModule,
     MatButtonModule,
     MatSliderModule,
+    NgSelectModule,
   ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
@@ -77,11 +79,17 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   headingEnum = {
     'Workflow Name': 'name',
-    Status: 'enabled',
+    Status: 'status',
     Created: 'created',
     'Last Run On': 'created',
     'Last Run Status': 'status',
   };
+
+  workflow_status = [
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Inactive', value: 'INACTIVE' },
+    { label: 'Disabled', value: 'NOT_RUNNABLE' },
+  ];
 
   filtersApplied: boolean = false;
 
@@ -111,10 +119,10 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   filter = {
-    enabled: null,
     bookmark: null,
     startDate: null as Date | null,
     endDate: null as Date | null,
+    status: null,
   };
 
   selectFilter(filterName: string) {
@@ -123,8 +131,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   getSelectedFilterLabel(): string {
     switch (this.selectedFilter) {
-      case 'enabled':
-        return 'Status';
       case 'bookmarks':
         return 'Bookmarks';
       default:
@@ -134,10 +140,10 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   public resetFilters() {
     this.filter = {
-      enabled: null,
       bookmark: null,
       startDate: null,
       endDate: null,
+      status: null,
     };
   }
 
@@ -349,9 +355,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   hasActiveFilters(): boolean {
     return (
       this.filter.bookmark !== null ||
-      this.filter.enabled !== null ||
       this.filter.startDate !== null ||
-      this.filter.endDate !== null
+      this.filter.endDate !== null ||
+      this.filter.status !== null
     );
   }
 
@@ -366,17 +372,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       });
     }
 
-    if (this.filter.enabled === true) {
+    if (this.filter.status) {
       appliedFilters.push({
-        key: 'enabled',
+        key: 'status',
         label: 'Status',
-        value: 'Active',
-      });
-    } else if (this.filter.enabled === false) {
-      appliedFilters.push({
-        key: 'enabled',
-        label: 'Status',
-        value: 'Inactive',
+        value: this.filter.status,
       });
     }
 
@@ -398,9 +398,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   clearFilter(key: string): void {
-    if (key === 'bookmark' || key === 'enabled') {
+    if (key === 'bookmark' || key === 'status') {
       this.filter[key] = null;
-    } else if (key == 'created') {
+    } else if (key === 'created') {
       (this.filter.startDate = null), (this.filter.endDate = null);
     }
     this.filtersApplied = this.hasActiveFilters();
@@ -408,7 +408,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
       this.fetchBookmarkedWorkflows();
-      // this.getPageItems(this.pageParams);
     } else {
       this.showBookMarks = false;
       this.noBookmarkedWorkflows = false;

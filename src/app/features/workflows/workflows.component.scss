@@ -1,5 +1,7 @@
-@import 'src/styles/button';
 @import 'src/styles/datepicker.scss';
+@import 'src/styles/button';
+@import 'src/styles/ngselect.scss';
+
 .workflow-container {
   background: #fff;
   .workflows-section {
@@ -289,4 +291,18 @@
 
 .label-value {
   font-size: 14px;
+}
+
+::ng-deep .ng-select-container .ng-value-container .ng-placeholder {
+  position: unset !important;
+  cursor: pointer;
+}
+
+::ng-deep .ng-clear-wrapper[title='Clear all'] {
+  visibility: hidden !important;
+}
+
+::ng-deep .ng-value.ng-star-inserted {
+  background-color: transparent !important;
+  cursor: pointer;
 }

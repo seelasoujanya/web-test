@@ -438,21 +438,26 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     };
     this.bsModalRef = this.modalService.show(emailTemplate, config);
   }
+
   public closeModal(): void {
     this.bsModalRef.hide();
     if (!this.filtersApplied) {
       this.resetFilters();
     }
   }
+
   filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
     this.openDialog(filterDeliveriesTemplate);
   }
+
   applyFilters() {
     this.bsModalRef.hide();
     this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
+    console.log(this.filtersApplied, 'filters applied');
     this.getPageItems(this.pageParams);
   }
+
   formatFilterDates() {
     if (this.filter.startDate) {
       this.filter.startDate = this.formatDateForApi(this.filter.startDate);

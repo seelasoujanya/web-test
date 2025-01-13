@@ -74,9 +74,8 @@ export class ApiService {
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
     }
-
-    if (filter.enabled !== null) {
-      params = params.set('enabled', filter.enabled);
+    if (filter.status !== null) {
+      params = params.set('status', filter.status);
     }
     if (filter.startDate !== null) {
       params = params.set('startDate', filter.startDate);

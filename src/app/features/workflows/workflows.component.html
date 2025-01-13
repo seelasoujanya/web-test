@@ -112,12 +112,12 @@
         </span>
         <br />
         <span
-          [class.selected]="selectedFilter === 'enabled'"
-          (click)="selectFilter('enabled')"
+          [class.selected]="selectedFilter === 'status'"
+          (click)="selectFilter('status')"
           class="input-field"
           style="margin-bottom: 170px">
           <img
-            *ngIf="filter.enabled !== null"
+            *ngIf="filter.status"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -201,44 +201,14 @@
           </div>
         </div>
 
-        <div *ngIf="selectedFilter === 'enabled'">
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="radio"
-                [(ngModel)]="filter.enabled"
-                [value]="true"
-                class="checkbox-input" />
-              <div
-                class="radio__icon"
-                [class.checked]="filter.enabled === true">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Active</span>
-            </label>
-          </div>
-          <br />
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="radio"
-                [(ngModel)]="filter.enabled"
-                [value]="false"
-                class="checkbox-input" />
-              <div
-                class="radio__icon"
-                [class.checked]="filter.enabled === false">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Inactive</span>
-            </label>
-          </div>
+        <div *ngIf="selectedFilter === 'status'">
+          <ng-select
+            [items]="workflow_status"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Select Status"
+            [(ngModel)]="filter.status"
+            [multiple]="true"></ng-select>
         </div>
       </div>
     </div>

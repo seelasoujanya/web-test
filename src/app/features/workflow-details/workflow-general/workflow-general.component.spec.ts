@@ -3,8 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkflowGeneralComponent } from './workflow-general.component';
 import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { of } from 'rxjs';
-import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { TemplateRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
