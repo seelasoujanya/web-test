@@ -354,4 +354,8 @@ export class ApiService {
       responseType: 'text',
     });
   }
+
+  fetchXSDValidatorFiles(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/xsd/list`);
+  }
 }

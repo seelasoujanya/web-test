@@ -39,6 +39,8 @@ export class WorkflowStepSettingsComponent {
   availableKeys: string[] = [];
   originalWorkflowStep: IWorkflowStep | null = null;
   fileName = '';
+  xsdValidatorFiles: any[] = [];
+  selectedValidatorFile: any;
 
   private pageParams = this.getDefaultPageParams();
 
@@ -87,6 +89,18 @@ export class WorkflowStepSettingsComponent {
         this.fetchTemplateData(this.workflowStep.workflowId);
       }
     }
+    this.fetchXSDValidatorFiles();
+  }
+
+  fetchXSDValidatorFiles(): void {
+    this.apiService.fetchXSDValidatorFiles().subscribe({
+      next: (result: string[]) => {
+        this.xsdValidatorFiles = result;
+      },
+      error: (err: any) => {
+        console.error('Error fetching XSD validator files:', err);
+      },
+    });
   }
 
   fetchTemplateData = (workflowId: number) => {

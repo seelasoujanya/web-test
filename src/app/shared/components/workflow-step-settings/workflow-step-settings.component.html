@@ -403,6 +403,20 @@
           [ngModel]="fileName"
           [class.disabled]="!enableEditing" />
       </div>
+      <div class="config-con">
+        <span>XSD Validation</span>
+        <ng-select
+          [items]="xsdValidatorFiles"
+          bindLabel="id"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="XSD Validator Files"
+          [(ngModel)]="selectedValidatorFile"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
     </div>
 
     <!-- <div class="fields-container">
