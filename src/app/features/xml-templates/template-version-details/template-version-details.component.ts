@@ -15,6 +15,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import * as Diff2Html from 'diff2html';
+import * as jsdiff from 'diff';
 import { Subject, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -71,12 +73,16 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   selectedTemplateIndex: any;
   workflows: any;
   workflowId: any;
+  workflowIds: number[] = [];
+  templateVersions: any[] = [];
 
   compareTemplate = {
     firstTemplate: '',
     secondTemplate: '',
     description: '',
   };
+
+  public diffHtml: string = '';
 
   templates: any[] = [];
 
@@ -206,6 +212,8 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         this.workflows = result;
         this.workflowId = result[0].id;
+        this.workflowIds = result.map((item: any) => item.id);
+        this.getTemplateVersions();
       });
   }
 
@@ -252,10 +260,8 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
                 )
                 .subscribe({
                   next: response => {
-                    console.log(
-                      'Template version updated successfully',
-                      response
-                    );
+                    console.log(response);
+                    this.getTemplateVersions();
                   },
                   error: error => {
                     console.error('Error updating template version', error);
@@ -286,6 +292,14 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       .updateTemplate(this.templateId, editedVersion)
       .subscribe((result: any) => {
         this.getTemplatesByTemplateId(this.templateId);
+      });
+  }
+
+  getTemplateVersions() {
+    this.apiService
+      .getTemplateVersions(this.workflowIds)
+      .subscribe((result: any) => {
+        this.templateVersions = result;
       });
   }
 
@@ -333,10 +347,6 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.modifiedCode = secondTemplate.templateCode;
   }
 
-  compareChanges() {
-    this.showDifferences = true;
-  }
-
   isCompareAllowed(): boolean {
     return this.compareTemplate.description.trim() !== '';
   }
@@ -349,5 +359,26 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['workflows', a.id], {
       queryParams: { tab: 'general' },
     });
+  }
+
+  compareChanges() {
+    if (this.firstTemplate && this.secondTemplate) {
+      const diff = jsdiff.createPatch(
+        'Templates',
+        this.firstTemplate.templateCode || '',
+        this.secondTemplate.templateCode || ''
+      );
+
+      const diffHtml = Diff2Html.html(diff, {
+        drawFileList: false,
+        matching: 'lines',
+        outputFormat: 'side-by-side',
+      });
+
+      this.diffHtml = diffHtml;
+      this.showDifferences = true;
+    } else {
+      console.error('Please select both templates to compare.');
+    }
   }
 }

@@ -275,10 +275,20 @@ export class ApiService {
     templateVersionId: number,
     workflowStepIds: number[]
   ): Observable<any> {
-    console.log('second');
     return this.http.put<any>(
       `${this.apiUrl}/template/template-version/${templateVersionId}`,
-      workflowStepIds
+      workflowStepIds,
+      { responseType: 'text' as 'json' }
+    );
+  }
+
+  getTemplateVersions(workflowIds: number[]): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/template/workflows/steps`,
+      workflowIds,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   }
 

@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule],
   templateUrl: './confirm-modal.component.html',
   styleUrl: './confirm-modal.component.scss',
 })
@@ -37,16 +38,6 @@ export class ConfirmModalComponent {
   public selectedWorkflows: number[] = [];
 
   constructor(private bsModalRef: BsModalRef) {}
-
-  public onWorkflowSelect(event: any, workflow: any): void {
-    if (event.target.checked) {
-      this.selectedWorkflows.push(workflow.id);
-    } else {
-      this.selectedWorkflows = this.selectedWorkflows.filter(
-        id => id !== workflow.id
-      );
-    }
-  }
 
   public closeModal(): void {
     this.updateChanges.emit(false);

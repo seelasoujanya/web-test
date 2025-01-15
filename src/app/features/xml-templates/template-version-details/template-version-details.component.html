@@ -105,121 +105,162 @@
 
     <div class="usages">
       <p class="left-usage">Usage</p>
-      <p class="right-usage">
-        <ng-container *ngIf="workflows && workflows.length > 0; else noUsage">
-          <ng-container *ngFor="let item of workflows; let last = last">
-            <span
-              (click)="logName(item)"
-              [tooltip]="'View ' + item.name"
-              [tooltipPlacement]="'right'"
-              class="workflowNames">
-              {{ item.name }}<span *ngIf="!last">, </span>
-            </span>
-          </ng-container>
-        </ng-container>
+      <div class="table-container">
+        <table class="usage-table">
+          <thead>
+            <tr>
+              <th>Workflow</th>
+              <th>Template Version</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Check if there are workflows and templateVersions -->
+            <ng-container
+              *ngIf="
+                workflows &&
+                  workflows.length > 0 &&
+                  templateVersions &&
+                  templateVersions.length > 0;
+                else noData
+              ">
+              <tr *ngFor="let item of workflows; let i = index">
+                <td>
+                  <span
+                    (click)="logName(item)"
+                    [tooltip]="'View ' + item.name"
+                    [tooltipPlacement]="'right'"
+                    class="workflowNames">
+                    {{ item.name }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="templateVersions[i]"
+                    [tooltip]="
+                      'Version ' + templateVersions[i]?.templateVersionId
+                    "
+                    [tooltipPlacement]="'right'"
+                    class="templateIds">
+                    Version {{ templateVersions[i]?.templateVersionId }}
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
 
-        <ng-template #noUsage>
-          <p class="nousage">No usages found</p>
+        <!-- Fallback template for no data -->
+        <ng-template #noData>
+          <p class="nousage">No workflows or template versions available</p>
         </ng-template>
-      </p>
-    </div>
-  </div>
-
-  <div class="templates-container">
-    <div class="left-container">
-      <div class="heading">
-        <p class="label">Versions</p>
       </div>
-      <div class="versions-container">
-        <div
-          *ngFor="let template of xmlTemplatesById; let i = index"
-          [ngClass]="{ 'selected-version': i === selectedTemplateIndex }"
-          class="version"
-          (click)="selectTemplate(i)">
-          <div class="version-number">
-            {{ template?.displayName }}
-          </div>
-          <div class="time">
-            {{ template.created | date: 'MMM, dd YYYY HH:mm' }}
+    </div>
+
+    <div class="templates-container">
+      <div class="left-container">
+        <div class="heading">
+          <p class="label">Versions</p>
+        </div>
+        <div class="versions-container">
+          <div
+            *ngFor="let template of xmlTemplatesById; let i = index"
+            [ngClass]="{ 'selected-version': i === selectedTemplateIndex }"
+            class="version"
+            (click)="selectTemplate(i)">
+            <div class="version-number">
+              {{ template?.displayName }}
+            </div>
+            <div class="time">
+              {{ template.created | date: 'MMM, dd YYYY HH:mm' }}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="right-container">
-      <div class="heading">
-        <div class="edit-icon">
-          <div class="buttons" *ngIf="enableEditing">
-            <button class="btn btn--red" type="button" (click)="editTemplate()">
-              save
-            </button>
+      <div class="right-container">
+        <div class="heading">
+          <div class="edit-icon">
+            <div class="buttons" *ngIf="enableEditing">
+              <button
+                class="btn btn--red"
+                type="button"
+                (click)="editTemplate()">
+                save
+              </button>
+              <button
+                class="btn btn--black"
+                type="button"
+                (click)="cancelChanges()">
+                cancel
+              </button>
+            </div>
+            <img
+              src="/assets/icons/edit-icon.svg"
+              alt="edit Icon"
+              class="img"
+              (click)="isEditableTemplate()"
+              *ngIf="!enableEditing" />
             <button
-              class="btn btn--black"
-              type="button"
-              (click)="cancelChanges()">
-              cancel
+              class="btn btn--red"
+              style="margin-left: 10px"
+              (click)="openCompareDialog(compareTemplateForm)">
+              Compare
             </button>
           </div>
-          <img
-            src="/assets/icons/edit-icon.svg"
-            alt="edit Icon"
-            class="img"
-            (click)="isEditableTemplate()"
-            *ngIf="!enableEditing" />
+        </div>
+        <div class="template" [ngClass]="{ disabled: !enableEditing }">
+          <form [formGroup]="reactiveForm" class="form">
+            <!-- To change this height style.scss .CodeMirror -->
+            <ngx-codemirror
+              [options]="editorOptions"
+              name="code"
+              id="code"
+              formControlName="code"></ngx-codemirror>
+          </form>
         </div>
       </div>
-      <div class="template" [ngClass]="{ disabled: !enableEditing }">
-        <form [formGroup]="reactiveForm" class="form">
-          <!-- To change this height style.scss .CodeMirror -->
-          <ngx-codemirror
-            [options]="editorOptions"
-            name="code"
-            id="code"
-            formControlName="code"></ngx-codemirror>
-        </form>
-      </div>
     </div>
+
+    <ng-template #compareTemplateForm class="modal-content">
+      <div class="header">
+        <p class="header_title">Compare Changes</p>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+      <div class="form-details">
+        <div class="select-templates">
+          <ng-select
+            [items]="xmlTemplatesById"
+            bindLabel="displayName"
+            bindValue="templateCode"
+            placeholder="Select First Template"
+            [searchable]="false"
+            [clearable]="false"
+            [(ngModel)]="compareTemplate.firstTemplate"
+            class="input-field"
+            (change)="selectFirstTemplate($event)">
+          </ng-select>
+          <ng-select
+            [items]="xmlTemplatesById"
+            bindLabel="displayName"
+            bindValue="templateCode"
+            placeholder="Select Second Template"
+            [searchable]="false"
+            [clearable]="false"
+            [(ngModel)]="compareTemplate.secondTemplate"
+            class="input-field"
+            (change)="selectSecondTemplate($event)">
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="compareTemplates" *ngIf="showDifferences">
+        <div class="diff-view side-by-side" [innerHTML]="diffHtml"></div>
+      </div>
+      <div class="buttons">
+        <button class="cancel-btn" (click)="closeModal()">CANCEL</button>
+        <button class="confirm-btn" (click)="compareChanges()">COMPARE</button>
+      </div>
+    </ng-template>
   </div>
-
-  <ng-template #compareTemplateForm class="modal-content">
-    <div class="header">
-      <p class="header_title">Compare Changes</p>
-      <button type="button" class="header_close-btn" (click)="closeModal()">
-        <img src="assets/icons/close-circle.svg" alt="" />
-      </button>
-    </div>
-    <div class="form-details">
-      <div class="select-templates">
-        <ng-select
-          [items]="xmlTemplatesById"
-          bindLabel="displayName"
-          bindValue="templateCode"
-          placeholder="Select First Template"
-          [searchable]="false"
-          [clearable]="false"
-          [(ngModel)]="compareTemplate.firstTemplate"
-          class="input-field"
-          (change)="selectFirstTemplate($event)">
-        </ng-select>
-        <ng-select
-          [items]="xmlTemplatesById"
-          bindLabel="displayName"
-          bindValue="templateCode"
-          placeholder="Select Second Template"
-          [searchable]="false"
-          [clearable]="false"
-          [(ngModel)]="compareTemplate.secondTemplate"
-          class="input-field"
-          (change)="selectSecondTemplate($event)">
-        </ng-select>
-      </div>
-    </div>
-
-    <div class="compareTemplates" *ngIf="showDifferences">
-      <form class="diff-editor-form"></form>
-    </div>
-    <div class="buttons">
-      <button class="cancel-btn" (click)="closeModal()">CANCEL</button>
-      <button class="confirm-btn" (click)="compareChanges()">COMPARE</button>
-    </div>
-  </ng-template>
 </div>

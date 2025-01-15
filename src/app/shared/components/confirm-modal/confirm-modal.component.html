@@ -22,18 +22,15 @@
         <ng-container
           *ngIf="workflows && workflows.length > 0"
           class="text-field">
-          <div
-            *ngFor="let item of workflows; let i = index"
-            class="workflow-item">
-            <label>
-              <input
-                type="checkbox"
-                [value]="item.id"
-                (change)="onWorkflowSelect($event, item)"
-                [checked]="selectedWorkflows.includes(item.id)" />
-              {{ item.name }}
-            </label>
-          </div>
+          <ng-select
+            [items]="workflows"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Select Workflows"
+            [(ngModel)]="selectedWorkflows"
+            [multiple]="true"
+            style="margin-top: 10px">
+          </ng-select>
         </ng-container>
       </div>
     </ng-container>
