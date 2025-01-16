@@ -178,6 +178,11 @@
       </div>
       <div class="right-container">
         <div class="heading">
+          <button
+            class="btn btn--red"
+            (click)="openCompareDialog(compareTemplateForm)">
+            Compare
+          </button>
           <div class="edit-icon">
             <div class="buttons" *ngIf="enableEditing">
               <button
@@ -199,12 +204,6 @@
               class="img"
               (click)="isEditableTemplate()"
               *ngIf="!enableEditing" />
-            <button
-              class="btn btn--red"
-              style="margin-left: 10px"
-              (click)="openCompareDialog(compareTemplateForm)">
-              Compare
-            </button>
           </div>
         </div>
         <div class="template" [ngClass]="{ disabled: !enableEditing }">

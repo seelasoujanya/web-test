@@ -407,13 +407,14 @@
         <span>XSD Validation</span>
         <ng-select
           [items]="xsdValidatorFiles"
-          bindLabel="id"
-          bindValue="id"
+          bindLabel=""
+          bindValue=""
           class="select-field"
           [searchable]="false"
           [clearable]="false"
           placeholder="XSD Validator Files"
           [(ngModel)]="selectedValidatorFile"
+          (change)="onValidatorFileChange($event)"
           [class.disabled]="!enableEditing">
         </ng-select>
       </div>
@@ -521,6 +522,7 @@
             </ng-select>
           </div>
         </div>
-      </ng-container></div
-  ></ng-template>
+      </ng-container>
+    </div>
+  </ng-template>
 </div>

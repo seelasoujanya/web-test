@@ -41,6 +41,7 @@ export class WorkflowStepSettingsComponent {
   fileName = '';
   xsdValidatorFiles: any[] = [];
   selectedValidatorFile: any;
+  validatorFile: any;
 
   private pageParams = this.getDefaultPageParams();
 
@@ -87,6 +88,7 @@ export class WorkflowStepSettingsComponent {
       }
       if (this.workflowStep?.type == 'DDEX') {
         this.fetchTemplateData(this.workflowStep.workflowId);
+        this.fetchValidatorFileByStepId(this.workflowStep?.id);
       }
     }
     this.fetchXSDValidatorFiles();
@@ -99,6 +101,26 @@ export class WorkflowStepSettingsComponent {
       },
       error: (err: any) => {
         console.error('Error fetching XSD validator files:', err);
+      },
+    });
+  }
+
+  fetchValidatorFileByStepId(stepId: any): void {
+    if (!stepId) {
+      console.error('Step ID is required to fetch the validator file.');
+      return;
+    }
+
+    this.apiService.fetchValidatorFileByStepId(stepId).subscribe({
+      next: (result: any) => {
+        this.validatorFile = result.xsdFilename;
+        this.selectedValidatorFile = result.xsdFilename;
+      },
+      error: (err: any) => {
+        console.error(
+          `Error fetching validator file for step ID ${stepId}:`,
+          err
+        );
       },
     });
   }
@@ -311,6 +333,18 @@ export class WorkflowStepSettingsComponent {
         this.updateTemplate();
       }
 
+      if (this.selectedValidatorFile && this.validatorFile) {
+        this.updateValidatorFilename();
+      } else {
+        const payload = {
+          workflowStep: {
+            id: this.workflowStep.id,
+          },
+          xsdFilename: this.selectedValidatorFile,
+        };
+        this.addValidatorFilename(payload);
+      }
+
       this.apiService
         .updateWorkflowStepConfigs(this.workflowStep.id, this.workflowStep)
         .subscribe({
@@ -327,5 +361,39 @@ export class WorkflowStepSettingsComponent {
           },
         });
     }
+  }
+
+  updateValidatorFilename() {
+    if (
+      this.workflowStep &&
+      this.validatorFile &&
+      this.validatorFile !== this.selectedValidatorFile
+    ) {
+      this.apiService
+        .updateValidatorFile(this.workflowStep.id, this.selectedValidatorFile)
+        .subscribe({
+          next: response => {
+            console.log(response);
+          },
+          error: error => {
+            console.error('update filename failed:', error);
+          },
+        });
+    }
+  }
+
+  addValidatorFilename(payload: any) {
+    this.apiService.addValidatorFile(payload).subscribe({
+      next: (response: any) => {
+        console.log(response);
+      },
+      error: (error: any) => {
+        console.error('filename adding failed:', error);
+      },
+    });
+  }
+
+  onValidatorFileChange(selectedFile: string): void {
+    this.selectedValidatorFile = selectedFile;
   }
 }
