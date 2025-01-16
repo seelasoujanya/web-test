@@ -199,4 +199,14 @@ export const ddexFields: IWorkflowStepField[] = [
     section: 'properties',
     defaultValue: 'false',
   },
+  {
+    key: 'SIMPLE_ASSET_NAMING',
+    label: 'Simple Asset Naming',
+    type: 'checkbox',
+    placeholder: '',
+    values: [],
+    description: 'Simple Asset Naming',
+    section: 'properties',
+    defaultValue: 'false',
+  },
 ];
