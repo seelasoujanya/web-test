@@ -175,7 +175,7 @@
             <mat-label>Select Date Range</mat-label>
             <mat-date-range-input [rangePicker]="dateRangePicker">
               <input matStartDate [(ngModel)]="filter.startDate" readonly />
-              <input matEndDate [(ngModel)]="filter.endDate" readonly />
+              <input matEndDate [(ngModel)]="filter.endDate" />
             </mat-date-range-input>
             <mat-datepicker-toggle
               matSuffix

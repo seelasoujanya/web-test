@@ -103,7 +103,27 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.getPageItems(this.pageParams);
+    this.initializeFilters();
+    this.pageParams = this.getDefaultPageParams();
+    this.bookmarkedPageParams = this.getDefaultPageParams();
+
+    this.getUserId().then(() => {
+      if (this.filter.bookmark) {
+        this.showBookMarks = true;
+        this.fetchBookmarkedWorkflows();
+      } else {
+        this.showBookMarks = false;
+        this.getPageItems(this.pageParams);
+      }
+    });
+  }
+
+  initializeFilters(): void {
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
+    this.filtersApplied = this.hasActiveFilters();
   }
 
   constructor(
@@ -115,7 +135,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private modalService: BsModalService,
     private bsModalRef: BsModalRef
   ) {
-    this.getUserId();
+    // this.getUserId();
   }
 
   filter = {
@@ -145,12 +165,18 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       endDate: null,
       status: null,
     };
+    // Remove filters from localStorage
+    localStorage.removeItem('workflowFilters');
   }
 
   applyFilters() {
     this.bsModalRef.hide();
     this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
+
+    // Save filters to localStorage
+    localStorage.setItem('workflowFilters', JSON.stringify(this.filter));
+
     if (this.filter.bookmark) {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
@@ -404,6 +430,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       (this.filter.startDate = null), (this.filter.endDate = null);
     }
     this.filtersApplied = this.hasActiveFilters();
+    // Save updated filters to localStorage
+    localStorage.setItem('workflowFilters', JSON.stringify(this.filter));
     if (this.filter.bookmark) {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();

@@ -74,7 +74,7 @@ export class ApiService {
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
     }
-    if (filter.status !== null) {
+    if (filter.status?.length > 0) {
       params = params.set('status', filter.status);
     }
     if (filter.startDate !== null) {
@@ -307,6 +307,9 @@ export class ApiService {
     }
     if (filter.enabled !== null) {
       params = params.set('enabled', filter.enabled);
+    }
+    if (filter.status?.length > 0) {
+      params = params.set('status', filter.status);
     }
     if (filter.startDate !== null) {
       params = params.set('startDate', filter.startDate);
