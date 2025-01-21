@@ -88,7 +88,6 @@ export class PendingComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        console.log('Websocket status in Pending Component');
         this.updatePendingInstances(this.pageParams);
       });
   }

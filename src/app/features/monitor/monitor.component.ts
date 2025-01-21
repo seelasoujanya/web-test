@@ -92,7 +92,6 @@ export class MonitorComponent implements OnInit, OnDestroy {
     // Subscribe to WebSocket updates for live count
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        console.log('Websocket status in Monitor Component');
         this.getCounts();
       });
   }

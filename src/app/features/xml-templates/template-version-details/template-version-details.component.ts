@@ -260,7 +260,6 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
                 )
                 .subscribe({
                   next: response => {
-                    console.log(response);
                     this.getTemplateVersions();
                   },
                   error: error => {

@@ -454,7 +454,6 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.bsModalRef.hide();
     this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
-    console.log(this.filtersApplied, 'filters applied');
     this.getPageItems(this.pageParams);
   }
 

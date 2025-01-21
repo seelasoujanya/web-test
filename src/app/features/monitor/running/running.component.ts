@@ -84,7 +84,6 @@ export class RunningComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        console.log('Websocket status in Running Component');
         this.updateRunningInstances(this.pageParams);
       });
   }
