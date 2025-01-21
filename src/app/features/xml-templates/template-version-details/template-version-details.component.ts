@@ -15,6 +15,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import * as Diff2Html from 'diff2html';
+import * as jsdiff from 'diff';
 import { Subject, takeUntil } from 'rxjs';
 import { IPage } from 'src/app/core/models/page.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -54,6 +56,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   private pageParams = this.getDefaultPageParams();
 
   templateId!: number;
+  updatedTemplateVersion!: number;
   xmlTemplatesById: any[] = [];
   selectedTemplate: string = '';
   isReadOnly: boolean = true;
@@ -70,12 +73,16 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   selectedTemplateIndex: any;
   workflows: any;
   workflowId: any;
+  workflowIds: number[] = [];
+  templateVersions: any[] = [];
 
   compareTemplate = {
     firstTemplate: '',
     secondTemplate: '',
     description: '',
   };
+
+  public diffHtml: string = '';
 
   templates: any[] = [];
 
@@ -205,6 +212,8 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       .subscribe((result: any) => {
         this.workflows = result;
         this.workflowId = result[0].id;
+        this.workflowIds = result.map((item: any) => item.id);
+        this.getTemplateVersions();
       });
   }
 
@@ -217,6 +226,7 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       btn1Name: 'CONFIRM',
       btn2Name: 'CANCEL',
       enableComments: true,
+      workflows: this.workflows,
     };
 
     this.bsModalRef = this.modalService.show(ConfirmModalComponent);
@@ -225,20 +235,39 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.bsModalRef.content.applyButton = modalData.btn1Name;
     this.bsModalRef.content.cancelButton = modalData.btn2Name;
     this.bsModalRef.content.enableComments = modalData.enableComments;
-    this.bsModalRef.content.updateChanges.subscribe((result: any) => {
+    this.bsModalRef.content.workflows = modalData.workflows;
+    this.bsModalRef.content.updateChanges.subscribe((data: any) => {
+      const { result, selectedWorkflows } = data;
       if (result) {
         const editedVersion = {
           id: this.templateId,
           templateDescription: result,
           templateCode: `${this.editedTemplate}`,
+          workflows: selectedWorkflows || [],
         };
         this.apiService
           .updateTemplate(this.templateId, editedVersion)
           .subscribe((result: any) => {
+            this.updatedTemplateVersion = result.primaryVersionId;
             this.enableEditing = false;
             this.cdRef.detectChanges();
-
             this.getTemplatesByTemplateId(this.templateId);
+            if (selectedWorkflows) {
+              this.apiService
+                .updateTemplateVersion(
+                  this.updatedTemplateVersion,
+                  selectedWorkflows
+                )
+                .subscribe({
+                  next: response => {
+                    console.log(response);
+                    this.getTemplateVersions();
+                  },
+                  error: error => {
+                    console.error('Error updating template version', error);
+                  },
+                });
+            }
           });
       } else {
         this.cancelChangesToUpdateTemplate();
@@ -263,6 +292,14 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
       .updateTemplate(this.templateId, editedVersion)
       .subscribe((result: any) => {
         this.getTemplatesByTemplateId(this.templateId);
+      });
+  }
+
+  getTemplateVersions() {
+    this.apiService
+      .getTemplateVersions(this.workflowIds)
+      .subscribe((result: any) => {
+        this.templateVersions = result;
       });
   }
 
@@ -310,10 +347,6 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.modifiedCode = secondTemplate.templateCode;
   }
 
-  compareChanges() {
-    this.showDifferences = true;
-  }
-
   isCompareAllowed(): boolean {
     return this.compareTemplate.description.trim() !== '';
   }
@@ -326,5 +359,26 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['workflows', a.id], {
       queryParams: { tab: 'general' },
     });
+  }
+
+  compareChanges() {
+    if (this.firstTemplate && this.secondTemplate) {
+      const diff = jsdiff.createPatch(
+        'Templates',
+        this.firstTemplate.templateCode || '',
+        this.secondTemplate.templateCode || ''
+      );
+
+      const diffHtml = Diff2Html.html(diff, {
+        drawFileList: false,
+        matching: 'lines',
+        outputFormat: 'side-by-side',
+      });
+
+      this.diffHtml = diffHtml;
+      this.showDifferences = true;
+    } else {
+      console.error('Please select both templates to compare.');
+    }
   }
 }

@@ -351,6 +351,26 @@
           [clearable]="false"
           placeholder="Templates"
           [(ngModel)]="selectedTemplateId"
+          (ngModelChange)="onTemplateChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+      <div class="config-con">
+        <span
+          [tooltip]="
+            'Select the Template Version of the Template Added To This Workflow'
+          "
+          >Template Versions</span
+        >
+        <ng-select
+          [items]="templateVersions"
+          bindLabel="id"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Template Versions"
+          [(ngModel)]="selectedTemplateVersionId"
           [class.disabled]="!enableEditing">
         </ng-select>
       </div>
@@ -382,6 +402,21 @@
           class="input-field"
           [ngModel]="fileName"
           [class.disabled]="!enableEditing" />
+      </div>
+      <div class="config-con">
+        <span>XSD Validation</span>
+        <ng-select
+          [items]="xsdValidatorFiles"
+          bindLabel=""
+          bindValue=""
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="XSD Validator Files"
+          [(ngModel)]="selectedValidatorFile"
+          (change)="onValidatorFileChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
       </div>
     </div>
 
@@ -487,6 +522,7 @@
             </ng-select>
           </div>
         </div>
-      </ng-container></div
-  ></ng-template>
+      </ng-container>
+    </div>
+  </ng-template>
 </div>

@@ -270,6 +270,27 @@ export class ApiService {
     );
   }
 
+  public updateTemplateVersion(
+    templateVersionId: number,
+    workflowStepIds: number[]
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/template/template-version/${templateVersionId}`,
+      workflowStepIds,
+      { responseType: 'text' as 'json' }
+    );
+  }
+
+  getTemplateVersions(workflowIds: number[]): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/template/workflows/steps`,
+      workflowIds,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
   getWorkflowStepConfigurations(workflowId: string): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/workflow/${workflowId}/steps/configuration`
@@ -331,5 +352,29 @@ export class ApiService {
       params: params,
       responseType: 'text',
     });
+  }
+
+  fetchXSDValidatorFiles(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/xsd/list`);
+  }
+
+  fetchValidatorFileByStepId(stepId: any): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/workflow-step-xsd/workflow-step/1`
+    );
+  }
+
+  updateValidatorFile(
+    workflowStepId: number | undefined,
+    fileName: any
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/workflow-step-xsd/workflow-step/${workflowStepId}/filename`,
+      fileName
+    );
+  }
+
+  addValidatorFile(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/workflow-step-xsd`, payload);
   }
 }
