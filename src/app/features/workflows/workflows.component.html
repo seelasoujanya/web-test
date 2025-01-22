@@ -10,9 +10,9 @@
             <img src="assets/icons/filter.svg" alt="" />
             <span>FILTERS</span>
           </button>
-          <div *ngIf="filtersApplied" class="applied-filters">
+          <div class="applied-filters">
             <span
-              *ngFor="let filter of getAppliedFilters()"
+              *ngFor="let filter of appliedFilters | slice: 0 : 2"
               class="filter-badge">
               <span class="filter-label">{{ filter.label }}</span
               ><span class="filter-value">: {{ filter.value }}</span>
@@ -22,6 +22,14 @@
                 (click)="clearFilter(filter.key)">
                 <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
               </button>
+            </span>
+
+            <span
+              *ngIf="appliedFilters.length > 2"
+              class="more-filters"
+              (click)="filterDeliveries(filterWorkflowsForm)"
+              tooltip="Show all applied filters">
+              ...
             </span>
           </div>
         </div>
@@ -92,7 +100,7 @@
           class="input-field"
           style="margin-top: 150px">
           <img
-            *ngIf="filter.startDate"
+            *ngIf="isFilterApplied('startDate')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -104,7 +112,7 @@
           (click)="selectFilter('bookmarks')"
           class="input-field">
           <img
-            *ngIf="filter.bookmark"
+            *ngIf="isFilterApplied('bookmark')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -117,7 +125,7 @@
           class="input-field"
           style="margin-bottom: 170px">
           <img
-            *ngIf="filter.status"
+            *ngIf="isFilterApplied('status')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -160,7 +168,7 @@
               }}</span>
             </span>
 
-            <button x mat-icon-button color="warn" (click)="clearDates()">
+            <button mat-icon-button color="warn" (click)="clearDates()">
               <img
                 src="/assets/icons/delete-icon.svg"
                 class="delete-icon"

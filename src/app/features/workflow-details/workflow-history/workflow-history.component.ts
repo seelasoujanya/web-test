@@ -12,6 +12,7 @@ import { PaginationComponent } from 'src/app/shared/components/pagination/pagina
 import { IPage } from 'src/app/core/models/page.model';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
 import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
@@ -35,6 +36,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
   imports: [
     CommonModule,
     WorkflowTableComponent,
+    TooltipModule,
     DurationPipe,
     PaginationComponent,
     FormsModule,
@@ -60,6 +62,7 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeFilters();
     this.getPageItems(this.pageParams);
   }
   workflowsInstances: WorkflowInstance[] = [];
@@ -80,12 +83,15 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     'Queued On': 'created',
     'Started On': 'created',
     Duration: 'duration',
-    'Delivery Type': 'status',
+    'Delivery Type': 'deliveryType',
     Status: 'status',
     Priority: 'priority',
+    Created: 'created',
+    Completed: 'completed',
   };
 
   public workflowId: string | null;
+  appliedFilters: { key: string; label: string; value: unknown }[] = [];
 
   public workflowName: string | undefined;
 
@@ -116,6 +122,15 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   selectedFilter: string = 'startDate';
 
   filtersApplied: boolean = false;
+
+  initializeFilters(): void {
+    const savedFilters = localStorage.getItem('workflowInstanceFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+      this.getAppliedFilters();
+    }
+    this.filtersApplied = this.hasActiveFilters();
+  }
 
   constructor(
     private apiService: ApiService,
@@ -173,84 +188,107 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     );
   }
 
-  getAppliedFilters(): { key: string; label: string; value: string[] }[] {
-    const appliedFilters = [];
+  getAppliedFilters() {
+    const addOrUpdateFilter = (key: string, label: string, value: any) => {
+      const existingFilterIndex = this.appliedFilters.findIndex(
+        filter => filter.key === key
+      );
+      if (existingFilterIndex > -1) {
+        this.appliedFilters[existingFilterIndex].value = value;
+      } else {
+        this.appliedFilters.push({ key, label, value });
+      }
+    };
 
+    const removeFilterByKey = (key: string) => {
+      this.appliedFilters = this.appliedFilters.filter(
+        filter => filter.key !== key
+      );
+    };
+
+    // Handle startDate and endDate filter
     if (this.filter.startDate && this.filter.endDate) {
-      appliedFilters.push({
-        key: 'startDate',
-        label: 'Created Date',
-        value: [
-          `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
-        ],
-      });
+      addOrUpdateFilter('startDate', 'Created Date', [
+        `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
+      ]);
     } else if (this.filter.startDate) {
-      appliedFilters.push({
-        key: 'startDate',
-        label: 'Created Date',
-        value: [formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')],
-      });
+      addOrUpdateFilter('startDate', 'Created Date', [
+        formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US'),
+      ]);
+    } else {
+      removeFilterByKey('startDate');
+      removeFilterByKey('endDate');
     }
 
+    // Handle completedDate filter
     if (this.filter.start && this.filter.completedDate) {
-      appliedFilters.push({
-        key: 'completedDate',
-        label: 'Completed Date',
-        value: [
-          `${formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.completedDate, 'yyyy-MM-dd', 'en-US')}`,
-        ],
-      });
+      addOrUpdateFilter('completedDate', 'Completed Date', [
+        `${formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.completedDate, 'yyyy-MM-dd', 'en-US')}`,
+      ]);
     } else if (this.filter.start) {
-      appliedFilters.push({
-        key: 'completedDate',
-        label: 'Completed Date',
-        value: [formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US')],
-      });
+      addOrUpdateFilter('completedDate', 'Completed Date', [
+        formatDate(this.filter.start, 'yyyy-MM-dd', 'en-US'),
+      ]);
+    } else {
+      removeFilterByKey('completedDate');
     }
 
+    // Handle duration filter
     if (this.filter.duration > 0) {
-      appliedFilters.push({
-        key: 'duration',
-        label: 'Duration',
-        value: [`${this.filter.duration} min`],
-      });
+      addOrUpdateFilter('duration', 'Duration', [
+        `${this.filter.duration} min`,
+      ]);
+    } else {
+      removeFilterByKey('duration');
     }
+
+    // Handle status filter
     if (this.filter.status && this.filter.status.length > 0) {
-      appliedFilters.push({
-        key: 'status',
-        label: 'Status',
-        value: this.filter.status,
-      });
+      addOrUpdateFilter('status', 'Status', this.filter.status);
+    } else {
+      removeFilterByKey('status');
     }
+
+    // Handle priority filter
     if (this.filter.priority && this.filter.priority.length > 0) {
-      appliedFilters.push({
-        key: 'priority',
-        label: 'Priority',
-        value: this.filter.priority,
-      });
+      addOrUpdateFilter('priority', 'Priority', this.filter.priority);
+    } else {
+      removeFilterByKey('priority');
     }
+
+    // Handle deliveryType filter
     if (this.filter.deliveryType && this.filter.deliveryType.length > 0) {
-      appliedFilters.push({
-        key: 'deliveryType',
-        label: 'Delivery Type',
-        value: this.filter.deliveryType,
-      });
+      addOrUpdateFilter(
+        'deliveryType',
+        'Delivery Type',
+        this.filter.deliveryType
+      );
+    } else {
+      removeFilterByKey('deliveryType');
     }
+
+    // Handle identifier filter
     if (this.filter.identifier && this.filter.identifier.length > 0) {
-      appliedFilters.push({
-        key: 'identifier',
-        label: 'Identifier',
-        value: this.filter.identifier,
-      });
+      addOrUpdateFilter('identifier', 'Identifier', this.filter.identifier);
+    } else {
+      removeFilterByKey('identifier');
     }
-    return appliedFilters;
+
+    this.cdRef.detectChanges();
   }
 
   clearFilter(key: string): void {
+    const filterIndex = this.appliedFilters.findIndex(
+      filter => filter.key === key
+    );
+    if (filterIndex > -1) {
+      this.appliedFilters.splice(filterIndex, 1);
+    }
+
     if (key === 'completedDate') {
       this.filter.start = null;
       this.filter.completedDate = null;
-    } else if (key == 'startDate') {
+    } else if (key === 'startDate') {
       this.filter.startDate = null;
       this.filter.endDate = null;
     } else if (
@@ -259,11 +297,18 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       key === 'status' ||
       key === 'identifier'
     ) {
-      this.filter[key].shift();
+      this.filter[key] = [];
     } else if (key === 'duration') {
       this.filter[key] = 0;
     }
+
     this.filtersApplied = this.hasActiveFilters();
+
+    localStorage.setItem(
+      'workflowInstanceFilters',
+      JSON.stringify(this.filter)
+    );
+
     this.getPageItems(this.pageParams);
   }
 
@@ -277,12 +322,17 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
         .split(',')
         .map(id => id.trim())
         .filter(id => id);
-      trimmedIdentifiers.forEach(id => {
-        if (!this.filter.identifier.includes(id)) {
-          this.filter.identifier.push(id);
-        }
-      });
+
+      const newIdentifiers = [...this.filter.identifier, ...trimmedIdentifiers];
+      this.filter.identifier = [...new Set(newIdentifiers)]; // Optional: To ensure no duplicates
+
       this.identifierInput = '';
+
+      this.filtersApplied = this.hasActiveFilters();
+      localStorage.setItem(
+        'workflowInstanceFilters',
+        JSON.stringify(this.filter)
+      );
     }
   }
 
@@ -292,7 +342,20 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   removeIdentifier(index: number): void {
-    this.filter.identifier.splice(index, 1);
+    const removedIdentifier = this.filter.identifier.splice(index, 1)[0];
+    const filterIndex = this.appliedFilters.findIndex(
+      filter => filter.key === 'identifier'
+    );
+    if (filterIndex > -1) {
+      const updatedIdentifiers = (
+        this.appliedFilters[filterIndex].value as string[]
+      ).filter((id: string) => id !== removedIdentifier);
+
+      this.appliedFilters[filterIndex].value = updatedIdentifiers;
+      if (updatedIdentifiers.length === 0) {
+        this.appliedFilters.splice(filterIndex, 1);
+      }
+    }
   }
 
   getPageItems(pageParams: any) {
@@ -414,21 +477,9 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       duration: 0,
       identifier: [],
     };
+    // Remove filters from localStorage
+    localStorage.removeItem('workflowInstanceFilters');
   }
-
-  // completedDateFilter = (date: null): boolean => {
-  //   if (!this.filter.startDate) {
-  //     return true;
-  //   }
-  //   return date ? date >= this.filter.startDate : false;
-  // };
-
-  // startDateFilter = (date: null): boolean => {
-  //   if (this.filter.completedDate) {
-  //     return !date || date <= this.filter.completedDate;
-  //   }
-  //   return true;
-  // };
 
   openDialog(emailTemplate: TemplateRef<any>) {
     const config = {
@@ -444,6 +495,74 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     if (!this.filtersApplied) {
       this.resetFilters();
     }
+
+    // Reset filter values to defaults
+    this.filter.startDate = null;
+    this.filter.endDate = null;
+    this.filter.start = null;
+    this.filter.completedDate = null;
+    this.filter.deliveryType = [];
+    this.filter.status = [];
+    this.filter.priority = [];
+    this.filter.duration = 0;
+    this.filter.identifier = [];
+
+    this.appliedFilters.forEach(appliedFilter => {
+      switch (appliedFilter.key) {
+        case 'startDate':
+          if (Array.isArray(appliedFilter.value)) {
+            const dateRange = (appliedFilter.value[0] as string).split(' - ');
+            this.filter.startDate = dateRange[0]
+              ? new Date(dateRange[0])
+              : null;
+            this.filter.endDate = dateRange[1] ? new Date(dateRange[1]) : null;
+          }
+          break;
+        case 'completedDate':
+          if (Array.isArray(appliedFilter.value)) {
+            const completedDateRange = (appliedFilter.value[0] as string).split(
+              ' - '
+            );
+            this.filter.start = completedDateRange[0]
+              ? new Date(completedDateRange[0])
+              : null;
+            this.filter.completedDate = completedDateRange[1]
+              ? new Date(completedDateRange[1])
+              : null;
+          }
+          break;
+        case 'deliveryType':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.deliveryType = appliedFilter.value as string[];
+          }
+          break;
+        case 'status':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.status = appliedFilter.value as string[];
+          }
+          break;
+        case 'priority':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.priority = appliedFilter.value as string[];
+          }
+          break;
+        case 'duration':
+          if (
+            Array.isArray(appliedFilter.value) &&
+            typeof appliedFilter.value[0] === 'string'
+          ) {
+            this.filter.duration = Number(
+              (appliedFilter.value[0] as string).replace(' min', '')
+            );
+          }
+          break;
+        case 'identifier':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.identifier = appliedFilter.value as string[];
+          }
+          break;
+      }
+    });
   }
 
   filterDeliveries(filterDeliveriesTemplate: TemplateRef<any>) {
@@ -454,8 +573,13 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
     this.bsModalRef.hide();
     this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
-    console.log(this.filtersApplied, 'filters applied');
+    this.pageParams.page = 0;
+    localStorage.setItem(
+      'workflowInstanceFilters',
+      JSON.stringify(this.filter)
+    );
     this.getPageItems(this.pageParams);
+    this.getAppliedFilters();
   }
 
   formatFilterDates() {
@@ -488,5 +612,9 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   clearCompletedDatesRange(): void {
     this.filter.start = null;
     this.filter.completedDate = null;
+  }
+
+  isFilterApplied(key: string): boolean {
+    return this.appliedFilters.some(filter => filter.key === key);
   }
 }

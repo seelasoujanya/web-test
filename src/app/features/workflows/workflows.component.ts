@@ -60,6 +60,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   noWorkflows: boolean = false;
 
+  appliedFilters: { key: string; label: string; value: unknown }[] = [];
+
   noBookmarkedWorkflows: boolean = false;
 
   BGroupId: string = '';
@@ -122,6 +124,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     const savedFilters = localStorage.getItem('workflowFilters');
     if (savedFilters) {
       this.filter = JSON.parse(savedFilters);
+      this.getAppliedFilters();
     }
     this.filtersApplied = this.hasActiveFilters();
   }
@@ -139,10 +142,10 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   filter = {
-    bookmark: null,
+    bookmark: null as boolean | null,
     startDate: null as Date | null,
     endDate: null as Date | null,
-    status: null,
+    status: null as string[] | null,
   };
 
   selectFilter(filterName: string) {
@@ -186,6 +189,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }
+    this.getAppliedFilters();
+    this.cdRef.detectChanges();
   }
 
   formatFilterDates() {
@@ -207,6 +212,34 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     if (!this.filtersApplied) {
       this.resetFilters();
     }
+
+    // Reset filter values to defaults
+    this.filter.bookmark = null;
+    this.filter.startDate = null;
+    this.filter.endDate = null;
+    this.filter.status = null;
+
+    this.appliedFilters.forEach(appliedFilter => {
+      switch (appliedFilter.key) {
+        case 'bookmark':
+          this.filter.bookmark = appliedFilter.value as boolean | null;
+          break;
+        case 'startDate':
+          if (Array.isArray(appliedFilter.value)) {
+            const dateRange = (appliedFilter.value[0] as string).split(' - ');
+            this.filter.startDate = dateRange[0]
+              ? new Date(dateRange[0])
+              : null;
+            this.filter.endDate = dateRange[1] ? new Date(dateRange[1]) : null;
+          }
+          break;
+        case 'status':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.status = appliedFilter.value as string[];
+          }
+          break;
+      }
+    });
   }
 
   filterDeliveries(filterWorkflowsTemplate: TemplateRef<any>) {
@@ -386,48 +419,65 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.filter.status !== null
     );
   }
+  getAppliedFilters() {
+    const addOrUpdateFilter = (key: string, label: string, value: any) => {
+      const existingFilterIndex = this.appliedFilters.findIndex(
+        filter => filter.key === key
+      );
+      if (existingFilterIndex > -1) {
+        this.appliedFilters[existingFilterIndex].value = value;
+      } else {
+        this.appliedFilters.push({ key, label, value });
+      }
+    };
 
-  getAppliedFilters(): { key: string; label: string; value: string }[] {
-    const appliedFilters = [];
+    // Function to remove filter by key
+    const removeFilterByKey = (key: string) => {
+      this.appliedFilters = this.appliedFilters.filter(
+        filter => filter.key !== key
+      );
+    };
 
-    if (this.filter.bookmark) {
-      appliedFilters.push({
-        key: 'bookmark',
-        label: 'Bookmarks',
-        value: 'Yes',
-      });
+    // Handle bookmark filter
+    if (this.filter.bookmark === false || this.filter.bookmark === null) {
+      removeFilterByKey('bookmark');
+    } else if (this.filter.bookmark === true) {
+      addOrUpdateFilter('bookmark', 'Bookmark', 'Yes');
     }
 
-    if (this.filter.status) {
-      appliedFilters.push({
-        key: 'status',
-        label: 'Status',
-        value: this.filter.status,
-      });
+    // Handle status filter
+    if (!this.filter.status || this.filter.status.length === 0) {
+      removeFilterByKey('status');
+    } else {
+      addOrUpdateFilter('status', 'Status', this.filter.status);
     }
 
-    if (this.filter.startDate && this.filter.endDate) {
-      appliedFilters.push({
-        key: 'created',
-        label: 'Created Date',
-        value: `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
-      });
-    } else if (this.filter.startDate) {
-      appliedFilters.push({
-        key: 'created',
-        label: 'Created Date',
-        value: formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US'),
-      });
+    // Handle startDate and endDate filter
+    if (this.filter.startDate === null || this.filter.endDate === null) {
+      removeFilterByKey('startDate');
+      removeFilterByKey('endDate');
+    } else {
+      const dateRange =
+        this.filter.startDate && this.filter.endDate
+          ? `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`
+          : formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US');
+      addOrUpdateFilter('startDate', 'Created Date', [dateRange]);
     }
-
-    return appliedFilters;
   }
 
   clearFilter(key: string): void {
+    const filterIndex = this.appliedFilters.findIndex(
+      filter => filter.key === key
+    );
+    if (filterIndex > -1) {
+      this.appliedFilters.splice(filterIndex, 1);
+    }
+
     if (key === 'bookmark' || key === 'status') {
       this.filter[key] = null;
-    } else if (key === 'created') {
-      (this.filter.startDate = null), (this.filter.endDate = null);
+    } else if (key === 'startDate') {
+      this.filter.startDate = null;
+      this.filter.endDate = null;
     }
     this.filtersApplied = this.hasActiveFilters();
     // Save updated filters to localStorage
@@ -442,10 +492,16 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }
+    this.getAppliedFilters();
+    this.cdRef.detectChanges();
   }
 
   clearDates(): void {
     this.filter.startDate = null;
     this.filter.endDate = null;
+  }
+
+  isFilterApplied(key: string): boolean {
+    return this.appliedFilters.some(filter => filter.key === key);
   }
 }
