@@ -22,12 +22,6 @@
     </app-common-table>
   </div>
 
-  <div class="page-view">
-    <app-pagination
-      [page]="page"
-      (paginationEvent)="onPage($event)"></app-pagination>
-  </div>
-
   <ng-template #createTemplateForm class="modal-content">
     <div class="header">
       <p class="header_title">Create Template</p>
@@ -77,4 +71,9 @@
       <button class="confirm-btn" (click)="createTemplate()">CONFIRM</button>
     </div>
   </ng-template>
+</div>
+<div class="page-view">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
 </div>

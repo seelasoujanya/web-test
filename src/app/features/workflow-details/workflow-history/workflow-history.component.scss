@@ -15,7 +15,7 @@
   .btn {
     &--red {
       position: absolute;
-      top: 84px;
+      top: 74px;
       right: 0;
       margin-right: 15px;
     }
@@ -26,13 +26,13 @@
     border-radius: 8px;
     background-color: #ffffff;
   }
-  .page-view {
-    width: 100%;
-    padding: 10px;
-    display: flex;
-    justify-content: flex-end;
-    background-color: #ffffff;
-  }
+  // .page-view {
+  //   width: 100%;
+  //   padding: 10px;
+  //   display: flex;
+  //   justify-content: flex-end;
+  //   background-color: #ffffff;
+  // }
   .no-instances-message {
     display: flex;
     flex-direction: column;
