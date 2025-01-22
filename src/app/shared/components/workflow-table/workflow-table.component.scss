@@ -1,6 +1,7 @@
 .table {
   height: 100%;
   overflow-y: auto;
+  // padding-bottom: 30px;
 
   .table-container {
     border-radius: 8px;
@@ -87,6 +88,10 @@
         line-height: 22px;
         letter-spacing: 0.3px;
       }
+    }
+    .workflow-name {
+      text-align: left !important;
+      padding-left: 20px !important;
     }
     .expanded-instance {
       display: flex;
@@ -215,12 +220,12 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.page-view {
-  width: 100%;
-  padding: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
+// .page-view {
+//   width: 100%;
+//   padding: 10px;
+//   display: flex;
+//   justify-content: flex-end;
+// }
 
 .loader {
   border: 4px solid #f3f3f3;
@@ -361,4 +366,8 @@ input:checked + .slider:before {
   margin-left: -60px;
   opacity: 0;
   transition: opacity 0.3s;
+}
+.align-left-imp {
+  text-align: left !important;
+  padding-left: 20px !important;
 }

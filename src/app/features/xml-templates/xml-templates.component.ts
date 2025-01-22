@@ -217,6 +217,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
       .addTemplate(this.newTemplateData)
       .subscribe((result: any) => {
         this.xmlTemplates.push(result);
+        this.getPageItems(this.pageParams);
       });
     this.reset();
   }

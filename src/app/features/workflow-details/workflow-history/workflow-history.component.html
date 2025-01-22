@@ -37,12 +37,6 @@
       No Instance Found
     </div>
   </div>
-
-  <div class="page-view" *ngIf="!noInstancesFound">
-    <app-pagination
-      [page]="page"
-      (paginationEvent)="onPage($event)"></app-pagination>
-  </div>
 </div>
 
 <ng-template #filterDeliveriesForm class="modal-content">
@@ -306,3 +300,9 @@
     </div>
   </div>
 </ng-template>
+
+<div class="page-view" *ngIf="!noInstancesFound">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
+</div>

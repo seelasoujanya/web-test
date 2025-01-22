@@ -3,11 +3,13 @@
 @import 'src/styles/button';
 .details-label {
   padding-inline: 15px;
-  padding-top: 15px;
+  padding: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #f3f3f3;
+  position: sticky;
+  top: 0;
   .label-left {
     height: 30px;
     display: flex;
@@ -58,8 +60,8 @@
   background: #fff;
   border-radius: 5px;
   box-shadow: 2px 2px 2px #0003;
-  margin-inline: 15px;
-  margin-bottom: 10px;
+  margin: 10px 15px;
+
   .general-setting-label {
     display: flex;
     gap: 20px;
