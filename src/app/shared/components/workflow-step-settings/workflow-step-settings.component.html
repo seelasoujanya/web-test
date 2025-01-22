@@ -351,6 +351,26 @@
           [clearable]="false"
           placeholder="Templates"
           [(ngModel)]="selectedTemplateId"
+          (ngModelChange)="onTemplateChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+      <div class="config-con">
+        <span
+          [tooltip]="
+            'Select the Template Version of the Template Added To This Workflow'
+          "
+          >Template Versions</span
+        >
+        <ng-select
+          [items]="templateVersions"
+          bindLabel="id"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Template Versions"
+          [(ngModel)]="selectedTemplateVersionId"
           [class.disabled]="!enableEditing">
         </ng-select>
       </div>
@@ -383,39 +403,22 @@
           [ngModel]="fileName"
           [class.disabled]="!enableEditing" />
       </div>
-    </div>
-
-    <!-- <div class="fields-container">
       <div class="config-con">
-        <ng-container class="field-item">
-          <p
-            tooltip="Select a Template to generate the XML output."
-            class="lable">
-            Template to generate Product XML
-          </p>
-          <ng-select
-            [items]="templates"
-            bindLabel="name"
-            bindValue="id"
-            class="select-field"
-            [searchable]="false"
-            [clearable]="false"
-            placeholder="Templates"
-            [(ngModel)]="selectedTemplateId"
-            [class.disabled]="!enableEditing">
-          </ng-select>
-
-        <p
-          class="viewTemplate"
-          (click)="viewTemplate()"
-          [tooltip]="'View Template'"
-          [tooltipPlacement]="'right'"
-          [tooltipTrigger]="'hover'">
-          View Template
-        </p>
-        </ng-container>
+        <span>XSD Validation</span>
+        <ng-select
+          [items]="xsdValidatorFiles"
+          bindLabel=""
+          bindValue=""
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="XSD Validator Files"
+          [(ngModel)]="selectedValidatorFile"
+          (change)="onValidatorFileChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
       </div>
-    </div> -->
+    </div>
   </ng-container>
 
   <ng-template #otherSteps>
@@ -487,6 +490,7 @@
             </ng-select>
           </div>
         </div>
-      </ng-container></div
-  ></ng-template>
+      </ng-container>
+    </div>
+  </ng-template>
 </div>

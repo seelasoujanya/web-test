@@ -17,17 +17,17 @@ import {
 } from 'src/app/core/utils/constants';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { SystemProperty, Workflow } from 'src/app/core/models/workflow.model';
-import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TimeFormatService } from 'src/app/time-format.service';
+
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
-  imports: [CommonModule, RouterOutlet, DurationPipe],
+  imports: [CommonModule],
 })
 export class WorkflowTableComponent implements OnDestroy {
   public timeFormatService: TimeFormatService;
