@@ -182,7 +182,7 @@
             class="w-100 datepicker__size_s">
             <mat-label>Select Date Range</mat-label>
             <mat-date-range-input [rangePicker]="dateRangePicker">
-              <input matStartDate [(ngModel)]="filter.startDate" readonly />
+              <input matStartDate [(ngModel)]="filter.startDate" />
               <input matEndDate [(ngModel)]="filter.endDate" />
             </mat-date-range-input>
             <mat-datepicker-toggle

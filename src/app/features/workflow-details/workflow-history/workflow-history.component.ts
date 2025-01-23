@@ -488,6 +488,8 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       keyboard: false,
     };
     this.bsModalRef = this.modalService.show(emailTemplate, config);
+    this.openDialogWithSelectedStartDateRange();
+    this.openDialogWithSelectedCompletedDateRange();
   }
 
   public closeModal(): void {
@@ -616,5 +618,19 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
   isFilterApplied(key: string): boolean {
     return this.appliedFilters.some(filter => filter.key === key);
+  }
+
+  openDialogWithSelectedStartDateRange() {
+    if (this.filter.startDate && this.filter.endDate) {
+      this.filter.startDate = new Date(this.filter.startDate);
+      this.filter.endDate = new Date(this.filter.endDate);
+    }
+  }
+
+  openDialogWithSelectedCompletedDateRange() {
+    if (this.filter.start && this.filter.completedDate) {
+      this.filter.start = new Date(this.filter.start);
+      this.filter.completedDate = new Date(this.filter.completedDate);
+    }
   }
 }

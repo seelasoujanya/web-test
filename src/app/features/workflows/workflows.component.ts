@@ -53,7 +53,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
 
   filteredWorkflows: Workflow[] = [];
-
   bookmarkedIds: number[] = [];
 
   workflowName: string = '';
@@ -108,7 +107,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.initializeFilters();
     this.pageParams = this.getDefaultPageParams();
     this.bookmarkedPageParams = this.getDefaultPageParams();
-
     this.getUserId().then(() => {
       if (this.filter.bookmark) {
         this.showBookMarks = true;
@@ -253,6 +251,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       keyboard: false,
     };
     this.bsModalRef = this.modalService.show(workflowsTemplate, config);
+    this.openDialogWithSelectedDateRange();
   }
 
   getPageItems(pageParams: any) {
@@ -499,9 +498,17 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   clearDates(): void {
     this.filter.startDate = null;
     this.filter.endDate = null;
+    this.cdRef.detectChanges();
   }
 
   isFilterApplied(key: string): boolean {
     return this.appliedFilters.some(filter => filter.key === key);
+  }
+
+  openDialogWithSelectedDateRange() {
+    if (this.filter.startDate && this.filter.endDate) {
+      this.filter.startDate = new Date(this.filter.startDate);
+      this.filter.endDate = new Date(this.filter.endDate);
+    }
   }
 }
