@@ -1,13 +1,39 @@
-import { ddexFields } from './step-fields/ddex';
-import { ftpFields } from './step-fields/ftp';
-import { gcsBucketFields } from './step-fields/gcs-bucket';
+import { IWorkflowConfigurationSection } from './config-section.model';
+import { appleMusicSections } from './workflow-step-sections/apple-music';
+import { ddexSections } from './workflow-step-sections/ddex';
+import { ftpStepSections } from './workflow-step-sections/ftp';
+import { gcsStepSections } from './workflow-step-sections/gcs-bucket';
 
-export const stepFields = [
-  { stepType: 'DDEX', fields: ddexFields, title: 'DDEX Settings' },
-  { stepType: 'SFTP', fields: ftpFields, title: 'FTP Settings' },
+export interface StepConfigurationSection {
+  stepType: string;
+  sections: IWorkflowConfigurationSection[];
+  title: string;
+  requireTemplate: boolean;
+}
+
+export const stepConfigurationSections: StepConfigurationSection[] = [
+  {
+    stepType: 'DDEX',
+    sections: ddexSections,
+    title: 'DDEX Settings',
+    requireTemplate: true,
+  },
   {
     stepType: 'GCS_UPLOADER',
-    fields: gcsBucketFields,
+    sections: gcsStepSections,
     title: 'GCS Bucket Settings',
+    requireTemplate: false,
+  },
+  {
+    stepType: 'SFTP',
+    sections: ftpStepSections,
+    title: 'SFTP Settings',
+    requireTemplate: false,
+  },
+  {
+    stepType: 'APPLE_MUSIC',
+    sections: appleMusicSections,
+    title: 'Apple Music Settings',
+    requireTemplate: true,
   },
 ];

@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { IStepConfiguration } from 'src/app/core/models/step-configuration.model';
 import { IWorkflowStep } from 'src/app/core/models/workflow-step';
-import { IWorkflowStepField } from './field.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { stepFields } from './constants';
+import {
+  StepConfigurationSection,
+  stepConfigurationSections,
+} from './constants';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -26,14 +28,13 @@ export class WorkflowStepSettingsComponent {
   title = '';
 
   @Input()
-  fields: IWorkflowStepField[] = [];
-
-  @Input()
   workflowStep: IWorkflowStep | null = null;
 
   @Output()
   workflowStepChange: EventEmitter<IWorkflowStep | null> =
     new EventEmitter<IWorkflowStep | null>();
+
+  stepConfigurationSection: StepConfigurationSection | undefined;
 
   enableEditing: boolean = false;
   availableKeys: string[] = [];
@@ -80,15 +81,15 @@ export class WorkflowStepSettingsComponent {
   ngOnInit(): void {
     if (this.workflowStep) {
       this.originalWorkflowStep = JSON.parse(JSON.stringify(this.workflowStep));
-      const stepField = stepFields.find(
+      const stepSection = stepConfigurationSections.find(
         ({ stepType }) => stepType === this.workflowStep?.type
       );
-      if (stepField) {
-        this.fields = stepField?.fields;
-      }
-      if (this.workflowStep?.type == 'DDEX') {
-        this.fetchTemplateData(this.workflowStep.workflowId);
-        this.fetchValidatorFileByStepId(this.workflowStep?.id);
+      if (stepSection) {
+        this.stepConfigurationSection = stepSection;
+        if (this.stepConfigurationSection.requireTemplate) {
+          this.fetchTemplateData(this.workflowStep.workflowId);
+          this.fetchValidatorFileByStepId(this.workflowStep?.id);
+        }
       }
     }
     this.fetchXSDValidatorFiles();
@@ -107,7 +108,6 @@ export class WorkflowStepSettingsComponent {
 
   fetchValidatorFileByStepId(stepId: any): void {
     if (!stepId) {
-      console.error('Step ID is required to fetch the validator file.');
       return;
     }
 
@@ -332,6 +332,7 @@ export class WorkflowStepSettingsComponent {
       ) {
         this.updateTemplate();
       }
+      console.log(this.selectedValidatorFile, this.validatorFile);
 
       if (this.selectedValidatorFile && this.validatorFile) {
         this.updateValidatorFilename();

@@ -5,11 +5,9 @@
 .bg-container {
   background: white;
   border-radius: 5px;
-  padding: 20px 50px;
+  padding: 20px;
   display: flex;
   flex-direction: row;
-  margin: 0px 20px;
-  height: 100%;
 }
 
 h6.active {
@@ -30,7 +28,7 @@ h6.active {
 }
 
 .left-container {
-  width: 40%;
+  width: 30%;
   border-right: 1px solid #f2f2f2;
 }
 .right-container {

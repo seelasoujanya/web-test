@@ -6,7 +6,6 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { CommonTableComponent } from 'src/app/shared/components/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
-import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { PRIORITY } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -61,11 +60,9 @@ export class RunningComponent {
 
   constructor(
     private apiService: ApiService,
-    private spinnerService: SpinnerService,
     private timeFormatService: TimeFormatService,
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
-    private datePipe: DatePipe,
     private cdRef: ChangeDetectorRef,
     private webSocketAPI: WebSocketAPI
   ) {}
@@ -108,7 +105,6 @@ export class RunningComponent {
   }
 
   updateRunningInstances(pageParams: any) {
-    this.spinnerService.show();
     this.apiService.getInstancesByStatus(pageParams).subscribe(data => {
       this.page = data;
       this.runningInstances = data.content;
@@ -117,7 +113,6 @@ export class RunningComponent {
         this.updateRunningInstances(this.pageParams);
       }
       this.noRunningInstances = this.runningInstances.length === 0;
-      this.spinnerService.hide();
       this.cdRef.markForCheck();
     });
   }
