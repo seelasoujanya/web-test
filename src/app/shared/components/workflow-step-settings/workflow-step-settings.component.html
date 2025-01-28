@@ -177,7 +177,7 @@
           [class.disabled]="!enableEditing" />
       </div>
 
-      <div>
+      <div *ngIf="stepConfigurationSection?.requireXsdValidation">
         <span>XSD Validation</span>
         <ng-select
           [items]="xsdValidatorFiles"
