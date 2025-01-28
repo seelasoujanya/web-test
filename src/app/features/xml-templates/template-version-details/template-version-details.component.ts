@@ -179,7 +179,10 @@ export class TemplateVersionDetailsComponent implements OnInit, OnDestroy {
   getTemplatesByTemplateId(id: number) {
     this.spinnerService.show();
     this.apiService
-      .getTemplatesByTemplateId(id, this.pageParams)
+      .getTemplatesByTemplateId(id, {
+        ...this.pageParams,
+        includeTemplateCode: true,
+      })
       .pipe(takeUntil(this.destroyed$))
       .subscribe(data => {
         this.page = data;

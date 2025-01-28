@@ -363,7 +363,7 @@ export class ApiService {
 
   fetchValidatorFileByStepId(stepId: any): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}/workflow-step-xsd/workflow-step/1`
+      `${this.apiUrl}/workflow-step-xsd/workflow-step/${stepId}`
     );
   }
 
