@@ -3,6 +3,7 @@ import { appleMusicSections } from './workflow-step-sections/apple-music';
 import { ddexSections } from './workflow-step-sections/ddex';
 import { ftpStepSections } from './workflow-step-sections/ftp';
 import { gcsStepSections } from './workflow-step-sections/gcs-bucket';
+import { s3Uploader } from './workflow-step-sections/s3Uploader';
 import { ugcErnDdex } from './workflow-step-sections/ugc-ern-ddex';
 
 export interface StepConfigurationSection {
@@ -47,6 +48,13 @@ export const stepConfigurationSections: StepConfigurationSection[] = [
     sections: ugcErnDdex,
     title: 'UGC-ERN-DDEX Settings',
     requireTemplate: true,
+    requireXsdValidation: true,
+  },
+  {
+    stepType: 'S3_UPLOADER',
+    sections: s3Uploader,
+    title: 'S3 Bucket Settings',
+    requireTemplate: false,
     requireXsdValidation: false,
   },
 ];

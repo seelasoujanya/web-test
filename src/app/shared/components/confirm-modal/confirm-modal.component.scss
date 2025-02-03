@@ -34,7 +34,7 @@
   .body {
     height: 100%;
     padding: 0 20px 20px;
-    overflow-y: auto;
+    // overflow-y: auto;
     font-family: 'Graphik', sans-serif;
     font-style: normal;
     font-weight: 400;
@@ -81,4 +81,11 @@
 
 textarea:focus {
   outline: none;
+}
+
+::ng-deep ng-select .ng-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
