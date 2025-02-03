@@ -85,7 +85,7 @@
   .modal-content {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     background: white;
     border-radius: 6px;
     .header {
@@ -129,7 +129,7 @@
         line-height: 20px;
         display: block;
         letter-spacing: 0.3px;
-        padding-block: 15px;
+        padding-block: 10px;
         color: #344054;
         .input-field {
           width: 100%;
@@ -231,7 +231,7 @@
 .templateCode {
   font-size: 14px;
   font-weight: 400;
-  height: 500px;
+  height: 250px;
   margin-top: 10px;
   border: 1px solid #d0d5dd;
   border-radius: 4px;

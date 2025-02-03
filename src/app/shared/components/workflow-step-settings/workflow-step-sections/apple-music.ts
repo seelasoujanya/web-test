@@ -31,7 +31,7 @@ export const appleMusicSections: IWorkflowConfigurationSection[] = [
         type: 'checkbox',
         placeholder: '',
         values: [],
-        description: 'Include Kosovo in Territories',
+        description: 'Include Atmos Assets',
         defaultValue: 'false',
         required: false,
       },
