@@ -76,10 +76,18 @@
         (bookMarkEvent)="toggleBookmark($event)"
         (reload)="reload($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
-      <div *ngIf="noWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="
+          noWorkflows &&
+          !showBookMarks &&
+          !(noBookmarkedWorkflows && showBookMarks)
+        "
+        class="no-workflows-message">
         No Workflows Found
       </div>
-      <div *ngIf="noBookmarkedWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="noBookmarkedWorkflows && showBookMarks"
+        class="no-workflows-message">
         No Bookmarks Found
       </div>
     </div>
@@ -216,7 +224,8 @@
             bindValue="value"
             placeholder="Select Status"
             [(ngModel)]="filter.status"
-            [multiple]="true"></ng-select>
+            [multiple]="true"
+            [clearable]="true"></ng-select>
         </div>
       </div>
     </div>
