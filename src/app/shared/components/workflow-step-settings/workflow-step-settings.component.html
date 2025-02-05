@@ -177,7 +177,8 @@
           maxlength="255"
           placeholder="Enter custom XML filename"
           class="input-field"
-          [ngModel]="fileName"
+          [ngModel]="getFieldValue('FILENAME')"
+          (ngModelChange)="setFieldValue('FILENAME', $event)"
           [class.disabled]="!enableEditing" />
       </div>
 
