@@ -47,10 +47,19 @@
   pointer-events: none;
 }
 
+::ng-deep .modal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+}
+
 ::ng-deep .modal-dialog {
-  max-width: 800px;
-  position: sticky;
-  top: 150px;
+  width: 800px !important;
+  max-width: 800px !important;
   z-index: 1000;
   .modal-content {
     height: 555px;
@@ -190,11 +199,6 @@
   background-color: #ca0a3d;
 }
 
-::ng-deep .ng-select-container .ng-value-container .ng-placeholder {
-  position: unset !important;
-  cursor: pointer;
-}
-
 ::ng-deep .ng-clear-wrapper[title='Clear all'] {
   visibility: hidden !important;
 }
@@ -291,4 +295,11 @@
   font-size: 16px;
   font-weight: 500;
   display: inline-block;
+}
+
+::ng-deep ng-select .ng-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

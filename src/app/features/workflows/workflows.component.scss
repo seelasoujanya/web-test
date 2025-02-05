@@ -77,10 +77,19 @@
   font-size: 15px;
 }
 
+::ng-deep .modal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+}
+
 ::ng-deep .modal-dialog {
-  max-width: 800px;
-  position: sticky;
-  top: 150px;
+  width: 800px !important;
+  max-width: 800px !important;
   z-index: 1000;
   .modal-content {
     // height: 550px;
@@ -295,9 +304,15 @@
   font-size: 14px;
 }
 
-::ng-deep .ng-select-container .ng-value-container .ng-placeholder {
-  position: unset !important;
-  cursor: pointer;
+::ng-deep ng-select .ng-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+::ng-deep ng-select {
+  margin-top: 40px;
 }
 
 ::ng-deep .ng-clear-wrapper[title='Clear all'] {

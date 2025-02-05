@@ -189,6 +189,30 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
   }
 
   getAppliedFilters() {
+    const priorityMapping: Record<string, string> = {
+      HIGH: 'High',
+      MEDIUM: 'Medium',
+      LOW: 'Low',
+    };
+
+    const statusMapping: Record<string, string> = {
+      COMPLETED: 'Success',
+      FAILED: 'Error',
+      CREATED: 'Created',
+      QUEUED: 'Queued',
+      RUNNING: 'Running',
+      TERMINATED: 'Terminated',
+    };
+
+    const deliveryTypeMapping: Record<string, string> = {
+      FULL_DELIVERY: 'Full Delivery',
+      DATA_ONLY: 'Data Only',
+      PACKSHOT: 'Packshot',
+      SCREENGRAB: 'Screengrab',
+      COVER_ART: 'Cover Art',
+      INSERT: 'Insert',
+    };
+
     const addOrUpdateFilter = (key: string, label: string, value: any) => {
       const existingFilterIndex = this.appliedFilters.findIndex(
         filter => filter.key === key
@@ -244,25 +268,34 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
 
     // Handle status filter
     if (this.filter.status && this.filter.status.length > 0) {
-      addOrUpdateFilter('status', 'Status', this.filter.status);
+      const formattedStatus = this.filter.status.map(
+        status => statusMapping[status as keyof typeof statusMapping] || status
+      );
+      addOrUpdateFilter('status', 'Status', formattedStatus);
     } else {
       removeFilterByKey('status');
     }
 
     // Handle priority filter
     if (this.filter.priority && this.filter.priority.length > 0) {
-      addOrUpdateFilter('priority', 'Priority', this.filter.priority);
+      const formattedPriority = this.filter.priority.map(
+        priority =>
+          priorityMapping[priority as keyof typeof priorityMapping] || priority
+      );
+      addOrUpdateFilter('priority', 'Priority', formattedPriority);
     } else {
       removeFilterByKey('priority');
     }
 
     // Handle deliveryType filter
     if (this.filter.deliveryType && this.filter.deliveryType.length > 0) {
-      addOrUpdateFilter(
-        'deliveryType',
-        'Delivery Type',
-        this.filter.deliveryType
+      const formattedDeliveryType = this.filter.deliveryType.map(
+        deliveryType =>
+          deliveryTypeMapping[
+            deliveryType as keyof typeof deliveryTypeMapping
+          ] || deliveryType
       );
+      addOrUpdateFilter('deliveryType', 'Delivery Type', formattedDeliveryType);
     } else {
       removeFilterByKey('deliveryType');
     }
