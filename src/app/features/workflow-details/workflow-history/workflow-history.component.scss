@@ -34,11 +34,15 @@
   //   background-color: #ffffff;
   // }
   .no-instances-message {
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
+    padding: 16px;
+    position: absolute;
+    top: 25vh;
+    font-size: 15px;
   }
 }
 

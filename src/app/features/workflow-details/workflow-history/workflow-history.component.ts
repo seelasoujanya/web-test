@@ -482,7 +482,6 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
           },
           error: () => {
             this.workflowsInstances = [];
-            this.noInstancesFound = true;
             this.cdRef.markForCheck();
           },
         });
@@ -520,6 +519,10 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       ignoreBackdropClick: true,
       keyboard: false,
     };
+    const savedFilters = localStorage.getItem('workflowInstanceFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
     this.bsModalRef = this.modalService.show(emailTemplate, config);
     this.openDialogWithSelectedStartDateRange();
     this.openDialogWithSelectedCompletedDateRange();
@@ -531,16 +534,11 @@ export class WorkflowHistoryComponent implements OnDestroy, OnInit {
       this.resetFilters();
     }
 
-    // Reset filter values to defaults
-    this.filter.startDate = null;
-    this.filter.endDate = null;
-    this.filter.start = null;
-    this.filter.completedDate = null;
-    this.filter.deliveryType = [];
-    this.filter.status = [];
-    this.filter.priority = [];
-    this.filter.duration = 0;
-    this.filter.identifier = [];
+    // Restore previously applied filters
+    const savedFilters = localStorage.getItem('workflowInstanceFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
 
     this.appliedFilters.forEach(appliedFilter => {
       switch (appliedFilter.key) {
