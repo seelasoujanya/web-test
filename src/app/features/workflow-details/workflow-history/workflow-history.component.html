@@ -38,7 +38,7 @@
       (getSortParam)="sortColumn($event)"
       (workflowDetailEvent)="viewInstanceDetails($event)">
     </app-workflow-table>
-    <div *ngIf="noInstancesFound" class="no-instances-message">
+    <div *ngIf="workflowsInstances.length == 0" class="no-instances-message">
       No Instance Found
     </div>
   </div>
