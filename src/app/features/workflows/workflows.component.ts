@@ -290,18 +290,19 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public pauseWorkflow(workflow: Workflow) {
-    const newStatus = !workflow.enabled;
+    const newStatus = workflow.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+
     const pause = workflow.paused;
     const newData = {
       name: null,
       description: null,
-      enabled: newStatus,
+      status: newStatus,
       throttleLimit: null,
       paused: pause,
       isTaskChainIsValid: null,
     };
     this.apiService.updateWorkflow(workflow.id, newData).subscribe(result => {
-      workflow.enabled = result.enabled;
+      workflow.status = result.status;
       this.cdRef.markForCheck();
     });
   }
