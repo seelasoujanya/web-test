@@ -60,7 +60,7 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
             this.workflowsInstance.status !== WorkflowInstanceStatus.FAILED
         ),
         switchMap(() => {
-          this.spinnerService.show();
+          // this.spinnerService.show();
           return forkJoin({
             logs: this.apiService
               .getLogsForInstance(this.workflowInstanceId)

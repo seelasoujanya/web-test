@@ -7,6 +7,8 @@ export interface Workflow {
   modified: string;
   status: 'ACTIVE' | 'INACTIVE' | 'NOT_RUNNABLE';
   alias: string;
+  throttleLimit: number;
+  description: string;
 }
 
 export interface WorkflowResponse {

@@ -3,6 +3,14 @@
     <div class="heading-section">
       <div class="workflow-header">
         <div class="workflows-label">
+          <div>
+            <button
+              class="btn btn--red workflow-btn"
+              type="button"
+              (click)="openCreateWorkflow(createWorkflow)">
+              CREATE WORKFLOW
+            </button>
+          </div>
           <button
             class="btn btn--red"
             type="button"
@@ -90,134 +98,347 @@
   </div>
 </div>
 
-<ng-template #filterWorkflowsForm class="modal-content">
-  <div class="form-details">
-    <div class="side-bar">
-      <div class="field">
-        <span
-          [class.selected]="selectedFilter === 'created'"
-          (click)="selectFilter('created')"
-          class="input-field"
-          style="margin-top: 150px">
-          <img
-            *ngIf="isFilterApplied('startDate')"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Created
-        </span>
-        <br />
-        <span
-          [class.selected]="selectedFilter === 'bookmarks'"
-          (click)="selectFilter('bookmarks')"
-          class="input-field">
-          <img
-            *ngIf="isFilterApplied('bookmark')"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Bookmarks
-        </span>
-        <br />
-        <span
-          [class.selected]="selectedFilter === 'status'"
-          (click)="selectFilter('status')"
-          class="input-field"
-          style="margin-bottom: 170px">
-          <img
-            *ngIf="isFilterApplied('status')"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Status
-        </span>
+<ng-template #filterWorkflowsForm>
+  <div class="modal-content filter-workflows-modal">
+    <div class="form-details">
+      <div class="side-bar">
+        <div class="field">
+          <span
+            [class.selected]="selectedFilter === 'created'"
+            (click)="selectFilter('created')"
+            class="input-field"
+            style="margin-top: 150px">
+            <img
+              *ngIf="isFilterApplied('startDate')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Created
+          </span>
+          <br />
+          <span
+            [class.selected]="selectedFilter === 'bookmarks'"
+            (click)="selectFilter('bookmarks')"
+            class="input-field">
+            <img
+              *ngIf="isFilterApplied('bookmark')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Bookmarks
+          </span>
+          <br />
+          <span
+            [class.selected]="selectedFilter === 'status'"
+            (click)="selectFilter('status')"
+            class="input-field"
+            style="margin-bottom: 170px">
+            <img
+              *ngIf="isFilterApplied('status')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Status
+          </span>
+        </div>
+        <div class="buttons">
+          <button
+            class="btn btn--black"
+            (click)="resetFilters()"
+            style="margin-left: 14px">
+            RESET
+          </button>
+          <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
+        </div>
       </div>
-      <div class="buttons">
-        <button
-          class="btn btn--black"
-          (click)="resetFilters()"
-          style="margin-left: 14px">
-          RESET
-        </button>
-        <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
+
+      <div class="form-content">
+        <div class="header">
+          <p class="header_title">Filter Workflows</p>
+          <button type="button" class="header_close-btn" (click)="closeModal()">
+            <img src="assets/icons/close-circle.svg" alt="" />
+          </button>
+        </div>
+        <div>
+          <div *ngIf="selectedFilter === 'created'">
+            <div class="selected-date">
+              <span class="date-label">
+                <span class="label-heading">From:</span>
+                <span class="label-value">{{
+                  filter.startDate
+                    ? (filter.startDate | date: 'd MMM, y')
+                    : 'DD MMM, YYYY'
+                }}</span>
+                <span class="label-heading" style="margin-left: 10px">To:</span>
+                <span class="label-value">{{
+                  filter.endDate
+                    ? (filter.endDate | date: 'd MMM, y')
+                    : 'DD MMM, YYYY'
+                }}</span>
+              </span>
+
+              <button mat-icon-button color="warn" (click)="clearDates()">
+                <img
+                  src="/assets/icons/delete-icon.svg"
+                  class="delete-icon"
+                  alt="delete" />
+              </button>
+            </div>
+
+            <mat-form-field
+              appearance="outline"
+              color="accent"
+              class="w-100 datepicker__size_s">
+              <mat-label>Select Date Range</mat-label>
+              <mat-date-range-input [rangePicker]="dateRangePicker">
+                <input matStartDate [(ngModel)]="filter.startDate" />
+                <input matEndDate [(ngModel)]="filter.endDate" />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dateRangePicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div *ngIf="selectedFilter === 'bookmarks'">
+            <div class="checkbox__icon checkbox_icon_circle">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="filter.bookmark"
+                  class="checkbox-input" />
+                <div class="radio__icon" [class.checked]="filter.bookmark">
+                  <img
+                    src="assets/icons/check.svg"
+                    alt=""
+                    class="radio__icon_img" />
+                </div>
+                <span>Bookmarks</span>
+              </label>
+            </div>
+          </div>
+
+          <div *ngIf="selectedFilter === 'status'">
+            <ng-select
+              [items]="workflow_status"
+              bindLabel="label"
+              bindValue="value"
+              placeholder="Select Status"
+              [(ngModel)]="filter.status"
+              [multiple]="true"></ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createWorkflow>
+  <div class="modal-content create-workflow-modal">
+    <div class="tabs">
+      <div
+        class="tab"
+        *ngFor="let step of steps; let i = index"
+        [class.active]="currentStep === i">
+        {{ step }}
       </div>
     </div>
 
-    <div class="form-content">
-      <div class="header">
-        <p class="header_title">Filter Workflows</p>
-        <button type="button" class="header_close-btn" (click)="closeModal()">
-          <img src="assets/icons/close-circle.svg" alt="" />
-        </button>
+    <div class="content">
+      <div *ngIf="currentStep === 0">
+        <div class="typee-con">
+          <h3>Choose Type of Deliver</h3>
+          <div class="deliver-type-con">
+            <div
+              class="deliver-type"
+              type="button"
+              [class.active]="selectedDeliverType === 'product'"
+              (click)="selectDeliverType('product')">
+              <div class="filled"></div>
+              <div class="text">Product</div>
+            </div>
+
+            <div
+              class="deliver-type"
+              type="button"
+              [class.active]="selectedDeliverType === 'fingerprint'"
+              (click)="selectDeliverType('fingerprint')">
+              <div class="filled"></div>
+              <div class="text">Fingerprint</div>
+            </div>
+
+            <div
+              class="deliver-type"
+              type="button"
+              [class.active]="selectedDeliverType === 'recording'"
+              (click)="selectDeliverType('recording')">
+              <div class="filled"></div>
+              <div class="text">Recording</div>
+            </div>
+
+            <div
+              class="deliver-type"
+              type="button"
+              [class.active]="selectedDeliverType === 'data_retrieval'"
+              (click)="selectDeliverType('data_retrieval')">
+              <div class="filled"></div>
+              <div class="text">Data Retrieval</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3
+            *ngIf="
+              selectedDeliverType !== '' && selectedDeliverType !== undefined
+            ">
+            Choose Type Of Workflow
+          </h3>
+          <div class="workflow-type-con">
+            <ng-container *ngIf="selectedDeliverType === 'product'">
+              <div
+                class="workflow-type"
+                type="button"
+                [class.active]="selectedWorkflowType === 'DDEX'"
+                (click)="selectWorkflowType('DDEX')">
+                <div class="filled"></div>
+                <div class="text">DDEX</div>
+              </div>
+
+              <div
+                class="workflow-type"
+                type="button"
+                [class.active]="selectedWorkflowType === 'APPLE_MUSIC'"
+                (click)="selectWorkflowType('APPLE_MUSIC')">
+                <div class="filled"></div>
+                <div class="text">APPLE</div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="selectedDeliverType === 'fingerprint'">
+              <div
+                class="workflow-type"
+                type="button"
+                [class.active]="selectedWorkflowType === 'UGC'"
+                (click)="selectWorkflowType('UGC')">
+                <div class="filled"></div>
+                <div class="text">UGC</div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="selectedDeliverType === 'recording'">
+              <!-- Add workflow types for 'recording' if any -->
+            </ng-container>
+
+            <ng-container *ngIf="selectedDeliverType === 'data_retrieval'">
+              <!-- Add workflow types for 'data_retrieval' if any -->
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="currentStep === 1" class="workflow-info-con">
+        <div class="workflow-field">
+          <span>Name</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Workflow Name"
+            class="input-field"
+            [(ngModel)]="workflow.name" />
+        </div>
+
+        <div class="workflow-field">
+          <div>
+            <span>Concurrency</span>
+            <input
+              type="number"
+              placeholder="throttle limit"
+              class="input-field"
+              min="0"
+              [(ngModel)]="workflow.throttleLimit" />
+          </div>
+        </div>
+        <div class="workflow-field">
+          <span>Alias</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Alias to trigger"
+            class="input-field"
+            [(ngModel)]="workflow.alias"
+            (ngModelChange)="checkAlias()" />
+          <p *ngIf="aliasError" class="errorMsg">
+            {{ aliasError }}
+          </p>
+        </div>
+        <div class="workflow-field">
+          <span>Description</span>
+          <textarea
+            placeholder="Add description"
+            class="text-field"
+            [(ngModel)]="workflow.description"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="buttons">
+      <div>
+        <ng-container *ngIf="currentStep === steps.length - 1; else cancleBtn">
+          <button (click)="prevStep()" class="prevBtn">
+            <i class="fa fa-arrow-left"></i>
+            Previous
+          </button>
+        </ng-container>
+        <ng-template #cancleBtn>
+          <button
+            type="button"
+            class="cancleBtn"
+            (click)="closeCreateWorkflowModal()">
+            <i class="fa fa-times"></i> Cancel
+          </button>
+        </ng-template>
       </div>
       <div>
-        <div *ngIf="selectedFilter === 'created'">
-          <div class="selected-date">
-            <span class="date-label">
-              <span class="label-heading">From:</span>
-              <span class="label-value">{{
-                filter.startDate
-                  ? (filter.startDate | date: 'd MMM, y')
-                  : 'DD MMM, YYYY'
-              }}</span>
-              <span class="label-heading" style="margin-left: 10px">To:</span>
-              <span class="label-value">{{
-                filter.endDate
-                  ? (filter.endDate | date: 'd MMM, y')
-                  : 'DD MMM, YYYY'
-              }}</span>
-            </span>
-
-            <button mat-icon-button color="warn" (click)="clearDates()">
-              <img
-                src="/assets/icons/delete-icon.svg"
-                class="delete-icon"
-                alt="delete" />
-            </button>
-          </div>
-
-          <mat-form-field
-            appearance="outline"
-            color="accent"
-            class="w-100 datepicker__size_s">
-            <mat-label>Select Date Range</mat-label>
-            <mat-date-range-input [rangePicker]="dateRangePicker">
-              <input matStartDate [(ngModel)]="filter.startDate" />
-              <input matEndDate [(ngModel)]="filter.endDate" />
-            </mat-date-range-input>
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="dateRangePicker"></mat-datepicker-toggle>
-            <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        <div *ngIf="selectedFilter === 'bookmarks'">
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="checkbox"
-                [(ngModel)]="filter.bookmark"
-                class="checkbox-input" />
-              <div class="radio__icon" [class.checked]="filter.bookmark">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Bookmarks</span>
-            </label>
-          </div>
-        </div>
-
-        <div *ngIf="selectedFilter === 'status'">
-          <ng-select
-            [items]="workflow_status"
-            bindLabel="label"
-            bindValue="value"
-            placeholder="Select Status"
-            [(ngModel)]="filter.status"
-            [multiple]="true"></ng-select>
-        </div>
+        <span
+          [tooltip]="
+            !selectedDeliverType || !selectedWorkflowType
+              ? 'Select Deliver Type and Workflow Type'
+              : ''
+          ">
+          <button
+            (click)="nextStep()"
+            class="nxtBtn"
+            [disabled]="!selectedDeliverType || !selectedWorkflowType"
+            *ngIf="currentStep < steps.length - 1">
+            Next <i class="fa fa-arrow-right"></i>
+          </button>
+        </span>
+        <span
+          [tooltip]="
+            !workflow.name ||
+            !workflow.alias ||
+            workflow.throttleLimit === null ||
+            workflow.throttleLimit === undefined ||
+            workflow.description === ''
+              ? 'Please fill all the fields'
+              : ''
+          "
+          [tooltipPlacement]="'top'"
+          [tooltipTrigger]="'hover'">
+          <button
+            class="btn btn--red workflow-btn"
+            type="button"
+            [disabled]="
+              !workflow.name ||
+              !workflow.alias ||
+              workflow.throttleLimit === null ||
+              workflow.throttleLimit === undefined ||
+              aliasError ||
+              workflow.description === ''
+            "
+            *ngIf="currentStep === steps.length - 1"
+            (click)="ggcreateWorkflow()">
+            CREATE WORKFLOW
+          </button>
+        </span>
       </div>
     </div>
   </div>

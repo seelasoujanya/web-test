@@ -13,6 +13,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -79,7 +80,7 @@ export class HeaderComponent {
     setTimeout(() => {
       myWindow?.close();
     }, 1000);
-    // await this.apiService.logOut().toPromise();
+    await firstValueFrom(this.apiService.logOut());
     this.router.navigateByUrl('/login');
   }
 

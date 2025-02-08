@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  Renderer2,
   TemplateRef,
 } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
@@ -77,6 +78,21 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     'Actions',
     'Pause',
   ];
+  workflow: Workflow = {
+    name: '',
+    enabled: true,
+    paused: false,
+    created: '',
+    modified: '',
+    status: 'NOT_RUNNABLE',
+    alias: '',
+    id: 0,
+    throttleLimit: 0,
+    description: '',
+  };
+
+  currentStep: number = 0;
+  steps = ['Choose Delivertype and Workflowtype ', 'Workflow Info'];
 
   headingEnum = {
     'Workflow Name': 'name',
@@ -97,6 +113,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   selectingStart = true;
 
   public destroyed$ = new Subject<void>();
+  selectedDeliverType: string | undefined;
+  selectedWorkflowType: string | undefined;
+  activeTab: number = 1;
+  workflowhasAlias: any;
+  aliasError: string | undefined;
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -134,7 +155,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private spinnerService: SpinnerService,
     private authorizationService: AuthorizationService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private renderer: Renderer2
   ) {
     // this.getUserId();
   }
@@ -244,6 +266,76 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.openDialog(filterWorkflowsTemplate);
   }
 
+  openCreateWorkflow(template: TemplateRef<any>) {
+    // this.modalService.show(template);
+    this.openDialog(template);
+  }
+
+  public selectDeliverType(tab: string) {
+    this.selectedDeliverType = tab;
+  }
+
+  public selectWorkflowType(tab: string) {
+    this.selectedWorkflowType = tab;
+  }
+
+  checkAlias() {
+    console.log('Checking');
+    if (this.workflow.alias) {
+      this.apiService
+        .getWorkflowByAlias(this.workflow.alias)
+        .subscribe(data => {
+          this.workflowhasAlias = data;
+          console.log(this.workflowhasAlias != null);
+          console.log(this.workflow);
+          if (this.workflowhasAlias != null) {
+            this.aliasError =
+              'The alias already exists. Please enter a different one';
+          } else {
+            this.aliasError = '';
+          }
+        });
+    } else {
+      this.aliasError = '';
+    }
+  }
+
+  ggcreateWorkflow(): void {
+    this.closeCreateWorkflowModal();
+    this.apiService.createWorkflow(this.workflow).subscribe({
+      next: response => {
+        this.createStep({
+          workflowId: response.id,
+          executionOrder: 1,
+          type: this.selectedWorkflowType,
+          name: this.selectedWorkflowType,
+        });
+        this.selectedDeliverType = '';
+        this.selectedWorkflowType = '';
+        this.router.navigate(['/workflows', response.id], {
+          queryParams: { tab: '' },
+        });
+      },
+      error: error => {
+        console.error('Error creating workflow:', error);
+      },
+    });
+  }
+
+  public createStep(workflowStepDto: any): void {
+    this.apiService.createStep(workflowStepDto).subscribe({
+      next: response => {
+        console.log('Step created with ID:', response.id);
+      },
+      error: error => {
+        console.error('Error creating step:', error);
+      },
+    });
+  }
+
+  public closeCreateWorkflowModal(): void {
+    this.bsModalRef.hide();
+  }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
       backdrop: true,
@@ -511,5 +603,20 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.filter.startDate = new Date(this.filter.startDate);
       this.filter.endDate = new Date(this.filter.endDate);
     }
+  }
+
+  goToStep(step: number) {
+    this.currentStep = step;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.steps.length - 1) this.currentStep++;
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) this.currentStep--;
+  }
+  progressWidth() {
+    return `${(this.currentStep / (this.steps.length - 1)) * 100}%`;
   }
 }
