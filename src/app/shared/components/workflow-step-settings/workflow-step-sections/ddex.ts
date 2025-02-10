@@ -35,6 +35,16 @@ export const ddexSections: IWorkflowConfigurationSection[] = [
         defaultValue: 'false',
         required: false,
       },
+      {
+        key: 'INCLUDE_ATMOS',
+        label: 'Include Atmos Assets',
+        type: 'checkbox',
+        placeholder: '',
+        values: [],
+        description: 'Include Kosovo in Territories',
+        defaultValue: 'false',
+        required: false,
+      },
     ],
   },
   {
