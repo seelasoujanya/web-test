@@ -73,7 +73,7 @@
                     alt="Inactive Icon"
                     class="" />
                   <img
-                    *ngSwitchCase="'NOT_RUNNABLE'"
+                    *ngSwitchCase="'DISABLED'"
                     src="assets/icons/disabled-logo.svg"
                     alt="Inactive Icon"
                     class="" />
@@ -82,10 +82,10 @@
             </div>
           </td>
           <td class="table-cell">
-            <ng-container *ngIf="workflow.completed; else noDate">
-              {{ formatDate(workflow.completed).date }}<br />
+            <ng-container *ngIf="workflow.lastRunOn; else noDate">
+              {{ formatDate(workflow.lastRunOn).date }}<br />
               <span class="time">{{
-                formatDate(workflow.completed).time
+                formatDate(workflow.lastRunOn).time
               }}</span>
             </ng-container>
             <ng-template #noDate> NA </ng-template>
