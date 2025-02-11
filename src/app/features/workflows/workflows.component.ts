@@ -81,14 +81,14 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     'Workflow Name': 'name',
     Status: 'status',
     Created: 'created',
-    'Last Run On': 'created',
+    'Last Run On': 'lastRunOn',
     'Last Run Status': 'status',
   };
 
   workflow_status = [
     { label: 'Active', value: 'ACTIVE' },
     { label: 'Inactive', value: 'INACTIVE' },
-    { label: 'Disabled', value: 'NOT_RUNNABLE' },
+    { label: 'Disabled', value: 'DISABLED' },
   ];
 
   filtersApplied: boolean = false;
@@ -286,7 +286,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public reload(workflows: any) {
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks == true) {
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.getPageItems(this.pageParams);
+    }
   }
 
   public pauseWorkflow(workflow: Workflow) {
@@ -389,6 +393,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
         this.bookmarkedIds.splice(index, 1);
       }
       this.cdRef.markForCheck();
+      this.reload(workflow);
     });
   }
 
@@ -445,7 +450,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     const statusMapping: Record<string, string> = {
       ACTIVE: 'Active',
       INACTIVE: 'Inactive',
-      NOT_RUNNABLE: 'Disabled',
+      DISABLED: 'Disabled',
     };
 
     const addOrUpdateFilter = (key: string, label: string, value: any) => {
