@@ -28,6 +28,12 @@
           flex-direction: row;
           align-items: center;
           gap: 8px;
+          .search-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+          }
+
           .search-field {
             height: 40px;
             padding: 9px 256px 9px 16px;
@@ -39,14 +45,18 @@
             color: #666666;
           }
           .clear-icon {
-            position: absolute;
-            top: 8px;
-            right: 135px;
-            cursor: pointer;
             border: none;
             outline: none;
-            background: white;
             height: 20px;
+
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
           }
         }
       }
@@ -76,7 +86,6 @@
   top: 25vh;
   font-size: 15px;
 }
-
 ::ng-deep .modal {
   display: flex !important;
   align-items: center;
@@ -88,10 +97,6 @@
 }
 
 ::ng-deep .modal-dialog {
-  max-width: 800px;
-  position: sticky;
-  top: 150px;
-  z-index: 1000;
   .modal-content {
     // height: 550px;
     display: flex;
@@ -365,7 +370,8 @@
 
 // Below CSS for create workflow modal - start
 ::ng-deep .modal-dialog {
-  // max-width: 70%;
+  width: 800px !important;
+  max-width: 800px !important;
   .create-workflow-modal {
     background-color: #fff;
     // padding: 25px;
@@ -525,7 +531,7 @@ label {
 
 .typee-con {
   margin-top: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 h3 {
   margin-bottom: 0px;
@@ -534,6 +540,7 @@ p {
   margin-left: 5px;
   color: #666464;
   font-size: 12px;
+  padding: 0px;
 }
 .workflow-field {
   width: 100%;
@@ -564,11 +571,11 @@ p {
     border-radius: 4px;
   }
 }
-::ng-deep .modal-dialog {
-  .workflow-info-con {
-    margin-inline: 50px;
-  }
+
+.workflow-info-con {
+  margin-inline: 50px;
 }
+
 .errorMsg {
   color: #f44336;
   font-size: 12px;
@@ -578,4 +585,8 @@ p {
 .label-required::after {
   content: ' *';
   color: red;
+}
+.select-feild {
+  margin-top: 0px !important;
+  margin-bottom: 30px !important;
 }

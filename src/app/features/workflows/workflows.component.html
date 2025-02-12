@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="workflow-header-right">
-          <div>
+          <div class="search-container">
             <input
               type="text"
               class="search-field"
@@ -269,6 +269,7 @@
             [(ngModel)]="selectedDeliverType"
             (ngModelChange)="onDeliveryTypeChange()"
             [searchable]="false"
+            class="select-feild"
             [clearable]="false">
           </ng-select>
         </div>
@@ -282,6 +283,7 @@
             [items]="getAvailableWorkflows()"
             bindLabel="label"
             bindValue="value"
+            class="select-feild"
             [searchable]="false"
             placeholder="Select Workflow Type"
             [(ngModel)]="selectedWorkflowType">
