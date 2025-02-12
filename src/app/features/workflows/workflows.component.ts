@@ -320,22 +320,24 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   ggcreateWorkflow(): void {
-    this.closeCreateWorkflowModal();
-    this.apiService.createWorkflow(this.workflow).subscribe({
-      next: response => {
-        this.createStep({
-          workflowId: response.id,
-          executionOrder: 1,
-          type: this.selectedWorkflowType,
-          name: this.selectedWorkflowType,
-        });
-        this.selectedDeliverType = null;
-        this.selectedWorkflowType = null;
-        this.router.navigate(['/workflows', response.id], {
-          queryParams: { tab: '' },
-        });
-      },
-    });
+    this.bsModalRef.hide();
+    setTimeout(() => {
+      this.apiService.createWorkflow(this.workflow).subscribe({
+        next: response => {
+          this.createStep({
+            workflowId: response.id,
+            executionOrder: 1,
+            type: this.selectedWorkflowType,
+            name: this.selectedWorkflowType,
+          });
+          this.closeCreateWorkflowModal();
+          this.spinnerService.show();
+          this.router.navigate(['/workflows', response.id], {
+            queryParams: { tab: '' },
+          });
+        },
+      });
+    }, 500);
   }
 
   public createStep(workflowStepDto: any): void {
@@ -347,8 +349,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public closeCreateWorkflowModal(): void {
-    this.bsModalRef.hide();
-    this.cdr.detectChanges();
+    this.modalService.hide();
+    setTimeout(() => {
+      this.selectedDeliverType = null;
+      this.selectedWorkflowType = null;
+    }, 100);
   }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
