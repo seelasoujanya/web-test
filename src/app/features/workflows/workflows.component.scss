@@ -78,7 +78,7 @@
 }
 
 ::ng-deep .modal-dialog {
-  // max-width: 70%;
+  max-width: 800px;
   position: sticky;
   top: 120px;
   z-index: 1000;
@@ -284,6 +284,9 @@
   height: 16px;
   vertical-align: middle;
 }
+.plusIcon {
+  margin-left: 10px;
+}
 
 .label-heading {
   font-size: 14px;
@@ -340,13 +343,13 @@
 }
 
 .workflow-btn {
-  width: 164px;
+  width: 190px;
   height: 40px;
 }
 
 // Below CSS for create workflow modal - start
 ::ng-deep .modal-dialog {
-  max-width: 70%;
+  // max-width: 70%;
   .create-workflow-modal {
     background-color: #fff;
     // padding: 25px;
@@ -443,15 +446,10 @@
   padding: 30px 30px;
 }
 .cancleBtn {
-  background-color: #f0f0f0;
-  color: #333;
-  border: none;
-  padding: 5px;
-  border-radius: 5px;
   cursor: pointer;
-  width: 100px;
+  width: 100px !important;
+  padding: 5px;
   height: 40px;
-  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -500,7 +498,7 @@ label {
 }
 
 .content {
-  margin-inline: 40px;
+  margin-inline: 120px;
   height: 400px;
 }
 
@@ -514,7 +512,12 @@ label {
   margin-bottom: 30px;
 }
 h3 {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+}
+p {
+  margin-left: 5px;
+  color: #666464;
+  font-size: 12px;
 }
 .workflow-field {
   width: 100%;
@@ -545,8 +548,10 @@ h3 {
     border-radius: 4px;
   }
 }
-.workflow-info-con {
-  margin-inline: 50px;
+::ng-deep .modal-dialog {
+  .workflow-info-con {
+    margin-inline: 50px;
+  }
 }
 .errorMsg {
   color: #f44336;
@@ -554,3 +559,7 @@ h3 {
   font-weight: 300;
 }
 // Below CSS for create workflow modal - end
+.label-required::after {
+  content: ' *';
+  color: red;
+}

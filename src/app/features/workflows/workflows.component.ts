@@ -87,7 +87,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     status: 'NOT_RUNNABLE',
     alias: '',
     id: 0,
-    throttleLimit: 0,
+    throttleLimit: 10,
     description: '',
   };
 
@@ -113,8 +113,31 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   selectingStart = true;
 
   public destroyed$ = new Subject<void>();
-  selectedDeliverType: string | undefined;
-  selectedWorkflowType: string | undefined;
+  selectedDeliverType: string | null = null;
+  selectedWorkflowType: string | null = null;
+
+  deliveryTypes = [
+    { label: 'Product', value: 'product' },
+    { label: 'Fingerprint', value: 'fingerprint' },
+    { label: 'Recording', value: 'recording' },
+    { label: 'Data Retrieval', value: 'data_retrieval' },
+  ];
+
+  workflowTypes: Record<string, { label: string; value: string }[]> = {
+    product: [
+      { label: 'DDEX', value: 'DDEX' },
+      { label: 'Apple Music', value: 'APPLE_MUSIC' },
+    ],
+    fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
+    recording: [],
+    data_retrieval: [],
+  };
+
+  getAvailableWorkflows(): { label: string; value: string }[] {
+    return null != this.selectedDeliverType
+      ? this.workflowTypes[this.selectedDeliverType] || []
+      : [];
+  }
   activeTab: number = 1;
   workflowhasAlias: any;
   aliasError: string | undefined;
@@ -156,7 +179,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private authorizationService: AuthorizationService,
     private modalService: BsModalService,
     private bsModalRef: BsModalRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef
   ) {
     // this.getUserId();
   }
@@ -271,23 +295,16 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.openDialog(template);
   }
 
-  public selectDeliverType(tab: string) {
-    this.selectedDeliverType = tab;
-  }
-
-  public selectWorkflowType(tab: string) {
-    this.selectedWorkflowType = tab;
+  onDeliveryTypeChange() {
+    this.selectedWorkflowType = null;
   }
 
   checkAlias() {
-    console.log('Checking');
     if (this.workflow.alias) {
       this.apiService
         .getWorkflowByAlias(this.workflow.alias)
         .subscribe(data => {
           this.workflowhasAlias = data;
-          console.log(this.workflowhasAlias != null);
-          console.log(this.workflow);
           if (this.workflowhasAlias != null) {
             this.aliasError =
               'The alias already exists. Please enter a different one';
@@ -310,14 +327,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
           type: this.selectedWorkflowType,
           name: this.selectedWorkflowType,
         });
-        this.selectedDeliverType = '';
-        this.selectedWorkflowType = '';
+        this.selectedDeliverType = null;
+        this.selectedWorkflowType = null;
         this.router.navigate(['/workflows', response.id], {
           queryParams: { tab: '' },
         });
-      },
-      error: error => {
-        console.error('Error creating workflow:', error);
       },
     });
   }
@@ -327,14 +341,12 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       next: response => {
         console.log('Step created with ID:', response.id);
       },
-      error: error => {
-        console.error('Error creating step:', error);
-      },
     });
   }
 
   public closeCreateWorkflowModal(): void {
     this.bsModalRef.hide();
+    this.cdr.detectChanges();
   }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
@@ -497,7 +509,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
           this.cdRef.markForCheck();
         },
         (error: any) => {
-          console.error('Error fetching bookmarked workflows', error);
           this.spinnerService.hide();
         }
       );

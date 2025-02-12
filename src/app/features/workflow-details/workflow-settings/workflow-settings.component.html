@@ -8,6 +8,17 @@
         {{ heading }}
       </h6>
     </div>
+    <div
+      class=""
+      class="btn btn--black addMore"
+      type="button"
+      [tooltip]="'Add Step'"
+      (click)="openCreateStepsModal(createWorkflowStep)">
+      <img
+        src="/assets/icons/create-logo.svg"
+        class="create-icon"
+        alt="create Icon" />
+    </div>
   </div>
 
   <div class="right-container">
@@ -30,5 +41,90 @@
 <ng-template #noConfigs>
   <div class="noConfigs">
     <p>No Configurations Found</p>
+  </div>
+</ng-template>
+
+<ng-template #createWorkflowStep>
+  <div class="modal-content create-workflowStep-modal">
+    <div class="header">
+      <h4>Create Workflow Step</h4>
+      <div>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+    </div>
+    <div class="workflow-info-con">
+      <div class="workflow-field">
+        <span class="label-required">Name</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Workflow Name"
+          class="input-field"
+          [(ngModel)]="workflowStp.name"
+          required />
+      </div>
+
+      <!-- <div class="workflow-field">
+        <div>
+          <span class="label-required">Execution Order</span>
+          <input
+            type="number"
+            placeholder="throttle limit"
+            class="input-field"
+            min="0"
+            [(ngModel)]="this.workflowStp.executionOrder"
+            (ngModelChange)="checkExecutionOrder()" />
+        </div>
+        <div class="error-message" *ngIf="isDuplicateExecutionOrder()">
+          Execution order already exists!
+        </div>
+      </div> -->
+
+      <div class="workflow-field">
+        <span class="label-required">Type</span>
+        <ng-select
+          [items]="steps"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select Step Type"
+          [(ngModel)]="workflowStp.type"
+          (change)="selectStepType($event)"
+          [searchable]="false"
+          [clearable]="false">
+        </ng-select>
+      </div>
+
+      <div class="workflow-field">
+        <span class="label-required">Description</span>
+        <textarea
+          placeholder="Add description"
+          class="text-field"
+          [(ngModel)]="workflowStp.description"></textarea>
+      </div>
+    </div>
+    <div class="footer">
+      <span
+        [tooltip]="
+          !workflowStp.name || workflowStp.type === null
+            ? 'Please fill all the required fields'
+            : ''
+        "
+        [tooltipPlacement]="'top'"
+        [tooltipTrigger]="'hover'">
+        <button
+          class="btn btn--red workflow-btn"
+          type="button"
+          [disabled]="
+            !workflowStp.name ||
+            workflowStp.type === null ||
+            !workflowStp.description
+          "
+          (click)="createWorkflowWorkflowStep()">
+          CREATE WORKFLOW STEP
+        </button>
+      </span>
+    </div>
   </div>
 </ng-template>
