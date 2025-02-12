@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  Renderer2,
   TemplateRef,
 } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
@@ -76,6 +77,22 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     'Actions',
     'Pause',
   ];
+  workflow: Workflow = {
+    name: '',
+    enabled: true,
+    paused: false,
+    created: '',
+    modified: '',
+    status: 'DISABLED',
+    alias: '',
+    id: 0,
+    throttleLimit: 10,
+    description: '',
+    isTaskChainIsValid: undefined,
+  };
+
+  currentStep: number = 0;
+  steps = ['Choose Delivertype and Workflowtype ', 'Workflow Info'];
 
   headingEnum = {
     'Workflow Name': 'name',
@@ -98,6 +115,34 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   selectingStart = true;
 
   public destroyed$ = new Subject<void>();
+  selectedDeliverType: string | null = null;
+  selectedWorkflowType: string | null = null;
+
+  deliveryTypes = [
+    { label: 'Product', value: 'product' },
+    { label: 'Fingerprint', value: 'fingerprint' },
+    { label: 'Recording', value: 'recording' },
+    { label: 'Data Retrieval', value: 'data_retrieval' },
+  ];
+
+  workflowTypes: Record<string, { label: string; value: string }[]> = {
+    product: [
+      { label: 'DDEX', value: 'DDEX' },
+      { label: 'Apple Music', value: 'APPLE_MUSIC' },
+    ],
+    fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
+    recording: [],
+    data_retrieval: [],
+  };
+
+  getAvailableWorkflows(): { label: string; value: string }[] {
+    return null != this.selectedDeliverType
+      ? this.workflowTypes[this.selectedDeliverType] || []
+      : [];
+  }
+  activeTab: number = 1;
+  workflowhasAlias: any;
+  aliasError: string | undefined;
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -135,7 +180,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private spinnerService: SpinnerService,
     private authorizationService: AuthorizationService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef
   ) {
     // this.getUserId();
   }
@@ -245,6 +292,64 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     this.openDialog(filterWorkflowsTemplate);
   }
 
+  openCreateWorkflow(template: TemplateRef<any>) {
+    // this.modalService.show(template);
+    this.openDialog(template);
+  }
+
+  onDeliveryTypeChange() {
+    this.selectedWorkflowType = null;
+  }
+
+  checkAlias() {
+    if (this.workflow.alias) {
+      this.apiService
+        .getWorkflowByAlias(this.workflow.alias)
+        .subscribe(data => {
+          this.workflowhasAlias = data;
+          if (this.workflowhasAlias != null) {
+            this.aliasError =
+              'The alias already exists. Please enter a different one';
+          } else {
+            this.aliasError = '';
+          }
+        });
+    } else {
+      this.aliasError = '';
+    }
+  }
+
+  ggcreateWorkflow(): void {
+    this.closeCreateWorkflowModal();
+    this.apiService.createWorkflow(this.workflow).subscribe({
+      next: response => {
+        this.createStep({
+          workflowId: response.id,
+          executionOrder: 1,
+          type: this.selectedWorkflowType,
+          name: this.selectedWorkflowType,
+        });
+        this.selectedDeliverType = null;
+        this.selectedWorkflowType = null;
+        this.router.navigate(['/workflows', response.id], {
+          queryParams: { tab: '' },
+        });
+      },
+    });
+  }
+
+  public createStep(workflowStepDto: any): void {
+    this.apiService.createStep(workflowStepDto).subscribe({
+      next: response => {
+        console.log('Step created with ID:', response.id);
+      },
+    });
+  }
+
+  public closeCreateWorkflowModal(): void {
+    this.bsModalRef.hide();
+    this.cdr.detectChanges();
+  }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
       backdrop: true,
@@ -432,7 +537,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
           this.cdRef.markForCheck();
         },
         (error: any) => {
-          console.error('Error fetching bookmarked workflows', error);
           this.spinnerService.hide();
         }
       );
@@ -547,5 +651,20 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.filter.startDate = new Date(this.filter.startDate);
       this.filter.endDate = new Date(this.filter.endDate);
     }
+  }
+
+  goToStep(step: number) {
+    this.currentStep = step;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.steps.length - 1) this.currentStep++;
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) this.currentStep--;
+  }
+  progressWidth() {
+    return `${(this.currentStep / (this.steps.length - 1)) * 100}%`;
   }
 }

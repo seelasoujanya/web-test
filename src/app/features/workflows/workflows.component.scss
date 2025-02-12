@@ -88,8 +88,9 @@
 }
 
 ::ng-deep .modal-dialog {
-  width: 800px !important;
-  max-width: 800px !important;
+  max-width: 800px;
+  position: sticky;
+  top: 150px;
   z-index: 1000;
   .modal-content {
     // height: 550px;
@@ -145,29 +146,6 @@
         width: 80%;
         padding-inline: 30px;
         margin-top: 20px;
-        .header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 10px;
-          .header_title {
-            font-family: Graphik, serif;
-            font-size: 24px;
-            font-weight: 500;
-            font-style: normal;
-            line-height: 40px;
-            height: 39px;
-            color: black;
-            margin-bottom: 0px !important;
-          }
-          .header_close-btn {
-            cursor: pointer;
-            border: none;
-            outline: none;
-            background: white;
-            height: 20px;
-          }
-        }
         .button-group {
           margin-top: 10px;
           margin-left: 340px;
@@ -178,7 +156,29 @@
     }
   }
 }
-
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  .header_title {
+    font-family: Graphik, serif;
+    font-size: 24px;
+    font-weight: 500;
+    font-style: normal;
+    line-height: 40px;
+    height: 39px;
+    color: black;
+    margin-bottom: 0px !important;
+  }
+  .header_close-btn {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: white;
+    height: 20px;
+  }
+}
 ::ng-deep .cdk-overlay-container {
   z-index: 10000 !important;
 }
@@ -294,6 +294,9 @@
   height: 16px;
   vertical-align: middle;
 }
+.plusIcon {
+  margin-left: 10px;
+}
 
 .label-heading {
   font-size: 14px;
@@ -353,4 +356,226 @@
   font-size: 16px;
   font-weight: 500;
   display: inline-block;
+}
+
+.workflow-btn {
+  width: 190px;
+  height: 40px;
+}
+
+// Below CSS for create workflow modal - start
+::ng-deep .modal-dialog {
+  // max-width: 70%;
+  .create-workflow-modal {
+    background-color: #fff;
+    // padding: 25px;
+    border: 0px solid transparent;
+    border-radius: 8px;
+    .deliver-type-con {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 20px;
+      .deliver-type {
+        height: 80px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        .filled {
+          width: 30%;
+          background-color: #a19898;
+        }
+        .text {
+          width: 70%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        &.active {
+          border: 2px solid black; /* Highlight color for active selection */
+        }
+      }
+    }
+    .workflow-type-con {
+      width: 30%;
+      display: flex;
+      justify-content: space-between;
+      margin-left: 20px;
+
+      .workflow-type {
+        height: 150px;
+        width: 100px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        justify-content: space-between;
+        padding: 5px;
+        .filled {
+          height: 70%;
+          width: 100%;
+          background-color: #a19898;
+        }
+        .text {
+          height: 30%;
+          width: 100%;
+          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        &.active {
+          border: 2px solid black; /* Highlight color for active selection */
+        }
+      }
+    }
+  }
+}
+// .container { width: 400px; margin: auto; }
+.tabs {
+  background-color: #1a1919;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  height: 70px;
+  width: 100%;
+}
+.tab {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4f4f4f;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+.tab.active {
+  background-color: #333;
+  color: #fff;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 30px;
+}
+.cancleBtn {
+  cursor: pointer;
+  width: 100px !important;
+  padding: 5px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.nxtBtn {
+  background-color: #ca0a3d;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100px;
+  height: 40px;
+  border: 0px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.prevBtn {
+  background-color: #ca0a3d;
+  color: #fff;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 120px;
+  height: 40px;
+  border: 0px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.right-button-con {
+  display: flex;
+  width: 300px;
+}
+
+// form div {
+//   margin-bottom: 15px;
+// }
+label {
+  display: block;
+  margin-top: 10px;
+}
+
+.content {
+  margin-inline: 120px;
+  height: 400px;
+}
+
+.nxtBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5; /* Opacity effect for disabled button */
+}
+
+.typee-con {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+h3 {
+  margin-bottom: 0px;
+}
+p {
+  margin-left: 5px;
+  color: #666464;
+  font-size: 12px;
+}
+.workflow-field {
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  display: block;
+  letter-spacing: 0.3px;
+  padding-top: 15px;
+  color: #344054;
+  .input-field {
+    width: 100%;
+    height: 44px;
+    padding-left: 10px;
+    font-size: 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 4px;
+    margin-top: 10px;
+  }
+  .text-field {
+    width: 100%;
+    height: 90px;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #d0d5dd;
+    border-radius: 4px;
+  }
+}
+::ng-deep .modal-dialog {
+  .workflow-info-con {
+    margin-inline: 50px;
+  }
+}
+.errorMsg {
+  color: #f44336;
+  font-size: 12px;
+  font-weight: 300;
+}
+// Below CSS for create workflow modal - end
+.label-required::after {
+  content: ' *';
+  color: red;
 }
