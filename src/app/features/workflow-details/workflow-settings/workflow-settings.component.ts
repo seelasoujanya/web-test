@@ -94,7 +94,9 @@ export class WorkflowSettingsComponent {
               this.executionOrders.push(dd.executionOrder);
             });
             this.selectedHeading =
-              this.headings.length === 0 ? '' : this.headings[0];
+              this.headings.length === 0 && this.selectedHeading === ''
+                ? ''
+                : this.headings[0];
             this.showConfigs = this.headings.length === 0;
           },
           error: error => {
@@ -124,6 +126,7 @@ export class WorkflowSettingsComponent {
       );
       this.workflowSteps[index] = workflowStep;
     }
+    window.location.reload();
   }
 
   openCreateStepsModal(template: TemplateRef<any>) {

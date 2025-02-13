@@ -336,10 +336,18 @@
     <div class="buttons">
       <div>
         <ng-container *ngIf="currentStep === steps.length - 1; else cancleBtn">
-          <button (click)="prevStep()" class="prevBtn">
-            <i class="fa fa-arrow-left"></i>
-            Previous
-          </button>
+          <div class="left-btns">
+            <button (click)="prevStep()" class="prevBtn">
+              <i class="fa fa-arrow-left"></i>
+              Previous
+            </button>
+            <button
+              type="button"
+              class="btn btn--black cancleBtn"
+              (click)="closeCreateWorkflowModal()">
+              <i class="fa fa-times"></i> Cancel
+            </button>
+          </div>
         </ng-container>
         <ng-template #cancleBtn>
           <button

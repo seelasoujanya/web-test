@@ -92,7 +92,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   };
 
   currentStep: number = 0;
-  steps = ['Choose Delivertype and Workflowtype ', 'Workflow Info'];
+  steps = ['Choose Delivery Type and Workflow Type ', 'Workflow Info'];
 
   headingEnum = {
     'Workflow Name': 'name',
@@ -351,8 +351,22 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   public closeCreateWorkflowModal(): void {
     this.modalService.hide();
     setTimeout(() => {
+      this.currentStep = 0;
       this.selectedDeliverType = null;
       this.selectedWorkflowType = null;
+      this.workflow = {
+        name: '',
+        enabled: true,
+        paused: false,
+        created: '',
+        modified: '',
+        status: 'DISABLED',
+        alias: '',
+        id: 0,
+        throttleLimit: 10,
+        description: '',
+        isTaskChainIsValid: undefined,
+      };
     }, 100);
   }
   openDialog(workflowsTemplate: TemplateRef<any>) {
