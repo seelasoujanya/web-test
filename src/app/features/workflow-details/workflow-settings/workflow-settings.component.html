@@ -96,13 +96,13 @@
         </ng-select>
       </div>
 
-      <div class="workflow-field">
+      <!-- <div class="workflow-field">
         <span class="label-required">Description</span>
         <textarea
           placeholder="Add description"
           class="text-field"
           [(ngModel)]="workflowStp.description"></textarea>
-      </div>
+      </div> -->
     </div>
     <div class="footer">
       <span
@@ -116,11 +116,7 @@
         <button
           class="btn btn--red workflow-btn"
           type="button"
-          [disabled]="
-            !workflowStp.name ||
-            workflowStp.type === null ||
-            !workflowStp.description
-          "
+          [disabled]="!workflowStp.name || workflowStp.type === null"
           (click)="createWorkflowWorkflowStep()">
           CREATE WORKFLOW STEP
         </button>
