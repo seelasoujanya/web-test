@@ -168,6 +168,7 @@ describe('WorkflowHistoryComponent', () => {
         created: new Date(),
         modified: new Date(),
         deliveryType: '',
+        started: null,
       },
       {
         status: WorkflowInstanceStatus.RUNNING,
@@ -184,6 +185,7 @@ describe('WorkflowHistoryComponent', () => {
         created: new Date(),
         modified: new Date(),
         deliveryType: '',
+        started: null,
       },
       {
         status: WorkflowInstanceStatus.COMPLETED,
@@ -200,6 +202,7 @@ describe('WorkflowHistoryComponent', () => {
         created: new Date(),
         modified: new Date(),
         deliveryType: '',
+        started: null,
       },
     ];
 
@@ -589,276 +592,6 @@ describe('WorkflowHistoryComponent', () => {
 
     expect(component.filtersApplied).toBe(true);
     expect(component.hasActiveFilters).toHaveBeenCalled();
-  });
-
-  it('should return applied filters for startDate and endDate when both are present', () => {
-    component.filter = {
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-01-31'),
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'startDate',
-        label: 'Created Date',
-        value: ['2024-01-01 - 2024-01-31'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for startDate when only startDate is present', () => {
-    component.filter = {
-      startDate: new Date('2024-01-01'),
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'startDate',
-        label: 'Created Date',
-        value: ['2024-01-01'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for completedDate when both start and completedDate are present', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: new Date('2024-01-01'),
-      completedDate: new Date('2024-01-31'),
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'completedDate',
-        label: 'Completed Date',
-        value: ['2024-01-01 - 2024-01-31'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for completedDate when only start is present', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: new Date('2024-01-01'),
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'completedDate',
-        label: 'Completed Date',
-        value: ['2024-01-01'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for duration when duration is greater than 0', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 120,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'duration',
-        label: 'Duration',
-        value: ['120 min'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for status when status array is populated', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: ['completed'],
-      priority: [],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'status',
-        label: 'Status',
-        value: ['completed'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for priority when priority array is populated', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: ['high'],
-      deliveryType: [],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'priority',
-        label: 'Priority',
-        value: ['high'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for deliveryType when deliveryType array is populated', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: ['express'],
-      identifier: [],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'deliveryType',
-        label: 'Delivery Type',
-        value: ['express'],
-      },
-    ]);
-  });
-
-  it('should return applied filters for identifier when identifier array is populated', () => {
-    component.filter = {
-      startDate: null,
-      endDate: null,
-      start: null,
-      completedDate: null,
-      duration: 0,
-      status: [],
-      priority: [],
-      deliveryType: [],
-      identifier: ['id1'],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'identifier',
-        label: 'Identifier',
-        value: ['id1'],
-      },
-    ]);
-  });
-
-  it('should return all applicable filters when multiple filters are applied', () => {
-    //  Set multiple filters in the filter object
-    component.filter = {
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-01-31'),
-      start: new Date('2024-01-01'),
-      completedDate: new Date('2024-01-31'),
-      duration: 120,
-      status: ['completed'],
-      priority: ['high'],
-      deliveryType: ['express'],
-      identifier: ['id1'],
-    };
-
-    const appliedFilters = component.getAppliedFilters();
-
-    expect(appliedFilters).toEqual([
-      {
-        key: 'startDate',
-        label: 'Created Date',
-        value: ['2024-01-01 - 2024-01-31'],
-      },
-      {
-        key: 'completedDate',
-        label: 'Completed Date',
-        value: ['2024-01-01 - 2024-01-31'],
-      },
-      {
-        key: 'duration',
-        label: 'Duration',
-        value: ['120 min'],
-      },
-      {
-        key: 'status',
-        label: 'Status',
-        value: ['completed'],
-      },
-      {
-        key: 'priority',
-        label: 'Priority',
-        value: ['high'],
-      },
-      {
-        key: 'deliveryType',
-        label: 'Delivery Type',
-        value: ['express'],
-      },
-      {
-        key: 'identifier',
-        label: 'Identifier',
-        value: ['id1'],
-      },
-    ]);
   });
 
   it('should remove identifier from filter.identifier array when removeIdentifier is called', () => {

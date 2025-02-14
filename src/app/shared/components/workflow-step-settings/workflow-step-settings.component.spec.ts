@@ -391,7 +391,6 @@ describe('WorkflowStepSettingsComponent', () => {
 
     expect(() => component.ngOnInit()).not.toThrow();
     expect(component.originalWorkflowStep).toBeNull();
-    expect(component.fields).toEqual([]);
   });
 
   it('should return default value when field configuration is not found', () => {

@@ -41,7 +41,7 @@ describe('XmlTemplatesComponent', () => {
     const defaultParams = component.getDefaultPageParams();
     expect(defaultParams).toEqual({
       page: 0,
-      pazeSize: 10,
+      size: 10,
       sortBy: '',
       order: 'asc',
     });

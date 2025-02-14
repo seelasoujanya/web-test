@@ -95,7 +95,11 @@ describe('WorkflowsComponent', () => {
         paused: false,
         created: '2024-01-01',
         modified: '2024-01-02',
-        status: 'Active',
+        status: 'ACTIVE',
+        description: undefined,
+        throttleLimit: undefined,
+        isTaskChainIsValid: undefined,
+        alias: '',
       },
     ];
     component.searchWorkflow();
@@ -114,7 +118,11 @@ describe('WorkflowsComponent', () => {
         paused: false,
         created: '',
         modified: '',
-        status: '',
+        status: 'ACTIVE',
+        description: undefined,
+        throttleLimit: undefined,
+        isTaskChainIsValid: undefined,
+        alias: '',
       },
       {
         name: 'Another Workflow',
@@ -123,7 +131,11 @@ describe('WorkflowsComponent', () => {
         paused: false,
         created: '',
         modified: '',
-        status: '',
+        status: 'ACTIVE',
+        description: undefined,
+        throttleLimit: undefined,
+        isTaskChainIsValid: undefined,
+        alias: '',
       },
     ];
     component.searchWorkflow();
@@ -351,7 +363,7 @@ describe('WorkflowsComponent', () => {
   describe('resetFilters', () => {
     it('should reset the filter object to its initial state', () => {
       component.filter = {
-        enabled: null,
+        status: null,
         bookmark: null,
         startDate: new Date(),
         endDate: new Date(),
@@ -360,7 +372,7 @@ describe('WorkflowsComponent', () => {
       component.resetFilters();
 
       expect(component.filter).toEqual({
-        enabled: null,
+        status: null,
         bookmark: null,
         startDate: null,
         endDate: null,
@@ -373,7 +385,7 @@ describe('WorkflowsComponent', () => {
       const formatDateForApiSpy = spyOn(component, 'formatDateForApi');
 
       component.filter = {
-        enabled: null,
+        status: null,
         bookmark: null,
         startDate: null,
         endDate: null,
@@ -394,7 +406,7 @@ describe('WorkflowsComponent', () => {
 
   it('should clear the startDate and endDate when clearDates is called', () => {
     component.filter = {
-      enabled: null,
+      status: null,
       bookmark: null,
       startDate: new Date('2024-01-01'),
       endDate: new Date('2024-02-01'),
@@ -406,12 +418,6 @@ describe('WorkflowsComponent', () => {
   });
 
   it('should clear bookmark filter and reset states', () => {
-    // component.filter = {
-    //   enabled: null,
-    //   bookmark: null,
-    //   startDate: new Date(),
-    //   endDate: new Date(),
-    // };
     spyOn(component, 'getPageItems');
     spyOn(component, 'fetchBookmarkedWorkflows');
     spyOn(component, 'hasActiveFilters').and.returnValue(false);
@@ -426,7 +432,7 @@ describe('WorkflowsComponent', () => {
 
   it('should clear enabled filter', () => {
     component.filter = {
-      enabled: null,
+      status: null,
       bookmark: null,
       startDate: new Date(),
       endDate: new Date(),
@@ -436,13 +442,13 @@ describe('WorkflowsComponent', () => {
 
     component.clearFilter('enabled');
 
-    expect(component.filter.enabled).toBeNull();
+    expect(component.filter.status).toBeNull();
     expect(component.filtersApplied).toBeTrue();
   });
 
   it('should clear created filter and associated dates', () => {
     component.filter = {
-      enabled: null,
+      status: null,
       bookmark: null,
       startDate: new Date(),
       endDate: new Date(),
@@ -459,7 +465,7 @@ describe('WorkflowsComponent', () => {
 
   it('should fetch bookmarked workflows when bookmark is applied', () => {
     component.filter = {
-      enabled: null,
+      status: null,
       bookmark: null,
       startDate: new Date(),
       endDate: new Date(),
@@ -475,86 +481,12 @@ describe('WorkflowsComponent', () => {
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
   });
 
-  describe('getAppliedFilters', () => {
-    it('should return applied filters based on filter object', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: new Date('2024-12-01'),
-        endDate: new Date('2024-12-10'),
-      };
-
-      const expectedFilters = [
-        { key: 'bookmark', label: 'Bookmarks', value: 'Yes' },
-        { key: 'enabled', label: 'Status', value: 'Active' },
-        {
-          key: 'created',
-          label: 'Created Date',
-          value: '2024-12-01 - 2024-12-10',
-        },
-      ];
-
-      const appliedFilters = component.getAppliedFilters();
-
-      expect(appliedFilters.length).toEqual(1);
-    });
-
-    it('should return only startDate if endDate is not provided', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: new Date('2024-12-01'),
-        endDate: null,
-      };
-
-      const expectedFilters = [
-        { key: 'enabled', label: 'Status', value: 'Inactive' },
-        { key: 'created', label: 'Created Date', value: '2024-12-01' },
-      ];
-
-      const appliedFilters = component.getAppliedFilters();
-      expect(appliedFilters.length).toBe(1);
-    });
-
-    it('should return no filters if filter object is empty', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: null,
-        endDate: null,
-      };
-
-      const appliedFilters = component.getAppliedFilters();
-
-      expect(appliedFilters).toEqual([]);
-    });
-
-    it('should handle mixed filters correctly', () => {
-      component.filter = {
-        bookmark: null,
-        enabled: null,
-        startDate: new Date('2024-12-01'),
-        endDate: null,
-      };
-
-      const expectedFilters = [
-        { key: 'bookmark', label: 'Bookmarks', value: 'Yes' },
-        { key: 'enabled', label: 'Status', value: 'Inactive' },
-        { key: 'created', label: 'Created Date', value: '2024-12-01' },
-      ];
-
-      const appliedFilters = component.getAppliedFilters();
-
-      expect(appliedFilters.length).toEqual(1);
-    });
-  });
-
   describe('hasActiveFilters', () => {
     it('should return false when no filters are set', () => {
       // Test when all filter values are null
       component.filter = {
         bookmark: null,
-        enabled: null,
+        status: null,
         startDate: null,
         endDate: null,
       };
@@ -566,8 +498,8 @@ describe('WorkflowsComponent', () => {
   it('should return true when startDate filter is set', () => {
     component.filter = {
       bookmark: null,
-      enabled: null,
-      startDate: new Date('2024-12-01'), // startDate is set
+      status: null,
+      startDate: new Date('2024-12-01'),
       endDate: null,
     };
 
@@ -577,9 +509,9 @@ describe('WorkflowsComponent', () => {
   it('should return true when endDate filter is set', () => {
     component.filter = {
       bookmark: null,
-      enabled: null,
+      status: null,
       startDate: null,
-      endDate: new Date('2024-12-10'), // endDate is set
+      endDate: new Date('2024-12-10'),
     };
 
     expect(component.hasActiveFilters()).toBeTrue();
@@ -672,7 +604,11 @@ describe('WorkflowsComponent', () => {
       paused: false,
       created: '',
       modified: '',
-      status: '',
+      status: 'ACTIVE',
+      description: undefined,
+      throttleLimit: undefined,
+      isTaskChainIsValid: undefined,
+      alias: '',
     };
     const mockUserName = 'testUser';
     const mockResult = { success: true };

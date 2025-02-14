@@ -76,7 +76,11 @@ describe('WorkflowTableComponent', () => {
       paused: false,
       created: '',
       modified: '',
-      status: '',
+      status: 'ACTIVE',
+      description: undefined,
+      throttleLimit: undefined,
+      isTaskChainIsValid: undefined,
+      alias: '',
     };
     const event = new MouseEvent('click');
     component.pauseWorkflow(event, workflow);
