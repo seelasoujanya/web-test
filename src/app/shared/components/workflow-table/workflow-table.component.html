@@ -194,15 +194,36 @@
           </td>
           <td class="table-cell">
             <div class="action-content">
-              <img
-                [src]="
-                  workflow.enabled
-                    ? 'assets/icons/pause-logo.svg'
-                    : 'assets/icons/resume-logo.svg'
-                "
-                alt="Pause Icon"
-                class="action-icon"
-                (click)="pauseWorkflow($event, workflow)" />
+              <ng-container
+                *ngIf="
+                  (workflow.status === 'ACTIVE' ||
+                    workflow.status === 'INACTIVE') &&
+                    !workflow.paused;
+                  else notRunnable
+                ">
+                <ng-container *ngIf="workflow.status === 'ACTIVE'">
+                  <img
+                    src="assets/icons/pause-logo.svg"
+                    alt="Pause Icon"
+                    class="action-icon"
+                    (click)="pauseWorkflow($event, workflow)" />
+                </ng-container>
+                <ng-container *ngIf="workflow.status === 'INACTIVE'">
+                  <img
+                    src="assets/icons/resume-logo.svg"
+                    alt="Resume Icon"
+                    class="action-icon"
+                    (click)="pauseWorkflow($event, workflow)" />
+                </ng-container>
+              </ng-container>
+
+              <ng-template #notRunnable>
+                <img
+                  src="assets/icons/resume-logo.svg"
+                  alt="Resume Icon"
+                  class="action-icon disabled" />
+              </ng-template>
+
               <img
                 [src]="
                   bookmarkedIds.includes(workflow.id)

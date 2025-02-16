@@ -87,9 +87,9 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
+      size: 10,
+      sortBy: 'modified',
+      order: 'desc',
     };
   }
 

@@ -32,6 +32,22 @@ export class ApiService {
       `${this.apiUrl}/workflow/${workflowId}/configs`
     );
   }
+
+  createWorkflow(workflow: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/workflow`, workflow);
+  }
+
+  createStep(step: {
+    workflowId: number;
+    executionOrder: number;
+    type: string;
+    name: string;
+  }): Observable<any> {
+    console.log('Payload being sent to backend:', step); // Debugging line
+
+    return this.http.post(`${this.apiUrl}/step`, step);
+  }
+
   getPausedProperty(key: string) {
     return this.http.get<any>(`${this.apiUrl}/property/${key}`);
   }

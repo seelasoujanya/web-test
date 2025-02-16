@@ -21,13 +21,14 @@ import { Router } from '@angular/router';
 import { SystemProperty, Workflow } from 'src/app/core/models/workflow.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
-  imports: [CommonModule],
+  imports: [CommonModule, TooltipModule],
 })
 export class WorkflowTableComponent implements OnDestroy {
   public timeFormatService: TimeFormatService;
