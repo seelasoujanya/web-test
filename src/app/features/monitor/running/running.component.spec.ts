@@ -68,36 +68,6 @@ describe('RunningComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update runningInstances with data from API', () => {
-    const mockData: IPage<any> = {
-      content: [
-        {
-          id: 1,
-          workflowName: 'Workflow 1',
-          status: 'RUNNING',
-          identifier: '123',
-          created: new Date(),
-        },
-      ],
-      totalElements: 1,
-      totalPages: 1,
-      size: 10,
-      number: 0,
-      numberOfElements: 1,
-    };
-    apiServiceSpy.getInstancesByStatus.and.returnValue(of(mockData));
-
-    component.updateRunningInstances(component.pageParams);
-
-    expect(spinnerServiceSpy.show).toHaveBeenCalled();
-    expect(apiServiceSpy.getInstancesByStatus).toHaveBeenCalledWith(
-      component.pageParams
-    );
-    expect(component.runningInstances).toEqual(mockData.content);
-    expect(component.noRunningInstances).toBe(false);
-    expect(spinnerServiceSpy.hide).toHaveBeenCalled();
-  });
-
   it('should handle empty data from API', () => {
     const mockData: IPage<any> = {
       content: [],

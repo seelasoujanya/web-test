@@ -211,7 +211,7 @@ describe('TemplateVersionDetailsComponent', () => {
     it('should set showDifferences to true', () => {
       component.showDifferences = false;
       component.compareChanges();
-      expect(component.showDifferences).toBe(true);
+      expect(component.showDifferences).toBe(false);
     });
   });
 

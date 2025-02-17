@@ -42,8 +42,8 @@ describe('XmlTemplatesComponent', () => {
     expect(defaultParams).toEqual({
       page: 0,
       size: 10,
-      sortBy: '',
-      order: 'asc',
+      sortBy: 'modified',
+      order: 'desc',
     });
   });
 

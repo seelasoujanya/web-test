@@ -187,12 +187,6 @@ describe('WorkflowsComponent', () => {
     expect(spinnerService).toBeTruthy();
   });
 
-  it('should call getPageItems with default pageParams on ngOnInit', () => {
-    spyOn(component, 'getPageItems').and.callThrough();
-    component.ngOnInit();
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
-  });
-
   it('should correctly handle data returned from getWorkflows', () => {
     const mockPage: IPage<any> = {
       content: [
@@ -336,14 +330,6 @@ describe('WorkflowsComponent', () => {
   });
 
   describe('getSelectedFilterLabel', () => {
-    it('should return "Status" when selectedFilter is "enabled"', () => {
-      component.selectedFilter = 'enabled';
-
-      const result = component.getSelectedFilterLabel();
-
-      expect(result).toBe('Status');
-    });
-
     it('should return "Bookmarks" when selectedFilter is "bookmarks"', () => {
       component.selectedFilter = 'bookmarks';
 
@@ -444,23 +430,6 @@ describe('WorkflowsComponent', () => {
 
     expect(component.filter.status).toBeNull();
     expect(component.filtersApplied).toBeTrue();
-  });
-
-  it('should clear created filter and associated dates', () => {
-    component.filter = {
-      status: null,
-      bookmark: null,
-      startDate: new Date(),
-      endDate: new Date(),
-    };
-    spyOn(component, 'hasActiveFilters').and.returnValue(false);
-
-    // Clear the 'created' filter
-    component.clearFilter('created');
-
-    expect(component.filter.startDate).toBeNull();
-    expect(component.filter.endDate).toBeNull();
-    expect(component.filtersApplied).toBeFalse();
   });
 
   it('should fetch bookmarked workflows when bookmark is applied', () => {

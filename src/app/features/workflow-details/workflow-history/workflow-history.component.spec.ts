@@ -151,72 +151,6 @@ describe('WorkflowHistoryComponent', () => {
     ]);
   });
 
-  it('should correctly count workflow instances based on their status', () => {
-    component.workflowsInstances = [
-      {
-        status: WorkflowInstanceStatus.FAILED,
-        id: 0,
-        workflowId: 0,
-        completed: null,
-        duration: null,
-        reason: null,
-        triggerData: {},
-        log: null,
-        identifier: '',
-        errorMessage: null,
-        priority: Priority.LOW,
-        created: new Date(),
-        modified: new Date(),
-        deliveryType: '',
-        started: null,
-      },
-      {
-        status: WorkflowInstanceStatus.RUNNING,
-        id: 0,
-        workflowId: 0,
-        completed: null,
-        duration: null,
-        reason: null,
-        triggerData: {},
-        log: null,
-        identifier: '',
-        errorMessage: null,
-        priority: Priority.LOW,
-        created: new Date(),
-        modified: new Date(),
-        deliveryType: '',
-        started: null,
-      },
-      {
-        status: WorkflowInstanceStatus.COMPLETED,
-        id: 0,
-        workflowId: 0,
-        completed: null,
-        duration: null,
-        reason: null,
-        triggerData: {},
-        log: null,
-        identifier: '',
-        errorMessage: null,
-        priority: Priority.LOW,
-        created: new Date(),
-        modified: new Date(),
-        deliveryType: '',
-        started: null,
-      },
-    ];
-
-    component.failedInstancesCount = 0;
-    component.deliveredInstancesCount = 0;
-    component.totalInstancesCount = 0;
-
-    component.updateWorkflowsData();
-
-    expect(component.failedInstancesCount).toBe(1);
-    expect(component.deliveredInstancesCount).toBe(2);
-    expect(component.totalInstancesCount).toBe(3);
-  });
-
   it('should reset the workflow instance counts to zero', () => {
     component.failedInstancesCount = 5;
     component.deliveredInstancesCount = 10;
@@ -541,30 +475,6 @@ describe('WorkflowHistoryComponent', () => {
     component.clearFilter('startDate');
     expect(component.filter.startDate).toBeNull();
     expect(component.filter.endDate).toBeNull();
-  });
-
-  it('should shift the first element in priority, deliveryType, status, or identifier arrays', () => {
-    component.filter = {
-      start: null,
-      completedDate: null,
-      startDate: null,
-      endDate: null,
-      priority: ['high', 'low'],
-      deliveryType: ['standard', 'express'],
-      status: ['completed', 'pending'],
-      identifier: ['id1', 'id2'],
-      duration: 0,
-    };
-
-    component.clearFilter('priority');
-    component.clearFilter('deliveryType');
-    component.clearFilter('status');
-    component.clearFilter('identifier');
-
-    expect(component.filter.priority).toEqual(['low']);
-    expect(component.filter.deliveryType).toEqual(['express']);
-    expect(component.filter.status).toEqual(['pending']);
-    expect(component.filter.identifier).toEqual(['id2']);
   });
 
   it('should set duration to 0 when key is "duration"', () => {

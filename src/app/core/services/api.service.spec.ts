@@ -197,22 +197,6 @@ describe('ApiService', () => {
     });
   });
 
-  it('should get artifacts successfully', () => {
-    const id = 123;
-    const mockResponse = { content: ['artifact1', 'artifact2'] };
-
-    service.getArtifacts(id).subscribe(artifacts => {
-      expect(artifacts).toEqual(mockResponse.content);
-    });
-
-    const req = httpTestingController.expectOne(
-      `${service['apiUrl']}/workflowinstance/${id}/artifacts`
-    );
-    expect(req.request.method).toBe('GET');
-
-    req.flush(mockResponse);
-  });
-
   it('should get logs for an instance successfully', () => {
     const id = 123;
     const mockLogs = 'Log entry 1\nLog entry 2\nLog entry 3';

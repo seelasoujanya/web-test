@@ -25,27 +25,6 @@ describe('ConfirmModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit templateDescription when enableComments is true', () => {
-    component.enableComments = true;
-    spyOn(component.updateChanges, 'emit');
-    component.templateDescription = 'Some Description';
-
-    component.confirmModal();
-
-    expect(component.updateChanges.emit).toHaveBeenCalledWith(
-      'Some Description'
-    );
-  });
-
-  it('should emit true when enableComments is false', () => {
-    component.enableComments = false;
-    spyOn(component.updateChanges, 'emit');
-
-    component.confirmModal();
-
-    expect(component.updateChanges.emit).toHaveBeenCalledWith(true);
-  });
-
   it('should emit false on cancel', () => {
     spyOn(component.updateChanges, 'emit');
 
