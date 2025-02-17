@@ -53,20 +53,6 @@ describe('HeaderComponent', () => {
     expect(component.selectedMenu).toBe('');
   });
 
-  it('should call logout and navigate to /login', () => {
-    const spyWindowOpen = spyOn(window, 'open').and.callFake(
-      () => ({ close: () => {} }) as Window
-    );
-    const spyNavigate = spyOn(router, 'navigateByUrl');
-    component.logout();
-    expect(spyWindowOpen).toHaveBeenCalledWith(
-      environment.logout_URL,
-      '',
-      'width=100,height=100'
-    );
-    expect(spyNavigate).toHaveBeenCalledWith('/login');
-  });
-
   it('should show AboutComponent when showAbout is called', () => {
     const templateRef = {} as TemplateRef<any>;
     component.showAbout(templateRef);

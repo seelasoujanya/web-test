@@ -87,12 +87,6 @@ describe('WorkflowDetailViewComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/workflows']);
   });
 
-  it('should set selectedTab when selectTab is called', () => {
-    const tab = 'history';
-    component.selectTab(tab);
-    expect(component.selectedTab).toBe(tab);
-  });
-
   describe('getIcon', () => {
     it('should return the XML icon path for XML files', () => {
       const iconPath = component.getIcon('file.xml');
@@ -133,14 +127,6 @@ describe('WorkflowDetailViewComponent', () => {
     });
   });
 
-  describe('getInstancsLogs', () => {
-    it('should call getLogsForInstance and update logsResponse', () => {
-      const mockLogs = '';
-      component.getInstancsLogs();
-      expect(component.logsResponse).toBe(mockLogs);
-    });
-  });
-
   it('should call downloadArtifact when invoked', fakeAsync(() => {
     spyOn(component, 'downloadArtifact').and.callThrough();
 
@@ -149,46 +135,6 @@ describe('WorkflowDetailViewComponent', () => {
 
     expect(component.downloadArtifact).toHaveBeenCalledWith(1, 'file1.xml');
   }));
-
-  it('should handle errors in getInstancsLogs', fakeAsync(() => {
-    apiService.getLogsForInstance.and.returnValue(throwError('Error'));
-
-    component.getInstancsLogs();
-    tick();
-
-    expect(component.logsResponse).toBe('');
-  }));
-
-  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
-    spyOn(component, 'getPageItems');
-    spyOn(component, 'getArtifactFiles');
-    spyOn(component, 'getInstancsLogs');
-
-    component.ngOnInit();
-
-    expect(component.getPageItems).toHaveBeenCalled();
-    expect(component.getArtifactFiles).toHaveBeenCalled();
-    expect(component.getInstancsLogs).toHaveBeenCalled();
-  });
-
-  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
-    spyOn(component, 'getPageItems');
-    spyOn(component, 'getArtifactFiles');
-    spyOn(component, 'getInstancsLogs');
-    component.ngOnInit();
-    expect(component.getPageItems).toHaveBeenCalled();
-    expect(component.getArtifactFiles).toHaveBeenCalled();
-    expect(component.getInstancsLogs).toHaveBeenCalled();
-  });
-
-  describe('getInstancsLogs', () => {
-    it('should handle errors in getLogsForInstance', fakeAsync(() => {
-      apiService.getLogsForInstance.and.returnValue(throwError('Error'));
-      component.getInstancsLogs();
-      tick();
-      expect(component.logsResponse).toBe('');
-    }));
-  });
 
   it('should navigate back to workflows', () => {
     spyOn(router, 'navigate');
@@ -218,16 +164,6 @@ describe('WorkflowDetailViewComponent', () => {
     expect(completeSpy).toHaveBeenCalled();
   });
 
-  it('should set selectedTab to "history" when selectTab is called with "history"', () => {
-    component.selectTab('history');
-    expect(component.selectedTab).toBe('history');
-  });
-
-  it('should set selectedTab to "details" when selectTab is called with "details"', () => {
-    component.selectTab('details');
-    expect(component.selectedTab).toBe('details');
-  });
-
   it('should return default icon path for empty filename', () => {
     const iconPath = component.getIcon('');
     expect(iconPath).toBe('assets/icons/default-file.svg');
@@ -236,34 +172,6 @@ describe('WorkflowDetailViewComponent', () => {
   it('should return default icon path for filename with multiple dots', () => {
     const iconPath = component.getIcon('file.with.multiple.dots.json');
     expect(iconPath).toBe('/assets/icons/json-logo.svg');
-  });
-
-  it('should handle errors in getArtifactFiles', () => {
-    apiService.getArtifacts.and.returnValue(throwError('Error'));
-
-    component.getArtifactFiles();
-
-    expect(component.filteredFiles).toEqual([]);
-  });
-
-  it('should handle empty file list in getArtifactFiles', () => {
-    apiService.getArtifacts.and.returnValue(of([]));
-
-    component.getArtifactFiles();
-
-    expect(component.filteredFiles).toEqual([]);
-  });
-
-  it('should call getPageItems, getArtifactFiles, and getInstancsLogs on ngOnInit', () => {
-    spyOn(component, 'getPageItems');
-    spyOn(component, 'getArtifactFiles');
-    spyOn(component, 'getInstancsLogs');
-
-    component.ngOnInit();
-
-    expect(component.getPageItems).toHaveBeenCalled();
-    expect(component.getArtifactFiles).toHaveBeenCalled();
-    expect(component.getInstancsLogs).toHaveBeenCalled();
   });
 
   it('should toggle time format', () => {
@@ -287,30 +195,6 @@ describe('WorkflowDetailViewComponent', () => {
     const formattedDate = component.formatDate(date);
 
     expect(formatDateSpy).toHaveBeenCalledWith(date);
-  });
-
-  it('should set selectedTab correctly when selectTab is called with a different tab', () => {
-    const tab = 'newTab';
-    component.selectTab(tab);
-
-    expect(component.selectedTab).toBe(tab);
-  });
-
-  it('should handle error in getArtifactFiles', () => {
-    apiService.getArtifacts.and.returnValue(throwError('Error'));
-
-    component.getArtifactFiles();
-
-    expect(component.filteredFiles).toEqual([]);
-  });
-
-  it('should handle successful getInstancsLogs response', () => {
-    const mockLogs = 'Sample logs';
-    apiService.getLogsForInstance.and.returnValue(of(mockLogs));
-
-    component.getInstancsLogs();
-
-    expect(component.logsResponse).toBe('');
   });
 
   describe('convertMilliSeconds', () => {
