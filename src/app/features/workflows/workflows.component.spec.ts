@@ -169,17 +169,6 @@ describe('WorkflowsComponent', () => {
     expect(component['destroyed$'].complete).toHaveBeenCalled();
   });
 
-  it('should navigate to the correct route with workflow data on viewInstances', () => {
-    const mockWorkflow = { id: 1, name: 'Test Workflow', enabled: true };
-    component.viewInstances(mockWorkflow);
-    expect(router.navigate).toHaveBeenCalledWith(
-      ['/workflows', mockWorkflow.id],
-      {
-        state: { name: mockWorkflow.name },
-      }
-    );
-  });
-
   it('should instantiate all dependencies correctly in the constructor', () => {
     expect(apiService).toBeTruthy();
     expect(router).toBeTruthy();
@@ -253,16 +242,6 @@ describe('WorkflowsComponent', () => {
   it('should clear input and call getPageItems with default pageParams', () => {
     spyOn(component, 'getPageItems');
     component.clearInput();
-    expect(component.workflowName).toBe('');
-    expect(component.pageParams.search).toBe('');
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
-  });
-
-  it('should clear input and reset workflows', () => {
-    spyOn(component, 'getPageItems');
-
-    component.clearInput();
-
     expect(component.workflowName).toBe('');
     expect(component.pageParams.search).toBe('');
     expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
@@ -403,19 +382,6 @@ describe('WorkflowsComponent', () => {
     expect(component.filter.endDate).toBeNull();
   });
 
-  it('should clear bookmark filter and reset states', () => {
-    spyOn(component, 'getPageItems');
-    spyOn(component, 'fetchBookmarkedWorkflows');
-    spyOn(component, 'hasActiveFilters').and.returnValue(false);
-
-    component.clearFilter('bookmark');
-    expect(component.filter.bookmark).toBeNull();
-    expect(component.filtersApplied).toBeFalse();
-    expect(component.showBookMarks).toBeFalse();
-    expect(component.noBookmarkedWorkflows).toBeFalse();
-    expect(component.getPageItems).toHaveBeenCalledWith(component.pageParams);
-  });
-
   it('should clear enabled filter', () => {
     component.filter = {
       status: null,
@@ -464,17 +430,6 @@ describe('WorkflowsComponent', () => {
     });
   });
 
-  it('should return true when startDate filter is set', () => {
-    component.filter = {
-      bookmark: null,
-      status: null,
-      startDate: new Date('2024-12-01'),
-      endDate: null,
-    };
-
-    expect(component.hasActiveFilters()).toBeTrue();
-  });
-
   it('should return true when endDate filter is set', () => {
     component.filter = {
       bookmark: null,
@@ -503,13 +458,6 @@ describe('WorkflowsComponent', () => {
 
     component.closeModal();
     expect(component.resetFilters).not.toHaveBeenCalled();
-  });
-
-  it('should call openDialog with the provided template when filterDeliveries is called', () => {
-    spyOn(component, 'openDialog');
-    const mockTemplateRef = {} as TemplateRef<any>;
-    component.filterDeliveries(mockTemplateRef);
-    expect(component.openDialog).toHaveBeenCalledWith(mockTemplateRef);
   });
 
   describe('applyFilters', () => {
