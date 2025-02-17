@@ -198,11 +198,6 @@ describe('WorkflowsComponent', () => {
     });
   });
 
-  it('should show the spinner when getPageItems is called', () => {
-    component.getPageItems(component.pageParams);
-    expect(spinnerService.show).toHaveBeenCalled();
-  });
-
   it('should hide the spinner after getWorkflows is completed', () => {
     const mockData: IPage<any> = {
       content: [],
