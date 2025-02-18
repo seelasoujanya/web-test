@@ -67,7 +67,7 @@
               class="btn btn--black workflow-btn"
               type="button"
               (click)="openCreateWorkflow(createWorkflow)">
-              <i class="fa fa-plus create-icon"></i>
+              <em class="fa fa-plus create-icon"></em>
               CREATE WORKFLOW
             </button>
           </div>
@@ -338,14 +338,14 @@
         <ng-container *ngIf="currentStep === steps.length - 1; else cancleBtn">
           <div class="left-btns">
             <button (click)="prevStep()" class="prevBtn">
-              <i class="fa fa-arrow-left"></i>
+              <em class="fa fa-arrow-left"></em>
               Previous
             </button>
             <button
               type="button"
               class="btn btn--black cancleBtn"
               (click)="closeCreateWorkflowModal()">
-              <i class="fa fa-times"></i> Cancel
+              <em class="fa fa-times"></em> Cancel
             </button>
           </div>
         </ng-container>
@@ -354,7 +354,7 @@
             type="button"
             class="btn btn--black cancleBtn"
             (click)="closeCreateWorkflowModal()">
-            <i class="fa fa-times"></i> Cancel
+            <em class="fa fa-times"></em> Cancel
           </button>
         </ng-template>
       </div>
@@ -370,7 +370,7 @@
             class="nxtBtn"
             [disabled]="!selectedDeliverType || !selectedWorkflowType"
             *ngIf="currentStep < steps.length - 1">
-            Next <i class="fa fa-arrow-right"></i>
+            Next <em class="fa fa-arrow-right"></em>
           </button>
         </span>
         <span
