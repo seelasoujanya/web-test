@@ -100,4 +100,20 @@ describe('CommonTableComponent', () => {
 
     expect(component.navToWorkflowId.emit).toHaveBeenCalledWith(456);
   });
+
+  it('should return true if isPauseProperty is true', () => {
+    component.isPauseProperty = true;
+
+    const result = component.isToggleChange(true);
+
+    expect(result).toBe(true);
+  });
+
+  it('should return the passed state if isPauseProperty is false', () => {
+    component.isPauseProperty = false;
+
+    const result = component.isToggleChange(false);
+
+    expect(result).toBe(false);
+  });
 });

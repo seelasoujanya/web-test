@@ -373,4 +373,27 @@ describe('RunningComponent', () => {
     expect(component.runningInstances).toEqual([]);
     expect(component.noRunningInstances).toBe(true);
   });
+
+  it('should not open priority dialog if no valid instance is selected in onEditPriority', () => {
+    const mockTemplateRef = jasmine.createSpyObj('TemplateRef', ['elementRef']);
+    const mockInstance = [999]; // Instance ID not present in runningInstances
+    component.runningInstances = [{ id: 1, priority: 'HIGH' }];
+
+    spyOn(component, 'openChangePriorityDialog');
+
+    component.onEditPriority(mockInstance, mockTemplateRef);
+
+    expect(component.openChangePriorityDialog).not.toHaveBeenCalled();
+  });
+
+  it('should not set expandedId if instance ID is undefined or null', () => {
+    const instanceNull = { id: null };
+    const instanceUndefined = { id: undefined };
+
+    component.expandAction(instanceNull);
+    expect(component.expandedId).toBeUndefined();
+
+    component.expandAction(instanceUndefined);
+    expect(component.expandedId).toBeUndefined();
+  });
 });
