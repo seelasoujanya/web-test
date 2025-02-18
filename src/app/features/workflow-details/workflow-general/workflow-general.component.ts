@@ -300,11 +300,6 @@ export class WorkflowGeneralComponent implements OnInit {
     });
   }
   convertToMinutes(value: any): string {
-    // Validate input to ensure it only contains digits followed by 'h' or 'm'
-    if (typeof value !== 'string' || !/^\d+[hm]$/.test(value)) {
-      throw new Error('Invalid input format');
-    }
-
     let totalMinutes = 0;
 
     const hoursMatch = value.match(/(\d+)h/);
