@@ -346,4 +346,29 @@ describe('PendingComponent', () => {
       mockInstanceId,
     ]);
   });
+
+  it('should format date correctly when input is a string', () => {
+    const mockDate = '2024-12-01T10:00:00';
+    spyOn(component['timeFormatService'], 'formatDate').and.returnValue({
+      date: '01/12/2024',
+      time: '10:00 AM',
+    });
+
+    const formattedDate = component.formatDate(mockDate);
+
+    expect(component['timeFormatService'].formatDate).toHaveBeenCalledWith(
+      mockDate
+    );
+    expect(formattedDate).toEqual({ date: '01/12/2024', time: '10:00 AM' });
+  });
+
+  it('should not open change priority dialog if pendingInstances is empty', () => {
+    component.pendingInstances = [];
+    spyOn(component, 'openChangePriorityDialog');
+
+    const mockTemplateRef = jasmine.createSpyObj('TemplateRef', ['elementRef']);
+    component.onEditPriority([1], mockTemplateRef);
+
+    expect(component.openChangePriorityDialog).not.toHaveBeenCalled();
+  });
 });

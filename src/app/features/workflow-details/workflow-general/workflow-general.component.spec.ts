@@ -602,4 +602,14 @@ describe('WorkflowGeneralComponent', () => {
       expect(result).toBe('0m');
     });
   });
+
+  it('should set copyUrl to empty if alias is not provided', () => {
+    component.workflowCopy = { alias: '' };
+
+    component.addText();
+
+    // Check that copyUrl is empty when no alias is set
+    expect(component.copyUrl).toBe('');
+    expect(component.copyUrlError).toBe('');
+  });
 });
