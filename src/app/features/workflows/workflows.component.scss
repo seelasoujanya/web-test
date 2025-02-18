@@ -33,7 +33,6 @@
             display: inline-block;
             width: 100%;
           }
-
           .search-field {
             height: 40px;
             padding: 9px 256px 9px 16px;
@@ -48,7 +47,6 @@
             border: none;
             outline: none;
             height: 20px;
-
             position: absolute;
             right: 10px;
             top: 50%;
@@ -86,6 +84,7 @@
   top: 25vh;
   font-size: 15px;
 }
+
 ::ng-deep .modal {
   display: flex !important;
   align-items: center;
@@ -161,6 +160,7 @@
     }
   }
 }
+
 .header {
   display: flex;
   align-items: center;
@@ -184,6 +184,7 @@
     height: 20px;
   }
 }
+
 ::ng-deep .cdk-overlay-container {
   z-index: 10000 !important;
 }
@@ -299,6 +300,7 @@
   height: 16px;
   vertical-align: middle;
 }
+
 .plusIcon {
   margin-left: 10px;
 }
@@ -399,7 +401,8 @@
           justify-content: center;
         }
         &.active {
-          border: 2px solid black; /* Highlight color for active selection */
+          border: 2px solid black;
+          /* Highlight color for active selection */
         }
       }
     }
@@ -408,7 +411,6 @@
       display: flex;
       justify-content: space-between;
       margin-left: 20px;
-
       .workflow-type {
         height: 150px;
         width: 100px;
@@ -433,12 +435,14 @@
           justify-content: center;
         }
         &.active {
-          border: 2px solid black; /* Highlight color for active selection */
+          border: 2px solid black;
+          /* Highlight color for active selection */
         }
       }
     }
   }
 }
+
 // .container { width: 400px; margin: auto; }
 .tabs {
   background-color: #1a1919;
@@ -448,6 +452,7 @@
   height: 70px;
   width: 100%;
 }
+
 .tab {
   width: 50%;
   display: flex;
@@ -458,15 +463,18 @@
     background-color 0.3s,
     color 0.3s;
 }
+
 .tab.active {
   background-color: #333;
   color: #fff;
 }
+
 .buttons {
   display: flex;
   justify-content: space-between;
   padding: 30px 30px;
 }
+
 .cancleBtn {
   cursor: pointer;
   width: 100px !important;
@@ -480,7 +488,6 @@
 .nxtBtn {
   background-color: #ca0a3d;
   color: #fff;
-  border: none;
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -495,7 +502,6 @@
 .prevBtn {
   background-color: #ca0a3d;
   color: #fff;
-  border: none;
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -506,6 +512,7 @@
   align-items: center;
   justify-content: space-evenly;
 }
+
 .right-button-con {
   display: flex;
   width: 300px;
@@ -526,22 +533,26 @@ label {
 
 .nxtBtn:disabled {
   cursor: not-allowed;
-  opacity: 0.5; /* Opacity effect for disabled button */
+  opacity: 0.5;
+  /* Opacity effect for disabled button */
 }
 
 .typee-con {
   margin-top: 10px;
   margin-bottom: 20px;
 }
+
 h3 {
   margin-bottom: 0px;
 }
+
 p {
   margin-left: 5px;
   color: #666464;
   font-size: 12px;
   padding: 0px;
 }
+
 .workflow-field {
   width: 100%;
   box-sizing: border-box;
@@ -581,23 +592,28 @@ p {
   font-size: 12px;
   font-weight: 300;
 }
+
 // Below CSS for create workflow modal - end
 .label-required::after {
   content: ' *';
   color: red;
 }
+
 .select-feild {
   margin-top: 0px !important;
   margin-bottom: 30px !important;
 }
+
 .create-workflow-btn {
   height: 40px;
 }
+
 .create-icon {
   margin-right: 10px;
   color: white;
   font-size: 16px;
 }
+
 .left-btns {
   width: 230px;
   display: flex;

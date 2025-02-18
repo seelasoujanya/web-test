@@ -70,28 +70,28 @@
                 <div class="active-class">
                   <ng-container *ngIf="value === 'RUNNING'">
                     <div class="icon-item running">
-                      <i class="fas fa-spinner fa-spin"></i>
+                      <em class="fas fa-spinner fa-spin"></em>
                       <span>Running</span>
                     </div>
                   </ng-container>
 
                   <ng-container *ngIf="value === 'QUEUED'">
                     <div class="icon-item queued">
-                      <i class="fas fa-clock"></i>
+                      <em class="fas fa-clock"></em>
                       <span>Queued</span>
                     </div>
                   </ng-container>
 
                   <ng-container *ngIf="value === 'CREATED'">
                     <div class="icon-item created">
-                      <i class="fa-regular fa-circle-check"></i>
+                      <em class="fa-regular fa-circle-check"></em>
                       <span>Created</span>
                     </div>
                   </ng-container>
 
                   <ng-container *ngIf="value === 'PAUSED'">
                     <div class="icon-item paused">
-                      <i class="fa-solid fa-circle-pause"></i>
+                      <em class="fa-solid fa-circle-pause"></em>
                       <span>Paused</span>
                     </div>
                   </ng-container>
@@ -115,10 +115,10 @@
                 <p class="tooltip">Change priority</p>
               </div>
               <div class="tooltip-container">
-                <i
+                <em
                   type="button"
                   class="fas fa-trash-alt dlt"
-                  (click)="onTerminateInstance(row)"></i>
+                  (click)="onTerminateInstance(row)"></em>
                 <p class="tooltip">Terminate Instance</p>
               </div>
             </div>
