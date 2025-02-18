@@ -371,4 +371,51 @@ describe('PendingComponent', () => {
 
     expect(component.openChangePriorityDialog).not.toHaveBeenCalled();
   });
+
+  it('should handle empty or undefined instance ID in getTableValues', () => {
+    component.pendingInstances = [
+      {
+        id: undefined,
+        workflowName: '',
+        status: '',
+        identifier: '',
+        created: null,
+      },
+    ];
+    const values = component.getTableValues();
+    expect(values.length).toBe(1);
+  });
+
+  it('should format date correctly when input is a string', () => {
+    const mockDate = '2024-12-01T10:00:00';
+    spyOn(component['timeFormatService'], 'formatDate').and.returnValue({
+      date: '01/12/2024',
+      time: '10:00 AM',
+    });
+
+    const formattedDate = component.formatDate(mockDate);
+
+    expect(component['timeFormatService'].formatDate).toHaveBeenCalledWith(
+      mockDate
+    );
+    expect(formattedDate).toEqual({ date: '01/12/2024', time: '10:00 AM' });
+  });
+
+  it('should handle WebSocket subscription when updatePendingInstances is called', () => {
+    spyOn(component, 'updatePendingInstances');
+    component.updateDataFromWebSocket();
+    webSocketAPI.totalWorkflowsStatusCounts.next({});
+
+    expect(component.updatePendingInstances).toHaveBeenCalledWith(
+      component.pageParams
+    );
+  });
+
+  it('should handle empty or undefined instance ID in expandAction', () => {
+    const instance = { id: undefined };
+
+    component.expandAction(instance);
+
+    expect(component.expandedId).toBeUndefined();
+  });
 });
