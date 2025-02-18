@@ -47,28 +47,36 @@
           <caption class="table-caption visually-hidden">
             This Table shows The List of Templates
           </caption>
-          <tr>
-            <td class="detail-field-key">Name</td>
-            <td class="detail-field-value">
-              <input
-                type="text"
-                maxlength="255"
-                placeholder="Name"
-                class="input-field"
-                [class.input-field-highlet]="detailEditing"
-                [(ngModel)]="templateName"
-                [disabled]="!detailEditing" />
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Created</td>
-            <td class="detail-field-value">
-              <span class="time">
-                {{ formatDate(template?.created).date }}
-                {{ formatDate(template?.created).time }}
-              </span>
-            </td>
-          </tr>
+          <thead class="visually-hidden">
+            <tr>
+              <th class="detail-field-key">Field</th>
+              <th class="detail-field-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Name</td>
+              <td class="detail-field-value">
+                <input
+                  type="text"
+                  maxlength="255"
+                  placeholder="Name"
+                  class="input-field"
+                  [class.input-field-highlet]="detailEditing"
+                  [(ngModel)]="templateName"
+                  [disabled]="!detailEditing" />
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Created</td>
+              <td class="detail-field-value">
+                <span class="time">
+                  {{ formatDate(template?.created).date }}
+                  {{ formatDate(template?.created).time }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
@@ -77,28 +85,36 @@
           <caption class="table-caption visually-hidden">
             This Table shows The List of Workflows and viewInstances
           </caption>
-          <tr>
-            <td class="detail-field-key">Description</td>
-            <td class="detail-field-value">
-              <input
-                type="text"
-                maxlength="255"
-                placeholder="Description"
-                class="input-field"
-                [class.input-field-highlet]="detailEditing"
-                [(ngModel)]="templateDescription"
-                [disabled]="!detailEditing" />
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Last Modified</td>
-            <td class="detail-field-value">
-              <span>
-                {{ formatDate(latestTemplateCreated).date }}
-                {{ formatDate(latestTemplateCreated).time }}
-              </span>
-            </td>
-          </tr>
+          <thead class="visually-hidden">
+            <tr>
+              <th class="detail-field-key">Field</th>
+              <th class="detail-field-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Description</td>
+              <td class="detail-field-value">
+                <input
+                  type="text"
+                  maxlength="255"
+                  placeholder="Description"
+                  class="input-field"
+                  [class.input-field-highlet]="detailEditing"
+                  [(ngModel)]="templateDescription"
+                  [disabled]="!detailEditing" />
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Last Modified</td>
+              <td class="detail-field-value">
+                <span>
+                  {{ formatDate(latestTemplateCreated).date }}
+                  {{ formatDate(latestTemplateCreated).time }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -107,6 +123,9 @@
       <p class="left-usage">Usage</p>
       <div class="table-container">
         <table class="usage-table">
+          <caption class="table-caption visually-hidden">
+            This Table shows list of Version Usages
+          </caption>
           <thead>
             <tr>
               <th>Workflow</th>
