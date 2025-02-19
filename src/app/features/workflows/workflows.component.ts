@@ -121,6 +121,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     { label: 'Fingerprint', value: 'fingerprint' },
     { label: 'Recording', value: 'recording' },
     { label: 'Data Retrieval', value: 'data_retrieval' },
+    { label: 'Others', value: 'others' },
   ];
 
   workflowTypes: Record<string, { label: string; value: string }[]> = {
@@ -131,6 +132,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
     recording: [],
     data_retrieval: [],
+    others: [],
   };
 
   getAvailableWorkflows(): { label: string; value: string }[] {
