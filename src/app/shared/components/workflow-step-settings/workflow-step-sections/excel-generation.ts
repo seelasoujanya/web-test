@@ -8,7 +8,12 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
         label: 'Template',
         type: 'select',
         placeholder: 'Select a Template',
-        values: ['IHEART_BROKEN_BOW', 'IPF_SLOVENIA', 'ZPAV_POLAND'],
+        values: [
+          'IHEART_BROKEN_BOW',
+          'IPF_SLOVENIA',
+          'ZPAV_POLAND',
+          'IFPI_SWEDEN',
+        ],
         description: 'Select a Template',
         required: false,
       },
