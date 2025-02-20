@@ -1,5 +1,5 @@
 # Stage 1: Build Angular app
-FROM node:18.17.0-alpine as builder
+FROM node:18.17.0-alpine AS builder
 
 # Set working directory inside the container
 WORKDIR /app-ui
@@ -9,8 +9,6 @@ COPY package*.json ./
 
 # Install npm dependencies
 RUN npm cache clear -f
-RUN npm config set proxy http://10.14.232.48:3128
-RUN npm config set proxy http://10.14.232.48:3128
 RUN npm config set registry "https://registry.npmjs.org"
 RUN npm install
 
