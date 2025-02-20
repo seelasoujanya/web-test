@@ -1,42 +1,3 @@
-<!-- <div *ngFor="let workflowStep of workflowSteps">
-  <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
-    <app-xml-step-settings
-      [workflowStep]="workflowStep"></app-xml-step-settings>
-  </div>
-  <div class="step-container" *ngIf="workflowStep.type !== 'XML_RUNNER'">
-    <app-workflow-step-settings
-      [workflowStep]="workflowStep"
-      (workflowStepChange)="
-        updateWorkflowStep($event)
-      "></app-workflow-step-settings>
-  </div>
-</div> -->
-
-<!-- <div class="bg-container">
-
-    <div class="left-container" >
-      <div *ngFor = "let kk of headings">
-        <h6>{{kk}}</h6>
-      </div>
-
-    </div>
-    <div class="right-container">
-      <div class="bg-container"  *ngFor="let workflowStep of workflowSteps">
-
-        <div class="step-container" *ngIf="workflowStep.type === 'XML_RUNNER'">
-          <app-xml-step-settings
-            [workflowStep]="workflowStep"></app-xml-step-settings>
-        </div>
-        <div class="step-container" *ngIf="workflowStep.type !== 'XML_RUNNER'">
-          <app-workflow-step-settings
-            [workflowStep]="workflowStep"
-            (workflowStepChange)="
-              updateWorkflowStep($event)
-            "></app-workflow-step-settings>
-        </div>
-      </div>
-    </div>
-</div> -->
 <div class="bg-container" *ngIf="!showConfigs; else noConfigs">
   <div class="left-container">
     <div *ngFor="let heading of headings">
@@ -46,6 +7,14 @@
         class="heading">
         {{ heading }}
       </h6>
+    </div>
+    <div
+      class=""
+      class="btn btn--black addMore"
+      type="button"
+      [tooltip]="'Add Step'"
+      (click)="openCreateStepsModal(createWorkflowStep)">
+      <em class="fa fa-plus create-icon"></em> Add Step
     </div>
   </div>
 
@@ -69,5 +38,86 @@
 <ng-template #noConfigs>
   <div class="noConfigs">
     <p>No Configurations Found</p>
+  </div>
+</ng-template>
+
+<ng-template #createWorkflowStep>
+  <div class="modal-content create-workflowStep-modal">
+    <div class="header">
+      <h4>Create Workflow Step</h4>
+      <div>
+        <button type="button" class="header_close-btn" (click)="closeModal()">
+          <img src="assets/icons/close-circle.svg" alt="" />
+        </button>
+      </div>
+    </div>
+    <div class="workflow-info-con">
+      <div class="workflow-field">
+        <span class="label-required">Name</span>
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter Workflow Step Name"
+          class="input-field"
+          [(ngModel)]="workflowStp.name"
+          required />
+      </div>
+
+      <!-- <div class="workflow-field">
+        <div>
+          <span class="label-required">Execution Order</span>
+          <input
+            type="number"
+            placeholder="throttle limit"
+            class="input-field"
+            min="0"
+            [(ngModel)]="this.workflowStp.executionOrder"
+            (ngModelChange)="checkExecutionOrder()" />
+        </div>
+        <div class="error-message" *ngIf="isDuplicateExecutionOrder()">
+          Execution order already exists!
+        </div>
+      </div> -->
+
+      <div class="workflow-field">
+        <span class="label-required">Type</span>
+        <ng-select
+          [items]="steps"
+          bindLabel="label"
+          bindValue="value"
+          placeholder="Select Step Type"
+          [(ngModel)]="workflowStp.type"
+          (change)="selectStepType($event)"
+          [searchable]="false"
+          [clearable]="false">
+        </ng-select>
+      </div>
+
+      <!-- <div class="workflow-field">
+        <span class="label-required">Description</span>
+        <textarea
+          placeholder="Add description"
+          class="text-field"
+          [(ngModel)]="workflowStp.description"></textarea>
+      </div> -->
+    </div>
+    <div class="footer">
+      <span
+        [tooltip]="
+          !workflowStp.name || workflowStp.type === null
+            ? 'Please fill all the required fields'
+            : ''
+        "
+        [tooltipPlacement]="'top'"
+        [tooltipTrigger]="'hover'">
+        <button
+          class="btn btn--red workflow-btn"
+          type="button"
+          [disabled]="!workflowStp.name || workflowStp.type === null"
+          (click)="createWorkflowWorkflowStep()">
+          CREATE WORKFLOW STEP
+        </button>
+      </span>
+    </div>
   </div>
 </ng-template>

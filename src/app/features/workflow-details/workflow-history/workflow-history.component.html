@@ -1,19 +1,24 @@
 <div class="workflow-history-container">
-  <div *ngIf="filtersApplied" class="applied-filters">
-    <span *ngFor="let filter of getAppliedFilters()" class="filter-badge">
-      <ng-container *ngIf="filter.value && filter.value.length > 0">
-        <span class="filter-label">{{ filter.label }}</span
-        >: {{ filter.value[0] }}
-        <button
-          type="button"
-          class="filter-remove-btn"
-          (click)="clearFilter(filter.key)">
-          <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
-        </button>
-        <span *ngIf="filter.value.length > 1" class="showfilter"
-          >+{{ filter.value.length - 1 }}</span
-        >
-      </ng-container>
+  <div class="applied-filters">
+    <span
+      *ngFor="let filter of appliedFilters | slice: 0 : 2"
+      class="filter-badge">
+      <span class="filter-label">{{ filter.label }}</span
+      ><span class="filter-value">: {{ filter.value }}</span>
+      <button
+        type="button"
+        class="filter-remove-btn"
+        (click)="clearFilter(filter.key)">
+        <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
+      </button>
+    </span>
+    <span
+      *ngIf="appliedFilters.length > 2"
+      class="more-filters"
+      (click)="filterDeliveries(filterDeliveriesForm)"
+      tooltip="Show all applied filters"
+      tooltipPlacement="right">
+      ...
     </span>
   </div>
 
@@ -33,15 +38,9 @@
       (getSortParam)="sortColumn($event)"
       (workflowDetailEvent)="viewInstanceDetails($event)">
     </app-workflow-table>
-    <div *ngIf="noInstancesFound" class="no-instances-message">
+    <div *ngIf="workflowsInstances.length == 0" class="no-instances-message">
       No Instance Found
     </div>
-  </div>
-
-  <div class="page-view" *ngIf="!noInstancesFound">
-    <app-pagination
-      [page]="page"
-      (paginationEvent)="onPage($event)"></app-pagination>
   </div>
 </div>
 
@@ -55,7 +54,7 @@
           class="input-field"
           style="margin-top: 70px">
           <img
-            *ngIf="filter.startDate"
+            *ngIf="isFilterApplied('startDate')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -67,7 +66,7 @@
           (click)="selectFilter('completedDate')"
           class="input-field">
           <img
-            *ngIf="filter.start"
+            *ngIf="isFilterApplied('completedDate')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -88,7 +87,7 @@
           (click)="selectFilter('status')"
           class="input-field">
           <img
-            *ngIf="filter.status?.length"
+            *ngIf="isFilterApplied('status')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -100,7 +99,7 @@
           (click)="selectFilter('priority')"
           class="input-field">
           <img
-            *ngIf="filter.priority?.length"
+            *ngIf="isFilterApplied('priority')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -113,7 +112,7 @@
           (click)="selectFilter('deliveryType')"
           class="input-field">
           <img
-            *ngIf="filter.deliveryType?.length"
+            *ngIf="isFilterApplied('deliveryType')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -126,7 +125,7 @@
           class="input-field"
           style="margin-bottom: 130px">
           <img
-            *ngIf="filter.identifier?.length"
+            *ngIf="isFilterApplied('identifier')"
             src="assets/icons/checkmark-icon.svg"
             alt="Applied"
             class="checkmark-icon" />
@@ -297,6 +296,7 @@
               {{ id }}
               <img
                 src="assets/icons/remove-icon.svg"
+                alt="remove-icon"
                 (click)="removeIdentifier(i)" />
             </p>
           </div>
@@ -305,3 +305,9 @@
     </div>
   </div>
 </ng-template>
+
+<div class="page-view" *ngIf="!noInstancesFound">
+  <app-pagination
+    [page]="page"
+    (paginationEvent)="onPage($event)"></app-pagination>
+</div>

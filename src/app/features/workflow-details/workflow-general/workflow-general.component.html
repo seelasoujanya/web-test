@@ -30,8 +30,15 @@
             [searchable]="false"
             [clearable]="false"
             placeholder="select status"
-            [class.disabled]="!isEditing"
-            [(ngModel)]="workflowCopy.enabled">
+            [class.disabled]="!isEditing || workflowCopy.status === 'DISABLED'"
+            [(ngModel)]="workflowCopy.status">
+            <ng-template ng-label-tmp let-item="item">
+              <span>{{
+                item.value === 'INACTIVE' || item.value === 'DISABLED'
+                  ? 'NO'
+                  : item.label
+              }}</span>
+            </ng-template>
             <ng-template ng-label-tmp let-item="item">
               <span>{{ item.label }}</span>
             </ng-template>
@@ -127,86 +134,85 @@
         </button>
       </div>
     </div>
+  </div>
+  <div class="email-setting">
+    <div class="general-setting-label">
+      <span class="label">Email</span>
+      <span>
+        <button
+          class="btn btn--red"
+          type="button"
+          (click)="addNewEmail(addEmailForm)">
+          <img
+            src="/assets/icons/create-logo.svg"
+            class="create-icon"
+            alt="create Icon" />
+          Add Email
+        </button>
+      </span>
+    </div>
 
-    <div class="email-setting">
-      <div class="general-setting-label">
-        <span class="label">Email</span>
-        <span>
-          <button
-            class="btn btn--red"
-            type="button"
-            (click)="addNewEmail(addEmailForm)">
-            <img
-              src="/assets/icons/create-logo.svg"
-              class="create-icon"
-              alt="create Icon" />
-            Add Email
-          </button></span
-        >
-      </div>
-
-      <div class="email-table">
-        <table class="table-container">
-          <caption class="table-caption visually-hidden">
-            This Table shows list of Emails
-          </caption>
-          <thead class="table-head">
-            <tr>
-              <th *ngFor="let heading of headings" class="table-header-cell">
-                {{ heading }}
-                <img
-                  *ngIf="heading !== 'S.NO' && heading !== 'ACTIONS'"
-                  src="assets/icons/down-arrow-logo.svg"
-                  alt="{{ heading }} Icon"
-                  class="heading-icon"
-                  (click)="sortColumn(heading)"
-                  [class.rotate]="
-                    currentSort === 'desc' && selectedHeading === heading
-                  " />
-              </th>
+    <div class="email-table">
+      <table class="table-container">
+        <caption class="table-caption visually-hidden">
+          This Table shows list of Emails
+        </caption>
+        <thead class="table-head">
+          <tr>
+            <th *ngFor="let heading of headings" class="table-header-cell">
+              {{ heading }}
+              <img
+                *ngIf="heading !== 'S.NO' && heading !== 'ACTIONS'"
+                src="assets/icons/down-arrow-logo.svg"
+                alt="{{ heading }} Icon"
+                class="heading-icon"
+                (click)="sortColumn(heading)"
+                [class.rotate]="
+                  currentSort === 'desc' && selectedHeading === heading
+                " />
+            </th>
+          </tr>
+        </thead>
+        <tbody class="scrollable-table__body">
+          <ng-container>
+            <tr *ngFor="let email of emails; let i = index">
+              <td class="table-cell">{{ i + 1 }}</td>
+              <td class="table-cell">{{ email.email }}</td>
+              <td class="table-cell">{{ email.name }}</td>
+              <td class="table-cell">
+                <ng-select
+                  [items]="emailStatus"
+                  bindLabel="label"
+                  bindValue="value"
+                  [searchable]="false"
+                  [clearable]="false"
+                  placeholder="select status"
+                  [(ngModel)]="email.status"
+                  [class.disabled]="true">
+                  <ng-template ng-label-tmp let-item="item">
+                    <span>{{ item.label }}</span>
+                  </ng-template>
+                </ng-select>
+              </td>
+              <td class="table-cell">
+                <div class="actions">
+                  <img
+                    src="/assets/icons/delete-icon.svg"
+                    class="delete-icon"
+                    alt="delete"
+                    (click)="deleteEmail(email.id, email.email)" />
+                  <img
+                    src="/assets/icons/edit-icon.svg"
+                    alt="edit Icon"
+                    class="edit-icon"
+                    orm
+                    (click)="editEmail(email, addEmailForm)" />
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody class="scrollable-table__body">
-            <ng-container>
-              <tr *ngFor="let email of emails; let i = index">
-                <td class="table-cell">{{ i + 1 }}</td>
-                <td class="table-cell">{{ email.email }}</td>
-                <td class="table-cell">{{ email.name }}</td>
-                <td class="table-cell">
-                  <ng-select
-                    [items]="emailStatus"
-                    bindLabel="label"
-                    bindValue="value"
-                    [searchable]="false"
-                    [clearable]="false"
-                    placeholder="select status"
-                    [(ngModel)]="email.status"
-                    [class.disabled]="true">
-                    <ng-template ng-label-tmp let-item="item">
-                      <span>{{ item.label }}</span>
-                    </ng-template>
-                  </ng-select>
-                </td>
-                <td class="table-cell">
-                  <div class="actions">
-                    <img
-                      src="/assets/icons/delete-icon.svg"
-                      class="delete-icon"
-                      alt="delete"
-                      (click)="deleteEmail(email.id, email.email)" />
-                    <img
-                      src="/assets/icons/edit-icon.svg"
-                      alt="edit Icon"
-                      class="edit-icon"
-                      orm
-                      (click)="editEmail(email, addEmailForm)" />
-                  </div>
-                </td>
-              </tr>
-            </ng-container>
-          </tbody>
-        </table>
-      </div>
+          </ng-container>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ import {
   Component,
   OnDestroy,
   OnInit,
+  Renderer2,
   TemplateRef,
 } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
@@ -24,6 +25,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-workflows',
@@ -34,7 +36,6 @@ import { MatSliderModule } from '@angular/material/slider';
     FormsModule,
     CommonModule,
     TooltipModule,
-    MatNativeDateModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -42,6 +43,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatNativeDateModule,
     MatButtonModule,
     MatSliderModule,
+    NgSelectModule,
   ],
   templateUrl: './workflows.component.html',
   styleUrl: './workflows.component.scss',
@@ -51,12 +53,13 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   workflowsData: Workflow[] = [];
 
   filteredWorkflows: Workflow[] = [];
-
   bookmarkedIds: number[] = [];
 
   workflowName: string = '';
 
   noWorkflows: boolean = false;
+
+  appliedFilters: { key: string; label: string; value: unknown }[] = [];
 
   noBookmarkedWorkflows: boolean = false;
 
@@ -74,20 +77,72 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     'Actions',
     'Pause',
   ];
+  workflow: Workflow = {
+    name: '',
+    enabled: true,
+    paused: false,
+    created: '',
+    modified: '',
+    status: 'DISABLED',
+    alias: '',
+    id: 0,
+    throttleLimit: 10,
+    description: '',
+    isTaskChainIsValid: undefined,
+  };
+
+  currentStep: number = 0;
+  steps = ['Choose Delivery Type and Workflow Type ', 'Workflow Info'];
 
   headingEnum = {
     'Workflow Name': 'name',
-    Status: 'enabled',
+    Status: 'status',
     Created: 'created',
-    'Last Run On': 'created',
+    'Last Run On': 'lastRunOn',
     'Last Run Status': 'status',
   };
 
+  workflow_status = [
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Inactive', value: 'INACTIVE' },
+    { label: 'Disabled', value: 'DISABLED' },
+  ];
+
   filtersApplied: boolean = false;
+
+  today: Date = new Date();
 
   selectingStart = true;
 
   public destroyed$ = new Subject<void>();
+  selectedDeliverType: string | null = null;
+  selectedWorkflowType: string | null = null;
+
+  deliveryTypes = [
+    { label: 'Product', value: 'product' },
+    { label: 'Fingerprint', value: 'fingerprint' },
+    { label: 'Recording', value: 'recording' },
+    { label: 'Data Retrieval', value: 'data_retrieval' },
+  ];
+
+  workflowTypes: Record<string, { label: string; value: string }[]> = {
+    product: [
+      { label: 'DDEX', value: 'DDEX' },
+      { label: 'Apple Music', value: 'APPLE_MUSIC' },
+    ],
+    fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
+    recording: [],
+    data_retrieval: [],
+  };
+
+  getAvailableWorkflows(): { label: string; value: string }[] {
+    return null != this.selectedDeliverType
+      ? this.workflowTypes[this.selectedDeliverType] || []
+      : [];
+  }
+  activeTab: number = 1;
+  workflowhasAlias: any;
+  aliasError: string | undefined;
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -95,7 +150,27 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.getPageItems(this.pageParams);
+    this.initializeFilters();
+    this.pageParams = this.getDefaultPageParams();
+    this.bookmarkedPageParams = this.getDefaultPageParams();
+    this.getUserId().then(() => {
+      if (this.filter.bookmark) {
+        this.showBookMarks = true;
+        this.fetchBookmarkedWorkflows();
+      } else {
+        this.showBookMarks = false;
+        this.getPageItems(this.pageParams);
+      }
+    });
+  }
+
+  initializeFilters(): void {
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+      this.getAppliedFilters();
+    }
+    this.filtersApplied = this.hasActiveFilters();
   }
 
   constructor(
@@ -105,16 +180,18 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     private spinnerService: SpinnerService,
     private authorizationService: AuthorizationService,
     private modalService: BsModalService,
-    private bsModalRef: BsModalRef
+    private bsModalRef: BsModalRef,
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef
   ) {
-    this.getUserId();
+    // this.getUserId();
   }
 
   filter = {
-    enabled: null,
-    bookmark: null,
+    bookmark: null as boolean | null,
     startDate: null as Date | null,
     endDate: null as Date | null,
+    status: null as string[] | null,
   };
 
   selectFilter(filterName: string) {
@@ -123,8 +200,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   getSelectedFilterLabel(): string {
     switch (this.selectedFilter) {
-      case 'enabled':
-        return 'Status';
       case 'bookmarks':
         return 'Bookmarks';
       default:
@@ -134,17 +209,23 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   public resetFilters() {
     this.filter = {
-      enabled: null,
       bookmark: null,
       startDate: null,
       endDate: null,
+      status: null,
     };
+    // Remove filters from localStorage
+    localStorage.removeItem('workflowFilters');
   }
 
   applyFilters() {
     this.bsModalRef.hide();
     this.formatFilterDates();
     this.filtersApplied = this.hasActiveFilters();
+
+    // Save filters to localStorage
+    localStorage.setItem('workflowFilters', JSON.stringify(this.filter));
+
     if (this.filter.bookmark) {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
@@ -154,6 +235,8 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }
+    this.getAppliedFilters();
+    this.cdRef.detectChanges();
   }
 
   formatFilterDates() {
@@ -175,23 +258,137 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     if (!this.filtersApplied) {
       this.resetFilters();
     }
+
+    // Restore previously applied filters
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
+
+    this.appliedFilters.forEach(appliedFilter => {
+      switch (appliedFilter.key) {
+        case 'bookmark':
+          this.filter.bookmark = appliedFilter.value as boolean | null;
+          break;
+        case 'startDate':
+          if (Array.isArray(appliedFilter.value)) {
+            const dateRange = (appliedFilter.value[0] as string).split(' - ');
+            this.filter.startDate = dateRange[0]
+              ? new Date(dateRange[0])
+              : null;
+            this.filter.endDate = dateRange[1] ? new Date(dateRange[1]) : null;
+          }
+          break;
+        case 'status':
+          if (Array.isArray(appliedFilter.value)) {
+            this.filter.status = appliedFilter.value as string[];
+          }
+          break;
+      }
+    });
   }
 
   filterDeliveries(filterWorkflowsTemplate: TemplateRef<any>) {
     this.openDialog(filterWorkflowsTemplate);
   }
 
+  openCreateWorkflow(template: TemplateRef<any>) {
+    // this.modalService.show(template);
+    this.openDialog(template);
+  }
+
+  onDeliveryTypeChange() {
+    this.selectedWorkflowType = null;
+  }
+
+  checkAlias() {
+    if (this.workflow.alias) {
+      this.apiService
+        .getWorkflowByAlias(this.workflow.alias)
+        .subscribe(data => {
+          this.workflowhasAlias = data;
+          if (this.workflowhasAlias != null) {
+            this.aliasError =
+              'The alias already exists. Please enter a different one';
+          } else {
+            this.aliasError = '';
+          }
+        });
+    } else {
+      this.aliasError = '';
+    }
+  }
+
+  ggcreateWorkflow(): void {
+    this.bsModalRef.hide();
+    setTimeout(() => {
+      this.apiService.createWorkflow(this.workflow).subscribe({
+        next: response => {
+          this.createStep({
+            workflowId: response.id,
+            executionOrder: 1,
+            type: this.selectedWorkflowType,
+            name: this.selectedWorkflowType,
+          });
+          this.closeCreateWorkflowModal();
+          this.spinnerService.show();
+          this.router.navigate(['/workflows', response.id], {
+            queryParams: { tab: '' },
+          });
+        },
+      });
+    }, 500);
+  }
+
+  public createStep(workflowStepDto: any): void {
+    this.apiService.createStep(workflowStepDto).subscribe({
+      next: response => {
+        console.log('Step created with ID:', response.id);
+      },
+    });
+  }
+
+  public closeCreateWorkflowModal(): void {
+    this.modalService.hide();
+    setTimeout(() => {
+      this.currentStep = 0;
+      this.selectedDeliverType = null;
+      this.selectedWorkflowType = null;
+      this.workflow = {
+        name: '',
+        enabled: true,
+        paused: false,
+        created: '',
+        modified: '',
+        status: 'DISABLED',
+        alias: '',
+        id: 0,
+        throttleLimit: 10,
+        description: '',
+        isTaskChainIsValid: undefined,
+      };
+    }, 100);
+  }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
       backdrop: true,
       ignoreBackdropClick: true,
       keyboard: false,
     };
+
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
+
     this.bsModalRef = this.modalService.show(workflowsTemplate, config);
+    this.openDialogWithSelectedDateRange();
+    this.cdRef.detectChanges();
   }
 
   getPageItems(pageParams: any) {
     this.spinnerService.show();
+    this.pageParams.search = this.workflowName;
     this.apiService
       .getWorkflows(pageParams, this.filter)
       .pipe(takeUntil(this.destroyed$))
@@ -213,22 +410,27 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public reload(workflows: any) {
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks == true) {
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.getPageItems(this.pageParams);
+    }
   }
 
   public pauseWorkflow(workflow: Workflow) {
-    const newStatus = !workflow.enabled;
+    const newStatus = workflow.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+
     const pause = workflow.paused;
     const newData = {
       name: null,
       description: null,
-      enabled: newStatus,
+      status: newStatus,
       throttleLimit: null,
       paused: pause,
       isTaskChainIsValid: null,
     };
     this.apiService.updateWorkflow(workflow.id, newData).subscribe(result => {
-      workflow.enabled = result.enabled;
+      workflow.status = result.status;
       this.cdRef.markForCheck();
     });
   }
@@ -273,16 +475,28 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   searchWorkflow(): void {
-    this.pageParams.page = 0;
-    this.pageParams.search = this.workflowName;
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks == false) {
+      this.pageParams.page = 0;
+      this.pageParams.search = this.workflowName;
+      this.getPageItems(this.pageParams);
+    } else {
+      this.bookmarkedPageParams.page = 0;
+      this.bookmarkedPageParams.search = this.workflowName;
+      this.fetchBookmarkedWorkflows();
+    }
     this.cdRef.detectChanges();
   }
   clearInput(): void {
     this.workflowName = '';
-    this.pageParams.search = '';
-    this.getPageItems(this.pageParams);
-    this.noWorkflows = this.filteredWorkflows.length === 0;
+    if (this.showBookMarks == true) {
+      this.bookmarkedPageParams.search = '';
+      this.fetchBookmarkedWorkflows();
+      this.noBookmarkedWorkflows = this.filteredWorkflows.length === 0;
+    } else {
+      this.pageParams.search = '';
+      this.getPageItems(this.pageParams);
+      this.noWorkflows = this.filteredWorkflows.length === 0;
+    }
   }
 
   bookmarkWorkflow(workflow: Workflow, userName: String) {
@@ -303,6 +517,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
         this.bookmarkedIds.splice(index, 1);
       }
       this.cdRef.markForCheck();
+      this.reload(workflow);
     });
   }
 
@@ -323,6 +538,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   fetchBookmarkedWorkflows() {
     this.spinnerService.show();
+    this.bookmarkedPageParams.search = this.workflowName;
     this.apiService
       .getBookmarkedWorkflowsByUsername(
         this.BGroupId,
@@ -340,7 +556,6 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
           this.cdRef.markForCheck();
         },
         (error: any) => {
-          console.error('Error fetching bookmarked workflows', error);
           this.spinnerService.hide();
         }
       );
@@ -349,76 +564,126 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   hasActiveFilters(): boolean {
     return (
       this.filter.bookmark !== null ||
-      this.filter.enabled !== null ||
       this.filter.startDate !== null ||
-      this.filter.endDate !== null
+      this.filter.endDate !== null ||
+      this.filter.status !== null
     );
   }
+  getAppliedFilters() {
+    const statusMapping: Record<string, string> = {
+      ACTIVE: 'Active',
+      INACTIVE: 'Inactive',
+      DISABLED: 'Disabled',
+    };
 
-  getAppliedFilters(): { key: string; label: string; value: string }[] {
-    const appliedFilters = [];
+    const addOrUpdateFilter = (key: string, label: string, value: any) => {
+      const existingFilterIndex = this.appliedFilters.findIndex(
+        filter => filter.key === key
+      );
+      if (existingFilterIndex > -1) {
+        this.appliedFilters[existingFilterIndex].value = value;
+      } else {
+        this.appliedFilters.push({ key, label, value });
+      }
+    };
 
-    if (this.filter.bookmark) {
-      appliedFilters.push({
-        key: 'bookmark',
-        label: 'Bookmarks',
-        value: 'Yes',
-      });
+    // Function to remove filter by key
+    const removeFilterByKey = (key: string) => {
+      this.appliedFilters = this.appliedFilters.filter(
+        filter => filter.key !== key
+      );
+    };
+
+    // Handle bookmark filter
+    if (this.filter.bookmark === false || this.filter.bookmark === null) {
+      removeFilterByKey('bookmark');
+    } else if (this.filter.bookmark === true) {
+      addOrUpdateFilter('bookmark', 'Bookmark', 'Yes');
     }
 
-    if (this.filter.enabled === true) {
-      appliedFilters.push({
-        key: 'enabled',
-        label: 'Status',
-        value: 'Active',
-      });
-    } else if (this.filter.enabled === false) {
-      appliedFilters.push({
-        key: 'enabled',
-        label: 'Status',
-        value: 'Inactive',
-      });
+    // Handle status filter
+    if (!this.filter.status || this.filter.status.length === 0) {
+      removeFilterByKey('status');
+    } else {
+      const formattedStatus = this.filter.status.map(
+        status => statusMapping[status as keyof typeof statusMapping] || status
+      );
+      addOrUpdateFilter('status', 'Status', formattedStatus);
     }
 
-    if (this.filter.startDate && this.filter.endDate) {
-      appliedFilters.push({
-        key: 'created',
-        label: 'Created Date',
-        value: `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`,
-      });
-    } else if (this.filter.startDate) {
-      appliedFilters.push({
-        key: 'created',
-        label: 'Created Date',
-        value: formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US'),
-      });
+    // Handle startDate and endDate filter
+    if (this.filter.startDate === null || this.filter.endDate === null) {
+      removeFilterByKey('startDate');
+      removeFilterByKey('endDate');
+    } else {
+      const dateRange =
+        this.filter.startDate && this.filter.endDate
+          ? `${formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US')} - ${formatDate(this.filter.endDate, 'yyyy-MM-dd', 'en-US')}`
+          : formatDate(this.filter.startDate, 'yyyy-MM-dd', 'en-US');
+      addOrUpdateFilter('startDate', 'Created Date', [dateRange]);
     }
-
-    return appliedFilters;
   }
 
   clearFilter(key: string): void {
-    if (key === 'bookmark' || key === 'enabled') {
+    const filterIndex = this.appliedFilters.findIndex(
+      filter => filter.key === key
+    );
+    if (filterIndex > -1) {
+      this.appliedFilters.splice(filterIndex, 1);
+    }
+
+    if (key === 'bookmark' || key === 'status') {
       this.filter[key] = null;
-    } else if (key == 'created') {
-      (this.filter.startDate = null), (this.filter.endDate = null);
+    } else if (key === 'startDate') {
+      this.filter.startDate = null;
+      this.filter.endDate = null;
     }
     this.filtersApplied = this.hasActiveFilters();
+    // Save updated filters to localStorage
+    localStorage.setItem('workflowFilters', JSON.stringify(this.filter));
     if (this.filter.bookmark) {
       this.showBookMarks = true;
       this.bookmarkedPageParams = this.getDefaultPageParams();
       this.fetchBookmarkedWorkflows();
-      this.getPageItems(this.pageParams);
     } else {
       this.showBookMarks = false;
       this.noBookmarkedWorkflows = false;
       this.pageParams = this.getDefaultPageParams();
       this.getPageItems(this.pageParams);
     }
+    this.getAppliedFilters();
+    this.cdRef.detectChanges();
   }
 
   clearDates(): void {
     this.filter.startDate = null;
     this.filter.endDate = null;
+    this.cdRef.detectChanges();
+  }
+
+  isFilterApplied(key: string): boolean {
+    return this.appliedFilters.some(filter => filter.key === key);
+  }
+
+  openDialogWithSelectedDateRange() {
+    if (this.filter.startDate && this.filter.endDate) {
+      this.filter.startDate = new Date(this.filter.startDate);
+      this.filter.endDate = new Date(this.filter.endDate);
+    }
+  }
+
+  goToStep(step: number) {
+    this.currentStep = step;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.steps.length - 1) this.currentStep++;
+  }
+
+  prevStep() {
+    if (this.currentStep > 0) this.currentStep--;
+  }
+  progressWidth() {
+    return `${(this.currentStep / (this.steps.length - 1)) * 100}%`;
   }
 }

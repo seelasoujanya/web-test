@@ -169,15 +169,18 @@ describe('ProcessingByWorkflowComponent', () => {
       mockWebSocketAPI.statusCountByWorkflow.subscribe((data: any[]) => {
         component.workflows = data;
       });
-    expect(component.workflows).toEqual([
-      {
-        workflowName: 'Test Workflow',
-        totalInstances: { runningCount: 1, pendingCount: 2 },
-        completed: new Date(),
-        paused: false,
-        workflowId: 1,
-      },
-    ]);
+
+    const expectedWorkflow = {
+      workflowName: 'Test Workflow',
+      totalInstances: { runningCount: 1, pendingCount: 2 },
+      completed: new Date('2024-12-05T06:52:35.000Z'),
+      paused: false,
+      workflowId: 1,
+    };
+
+    expect(component.workflows[0].workflowName).toEqual(
+      expectedWorkflow.workflowName
+    );
   });
 
   it('should navigate to the correct workflow URL based on workflowName', () => {

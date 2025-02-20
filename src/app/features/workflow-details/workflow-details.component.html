@@ -13,17 +13,30 @@
       <div>
         {{ workflow?.name }}
       </div>
-      <ng-container *ngIf="workflow?.enabled; else inactiveLogo">
+      <ng-container *ngIf="workflow?.paused; else activOrInactive">
         <img
-          src="assets/icons/active-logo.svg"
+          src="assets/icons/paused-logo.svg"
           alt="Active Icon"
-          class="status-icon" />
+          class="active-status-icon" />
       </ng-container>
-      <ng-template #inactiveLogo>
-        <img
-          src="assets/icons/inactive-logo.svg"
-          alt="Inactive Icon"
-          class="status-icon" />
+      <ng-template #activOrInactive>
+        <ng-container [ngSwitch]="workflow?.status">
+          <img
+            *ngSwitchCase="'ACTIVE'"
+            src="assets/icons/active-logo.svg"
+            alt="Active Icon"
+            class="active-status-icon" />
+          <img
+            *ngSwitchCase="'INACTIVE'"
+            src="assets/icons/inactive-logo.svg"
+            alt="Inactive Icon"
+            class="" />
+          <img
+            *ngSwitchCase="'DISABLED'"
+            src="assets/icons/disabled-logo.svg"
+            alt="Inactive Icon"
+            class="" />
+        </ng-container>
       </ng-template>
     </div>
   </div>

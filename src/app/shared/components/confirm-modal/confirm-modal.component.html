@@ -17,6 +17,23 @@
           [(ngModel)]="templateDescription"
           [class.show-mandatory]="!templateDescription"></textarea>
       </div>
+      <div class="workflow-field">
+        <span>Add These Updated Version to below Workflows</span>
+        <ng-container
+          *ngIf="workflows && workflows.length > 0"
+          class="text-field">
+          <ng-select
+            [items]="workflows"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Select Workflows"
+            [(ngModel)]="selectedWorkflows"
+            [multiple]="true"
+            [searchable]="false"
+            style="margin-top: 10px">
+          </ng-select>
+        </ng-container>
+      </div>
     </ng-container>
   </div>
 

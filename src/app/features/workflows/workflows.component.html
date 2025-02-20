@@ -10,9 +10,9 @@
             <img src="assets/icons/filter.svg" alt="" />
             <span>FILTERS</span>
           </button>
-          <div *ngIf="filtersApplied" class="applied-filters">
+          <div class="applied-filters">
             <span
-              *ngFor="let filter of getAppliedFilters()"
+              *ngFor="let filter of appliedFilters | slice: 0 : 2"
               class="filter-badge">
               <span class="filter-label">{{ filter.label }}</span
               ><span class="filter-value">: {{ filter.value }}</span>
@@ -23,10 +23,18 @@
                 <img src="assets/icons/remove-icon.svg" alt="Remove filter" />
               </button>
             </span>
+
+            <span
+              *ngIf="appliedFilters.length > 2"
+              class="more-filters"
+              (click)="filterDeliveries(filterWorkflowsForm)"
+              tooltip="Show all applied filters">
+              ...
+            </span>
           </div>
         </div>
         <div class="workflow-header-right">
-          <div>
+          <div class="search-container">
             <input
               type="text"
               class="search-field"
@@ -54,6 +62,15 @@
               Search
             </button>
           </div>
+          <div>
+            <button
+              class="btn btn--black workflow-btn"
+              type="button"
+              (click)="openCreateWorkflow(createWorkflow)">
+              <em class="fa fa-plus create-icon"></em>
+              CREATE WORKFLOW
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -68,10 +85,18 @@
         (bookMarkEvent)="toggleBookmark($event)"
         (reload)="reload($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
-      <div *ngIf="noWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="
+          noWorkflows &&
+          !showBookMarks &&
+          !(noBookmarkedWorkflows && showBookMarks)
+        "
+        class="no-workflows-message">
         No Workflows Found
       </div>
-      <div *ngIf="noBookmarkedWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="noBookmarkedWorkflows && showBookMarks"
+        class="no-workflows-message">
         No Bookmarks Found
       </div>
     </div>
@@ -82,164 +107,300 @@
   </div>
 </div>
 
-<ng-template #filterWorkflowsForm class="modal-content">
-  <div class="form-details">
-    <div class="side-bar">
-      <div class="field">
-        <span
-          [class.selected]="selectedFilter === 'created'"
-          (click)="selectFilter('created')"
-          class="input-field"
-          style="margin-top: 150px">
-          <img
-            *ngIf="filter.startDate"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Created
-        </span>
-        <br />
-        <span
-          [class.selected]="selectedFilter === 'bookmarks'"
-          (click)="selectFilter('bookmarks')"
-          class="input-field">
-          <img
-            *ngIf="filter.bookmark"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Bookmarks
-        </span>
-        <br />
-        <span
-          [class.selected]="selectedFilter === 'enabled'"
-          (click)="selectFilter('enabled')"
-          class="input-field"
-          style="margin-bottom: 170px">
-          <img
-            *ngIf="filter.enabled !== null"
-            src="assets/icons/checkmark-icon.svg"
-            alt="Applied"
-            class="checkmark-icon" />
-          Status
-        </span>
+<ng-template #filterWorkflowsForm>
+  <div class="modal-content filter-workflows-modal">
+    <div class="form-details">
+      <div class="side-bar">
+        <div class="field">
+          <span
+            [class.selected]="selectedFilter === 'created'"
+            (click)="selectFilter('created')"
+            class="input-field"
+            style="margin-top: 150px">
+            <img
+              *ngIf="isFilterApplied('startDate')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Created
+          </span>
+          <br />
+          <span
+            [class.selected]="selectedFilter === 'bookmarks'"
+            (click)="selectFilter('bookmarks')"
+            class="input-field">
+            <img
+              *ngIf="isFilterApplied('bookmark')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Bookmarks
+          </span>
+          <br />
+          <span
+            [class.selected]="selectedFilter === 'status'"
+            (click)="selectFilter('status')"
+            class="input-field"
+            style="margin-bottom: 170px">
+            <img
+              *ngIf="isFilterApplied('status')"
+              src="assets/icons/checkmark-icon.svg"
+              alt="Applied"
+              class="checkmark-icon" />
+            Status
+          </span>
+        </div>
+        <div class="buttons">
+          <button
+            class="btn btn--black"
+            (click)="resetFilters()"
+            style="margin-left: 14px">
+            RESET
+          </button>
+          <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
+        </div>
       </div>
-      <div class="buttons">
-        <button
-          class="btn btn--black"
-          (click)="resetFilters()"
-          style="margin-left: 14px">
-          RESET
-        </button>
-        <button class="btn btn--red" (click)="applyFilters()">APPLY</button>
+
+      <div class="form-content">
+        <div class="header">
+          <p class="header_title">Filter Workflows</p>
+          <button type="button" class="header_close-btn" (click)="closeModal()">
+            <img src="assets/icons/close-circle.svg" alt="" />
+          </button>
+        </div>
+        <div>
+          <div *ngIf="selectedFilter === 'created'">
+            <div class="selected-date">
+              <span class="date-label">
+                <span class="label-heading">From:</span>
+                <span class="label-value">{{
+                  filter.startDate
+                    ? (filter.startDate | date: 'd MMM, y')
+                    : 'DD MMM, YYYY'
+                }}</span>
+                <span class="label-heading" style="margin-left: 10px">To:</span>
+                <span class="label-value">{{
+                  filter.endDate
+                    ? (filter.endDate | date: 'd MMM, y')
+                    : 'DD MMM, YYYY'
+                }}</span>
+              </span>
+
+              <button mat-icon-button color="warn" (click)="clearDates()">
+                <img
+                  src="/assets/icons/delete-icon.svg"
+                  class="delete-icon"
+                  alt="delete" />
+              </button>
+            </div>
+
+            <mat-form-field
+              appearance="outline"
+              color="accent"
+              class="w-100 datepicker__size_s">
+              <mat-label>Select Date Range</mat-label>
+              <mat-date-range-input [rangePicker]="dateRangePicker">
+                <input matStartDate [(ngModel)]="filter.startDate" />
+                <input matEndDate [(ngModel)]="filter.endDate" />
+              </mat-date-range-input>
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="dateRangePicker"></mat-datepicker-toggle>
+              <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+          <div *ngIf="selectedFilter === 'bookmarks'">
+            <div class="checkbox__icon checkbox_icon_circle">
+              <label class="custom-checkbox">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="filter.bookmark"
+                  class="checkbox-input" />
+                <div class="radio__icon" [class.checked]="filter.bookmark">
+                  <img
+                    src="assets/icons/check.svg"
+                    alt=""
+                    class="radio__icon_img" />
+                </div>
+                <span>Bookmarks</span>
+              </label>
+            </div>
+          </div>
+
+          <div *ngIf="selectedFilter === 'status'">
+            <ng-select
+              [items]="workflow_status"
+              bindLabel="label"
+              bindValue="value"
+              placeholder="Select Status"
+              [(ngModel)]="filter.status"
+              [multiple]="true"></ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createWorkflow>
+  <div class="modal-content create-workflow-modal">
+    <div class="tabs">
+      <div
+        class="tab"
+        *ngFor="let step of steps; let i = index"
+        [class.active]="currentStep === i">
+        {{ step }}
       </div>
     </div>
 
-    <div class="form-content">
-      <div class="header">
-        <p class="header_title">Filter Workflows</p>
-        <button type="button" class="header_close-btn" (click)="closeModal()">
-          <img src="assets/icons/close-circle.svg" alt="" />
-        </button>
-      </div>
-      <div>
-        <div *ngIf="selectedFilter === 'created'">
-          <div class="selected-date">
-            <span class="date-label">
-              <span class="label-heading">From:</span>
-              <span class="label-value">{{
-                filter.startDate
-                  ? (filter.startDate | date: 'd MMM, y')
-                  : 'DD MMM, YYYY'
-              }}</span>
-              <span class="label-heading" style="margin-left: 10px">To:</span>
-              <span class="label-value">{{
-                filter.endDate
-                  ? (filter.endDate | date: 'd MMM, y')
-                  : 'DD MMM, YYYY'
-              }}</span>
-            </span>
+    <div class="content">
+      <div *ngIf="currentStep === 0">
+        <div class="typee-con">
+          <h3>Choose Type of Delivery</h3>
+          <p>Select the type of delivery you want to process.</p>
+          <ng-select
+            [items]="deliveryTypes"
+            bindLabel="label"
+            bindValue="value"
+            placeholder="Select Delivery Type"
+            [(ngModel)]="selectedDeliverType"
+            (ngModelChange)="onDeliveryTypeChange()"
+            [searchable]="false"
+            class="select-feild"
+            [clearable]="false">
+          </ng-select>
+        </div>
 
-            <button x mat-icon-button color="warn" (click)="clearDates()">
-              <img
-                src="/assets/icons/delete-icon.svg"
-                class="delete-icon"
-                alt="delete" />
+        <div *ngIf="selectedDeliverType">
+          <h3>Choose Type Of Workflow</h3>
+          <p>
+            Based on the selected delivery type, choose an appropriate workflow.
+          </p>
+          <ng-select
+            [items]="getAvailableWorkflows()"
+            bindLabel="label"
+            bindValue="value"
+            class="select-feild"
+            [searchable]="false"
+            placeholder="Select Workflow Type"
+            [(ngModel)]="selectedWorkflowType">
+          </ng-select>
+        </div>
+      </div>
+
+      <div *ngIf="currentStep === 1" class="workflow-info-con">
+        <div class="workflow-field">
+          <span class="label-required">Name</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Workflow Name"
+            class="input-field"
+            [(ngModel)]="workflow.name"
+            required />
+        </div>
+
+        <div class="workflow-field">
+          <div>
+            <span class="label-required">Concurrency</span>
+            <input
+              type="number"
+              placeholder="throttle limit"
+              class="input-field"
+              min="0"
+              [(ngModel)]="workflow.throttleLimit" />
+          </div>
+        </div>
+        <div class="workflow-field">
+          <span class="label-required">Alias</span>
+          <input
+            type="text"
+            maxlength="255"
+            placeholder="Enter Alias to trigger"
+            class="input-field"
+            [(ngModel)]="workflow.alias"
+            (ngModelChange)="checkAlias()" />
+          <p *ngIf="aliasError" class="errorMsg">
+            {{ aliasError }}
+          </p>
+        </div>
+        <div class="workflow-field">
+          <span class="label-required">Description</span>
+          <textarea
+            placeholder="Add description"
+            class="text-field"
+            [(ngModel)]="workflow.description"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="buttons">
+      <div>
+        <ng-container *ngIf="currentStep === steps.length - 1; else cancleBtn">
+          <div class="left-btns">
+            <button (click)="prevStep()" class="prevBtn">
+              <em class="fa fa-arrow-left"></em>
+              Previous
+            </button>
+            <button
+              type="button"
+              class="btn btn--black cancleBtn"
+              (click)="closeCreateWorkflowModal()">
+              <em class="fa fa-times"></em> Cancel
             </button>
           </div>
-
-          <mat-form-field
-            appearance="outline"
-            color="accent"
-            class="w-100 datepicker__size_s">
-            <mat-label>Select Date Range</mat-label>
-            <mat-date-range-input [rangePicker]="dateRangePicker">
-              <input matStartDate [(ngModel)]="filter.startDate" readonly />
-              <input matEndDate [(ngModel)]="filter.endDate" readonly />
-            </mat-date-range-input>
-            <mat-datepicker-toggle
-              matSuffix
-              [for]="dateRangePicker"></mat-datepicker-toggle>
-            <mat-date-range-picker #dateRangePicker></mat-date-range-picker>
-          </mat-form-field>
-        </div>
-        <div *ngIf="selectedFilter === 'bookmarks'">
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="checkbox"
-                [(ngModel)]="filter.bookmark"
-                class="checkbox-input" />
-              <div class="radio__icon" [class.checked]="filter.bookmark">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Bookmarks</span>
-            </label>
-          </div>
-        </div>
-
-        <div *ngIf="selectedFilter === 'enabled'">
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="radio"
-                [(ngModel)]="filter.enabled"
-                [value]="true"
-                class="checkbox-input" />
-              <div
-                class="radio__icon"
-                [class.checked]="filter.enabled === true">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Active</span>
-            </label>
-          </div>
-          <br />
-          <div class="checkbox__icon checkbox_icon_circle">
-            <label class="custom-checkbox">
-              <input
-                type="radio"
-                [(ngModel)]="filter.enabled"
-                [value]="false"
-                class="checkbox-input" />
-              <div
-                class="radio__icon"
-                [class.checked]="filter.enabled === false">
-                <img
-                  src="assets/icons/check.svg"
-                  alt=""
-                  class="radio__icon_img" />
-              </div>
-              <span>Inactive</span>
-            </label>
-          </div>
-        </div>
+        </ng-container>
+        <ng-template #cancleBtn>
+          <button
+            type="button"
+            class="btn btn--black cancleBtn"
+            (click)="closeCreateWorkflowModal()">
+            <em class="fa fa-times"></em> Cancel
+          </button>
+        </ng-template>
+      </div>
+      <div>
+        <span
+          [tooltip]="
+            !selectedDeliverType || !selectedWorkflowType
+              ? 'Select Deliver Type and Workflow Type'
+              : ''
+          ">
+          <button
+            (click)="nextStep()"
+            class="nxtBtn"
+            [disabled]="!selectedDeliverType || !selectedWorkflowType"
+            *ngIf="currentStep < steps.length - 1">
+            Next <em class="fa fa-arrow-right"></em>
+          </button>
+        </span>
+        <span
+          [tooltip]="
+            !workflow.name ||
+            !workflow.alias ||
+            workflow.throttleLimit === null ||
+            workflow.throttleLimit === undefined ||
+            workflow.description === ''
+              ? 'Please fill all the fields'
+              : ''
+          "
+          [tooltipPlacement]="'top'"
+          [tooltipTrigger]="'hover'">
+          <button
+            class="btn btn--red create-workflow-btn"
+            type="button"
+            [disabled]="
+              !workflow.name ||
+              !workflow.alias ||
+              workflow.throttleLimit === null ||
+              workflow.throttleLimit === undefined ||
+              aliasError ||
+              workflow.description === ''
+            "
+            *ngIf="currentStep === steps.length - 1"
+            (click)="ggcreateWorkflow()">
+            CREATE WORKFLOW
+          </button>
+        </span>
       </div>
     </div>
   </div>

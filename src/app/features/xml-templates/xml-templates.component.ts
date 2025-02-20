@@ -87,9 +87,9 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
   getDefaultPageParams() {
     return {
       page: 0,
-      pazeSize: 10,
-      sortBy: '',
-      order: 'asc',
+      size: 10,
+      sortBy: 'modified',
+      order: 'desc',
     };
   }
 
@@ -217,6 +217,7 @@ export class XmlTemplatesComponent implements OnInit, OnDestroy {
       .addTemplate(this.newTemplateData)
       .subscribe((result: any) => {
         this.xmlTemplates.push(result);
+        this.getPageItems(this.pageParams);
       });
     this.reset();
   }

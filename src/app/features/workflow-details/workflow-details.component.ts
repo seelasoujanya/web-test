@@ -1,18 +1,9 @@
-import { CommonModule, ɵnormalizeQueryParams } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterModule,
-} from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
-import { IPage } from 'src/app/core/models/page.model';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
 import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
-import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { FormsModule } from '@angular/forms';
-import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
 import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
 import { WorkflowGeneralComponent } from './workflow-general/workflow-general.component';
@@ -20,15 +11,13 @@ import { WorkflowSettingsComponent } from './workflow-settings/workflow-settings
 import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { WorkflowStatisticsViewComponent } from './workflow-statistics-view/workflow-statistics-view.component';
 import { NavigationService } from 'src/app/navigation.service';
+import { Workflow } from 'src/app/core/models/workflow.model';
 
 @Component({
   selector: 'app-workflow-details',
   standalone: true,
   imports: [
     CommonModule,
-    WorkflowTableComponent,
-    DurationPipe,
-    PaginationComponent,
     FormsModule,
     WorkflowHistoryComponent,
     WorkflowGeneralComponent,
@@ -101,7 +90,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
     private apiService: ApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdRef: ChangeDetectorRef,
     private spinnerService: SpinnerService,
     private navigationService: NavigationService
   ) {
@@ -114,7 +102,6 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public backToWorkflows(): void {
-    // this.router.navigate(['/workflows']);
     this.navigationService.goBack('/workflows');
   }
 
@@ -155,11 +142,13 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
   }
 
   public getWorkflow() {
+    this.spinnerService.show();
     this.apiService
       .getWorkflowById(this.workflowId)
       .subscribe((result: any) => {
         this.workflow = result;
         this.workflowCopy = JSON.parse(JSON.stringify(result));
+        this.spinnerService.hide();
       });
   }
   public getEmailsByWorkflowId() {
@@ -170,13 +159,14 @@ export class WorkflowDetailsComponent implements OnDestroy, OnInit {
       });
   }
 
-  public updateWorkflow(workflow: any) {
+  public updateWorkflow(workflow: Workflow) {
     this.spinnerService.show();
     this.apiService
       .updateWorkflow(this.workflowId, workflow)
       .subscribe((result: any) => {
         this.workflow = result;
         this.workflowCopy = JSON.parse(JSON.stringify(result));
+        this.getWorkflow();
         this.spinnerService.hide();
       });
   }

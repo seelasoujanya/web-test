@@ -17,17 +17,18 @@ import {
 } from 'src/app/core/utils/constants';
 import { CommonModule } from '@angular/common';
 import { Observable, Subject } from 'rxjs';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 import { SystemProperty, Workflow } from 'src/app/core/models/workflow.model';
-import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
 import { ApiService } from 'src/app/core/services/api.service';
 import { TimeFormatService } from 'src/app/time-format.service';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+
 @Component({
   selector: 'app-workflow-table',
   standalone: true,
   templateUrl: './workflow-table.component.html',
   styleUrl: './workflow-table.component.scss',
-  imports: [CommonModule, RouterOutlet, DurationPipe],
+  imports: [CommonModule, TooltipModule],
 })
 export class WorkflowTableComponent implements OnDestroy {
   public timeFormatService: TimeFormatService;
@@ -86,8 +87,8 @@ export class WorkflowTableComponent implements OnDestroy {
   headingEnum = {
     'Workflow Name': 'name',
     Status: 'enabled',
-    'Last Run On': 'created',
-    'Last Run Status': 'status',
+    'Last Run On': 'lastRunOn',
+    'Last Run Status': 'lastInstanceStatus',
     Priority: 'priority',
     'Queued On': 'created',
     'Started On': 'created',

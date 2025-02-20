@@ -1,0 +1,83 @@
+import { IWorkflowConfigurationSection } from '../config-section.model';
+
+export const appleMusicSections: IWorkflowConfigurationSection[] = [
+  {
+    title: 'Properties',
+    fields: [
+      {
+        key: 'INCLUDE_ATMOS',
+        label: 'Include Atmos Assets',
+        type: 'checkbox',
+        placeholder: '',
+        values: [],
+        description: 'Include Atmos Assets',
+        defaultValue: 'false',
+        required: false,
+      },
+      {
+        key: 'SKIP_VIDEOS',
+        label: 'Skip Videos Assets',
+        type: 'checkbox',
+        placeholder: '',
+        values: [],
+        description: 'Skip Videos in the package',
+        defaultValue: 'false',
+        required: false,
+      },
+      {
+        key: 'SIMPLE_ASSET_NAMING',
+        label: 'Simple Asset Naming',
+        type: 'checkbox',
+        placeholder: '',
+        values: [],
+        description: 'Simple Asset Naming',
+        defaultValue: 'false',
+        required: false,
+      },
+      {
+        key: 'PRODUCT_TRANSCODE',
+        label: 'Product Asset Transcode Type',
+        type: 'select',
+        placeholder: 'Transcode Type to be used for Product Assets',
+        values: ['NONE', 'JPG'],
+        defaultValue: 'NONE',
+        description: 'Transcode Type to be used for Product Assets',
+        section: 'Transcodes',
+        required: false,
+      },
+      {
+        key: 'RELEASE_TYPE',
+        label: 'Release Type',
+        type: 'select',
+        placeholder: 'Folder structure will be created based on Release Type',
+        values: ['STANDARD', 'BATCHED', 'RELEASE_BY_RELEASE'],
+        defaultValue: 'STANDARD',
+        description: 'Folder structure will be created based on Release Type',
+        required: false,
+      },
+    ],
+  },
+  {
+    title: 'iTunes Transporter Configurations',
+    fields: [
+      {
+        key: 'TRANSPORTER_USERNAME',
+        label: 'Transporter Username',
+        type: 'input',
+        placeholder: 'Transporter Username',
+        values: [],
+        description: 'Transporter Username',
+        required: true,
+      },
+      {
+        key: 'TRANSPORTER_PASSWORD',
+        label: 'Transporter Password',
+        type: 'input',
+        placeholder: 'Transporter Password',
+        values: [],
+        description: 'Transporter Password',
+        required: true,
+      },
+    ],
+  },
+];

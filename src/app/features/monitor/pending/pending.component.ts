@@ -12,7 +12,6 @@ import { Subject, Subscription } from 'rxjs';
 import { CommonTableComponent } from 'src/app/shared/components/common-table/common-table.component';
 import { IPage } from 'src/app/core/models/page.model';
 import { ApiService } from 'src/app/core/services/api.service';
-import { SpinnerService } from 'src/app/core/services/spinner.service';
 import { PRIORITY } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
@@ -64,7 +63,6 @@ export class PendingComponent {
 
   constructor(
     private apiService: ApiService,
-    private spinnerService: SpinnerService,
     private timeFormatService: TimeFormatService,
     private cdRef: ChangeDetectorRef,
     private modalService: BsModalService,
@@ -88,7 +86,6 @@ export class PendingComponent {
   updateDataFromWebSocket() {
     this.websocketSubscription =
       this.webSocketAPI.totalWorkflowsStatusCounts.subscribe(data => {
-        console.log('Websocket status in Pending Component');
         this.updatePendingInstances(this.pageParams);
       });
   }
@@ -112,7 +109,6 @@ export class PendingComponent {
   }
 
   updatePendingInstances(pageParams: any) {
-    this.spinnerService.show();
     this.apiService.getInstancesByStatus(pageParams).subscribe(data => {
       this.page = data;
       this.pendingInstances = data.content;
@@ -121,7 +117,6 @@ export class PendingComponent {
         this.updatePendingInstances(this.pageParams);
       }
       this.noPendingInstances = this.pendingInstances.length === 0;
-      this.spinnerService.hide();
     });
   }
 

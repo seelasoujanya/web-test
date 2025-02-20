@@ -39,7 +39,6 @@ export class ProcessingByWorkflowComponent implements OnInit {
   constructor(
     private apiService: ApiService,
     private cd: ChangeDetectorRef,
-    private datePipe: DatePipe,
     private timeFormatService: TimeFormatService,
     private webSocketAPI: WebSocketAPI,
     private router: Router

@@ -1,0 +1,9 @@
+<svg width="90" height="22" viewBox="0 0 90 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g style="mix-blend-mode:multiply">
+<rect x="0.333344" width="89" height="22" rx="11" fill="#d4d4d4"/>
+<circle cx="10.3334" cy="11" r="3" fill="#454545"/>
+  <text x="50%" y="50%" alignment-baseline="central" text-anchor="middle" font-family="Arial" font-size="12"  font-weight="12" fill="#454545">
+    DISABLED
+  </text>
+</g>
+</svg>

@@ -1,6 +1,8 @@
-<div class="main-container" *ngIf="fields.length > 0">
+<div class="main-container" *ngIf="stepConfigurationSection?.sections">
   <div class="header">
-    <p>{{ workflowStep?.type }} Settings</p>
+    <ng-container *ngIf="stepConfigurationSection?.title">
+      <p>{{ stepConfigurationSection?.title }}</p>
+    </ng-container>
     <div class="general-setting-label">
       <div class="edit-icon">
         <div class="buttons" *ngIf="enableEditing">
@@ -26,405 +28,16 @@
     </div>
   </div>
 
-  <ng-container *ngIf="workflowStep?.type === 'DDEX'; else otherSteps">
-    <div class="line-with-text">
-      <h4 class="line-text">Properties</h4>
-    </div>
-    <div
-      class="properties-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field.section === 'properties'">
-          <div *ngIf="field; in: availableKeys">
-            <div [ngSwitch]="field.type">
-              <div class="form-group" *ngSwitchCase="'checkbox'">
-                <label class="checkbox">
-                  <input
-                    type="checkbox"
-                    (change)="updateCheckboxFieldValue(field.key)"
-                    [checked]="getFieldValue(field.key, 'boolean')"
-                    [disabled]="!enableEditing" />
-                  <div class="checkbox__icon">
-                    <img src="/assets/icons/checkbox.svg" alt="" />
-                  </div>
-
-                  <span
-                    class="checkbox__label"
-                    style="font-size: 15px"
-                    [tooltip]="field.description"
-                    >{{ field.label }}</span
-                  >
-                </label>
-              </div>
-
-              <span
-                *ngIf="field.type !== 'checkbox'"
-                [tooltip]="field.description"
-                >{{ field.label }}</span
-              >
-              <input
-                *ngSwitchCase="'input'"
-                [type]="field.label === 'Password' ? 'password' : 'text'"
-                maxlength="255"
-                placeholder="{{ field.placeholder }}"
-                class="input-field"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing" />
-
-              <textarea
-                *ngSwitchCase="'textarea'"
-                [name]="field.key"
-                [id]="field.key"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                class="input-field"
-                rows="5"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing"></textarea>
-
-              <ng-select
-                *ngSwitchCase="'select'"
-                class="select-field"
-                [items]="field.values"
-                bindLabel="label"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing">
-              </ng-select>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="line-with-text">
-      <h4 class="line-text">Folder Structure</h4>
-    </div>
-    <div
-      class="fields-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field; in: availableKeys">
-          <div *ngIf="field.section === 'Folder structure'">
-            <div [ngSwitch]="field.type" class="config-con">
-              <div class="form-group" *ngSwitchCase="'checkbox'">
-                <label class="checkbox">
-                  <input
-                    type="checkbox"
-                    (change)="updateCheckboxFieldValue(field.key)"
-                    [checked]="getFieldValue(field.key, 'boolean')"
-                    [disabled]="!enableEditing" />
-                  <div class="checkbox__icon">
-                    <img src="/assets/icons/checkbox.svg" alt="" />
-                  </div>
-
-                  <span
-                    class="checkbox__label"
-                    style="font-size: 15px"
-                    [tooltip]="field.description"
-                    >{{ field.label }}</span
-                  >
-                </label>
-              </div>
-
-              <p
-                *ngIf="field.type !== 'checkbox'"
-                [tooltip]="field.description"
-                class="lable">
-                {{ field.label }}
-              </p>
-              <input
-                *ngSwitchCase="'input'"
-                [type]="field.label === 'Password' ? 'password' : 'text'"
-                maxlength="255"
-                placeholder="{{ field.placeholder }}"
-                class="input-field"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing" />
-
-              <textarea
-                *ngSwitchCase="'textarea'"
-                [name]="field.key"
-                [id]="field.key"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                class="input-field"
-                rows="5"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing"></textarea>
-
-              <ng-select
-                *ngSwitchCase="'select'"
-                [items]="field.values"
-                bindLabel="label"
-                class="select-field"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing">
-              </ng-select>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="line-with-text">
-      <h4 class="line-text">Transcodes</h4>
-    </div>
-    <div
-      class="fields-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field; in: availableKeys">
-          <div *ngIf="field.section === 'Transcodes'">
-            <div [ngSwitch]="field.type" class="config-con">
-              <div class="form-group" *ngSwitchCase="'checkbox'">
-                <label class="checkbox">
-                  <input
-                    type="checkbox"
-                    (change)="updateCheckboxFieldValue(field.key)"
-                    [checked]="getFieldValue(field.key, 'boolean')"
-                    [disabled]="!enableEditing" />
-                  <div class="checkbox__icon">
-                    <img src="/assets/icons/checkbox.svg" alt="" />
-                  </div>
-
-                  <span
-                    class="checkbox__label"
-                    style="font-size: 15px"
-                    [tooltip]="field.description"
-                    >{{ field.label }}</span
-                  >
-                </label>
-              </div>
-
-              <p
-                *ngIf="field.type !== 'checkbox'"
-                [tooltip]="field.description"
-                class="lable">
-                {{ field.label }}
-              </p>
-              <input
-                *ngSwitchCase="'input'"
-                [type]="field.label === 'Password' ? 'password' : 'text'"
-                maxlength="255"
-                placeholder="{{ field.placeholder }}"
-                class="input-field"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing" />
-
-              <textarea
-                *ngSwitchCase="'textarea'"
-                [name]="field.key"
-                [id]="field.key"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                class="input-field"
-                rows="5"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing"></textarea>
-
-              <ng-select
-                *ngSwitchCase="'select'"
-                class="select-field"
-                [items]="field.values"
-                bindLabel="label"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing">
-              </ng-select>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="line-with-text">
-      <h4 class="line-text">Download Links</h4>
-    </div>
-    <div
-      class="fields-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field; in: availableKeys">
-          <div *ngIf="field.section === 'Download Links'">
-            <div [ngSwitch]="field.type" class="config-con">
-              <div class="form-group" *ngSwitchCase="'checkbox'">
-                <label class="checkbox">
-                  <input
-                    type="checkbox"
-                    (change)="updateCheckboxFieldValue(field.key)"
-                    [checked]="getFieldValue(field.key, 'boolean')"
-                    [disabled]="!enableEditing" />
-                  <div class="checkbox__icon">
-                    <img src="/assets/icons/checkbox.svg" alt="" />
-                  </div>
-
-                  <span
-                    class="checkbox__label"
-                    style="font-size: 15px"
-                    [tooltip]="field.description"
-                    >{{ field.label }}</span
-                  >
-                </label>
-              </div>
-
-              <p
-                *ngIf="field.type !== 'checkbox'"
-                [tooltip]="field.description"
-                class="lable">
-                {{ field.label }}
-              </p>
-              <input
-                *ngSwitchCase="'input'"
-                [type]="field.label === 'Password' ? 'password' : 'text'"
-                maxlength="255"
-                placeholder="{{ field.placeholder }}"
-                class="input-field"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing" />
-
-              <textarea
-                *ngSwitchCase="'textarea'"
-                [name]="field.key"
-                [id]="field.key"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                class="input-field"
-                rows="5"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing"></textarea>
-
-              <ng-select
-                *ngSwitchCase="'select'"
-                [items]="field.values"
-                class="select-field"
-                bindLabel="label"
-                bindValue="value"
-                [searchable]="false"
-                [clearable]="false"
-                placeholder="{{ field.placeholder }}"
-                [ngModel]="getFieldValue(field.key)"
-                (ngModelChange)="setFieldValue(field.key, $event)"
-                [class.disabled]="!enableEditing">
-              </ng-select>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="line-with-text">
-      <h4 class="line-text">Template Configuration</h4>
-    </div>
-
-    <div class="fields-container">
-      <div class="config-con">
-        <span
-          [tooltip]="
-            'Select the Template From the Templates Added To This Workflow'
-          "
-          >Template to generate Product XML</span
-        >
-        <ng-select
-          [items]="templates"
-          bindLabel="name"
-          bindValue="id"
-          class="select-field"
-          [searchable]="false"
-          [clearable]="false"
-          placeholder="Templates"
-          [(ngModel)]="selectedTemplateId"
-          [class.disabled]="!enableEditing">
-        </ng-select>
+  <div *ngIf="workflowStep?.workflowStepConfigurations">
+    <ng-container
+      class="field-item"
+      *ngFor="let section of stepConfigurationSection?.sections">
+      <div class="line-with-text">
+        <h4 class="line-text">{{ section.title }}</h4>
       </div>
-      <div
-        class="config-con"
-        style="margin-top: -10px"
-        *ngIf="selectedTemplateId !== undefined">
-        <p
-          style="margin-bottom: 5px"
-          class="viewTemplate"
-          (click)="viewTemplate()"
-          [tooltip]="'View Template'"
-          [tooltipPlacement]="'right'"
-          [tooltipTrigger]="'hover'">
-          View Template
-        </p>
-      </div>
-      <div class="config-con">
-        <span
-          [tooltip]="
-            'Please enter the file name to save XML output, default is identifier.xml'
-          "
-          >Filename to save XML</span
-        >
-        <input
-          type="text"
-          maxlength="255"
-          placeholder="Enter custom XML filename"
-          class="input-field"
-          [ngModel]="fileName"
-          [class.disabled]="!enableEditing" />
-      </div>
-    </div>
-
-    <!-- <div class="fields-container">
-      <div class="config-con">
-        <ng-container class="field-item">
-          <p
-            tooltip="Select a Template to generate the XML output."
-            class="lable">
-            Template to generate Product XML
-          </p>
-          <ng-select
-            [items]="templates"
-            bindLabel="name"
-            bindValue="id"
-            class="select-field"
-            [searchable]="false"
-            [clearable]="false"
-            placeholder="Templates"
-            [(ngModel)]="selectedTemplateId"
-            [class.disabled]="!enableEditing">
-          </ng-select>
-
-        <p
-          class="viewTemplate"
-          (click)="viewTemplate()"
-          [tooltip]="'View Template'"
-          [tooltipPlacement]="'right'"
-          [tooltipTrigger]="'hover'">
-          View Template
-        </p>
-        </ng-container>
-      </div>
-    </div> -->
-  </ng-container>
-
-  <ng-template #otherSteps>
-    <div
-      class="fields-container"
-      *ngIf="workflowStep?.workflowStepConfigurations">
-      <ng-container class="field-item" *ngFor="let field of fields">
-        <div *ngIf="field; in: availableKeys">
-          <div [ngSwitch]="field.type" class="config-con">
+      <div class="properties-container">
+        <ng-container class="field-item" *ngFor="let field of section.fields">
+          <div [ngSwitch]="field.type">
             <div class="form-group" *ngSwitchCase="'checkbox'">
               <label class="checkbox">
                 <input
@@ -445,15 +58,19 @@
               </label>
             </div>
 
-            <p
+            <span
               *ngIf="field.type !== 'checkbox'"
+              [ngClass]="{ 'label-required': field.required }"
               [tooltip]="field.description"
-              class="lable">
-              {{ field.label }}
-            </p>
+              >{{ field.label }}</span
+            >
             <input
               *ngSwitchCase="'input'"
-              [type]="field.label === 'Password' ? 'password' : 'text'"
+              [type]="
+                field.label.toLowerCase().includes('password')
+                  ? 'password'
+                  : 'text'
+              "
               maxlength="255"
               placeholder="{{ field.placeholder }}"
               class="input-field"
@@ -474,9 +91,9 @@
 
             <ng-select
               *ngSwitchCase="'select'"
+              class="select-field"
               [items]="field.values"
               bindLabel="label"
-              class="select-field"
               bindValue="value"
               [searchable]="false"
               [clearable]="false"
@@ -486,7 +103,100 @@
               [class.disabled]="!enableEditing">
             </ng-select>
           </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="stepConfigurationSection?.requireTemplate">
+    <div class="line-with-text">
+      <h4 class="line-text">Template Configuration</h4>
+    </div>
+
+    <div class="properties-container">
+      <div>
+        <span
+          [tooltip]="
+            'Select the Template From the Templates Added To This Workflow'
+          "
+          >Template to generate Product XML</span
+        >
+        <ng-select
+          [items]="templates"
+          bindLabel="name"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Templates"
+          [(ngModel)]="selectedTemplateId"
+          (ngModelChange)="onTemplateChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+
+      <div>
+        <span
+          [tooltip]="
+            'Select the Template Version of the Template Added To This Workflow'
+          "
+          >Template Versions</span
+        >
+        <ng-select
+          [items]="templateVersions"
+          bindLabel="id"
+          bindValue="id"
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="Template Versions"
+          [(ngModel)]="selectedTemplateVersionId"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+        <div
+          *ngIf="selectedTemplateId !== undefined"
+          style="margin-bottom: 5px"
+          class="view-template-label"
+          (click)="viewTemplate()"
+          [tooltip]="'View Template'"
+          [tooltipPlacement]="'right'"
+          [tooltipTrigger]="'hover'">
+          View Template
         </div>
-      </ng-container></div
-  ></ng-template>
+      </div>
+
+      <div>
+        <span
+          [tooltip]="
+            'Please enter the file name to save XML output, default is identifier.xml'
+          "
+          >Filename to save XML</span
+        >
+        <input
+          type="text"
+          maxlength="255"
+          placeholder="Enter custom XML filename"
+          class="filename-input-field"
+          [ngModel]="getFieldValue('FILENAME')"
+          (ngModelChange)="setFieldValue('FILENAME', $event)"
+          [class.disabled]="!enableEditing" />
+      </div>
+
+      <div *ngIf="stepConfigurationSection?.requireXsdValidation">
+        <span>XSD Validation</span>
+        <ng-select
+          [items]="xsdValidatorFiles"
+          bindLabel=""
+          bindValue=""
+          class="select-field"
+          [searchable]="false"
+          [clearable]="false"
+          placeholder="XSD Validator Files"
+          [(ngModel)]="selectedValidatorFile"
+          (change)="onValidatorFileChange($event)"
+          [class.disabled]="!enableEditing">
+        </ng-select>
+      </div>
+    </div>
+  </ng-container>
 </div>

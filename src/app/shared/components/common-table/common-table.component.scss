@@ -75,8 +75,7 @@
         }
       }
       .action-icon {
-        padding: 0px 10px;
-        background-color: #ffffff;
+        margin: 0px 5px;
         margin-inline: 0.1rem;
       }
       .pause {
@@ -217,12 +216,12 @@
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-.page-view {
-  width: 100%;
-  padding: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
+// .page-view {
+//   width: 100%;
+//   padding: 10px;
+//   display: flex;
+//   justify-content: flex-end;
+// }
 
 // .expanded-row {
 //   width: 90%;

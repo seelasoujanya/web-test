@@ -1,6 +1,6 @@
 export const WORKFLOW_STATUS = [
-  { label: 'Yes', value: true },
-  { label: 'No', value: false },
+  { label: 'YES', value: 'ACTIVE' },
+  { label: 'NO', value: 'INACTIVE' },
 ];
 
 export const EMAIL_STATUS = [
@@ -21,7 +21,7 @@ export const FOLDER_STRUCTURE = [
 
 export const WORKFLOW_INSTANCE_STATUS = [
   { label: 'Success', value: 'COMPLETED' },
-  { label: 'Failed', value: 'FAILED' },
+  { label: 'Error', value: 'FAILED' },
   { label: 'Created', value: 'CREATED' },
   { label: 'Queued', value: 'QUEUED' },
   { label: 'Running', value: 'RUNNING' },

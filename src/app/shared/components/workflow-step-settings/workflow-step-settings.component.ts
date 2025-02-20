@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { IStepConfiguration } from 'src/app/core/models/step-configuration.model';
 import { IWorkflowStep } from 'src/app/core/models/workflow-step';
-import { IWorkflowStepField } from './field.model';
 import { ApiService } from 'src/app/core/services/api.service';
 import { SpinnerService } from 'src/app/core/services/spinner.service';
-import { stepFields } from './constants';
+import {
+  StepConfigurationSection,
+  stepConfigurationSections,
+} from './constants';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
@@ -26,28 +28,37 @@ export class WorkflowStepSettingsComponent {
   title = '';
 
   @Input()
-  fields: IWorkflowStepField[] = [];
-
-  @Input()
   workflowStep: IWorkflowStep | null = null;
 
   @Output()
   workflowStepChange: EventEmitter<IWorkflowStep | null> =
     new EventEmitter<IWorkflowStep | null>();
 
+  stepConfigurationSection: StepConfigurationSection | undefined;
+
   enableEditing: boolean = false;
   availableKeys: string[] = [];
   originalWorkflowStep: IWorkflowStep | null = null;
   fileName = '';
+  xsdValidatorFiles: any[] = [];
+  selectedValidatorFile: any;
+  validatorFile: any;
 
   private pageParams = this.getDefaultPageParams();
 
   selectedTemplateId: number | undefined;
+  selectedTemplateVersionId: number | undefined;
   originalTemplateId: number | undefined;
+  originalTemplateVersion: number | undefined;
+
   templates: {
     id: number;
     name: string;
     description: string;
+  }[] = [];
+
+  templateVersions: {
+    id: number;
   }[] = [];
 
   getDefaultPageParams() {
@@ -70,16 +81,48 @@ export class WorkflowStepSettingsComponent {
   ngOnInit(): void {
     if (this.workflowStep) {
       this.originalWorkflowStep = JSON.parse(JSON.stringify(this.workflowStep));
-      const stepField = stepFields.find(
+      const stepSection = stepConfigurationSections.find(
         ({ stepType }) => stepType === this.workflowStep?.type
       );
-      if (stepField) {
-        this.fields = stepField?.fields;
-      }
-      if (this.workflowStep?.type == 'DDEX') {
-        this.fetchTemplateData(this.workflowStep.workflowId);
+      if (stepSection) {
+        this.stepConfigurationSection = stepSection;
+        if (this.stepConfigurationSection.requireTemplate) {
+          this.fetchTemplateData(this.workflowStep.workflowId);
+          this.fetchValidatorFileByStepId(this.workflowStep?.id);
+        }
       }
     }
+    this.fetchXSDValidatorFiles();
+  }
+
+  fetchXSDValidatorFiles(): void {
+    this.apiService.fetchXSDValidatorFiles().subscribe({
+      next: (result: string[]) => {
+        this.xsdValidatorFiles = result;
+      },
+      error: (err: any) => {
+        console.error('Error fetching XSD validator files:', err);
+      },
+    });
+  }
+
+  fetchValidatorFileByStepId(stepId: any): void {
+    if (!stepId) {
+      return;
+    }
+
+    this.apiService.fetchValidatorFileByStepId(stepId).subscribe({
+      next: (result: any) => {
+        this.validatorFile = result.xsdFilename;
+        this.selectedValidatorFile = result.xsdFilename;
+      },
+      error: (err: any) => {
+        console.error(
+          `Error fetching validator file for step ID ${stepId}:`,
+          err
+        );
+      },
+    });
   }
 
   fetchTemplateData = (workflowId: number) => {
@@ -102,10 +145,13 @@ export class WorkflowStepSettingsComponent {
             if (data[i].workflowStepId === this.workflowStep?.id) {
               this.selectedTemplateId = data[i].templateId;
               this.originalTemplateId = data[i].templateId;
+              this.selectedTemplateVersionId = data[i].templateVersionId;
+              this.originalTemplateVersion = data[i].templateVersionId;
               break;
             }
           }
         }
+        this.fetchTemplateVersions(this.selectedTemplateId);
         this.spinnerService.hide();
       },
       error: error => {
@@ -113,6 +159,45 @@ export class WorkflowStepSettingsComponent {
         this.spinnerService.hide();
       },
     });
+  };
+
+  onTemplateChange(templateId: number | undefined): void {
+    if (templateId) {
+      this.fetchTemplateVersions(templateId);
+    } else {
+      this.templateVersions = [];
+      this.selectedTemplateVersionId = undefined;
+    }
+  }
+
+  fetchTemplateVersions = (selectedTemplateId: number | undefined) => {
+    if (!selectedTemplateId) {
+      this.templateVersions = [];
+      this.selectedTemplateVersionId = undefined;
+      return;
+    }
+    this.spinnerService.show();
+    this.apiService
+      .getTemplatesByTemplateId(selectedTemplateId, this.pageParams)
+      .subscribe({
+        next: data => {
+          this.templateVersions = data;
+          if (this.selectedTemplateVersionId) {
+            const matchingVersion = this.templateVersions.find(
+              version => version.id === this.selectedTemplateVersionId
+            );
+            this.selectedTemplateVersionId = matchingVersion
+              ? matchingVersion.id
+              : undefined;
+          }
+
+          this.spinnerService.hide();
+        },
+        error: error => {
+          console.error(error);
+          this.spinnerService.hide();
+        },
+      });
   };
 
   viewTemplate() {
@@ -208,6 +293,8 @@ export class WorkflowStepSettingsComponent {
   }
 
   public cancelChanges() {
+    this.selectedTemplateVersionId = this.originalTemplateVersion;
+    this.selectedTemplateId = this.originalTemplateId;
     if (this.originalWorkflowStep) {
       this.workflowStep = JSON.parse(JSON.stringify(this.originalWorkflowStep));
     }
@@ -219,10 +306,12 @@ export class WorkflowStepSettingsComponent {
       const body = {
         workflowStepId: this.workflowStep.id,
         templateId: this.selectedTemplateId,
+        templateVersionId: this.selectedTemplateVersionId,
       };
       this.apiService.postTemplateForStep(body).subscribe({
         next: data => {
           this.originalTemplateId = this.selectedTemplateId;
+          this.originalTemplateVersion = this.selectedTemplateVersionId;
         },
         error: error => {
           console.log('Error updating template', error);
@@ -236,10 +325,25 @@ export class WorkflowStepSettingsComponent {
       this.spinnerService.show();
 
       if (
-        this.selectedTemplateId &&
-        this.selectedTemplateId !== this.originalTemplateId
+        (this.selectedTemplateId &&
+          this.selectedTemplateId !== this.originalTemplateId) ||
+        (this.selectedTemplateVersionId &&
+          this.selectedTemplateVersionId !== this.originalTemplateVersion)
       ) {
         this.updateTemplate();
+      }
+      console.log(this.selectedValidatorFile, this.validatorFile);
+
+      if (this.selectedValidatorFile && this.validatorFile) {
+        this.updateValidatorFilename();
+      } else {
+        const payload = {
+          workflowStep: {
+            id: this.workflowStep.id,
+          },
+          xsdFilename: this.selectedValidatorFile,
+        };
+        this.addValidatorFilename(payload);
       }
 
       this.apiService
@@ -258,5 +362,39 @@ export class WorkflowStepSettingsComponent {
           },
         });
     }
+  }
+
+  updateValidatorFilename() {
+    if (
+      this.workflowStep &&
+      this.validatorFile &&
+      this.validatorFile !== this.selectedValidatorFile
+    ) {
+      this.apiService
+        .updateValidatorFile(this.workflowStep.id, this.selectedValidatorFile)
+        .subscribe({
+          next: response => {
+            console.log(response);
+          },
+          error: error => {
+            console.error('update filename failed:', error);
+          },
+        });
+    }
+  }
+
+  addValidatorFilename(payload: any) {
+    this.apiService.addValidatorFile(payload).subscribe({
+      next: (response: any) => {
+        console.log(response);
+      },
+      error: (error: any) => {
+        console.error('filename adding failed:', error);
+      },
+    });
+  }
+
+  onValidatorFileChange(selectedFile: string): void {
+    this.selectedValidatorFile = selectedFile;
   }
 }

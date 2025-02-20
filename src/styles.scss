@@ -72,8 +72,21 @@ body {
   background-color: #f3f3f3;
 }
 body {
-  margin: 0;
+  height: 100vh;
+  padding-top: 64px;
+  background-color: #fff;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.page-view {
+  width: 100%;
+  padding: 10px 10px;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+  z-index: 100;
 }
 
 .custom-toast {

@@ -7,4 +7,5 @@ export interface IWorkflowStepField {
   defaultValue?: string;
   description: string;
   section?: string;
+  required: boolean;
 }

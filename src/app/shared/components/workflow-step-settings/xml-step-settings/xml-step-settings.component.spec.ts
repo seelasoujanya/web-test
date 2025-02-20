@@ -238,4 +238,62 @@ describe('XmlStepSettingsComponent', () => {
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(['templates', 123]);
   });
+
+  it('should not call API if updateTemplate is called without workflowStep', () => {
+    component.workflowStep = null;
+
+    component.updateTemplate();
+
+    expect(apiService.postTemplateForStep).not.toHaveBeenCalled();
+  });
+
+  it('should not call getSelectedTemplate or getAllTemplates if workflowStep is null', () => {
+    component.workflowStep = null;
+    component.ngOnInit();
+
+    expect(apiService.getAllTemplates).not.toHaveBeenCalled();
+    expect(apiService.getSelectedTemplate).not.toHaveBeenCalled();
+  });
+
+  it('should toggle enableEditing multiple times correctly', () => {
+    expect(component.enableEditing).toBeFalse();
+
+    component.toggleEditing();
+    expect(component.enableEditing).toBeTrue();
+
+    component.toggleEditing();
+    expect(component.enableEditing).toBeFalse();
+
+    component.toggleEditing();
+    expect(component.enableEditing).toBeTrue();
+  });
+
+  it('should revert selectedTemplateId and disable editing on cancelChanges', () => {
+    component.selectedTemplateId = 2;
+    component.originalTemplateId = 1;
+    component.enableEditing = true;
+
+    component.cancelChanges();
+
+    expect(component.selectedTemplateId).toEqual(1);
+    expect(component.enableEditing).toBeFalse();
+  });
+
+  it('should open confirm modal with correct data', () => {
+    const modalServiceSpy = spyOn<any>(
+      component['modalService'],
+      'show'
+    ).and.callThrough();
+
+    const modalData = {
+      title: 'Confirm Changes',
+      description: 'Are you sure you want to Save changes for XML Settings?',
+      btn1Name: 'CONFIRM',
+      btn2Name: 'CANCEL',
+    };
+
+    component.openConfirmModal(modalData);
+
+    expect(modalServiceSpy).toHaveBeenCalledWith(ConfirmModalComponent);
+  });
 });

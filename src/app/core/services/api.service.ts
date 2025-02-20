@@ -10,7 +10,6 @@ import {
   WorkflowConfiguration,
 } from '../models/workflow.model';
 import { StatsDTO } from '../models/workflowinstance.model';
-import { IStepConfiguration } from '../models/step-configuration.model';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +32,22 @@ export class ApiService {
       `${this.apiUrl}/workflow/${workflowId}/configs`
     );
   }
+
+  createWorkflow(workflow: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/workflow`, workflow);
+  }
+
+  createStep(step: {
+    workflowId: number;
+    executionOrder: number;
+    type: string;
+    name: string;
+  }): Observable<any> {
+    console.log('Payload being sent to backend:', step); // Debugging line
+
+    return this.http.post(`${this.apiUrl}/step`, step);
+  }
+
   getPausedProperty(key: string) {
     return this.http.get<any>(`${this.apiUrl}/property/${key}`);
   }
@@ -75,9 +90,8 @@ export class ApiService {
     if (pageParams.search) {
       params = params.set('search', pageParams.search);
     }
-
-    if (filter.enabled !== null) {
-      params = params.set('enabled', filter.enabled);
+    if (filter.status?.length > 0) {
+      params = params.set('status', filter.status);
     }
     if (filter.startDate !== null) {
       params = params.set('startDate', filter.startDate);
@@ -90,7 +104,7 @@ export class ApiService {
 
   public getInstancesByStatus(queryParams: any): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/workflowinstance`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
@@ -166,9 +180,9 @@ export class ApiService {
   }
 
   public getArtifacts(id: number | unknown): Observable<any> {
-    return this.http
-      .get<any>(`${this.apiUrl}/workflowinstance/${id}/artifacts`)
-      .pipe(pluck('content'));
+    return this.http.get<any>(
+      `${this.apiUrl}/workflowinstance/${id}/artifacts`
+    );
   }
 
   public getLogsForInstance(id: number | unknown): Observable<string> {
@@ -246,13 +260,13 @@ export class ApiService {
     queryParams: any
   ): Observable<any> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/versions`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
   public getAllTemplates(queryParams: any): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
@@ -261,7 +275,7 @@ export class ApiService {
     queryParams: any
   ): Observable<IPage<any>> {
     return this.http.get<IPage<any>>(`${this.apiUrl}/template/${id}/usage`, {
-      params: queryParams as any,
+      params: queryParams,
     });
   }
 
@@ -269,6 +283,27 @@ export class ApiService {
     return this.http.put<any>(
       `${this.apiUrl}/template/${templateId}`,
       template
+    );
+  }
+
+  public updateTemplateVersion(
+    templateVersionId: number,
+    workflowStepIds: number[]
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/template/template-version/${templateVersionId}`,
+      workflowStepIds,
+      { responseType: 'text' as 'json' }
+    );
+  }
+
+  getTemplateVersions(workflowIds: number[]): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/template/workflows/steps`,
+      workflowIds,
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
     );
   }
 
@@ -310,6 +345,9 @@ export class ApiService {
     if (filter.enabled !== null) {
       params = params.set('enabled', filter.enabled);
     }
+    if (filter.status?.length > 0) {
+      params = params.set('status', filter.status);
+    }
     if (filter.startDate !== null) {
       params = params.set('startDate', filter.startDate);
     }
@@ -333,5 +371,29 @@ export class ApiService {
       params: params,
       responseType: 'text',
     });
+  }
+
+  fetchXSDValidatorFiles(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/xsd/list`);
+  }
+
+  fetchValidatorFileByStepId(stepId: any): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/workflow-step-xsd/workflow-step/${stepId}`
+    );
+  }
+
+  updateValidatorFile(
+    workflowStepId: number | undefined,
+    fileName: any
+  ): Observable<any> {
+    return this.http.put<any>(
+      `${this.apiUrl}/workflow-step-xsd/workflow-step/${workflowStepId}/filename`,
+      fileName
+    );
+  }
+
+  addValidatorFile(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/workflow-step-xsd`, payload);
   }
 }

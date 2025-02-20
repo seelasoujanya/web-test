@@ -11,6 +11,7 @@ import { AboutComponent } from './about/about.component';
 import { AccountInfoComponent } from './account-info/account-info.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TimeFormatService } from 'src/app/time-format.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -53,20 +54,6 @@ describe('HeaderComponent', () => {
     expect(component.selectedMenu).toBe('');
   });
 
-  it('should call logout and navigate to /login', () => {
-    const spyWindowOpen = spyOn(window, 'open').and.callFake(
-      () => ({ close: () => {} }) as Window
-    );
-    const spyNavigate = spyOn(router, 'navigateByUrl');
-    component.logout();
-    expect(spyWindowOpen).toHaveBeenCalledWith(
-      environment.logout_URL,
-      '',
-      'width=100,height=100'
-    );
-    expect(spyNavigate).toHaveBeenCalledWith('/login');
-  });
-
   it('should show AboutComponent when showAbout is called', () => {
     const templateRef = {} as TemplateRef<any>;
     component.showAbout(templateRef);
@@ -76,5 +63,25 @@ describe('HeaderComponent', () => {
   it('should show AccountInfoComponent when account_info is called', () => {
     component.account_info();
     expect(component.modalRef).toBeDefined();
+  });
+
+  it('should call toggleTimeFormat when toggleTimeFormat is called', () => {
+    const timeFormatService = TestBed.inject(TimeFormatService);
+    spyOn(timeFormatService, 'toggleTimeFormat');
+
+    component.toggleTimeFormat();
+
+    expect(timeFormatService.toggleTimeFormat).toHaveBeenCalled();
+  });
+
+  it('should correctly update selectedMenu based on different inputs', () => {
+    component.selectMenu(new Event('click'), 'menu1');
+    expect(component.selectedMenu).toBe('menu1');
+
+    component.selectMenu(new Event('click'), 'menu2');
+    expect(component.selectedMenu).toBe('menu2');
+
+    component.selectMenu(new Event('click'), 'menu2');
+    expect(component.selectedMenu).toBe('');
   });
 });

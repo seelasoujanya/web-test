@@ -35,6 +35,7 @@
         <img
           src="/assets/icons/edit-icon.svg"
           alt="edit Icon"
+          class="img"
           (click)="toggleDetailEditig()"
           *ngIf="!detailEditing" />
       </div>
@@ -43,81 +44,137 @@
     <div class="tables-main-container">
       <div class="table-container">
         <table>
-          <tr>
-            <td class="detail-field-key">Name</td>
-            <td class="detail-field-value">
-              <input
-                type="text"
-                maxlength="255"
-                placeholder="Name"
-                class="input-field"
-                [class.input-field-highlet]="detailEditing"
-                [(ngModel)]="templateName"
-                [disabled]="!detailEditing" />
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Created</td>
-            <td class="detail-field-value">
-              <span class="time">
-                {{ formatDate(template?.created).date }}
-                {{ formatDate(template?.created).time }}
-              </span>
-            </td>
-          </tr>
+          <caption class="table-caption visually-hidden">
+            This Table shows The List of Templates
+          </caption>
+          <thead class="visually-hidden">
+            <tr>
+              <th class="detail-field-key">Field</th>
+              <th class="detail-field-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Name</td>
+              <td class="detail-field-value">
+                <input
+                  type="text"
+                  maxlength="255"
+                  placeholder="Name"
+                  class="input-field"
+                  [class.input-field-highlet]="detailEditing"
+                  [(ngModel)]="templateName"
+                  [disabled]="!detailEditing" />
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Created</td>
+              <td class="detail-field-value">
+                <span class="time">
+                  {{ formatDate(template?.created).date }}
+                  {{ formatDate(template?.created).time }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div class="table-container">
         <table>
-          <tr>
-            <td class="detail-field-key">Description</td>
-            <td class="detail-field-value">
-              <input
-                type="text"
-                maxlength="255"
-                placeholder="Description"
-                class="input-field"
-                [class.input-field-highlet]="detailEditing"
-                [(ngModel)]="templateDescription"
-                [disabled]="!detailEditing" />
-            </td>
-          </tr>
-          <tr>
-            <td class="detail-field-key">Last Modified</td>
-            <td class="detail-field-value">
-              <span>
-                {{ formatDate(latestTemplateCreated).date }}
-                {{ formatDate(latestTemplateCreated).time }}
-              </span>
-            </td>
-          </tr>
+          <caption class="table-caption visually-hidden">
+            This Table shows The List of Workflows and viewInstances
+          </caption>
+          <thead class="visually-hidden">
+            <tr>
+              <th class="detail-field-key">Field</th>
+              <th class="detail-field-value">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="detail-field-key">Description</td>
+              <td class="detail-field-value">
+                <input
+                  type="text"
+                  maxlength="255"
+                  placeholder="Description"
+                  class="input-field"
+                  [class.input-field-highlet]="detailEditing"
+                  [(ngModel)]="templateDescription"
+                  [disabled]="!detailEditing" />
+              </td>
+            </tr>
+            <tr>
+              <td class="detail-field-key">Last Modified</td>
+              <td class="detail-field-value">
+                <span>
+                  {{ formatDate(latestTemplateCreated).date }}
+                  {{ formatDate(latestTemplateCreated).time }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
 
     <div class="usages">
       <p class="left-usage">Usage</p>
-      <p class="right-usage">
-        <ng-container *ngIf="workflows && workflows.length > 0; else noUsage">
-          <ng-container *ngFor="let item of workflows; let last = last">
-            <span
-              (click)="logName(item)"
-              [tooltip]="'View ' + item.name"
-              [tooltipPlacement]="'right'"
-              class="workflowNames">
-              {{ item.name }}<span *ngIf="!last">, </span>
-            </span>
-          </ng-container>
-        </ng-container>
+      <div class="table-container">
+        <table class="usage-table">
+          <caption class="table-caption visually-hidden">
+            This Table shows list of Version Usages
+          </caption>
+          <thead>
+            <tr>
+              <th>Workflow</th>
+              <th>Template Version</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Check if there are workflows and templateVersions -->
+            <ng-container
+              *ngIf="
+                workflows &&
+                  workflows.length > 0 &&
+                  templateVersions &&
+                  templateVersions.length > 0;
+                else noData
+              ">
+              <tr *ngFor="let item of workflows; let i = index">
+                <td>
+                  <span
+                    (click)="logName(item)"
+                    [tooltip]="'View ' + item.name"
+                    [tooltipPlacement]="'right'"
+                    class="workflowNames">
+                    {{ item.name }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    *ngIf="templateVersions[i]"
+                    [tooltip]="
+                      'Version ' + templateVersions[i]?.templateVersionId
+                    "
+                    [tooltipPlacement]="'right'"
+                    class="templateIds">
+                    Version {{ templateVersions[i]?.templateVersionId }}
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
 
-        <ng-template #noUsage>
-          <p class="nousage">No usages found</p>
+        <!-- Fallback template for no data -->
+        <ng-template #noData>
+          <p class="nousage">No workflows or template versions available</p>
         </ng-template>
-      </p>
+      </div>
     </div>
   </div>
-
   <div class="templates-container">
     <div class="left-container">
       <div class="heading">
@@ -140,6 +197,11 @@
     </div>
     <div class="right-container">
       <div class="heading">
+        <button
+          class="btn btn--red"
+          (click)="openCompareDialog(compareTemplateForm)">
+          Compare
+        </button>
         <div class="edit-icon">
           <div class="buttons" *ngIf="enableEditing">
             <button class="btn btn--red" type="button" (click)="editTemplate()">
@@ -155,6 +217,7 @@
           <img
             src="/assets/icons/edit-icon.svg"
             alt="edit Icon"
+            class="img"
             (click)="isEditableTemplate()"
             *ngIf="!enableEditing" />
         </div>
@@ -207,7 +270,7 @@
     </div>
 
     <div class="compareTemplates" *ngIf="showDifferences">
-      <form class="diff-editor-form"></form>
+      <div class="diff-view side-by-side" [innerHTML]="diffHtml"></div>
     </div>
     <div class="buttons">
       <button class="cancel-btn" (click)="closeModal()">CANCEL</button>

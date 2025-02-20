@@ -1,58 +1,94 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { PaginationComponent } from 'src/app/shared/components/pagination/pagination.component';
-import { DurationPipe } from 'src/app/shared/pipes/duration.pipe';
+import {
+  catchError,
+  finalize,
+  forkJoin,
+  interval,
+  of,
+  startWith,
+  Subject,
+  Subscription,
+  switchMap,
+  takeUntil,
+  takeWhile,
+} from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { WorkflowTableComponent } from 'src/app/shared/components/workflow-table/workflow-table.component';
 import { ApiService } from 'src/app/core/services/api.service';
-import { WorkflowInstance } from 'src/app/core/models/workflowinstance.model';
+import {
+  WorkflowInstance,
+  WorkflowInstanceStatus,
+} from 'src/app/core/models/workflowinstance.model';
 import { TimeFormatService } from 'src/app/time-format.service';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NavigationService } from 'src/app/navigation.service';
+import { SpinnerService } from 'src/app/core/services/spinner.service';
 
 @Component({
   selector: 'app-workflow-detail-view',
   standalone: true,
-  imports: [
-    CommonModule,
-    WorkflowTableComponent,
-    DurationPipe,
-    PaginationComponent,
-    FormsModule,
-    TooltipModule,
-  ],
+  imports: [CommonModule, FormsModule, TooltipModule],
   templateUrl: './workflow-instance-detail-view.component.html',
   styleUrl: './workflow-instance-detail-view.component.scss',
   providers: [ApiService],
 })
 export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
   private destroyed$ = new Subject<void>();
+  intervalSubscription: Subscription | null = null;
   isUTC = false;
 
   public ngOnDestroy(): void {
+    if (this.intervalSubscription && !this.intervalSubscription.closed) {
+      this.intervalSubscription.unsubscribe();
+    }
     this.destroyed$.next();
     this.destroyed$.complete();
   }
 
   ngOnInit(): void {
-    this.getPageItems();
-    this.getArtifactFiles();
-    this.getInstancsLogs();
     this.timeFormatService.isUTC$.subscribe(value => {
       this.isUTC = value;
     });
+    this.intervalSubscription = interval(5000)
+      .pipe(
+        startWith(0),
+        takeWhile(
+          () =>
+            this.workflowsInstance.status !==
+              WorkflowInstanceStatus.COMPLETED &&
+            this.workflowsInstance.status !== WorkflowInstanceStatus.FAILED
+        ),
+        switchMap(() => {
+          // this.spinnerService.show();
+          return forkJoin({
+            logs: this.apiService
+              .getLogsForInstance(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+            details: this.apiService
+              .getWorkflowInstanceDetails(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+            artifacts: this.apiService
+              .getArtifacts(this.workflowInstanceId)
+              .pipe(catchError(() => of(null))),
+          }).pipe(finalize(() => this.spinnerService.hide()));
+        })
+      )
+      .subscribe({
+        next: ({ logs, details, artifacts }) => {
+          this.logsResponse = logs ?? '';
+          this.workflowsInstance = details;
+          this.filteredFiles = artifacts;
+          this.cdRef.markForCheck();
+        },
+      });
   }
 
   workflowsInstance = {} as WorkflowInstance;
-  selectedButton: string = 'xml';
   logsResponse: string = '';
-  stepList: any[] = [];
   filteredFiles: any[] = [];
   identifier: string = '';
   public workflowInstanceId: string | null;
-  selectedTab: string = 'summary';
 
   constructor(
     private apiService: ApiService,
@@ -60,7 +96,8 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private timeFormatService: TimeFormatService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private spinnerService: SpinnerService
   ) {
     this.workflowInstanceId = this.route.snapshot.params['id'];
   }
@@ -102,24 +139,6 @@ export class WorkflowDetailViewComponent implements OnDestroy, OnInit {
     } else {
       this.router.navigate(['/workflows']);
     }
-  }
-
-  public selectTab(tab: string) {
-    this.selectedTab = tab;
-  }
-
-  public getArtifactFiles(): void {
-    this.apiService.getArtifacts(this.workflowInstanceId).subscribe(result => {
-      this.filteredFiles = result;
-    });
-  }
-
-  public getInstancsLogs(): void {
-    this.apiService
-      .getLogsForInstance(this.workflowInstanceId)
-      .subscribe(result => {
-        this.logsResponse = result;
-      });
   }
 
   public downloadArtifact(artifactId: number, fileName: string): void {

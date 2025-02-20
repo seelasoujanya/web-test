@@ -14,10 +14,10 @@ import { EMAIL_STATUS, WORKFLOW_STATUS } from 'src/app/core/utils/constants';
 import { ConfirmModalComponent } from 'src/app/shared/components/confirm-modal/confirm-modal.component';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ApiService } from 'src/app/core/services/api.service';
-import { WorkflowConfiguration } from 'src/app/core/models/workflow.model';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
+import { Workflow } from 'src/app/core/models/workflow.model';
 
 @Component({
   selector: 'app-workflow-general',
@@ -47,7 +47,7 @@ export class WorkflowGeneralComponent implements OnInit {
   copyUrlError: string | undefined = '';
 
   @Input()
-  workflow: any;
+  workflow: Workflow | undefined;
 
   @Input()
   emails: any[] = [];
@@ -100,7 +100,6 @@ export class WorkflowGeneralComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const workflowId = this.route.snapshot.params['id'];
     this.initialConfigurations();
   }
 
@@ -178,6 +177,7 @@ export class WorkflowGeneralComponent implements OnInit {
           this.alias = data;
           if (
             this.alias != null &&
+            this.workflow &&
             !(this.alias.alias == this.workflow.alias)
           ) {
             this.copyUrlError =
@@ -299,17 +299,19 @@ export class WorkflowGeneralComponent implements OnInit {
       }
     });
   }
-
   convertToMinutes(value: any): string {
     let totalMinutes = 0;
+
     const hoursMatch = value.match(/(\d+)h/);
     const minutesMatch = value.match(/(\d+)m/);
-    if (hoursMatch) {
+
+    if (hoursMatch && hoursMatch[1]) {
       totalMinutes += parseInt(hoursMatch[1], 10) * 60;
     }
-    if (minutesMatch) {
+    if (minutesMatch && minutesMatch[1]) {
       totalMinutes += parseInt(minutesMatch[1], 10);
     }
+
     return `${totalMinutes}m`;
   }
 

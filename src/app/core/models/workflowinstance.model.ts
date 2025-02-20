@@ -5,6 +5,7 @@ export interface WorkflowInstance {
   workflowId: number;
   status: WorkflowInstanceStatus;
   completed: Date | null;
+  started: Date | null;
   duration: number | null;
   reason: string | null;
   triggerData: Record<string, unknown>;

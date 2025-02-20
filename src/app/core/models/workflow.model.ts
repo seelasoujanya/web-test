@@ -1,11 +1,15 @@
 export interface Workflow {
+  description: any;
+  throttleLimit: any;
+  isTaskChainIsValid: any;
   id: number;
   name: string;
   enabled: boolean;
   paused: boolean;
   created: string;
   modified: string;
-  status: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'DISABLED';
+  alias: string;
 }
 
 export interface WorkflowResponse {
