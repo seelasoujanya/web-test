@@ -336,7 +336,7 @@ export class WorkflowStepSettingsComponent {
 
       if (this.selectedValidatorFile && this.validatorFile) {
         this.updateValidatorFilename();
-      } else {
+      } else if (this.selectedValidatorFile) {
         const payload = {
           workflowStep: {
             id: this.workflowStep.id,
