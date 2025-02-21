@@ -131,7 +131,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       { label: 'Apple Music', value: 'APPLE_MUSIC' },
     ],
     fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
-    recording: [],
+    recording: [{ label: 'Excel Generation', value: 'EXCEL_GENERATION' }],
     data_retrieval: [],
   };
 
