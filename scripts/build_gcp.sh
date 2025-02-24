@@ -17,16 +17,7 @@ GCP_REGISTRY="europe-west1-docker.pkg.dev"
 GCP_PROJECT="${PROJECT_COMMON_NAME}-${STAGE}"
 IMAGE="${GCP_REGISTRY}/${GCP_PROJECT}/${APP_NAME}/frontend"
   
-if [ $STAGE = "test" ]
-  then
-    PROXY="10.14.232.48"
-elif [ $STAGE = "staging" ]
-  then
-    PROXY="squid.k8s.bmg-monitoring-prod.gcp.internal.bmg.com"
-    #STAGE="stage"
-  else
-    PROXY="10.14.232.183"
-fi
+PROXY="10.14.232.48"
 
 #Proxy exports
 export http_proxy="http://${PROXY}:3128"
@@ -71,7 +62,6 @@ sleep 5
 
 #Build docker image
 echo "Build docker image for ${STAGE}"
-# sudo docker build -t ${IMAGE}:${BUILD_NUMBER} --build-arg ENV=${STAGE} -f Dockerfile_Jenkins .
 sudo docker build -t ${IMAGE}:${BUILD_NUMBER} --build-arg ENV=${STAGE} -f Dockerfile .
 
 #Docker configure
