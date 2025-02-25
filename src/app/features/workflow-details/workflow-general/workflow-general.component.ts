@@ -299,17 +299,19 @@ export class WorkflowGeneralComponent implements OnInit {
       }
     });
   }
-
   convertToMinutes(value: any): string {
     let totalMinutes = 0;
+
     const hoursMatch = value.match(/(\d+)h/);
     const minutesMatch = value.match(/(\d+)m/);
-    if (hoursMatch) {
+
+    if (hoursMatch && hoursMatch[1]) {
       totalMinutes += parseInt(hoursMatch[1], 10) * 60;
     }
-    if (minutesMatch) {
+    if (minutesMatch && minutesMatch[1]) {
       totalMinutes += parseInt(minutesMatch[1], 10);
     }
+
     return `${totalMinutes}m`;
   }
 

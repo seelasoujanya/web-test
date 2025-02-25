@@ -14,10 +14,7 @@
       type="button"
       [tooltip]="'Add Step'"
       (click)="openCreateStepsModal(createWorkflowStep)">
-      <img
-        src="/assets/icons/create-logo.svg"
-        class="create-icon"
-        alt="create Icon" />
+      <em class="fa fa-plus create-icon"></em> Add Step
     </div>
   </div>
 
@@ -55,16 +52,16 @@
       </div>
     </div>
     <div class="workflow-info-con">
-      <div class="workflow-field">
+      <!--  <div class="workflow-field">
         <span class="label-required">Name</span>
         <input
           type="text"
           maxlength="255"
-          placeholder="Enter Workflow Name"
+          placeholder="Enter Workflow Step Name"
           class="input-field"
           [(ngModel)]="workflowStp.name"
           required />
-      </div>
+      </div> -->
 
       <!-- <div class="workflow-field">
         <div>
@@ -96,13 +93,13 @@
         </ng-select>
       </div>
 
-      <div class="workflow-field">
+      <!-- <div class="workflow-field">
         <span class="label-required">Description</span>
         <textarea
           placeholder="Add description"
           class="text-field"
           [(ngModel)]="workflowStp.description"></textarea>
-      </div>
+      </div> -->
     </div>
     <div class="footer">
       <span
@@ -116,11 +113,7 @@
         <button
           class="btn btn--red workflow-btn"
           type="button"
-          [disabled]="
-            !workflowStp.name ||
-            workflowStp.type === null ||
-            !workflowStp.description
-          "
+          [disabled]="!workflowStp.name || workflowStp.type === null"
           (click)="createWorkflowWorkflowStep()">
           CREATE WORKFLOW STEP
         </button>

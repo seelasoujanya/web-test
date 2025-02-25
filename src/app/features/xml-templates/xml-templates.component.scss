@@ -79,9 +79,19 @@
     }
   }
 }
+::ng-deep .modal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+}
 
 ::ng-deep .modal-dialog {
-  max-width: 800px;
+  width: 800px !important;
+  max-width: 800px !important;
   .modal-content {
     display: flex;
     flex-direction: column;
@@ -235,4 +245,9 @@
   margin-top: 10px;
   border: 1px solid #d0d5dd;
   border-radius: 4px;
+}
+.create-icon {
+  margin-right: 10px;
+  color: white;
+  font-size: 16px;
 }

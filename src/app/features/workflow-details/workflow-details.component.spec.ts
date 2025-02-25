@@ -197,6 +197,7 @@ describe('WorkflowDetailsComponent', () => {
         created: new Date(),
         modified: new Date(),
         deliveryType: '',
+        started: null,
       },
       {
         status: WorkflowInstanceStatus.RUNNING,
@@ -213,6 +214,7 @@ describe('WorkflowDetailsComponent', () => {
         created: new Date(),
         modified: new Date(),
         deliveryType: '',
+        started: null,
       },
     ];
 

@@ -36,7 +36,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormsModule,
     CommonModule,
     TooltipModule,
-    MatNativeDateModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -84,31 +83,34 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     paused: false,
     created: '',
     modified: '',
-    status: 'NOT_RUNNABLE',
+    status: 'DISABLED',
     alias: '',
     id: 0,
     throttleLimit: 10,
     description: '',
+    isTaskChainIsValid: undefined,
   };
 
   currentStep: number = 0;
-  steps = ['Choose Delivertype and Workflowtype ', 'Workflow Info'];
+  steps = ['Choose Delivery Type and Workflow Type ', 'Workflow Info'];
 
   headingEnum = {
     'Workflow Name': 'name',
     Status: 'status',
     Created: 'created',
-    'Last Run On': 'created',
+    'Last Run On': 'lastRunOn',
     'Last Run Status': 'status',
   };
 
   workflow_status = [
     { label: 'Active', value: 'ACTIVE' },
     { label: 'Inactive', value: 'INACTIVE' },
-    { label: 'Disabled', value: 'NOT_RUNNABLE' },
+    { label: 'Disabled', value: 'DISABLED' },
   ];
 
   filtersApplied: boolean = false;
+
+  today: Date = new Date();
 
   selectingStart = true;
 
@@ -121,6 +123,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     { label: 'Fingerprint', value: 'fingerprint' },
     { label: 'Recording', value: 'recording' },
     { label: 'Data Retrieval', value: 'data_retrieval' },
+    { label: 'Others', value: 'others' },
   ];
 
   workflowTypes: Record<string, { label: string; value: string }[]> = {
@@ -129,8 +132,9 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       { label: 'Apple Music', value: 'APPLE_MUSIC' },
     ],
     fingerprint: [{ label: 'UGC', value: 'UGC_ERN_DDEX' }],
-    recording: [],
+    recording: [{ label: 'Excel Generation', value: 'EXCEL_GENERATION' }],
     data_retrieval: [],
+    others: [],
   };
 
   getAvailableWorkflows(): { label: string; value: string }[] {
@@ -257,11 +261,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       this.resetFilters();
     }
 
-    // Reset filter values to defaults
-    this.filter.bookmark = null;
-    this.filter.startDate = null;
-    this.filter.endDate = null;
-    this.filter.status = null;
+    // Restore previously applied filters
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
 
     this.appliedFilters.forEach(appliedFilter => {
       switch (appliedFilter.key) {
@@ -318,22 +322,24 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   ggcreateWorkflow(): void {
-    this.closeCreateWorkflowModal();
-    this.apiService.createWorkflow(this.workflow).subscribe({
-      next: response => {
-        this.createStep({
-          workflowId: response.id,
-          executionOrder: 1,
-          type: this.selectedWorkflowType,
-          name: this.selectedWorkflowType,
-        });
-        this.selectedDeliverType = null;
-        this.selectedWorkflowType = null;
-        this.router.navigate(['/workflows', response.id], {
-          queryParams: { tab: '' },
-        });
-      },
-    });
+    this.bsModalRef.hide();
+    setTimeout(() => {
+      this.apiService.createWorkflow(this.workflow).subscribe({
+        next: response => {
+          this.createStep({
+            workflowId: response.id,
+            executionOrder: 1,
+            type: this.selectedWorkflowType,
+            name: this.selectedWorkflowType,
+          });
+          this.closeCreateWorkflowModal();
+          this.spinnerService.show();
+          this.router.navigate(['/workflows', response.id], {
+            queryParams: { tab: '' },
+          });
+        },
+      });
+    }, 500);
   }
 
   public createStep(workflowStepDto: any): void {
@@ -345,8 +351,25 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public closeCreateWorkflowModal(): void {
-    this.bsModalRef.hide();
-    this.cdr.detectChanges();
+    this.modalService.hide();
+    setTimeout(() => {
+      this.currentStep = 0;
+      this.selectedDeliverType = null;
+      this.selectedWorkflowType = null;
+      this.workflow = {
+        name: '',
+        enabled: true,
+        paused: false,
+        created: '',
+        modified: '',
+        status: 'DISABLED',
+        alias: '',
+        id: 0,
+        throttleLimit: 10,
+        description: '',
+        isTaskChainIsValid: undefined,
+      };
+    }, 100);
   }
   openDialog(workflowsTemplate: TemplateRef<any>) {
     const config = {
@@ -354,12 +377,20 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
       ignoreBackdropClick: true,
       keyboard: false,
     };
+
+    const savedFilters = localStorage.getItem('workflowFilters');
+    if (savedFilters) {
+      this.filter = JSON.parse(savedFilters);
+    }
+
     this.bsModalRef = this.modalService.show(workflowsTemplate, config);
     this.openDialogWithSelectedDateRange();
+    this.cdRef.detectChanges();
   }
 
   getPageItems(pageParams: any) {
     this.spinnerService.show();
+    this.pageParams.search = this.workflowName;
     this.apiService
       .getWorkflows(pageParams, this.filter)
       .pipe(takeUntil(this.destroyed$))
@@ -381,7 +412,11 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   public reload(workflows: any) {
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks == true) {
+      this.fetchBookmarkedWorkflows();
+    } else {
+      this.getPageItems(this.pageParams);
+    }
   }
 
   public pauseWorkflow(workflow: Workflow) {
@@ -442,16 +477,28 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
   }
 
   searchWorkflow(): void {
-    this.pageParams.page = 0;
-    this.pageParams.search = this.workflowName;
-    this.getPageItems(this.pageParams);
+    if (this.showBookMarks == false) {
+      this.pageParams.page = 0;
+      this.pageParams.search = this.workflowName;
+      this.getPageItems(this.pageParams);
+    } else {
+      this.bookmarkedPageParams.page = 0;
+      this.bookmarkedPageParams.search = this.workflowName;
+      this.fetchBookmarkedWorkflows();
+    }
     this.cdRef.detectChanges();
   }
   clearInput(): void {
     this.workflowName = '';
-    this.pageParams.search = '';
-    this.getPageItems(this.pageParams);
-    this.noWorkflows = this.filteredWorkflows.length === 0;
+    if (this.showBookMarks == true) {
+      this.bookmarkedPageParams.search = '';
+      this.fetchBookmarkedWorkflows();
+      this.noBookmarkedWorkflows = this.filteredWorkflows.length === 0;
+    } else {
+      this.pageParams.search = '';
+      this.getPageItems(this.pageParams);
+      this.noWorkflows = this.filteredWorkflows.length === 0;
+    }
   }
 
   bookmarkWorkflow(workflow: Workflow, userName: String) {
@@ -472,6 +519,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
         this.bookmarkedIds.splice(index, 1);
       }
       this.cdRef.markForCheck();
+      this.reload(workflow);
     });
   }
 
@@ -492,6 +540,7 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
 
   fetchBookmarkedWorkflows() {
     this.spinnerService.show();
+    this.bookmarkedPageParams.search = this.workflowName;
     this.apiService
       .getBookmarkedWorkflowsByUsername(
         this.BGroupId,
@@ -523,6 +572,12 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     );
   }
   getAppliedFilters() {
+    const statusMapping: Record<string, string> = {
+      ACTIVE: 'Active',
+      INACTIVE: 'Inactive',
+      DISABLED: 'Disabled',
+    };
+
     const addOrUpdateFilter = (key: string, label: string, value: any) => {
       const existingFilterIndex = this.appliedFilters.findIndex(
         filter => filter.key === key
@@ -552,7 +607,10 @@ export class WorkflowsComponent implements OnDestroy, OnInit {
     if (!this.filter.status || this.filter.status.length === 0) {
       removeFilterByKey('status');
     } else {
-      addOrUpdateFilter('status', 'Status', this.filter.status);
+      const formattedStatus = this.filter.status.map(
+        status => statusMapping[status as keyof typeof statusMapping] || status
+      );
+      addOrUpdateFilter('status', 'Status', formattedStatus);
     }
 
     // Handle startDate and endDate filter

@@ -47,9 +47,13 @@ h6.active {
   }
 }
 .addMore {
+  border-radius: 0px;
+  height: 46px;
   background-color: #333;
   color: #fff;
   display: flex;
+  font-size: 13px;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
 }
@@ -161,4 +165,9 @@ h6.active {
   font-size: 14px;
   border: 1px solid #d0d5dd;
   border-radius: 4px;
+}
+.create-icon {
+  margin-right: 10px;
+  color: white;
+  font-size: 16px;
 }

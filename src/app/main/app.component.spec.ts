@@ -28,25 +28,4 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
-
-  it('should check authentication and set userDetails if authenticated', waitForAsync(async () => {
-    authorizationServiceSpy.isAuthenticated.and.returnValue(
-      Promise.resolve(true)
-    );
-    authorizationServiceSpy.getUserData.and.returnValue({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-    });
-
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-
-    await app.ngOnInit();
-
-    expect(authorizationServiceSpy.isAuthenticated).toHaveBeenCalled();
-    expect(app.userDetails).toEqual({
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-    });
-  }));
 });

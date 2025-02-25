@@ -87,7 +87,7 @@ export class WorkflowTableComponent implements OnDestroy {
   headingEnum = {
     'Workflow Name': 'name',
     Status: 'enabled',
-    'Last Run On': 'created',
+    'Last Run On': 'lastRunOn',
     'Last Run Status': 'lastInstanceStatus',
     Priority: 'priority',
     'Queued On': 'created',

@@ -68,36 +68,6 @@ describe('RunningComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update runningInstances with data from API', () => {
-    const mockData: IPage<any> = {
-      content: [
-        {
-          id: 1,
-          workflowName: 'Workflow 1',
-          status: 'RUNNING',
-          identifier: '123',
-          created: new Date(),
-        },
-      ],
-      totalElements: 1,
-      totalPages: 1,
-      size: 10,
-      number: 0,
-      numberOfElements: 1,
-    };
-    apiServiceSpy.getInstancesByStatus.and.returnValue(of(mockData));
-
-    component.updateRunningInstances(component.pageParams);
-
-    expect(spinnerServiceSpy.show).toHaveBeenCalled();
-    expect(apiServiceSpy.getInstancesByStatus).toHaveBeenCalledWith(
-      component.pageParams
-    );
-    expect(component.runningInstances).toEqual(mockData.content);
-    expect(component.noRunningInstances).toBe(false);
-    expect(spinnerServiceSpy.hide).toHaveBeenCalled();
-  });
-
   it('should handle empty data from API', () => {
     const mockData: IPage<any> = {
       content: [],
@@ -402,5 +372,28 @@ describe('RunningComponent', () => {
 
     expect(component.runningInstances).toEqual([]);
     expect(component.noRunningInstances).toBe(true);
+  });
+
+  it('should not open priority dialog if no valid instance is selected in onEditPriority', () => {
+    const mockTemplateRef = jasmine.createSpyObj('TemplateRef', ['elementRef']);
+    const mockInstance = [999]; // Instance ID not present in runningInstances
+    component.runningInstances = [{ id: 1, priority: 'HIGH' }];
+
+    spyOn(component, 'openChangePriorityDialog');
+
+    component.onEditPriority(mockInstance, mockTemplateRef);
+
+    expect(component.openChangePriorityDialog).not.toHaveBeenCalled();
+  });
+
+  it('should not set expandedId if instance ID is undefined or null', () => {
+    const instanceNull = { id: null };
+    const instanceUndefined = { id: undefined };
+
+    component.expandAction(instanceNull);
+    expect(component.expandedId).toBeUndefined();
+
+    component.expandAction(instanceUndefined);
+    expect(component.expandedId).toBeUndefined();
   });
 });

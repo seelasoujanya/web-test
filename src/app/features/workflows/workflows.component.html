@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="workflow-header-right">
-          <div>
+          <div class="search-container">
             <input
               type="text"
               class="search-field"
@@ -67,10 +67,7 @@
               class="btn btn--black workflow-btn"
               type="button"
               (click)="openCreateWorkflow(createWorkflow)">
-              <img
-                src="/assets/icons/create-logo.svg"
-                class="create-icon"
-                alt="create Icon" />
+              <em class="fa fa-plus create-icon"></em>
               CREATE WORKFLOW
             </button>
           </div>
@@ -88,10 +85,18 @@
         (bookMarkEvent)="toggleBookmark($event)"
         (reload)="reload($event)"
         (getSortParam)="sortColumn($event)"></app-workflow-table>
-      <div *ngIf="noWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="
+          noWorkflows &&
+          !showBookMarks &&
+          !(noBookmarkedWorkflows && showBookMarks)
+        "
+        class="no-workflows-message">
         No Workflows Found
       </div>
-      <div *ngIf="noBookmarkedWorkflows" class="no-workflows-message">
+      <div
+        *ngIf="noBookmarkedWorkflows && showBookMarks"
+        class="no-workflows-message">
         No Bookmarks Found
       </div>
     </div>
@@ -261,6 +266,7 @@
             [(ngModel)]="selectedDeliverType"
             (ngModelChange)="onDeliveryTypeChange()"
             [searchable]="false"
+            class="select-feild"
             [clearable]="false">
           </ng-select>
         </div>
@@ -274,6 +280,7 @@
             [items]="getAvailableWorkflows()"
             bindLabel="label"
             bindValue="value"
+            class="select-feild"
             [searchable]="false"
             placeholder="Select Workflow Type"
             [(ngModel)]="selectedWorkflowType">
@@ -329,17 +336,25 @@
     <div class="buttons">
       <div>
         <ng-container *ngIf="currentStep === steps.length - 1; else cancleBtn">
-          <button (click)="prevStep()" class="prevBtn">
-            <i class="fa fa-arrow-left"></i>
-            Previous
-          </button>
+          <div class="left-btns">
+            <button (click)="prevStep()" class="prevBtn">
+              <em class="fa fa-arrow-left"></em>
+              Previous
+            </button>
+            <button
+              type="button"
+              class="btn btn--black cancleBtn"
+              (click)="closeCreateWorkflowModal()">
+              <em class="fa fa-times"></em> Cancel
+            </button>
+          </div>
         </ng-container>
         <ng-template #cancleBtn>
           <button
             type="button"
             class="btn btn--black cancleBtn"
             (click)="closeCreateWorkflowModal()">
-            <i class="fa fa-times"></i> Cancel
+            <em class="fa fa-times"></em> Cancel
           </button>
         </ng-template>
       </div>
@@ -355,7 +370,7 @@
             class="nxtBtn"
             [disabled]="!selectedDeliverType || !selectedWorkflowType"
             *ngIf="currentStep < steps.length - 1">
-            Next <i class="fa fa-arrow-right"></i>
+            Next <em class="fa fa-arrow-right"></em>
           </button>
         </span>
         <span
@@ -371,7 +386,7 @@
           [tooltipPlacement]="'top'"
           [tooltipTrigger]="'hover'">
           <button
-            class="btn btn--red workflow-btn"
+            class="btn btn--red create-workflow-btn"
             type="button"
             [disabled]="
               !workflow.name ||

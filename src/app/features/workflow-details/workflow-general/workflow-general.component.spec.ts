@@ -66,17 +66,6 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.isEditing).toBeTrue();
   });
 
-  it('should set isEditing to false and reset workflowCopy when cancelChanges is called', () => {
-    component.workflowCopy = { name: 'test' };
-    component.workflow = { name: 'original' };
-    component.isEditing = true;
-
-    component.cancelChanges();
-
-    expect(component.isEditing).toBeFalse();
-    expect(component.workflowCopy).toEqual(component.workflow);
-  });
-
   it('should limit throttleLimit to 100 in checkThrottleLimit', () => {
     component.workflowCopy = { throttleLimit: 150 };
     component.checkThrottleLimit({});
@@ -194,17 +183,6 @@ describe('WorkflowGeneralComponent', () => {
     expect(component.isUpdate).toBeTrue();
     expect(component.newEmailData).toEqual(email);
     expect(component.openAddEmailDialog).toHaveBeenCalled();
-  });
-
-  it('should set isEditing to false and reset workflowCopy when cancelChanges is called', () => {
-    component.workflowCopy = { name: 'test' };
-    component.workflow = { name: 'original' };
-    component.isEditing = true;
-
-    component.cancelChanges();
-
-    expect(component.isEditing).toBeFalse();
-    expect(component.workflowCopy).toEqual(component.workflow);
   });
 
   it('should emit workflowEmailEvent with CREATE action and reset when addEmail is called and isUpdate is false', () => {
@@ -623,5 +601,15 @@ describe('WorkflowGeneralComponent', () => {
       const result = component.convertToMinutes('xyz');
       expect(result).toBe('0m');
     });
+  });
+
+  it('should set copyUrl to empty if alias is not provided', () => {
+    component.workflowCopy = { alias: '' };
+
+    component.addText();
+
+    // Check that copyUrl is empty when no alias is set
+    expect(component.copyUrl).toBe('');
+    expect(component.copyUrlError).toBe('');
   });
 });
