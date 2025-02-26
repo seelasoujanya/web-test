@@ -14,6 +14,8 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
           'ZPAV_POLAND',
           'IFPI_SWEDEN',
           'SAMPRA_SOUTH_AFRICA',
+          'ABRAMUS_BRAZIL',
+          'RUSSIA_PPI_REGISTRATION',
         ],
         description: 'Select a Template',
         required: false,
