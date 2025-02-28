@@ -21,7 +21,6 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
           'SOUND_EXCHANGE_NORTH_AMERICA',
           'IFPI_ISRAEL',
           'PPCA_AUSTRALIA',
-          'SENA_NETHERLANDS',
           'REGISTRATIONS_CZECH',
           'SENA_NETHERLANDS',
         ],
