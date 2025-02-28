@@ -23,6 +23,7 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
           'PPCA_AUSTRALIA',
           'SENA_NETHERLANDS',
           'REGISTRATIONS_CZECH',
+          'SENA_NETHERLANDS',
         ],
         description: 'Select a Template',
         required: false,
