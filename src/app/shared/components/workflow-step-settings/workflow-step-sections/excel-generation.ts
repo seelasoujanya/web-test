@@ -20,6 +20,7 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
           'GRAMMO_GREECE',
           'SOUND_EXCHANGE_NORTH_AMERICA',
           'IFPI_ISRAEL',
+          'PPCA_AUSTRALIA',
         ],
         description: 'Select a Template',
         required: false,
