@@ -73,7 +73,7 @@
               "
               maxlength="255"
               placeholder="{{ field.placeholder }}"
-              class="input-field"
+              class="filename-input-field"
               [ngModel]="getFieldValue(field.key)"
               (ngModelChange)="setFieldValue(field.key, $event)"
               [class.disabled]="!enableEditing" />
