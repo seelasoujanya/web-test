@@ -1,6 +1,7 @@
 import { IWorkflowConfigurationSection } from './config-section.model';
 import { appleMusicSections } from './workflow-step-sections/apple-music';
 import { ddexSections } from './workflow-step-sections/ddex';
+import { excelGeneration } from './workflow-step-sections/excel-generation';
 import { ftpStepSections } from './workflow-step-sections/ftp';
 import { gcsStepSections } from './workflow-step-sections/gcs-bucket';
 import { s3Uploader } from './workflow-step-sections/s3Uploader';
@@ -54,6 +55,13 @@ export const stepConfigurationSections: StepConfigurationSection[] = [
     stepType: 'S3_UPLOADER',
     sections: s3Uploader,
     title: 'S3 Bucket Settings',
+    requireTemplate: false,
+    requireXsdValidation: false,
+  },
+  {
+    stepType: 'EXCEL_GENERATION',
+    sections: excelGeneration,
+    title: 'Excel Generator',
     requireTemplate: false,
     requireXsdValidation: false,
   },

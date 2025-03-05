@@ -114,6 +114,7 @@ export class WorkflowSettingsComponent {
 
   selectStepType(event: any) {
     this.workflowStp.type = event.value;
+    this.workflowStp.name = event.label;
   }
   onHeadingClick(type: string): void {
     this.selectedHeading = type;
