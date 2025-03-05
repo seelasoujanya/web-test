@@ -39,3 +39,4 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
     ],
   },
 ];
+excelGeneration[0].fields[0].values.sort();
