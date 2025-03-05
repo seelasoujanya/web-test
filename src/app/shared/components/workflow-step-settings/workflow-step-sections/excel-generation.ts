@@ -23,6 +23,7 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
           'PPCA_AUSTRALIA',
           'REGISTRATIONS_CZECH',
           'SENA_NETHERLANDS',
+          'AGEDI_SPAIN',
         ],
         description: 'Select a Template',
         required: false,
@@ -39,4 +40,3 @@ export const excelGeneration: IWorkflowConfigurationSection[] = [
     ],
   },
 ];
-excelGeneration[0].fields[0].values.sort();
