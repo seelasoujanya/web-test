@@ -33,5 +33,5 @@ COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 # Copy the built Angular app from the 'builder' stage to the nginx html directory
 COPY --from=builder /app-ui/dist/deliver-upgrade-frontend /usr/share/nginx/html
 
-# Expose port 80 to allow external access to the nginx server
+# Expose port 80 to allow external access to the nginx
 EXPOSE 80
