@@ -43,5 +43,5 @@ echo -n ${TAG} >overlays/${STAGE}/versions/frontend.version
 
 #Git update
 git add overlays/${STAGE}/versions/frontend.version
-git commit -m "${STAGE} Deliver-frontend-sync request deployed with tag ${TAG}, from deploy pipeline"
+git commit -m "${STAGE} Deliver request deployed with tag ${TAG}, from deploy pipeline"
 git push origin $GitAppBranch
